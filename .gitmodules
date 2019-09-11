@@ -1,0 +1,3 @@
+[submodule "common-configs"]
+	path = common-configs
+	url = https://github.com/ruRust/common-configs
