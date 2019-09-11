@@ -1,17 +1,18 @@
 ## Особенности определения методов
 
-*Методы* имею множество схожих черт с функциями.
+*Методы* имеют множество схожих черт с функциями.
 Сходства:
 - Определение начинается с ключевого слова `fn`, далее идёт имя.
 - Они имеют параметры и возвращаемое значение.
 - Они содержат код, который выполняется, когда метод вызывается.
+
 Различия:
 - Они определяются в контексте структур (или перечислений или типажей, которые мы будем обсуждать в главах 6 и 17).
 - Первый параметр всегда `self`, предоставляющий ссылку на экземпляр структуры.
 
 ### Определение методов
 
-Давайте изменим функцию `area`, которая имеет один входной параметр, ссылку на экземпляр
+Давайте изменим функцию `area`, чтобы она имела один входной параметр, ссылку на экземпляр
 `Rectangle`. Сделаем это определение частью функционала структуры `Rectangle`.
 Пример 5-13:
 
@@ -63,43 +64,43 @@ fn main() {
 >В языках C++, два различных оператора используются для вызова методов:
 > вы используете `.` если вы вызываете метод непосредственно из экземпляра структуры
 >  и с помощью `->` если вызываем метод из ссылки на объект. Другими словами, если
-> `object` является ссылкой вызовы метода `object->something()` и `(*object).something()`
+> `object` является ссылкой, вызовы метода `object->something()` и `(*object).something()`
 > аналогичны.
 >
-> Rust не имет такого эквивалента (оператора `->`), наоборот, в Rust функционал,
-> который называется *автоматическая ссылка и разыменование*. Вызов методов является
-> одним из немногих мест в Rust, в котором есть такой функционал.
+> Rust не имет такого эквивалента (оператора `->`), наоборот, в Rust есть функциональность,
+> которая называется *автоматическая ссылка и разыменование*. Вызов методов является
+> одним из немногих мест в Rust, в котором есть такая функциональность.
 >
 > Как это работает: когда вы вызываете метод `object.something()`, Rust автоматически
-> добавляет `&`, `&mut`, or `*` так чтобы `object` имел соответствующие опции
+> добавляет `&`, `&mut`, or `*` так чтобы `object` имел соответствующие опции.
 > Другими словами, строки *p1.distance(&p2);* *(&p1).distance(&p2);* эквивалентны:
 >
 ```rust
 #[derive(Debug,Copy,Clone)]
 struct Point {
-   x: f64,
-   y: f64,
+    x: f64,
+    y: f64,
 }
 
 impl Point {
-   fn distance(&self, other: &Point) -> f64 {
-      let x_squared = f64::powi(other.x - self.x, 2);
-      let y_squared = f64::powi(other.y - self.y, 2);
+    fn distance(&self, other: &Point) -> f64 {
+        let x_squared = f64::powi(other.x - self.x, 2);
+        let y_squared = f64::powi(other.y - self.y, 2);
 
-      f64::sqrt(x_squared + y_squared)
-   }
+        f64::sqrt(x_squared + y_squared)
+    }
 }
 
 fn main() {
-   let p1 = Point { x: 0.0, y: 0.0 };
-   let p2 = Point { x: 5.0, y: 6.5 };
-   p1.distance(&p2);
-   (&p1).distance(&p2);
+    let p1 = Point { x: 0.0, y: 0.0 };
+    let p2 = Point { x: 5.0, y: 6.5 };
+    p1.distance(&p2);
+    (&p1).distance(&p2);
 }
 
 ```
 
-Первый вариант *p1.distance(&p2);* выглядит давольно-таки понятно.
+Первый вариант *p1.distance(&p2);* выглядит довольно-таки понятно.
 Компилятор Rust может определить, что можно делать с переменной
 (читать значение (`&self`), изменять содержание (`&mut self`) или сохранять значение (`self`) ).
 Тот факт, что описание владения происходит неявно, делает код программы более компактным.
@@ -135,7 +136,7 @@ Can rect1 hold rect2? true
 Can rect1 hold rect3? false
 ```
 
-Мы знаем, что где и как добавляются методы внутри конструкции `impl Rectangle`.
+Мы знаем, что методы добавляются внутри конструкции `impl Rectangle`.
 Пример 5-15:
 
 <span class="filename">Filename: src/main.rs</span>
@@ -148,24 +149,24 @@ struct Rectangle {
 }
 
 impl Rectangle {
-   fn area(&self) -> u32 {
-       self.length * self.width
-   }
+    fn area(&self) -> u32 {
+        self.length * self.width
+    }
 
-   fn can_hold(&self, other: &Rectangle) -> bool {
-       self.length > other.length && self.width > other.width
-   }
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.length > other.length && self.width > other.width
+    }
 }
 
 fn main(){
-let rect1 = Rectangle { length: 50, width: 30 };
-   let rect2 = Rectangle { length: 40, width: 10 };
-   let rect3 = Rectangle { length: 45, width: 60 };
-   println!("area of rect1 = {}", rect1.area());
-   println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
-   println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
-}
+    let rect1 = Rectangle { length: 50, width: 30 };
+    let rect2 = Rectangle { length: 40, width: 10 };
+    let rect3 = Rectangle { length: 45, width: 60 };
 
+    println!("area of rect1 = {}", rect1.area());
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
+}
 ```
 
 <span class="caption">Listing 5-15: Реализация метода `can_hold` `Rectangle`,
@@ -179,7 +180,7 @@ let rect1 = Rectangle { length: 50, width: 30 };
 
 Ещё одна удобная опция блока `impl` - мы можем определять функции, которые не
 имеют параметра `self`. Они называются *ассоциированными функциями*, т.к. они
-находятся внутри структуры. Они функции, не методы, т.к. они не требуют для их
+находятся внутри структуры. Эти функции, не методы, т.к. они не требуют для их
 использования ссылки на экземпляр структуры. Пример (`String::from`).
 
 Такие функция часто используются для инициализации экземпляра структуры.
@@ -190,8 +191,8 @@ let rect1 = Rectangle { length: 50, width: 30 };
 ```rust
  #[derive(Debug)]
  struct Rectangle {
-     length: u32,
-     width: u32,
+    length: u32,
+    width: u32,
  }
 
 impl Rectangle {
@@ -209,33 +210,35 @@ struct Rectangle {
 }
 
 impl Rectangle {
-   fn area(&self) -> u32 {
-       self.length * self.width
-   }
+    fn area(&self) -> u32 {
+        self.length * self.width
+    }
 
-   fn can_hold(&self, other: &Rectangle) -> bool {
-       self.length > other.length && self.width > other.width
-   }
-   fn square(size: u32) -> Rectangle {
-       Rectangle { length: size, width: size }
-   }
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.length > other.length && self.width > other.width
+    }
+
+    fn square(size: u32) -> Rectangle {
+        Rectangle { length: size, width: size }
+    }
 }
 
 fn main(){
-let rect1 = Rectangle { length: 50, width: 30 };
-   let rect2 = Rectangle { length: 40, width: 10 };
-   let rect3 = Rectangle { length: 45, width: 60 };
-   println!("area of rect1 = {}", rect1.area());
-   println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
-   println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
-   let rect4 = Rectangle::square(50);
-   println!("area of rect4 = {}", rect4.area());
-}
+    let rect1 = Rectangle { length: 50, width: 30 };
+    let rect2 = Rectangle { length: 40, width: 10 };
+    let rect3 = Rectangle { length: 45, width: 60 };
 
+    println!("area of rect1 = {}", rect1.area());
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
+
+    let rect4 = Rectangle::square(50);
+    println!("area of rect4 = {}", rect4.area());
+}
 ```
 
 Для вызова ассоциированной функции используется `::`. Пример (`let sq = Rectangle::square(3);`.
-Также `::` используется в областях видимости создаваемые модулями. Об этом поговорим
+Также `::` используется в областях видимости, создаваемых модулями. Об этом поговорим
 в главе 7.
 
 ### Несколько блоков `impl`
@@ -260,6 +263,7 @@ impl Rectangle {
         self.length > other.length && self.width > other.width
     }
 }
+
 impl Rectangle {
     fn square(size: u32) -> Rectangle {
         Rectangle {
@@ -268,6 +272,7 @@ impl Rectangle {
         }
     }
 }
+
 fn main() {
     let rect1 = Rectangle {
         length: 50,
@@ -284,6 +289,7 @@ fn main() {
     println!("area of rect1 = {}", rect1.area());
     println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
     println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
+
     let rect4 = Rectangle::square(50);
     println!("area of rect4 = {}", rect4.area());
 }

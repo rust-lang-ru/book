@@ -54,49 +54,46 @@ match coin {
 Этот же код можно переписать с использованием `if let` и `else`:
 
 ```rust
-
 #[derive(Debug)]
 enum UsState {
-   Alabama,
-   Alaska,
+    Alabama,
+    Alaska,
 }
 
 enum Coin {
-   Penny,
-   Nickel,
-   Dime,
-   Quarter(UsState),
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
 }
 
-fn doit(coin:Coin){
+fn doit(coin: Coin){
+    let mut count = 0;
 
-  let mut count = 0;
+    if let Coin::Quarter(state) = coin {
+        println!("State quarter from {:?}!", state);
+    } else {
+        count += 1;
+    }
 
-  if let Coin::Quarter(state) = coin {
-    println!("State quarter from {:?}!", state);
-  } else {
-    count += 1;
-  }
-
-  println!("{:?}", count);
+    println!("{:?}", count);
 }
 
 fn main(){
-  doit(Coin::Penny);
-  doit(Coin::Nickel);
-  doit(Coin::Dime);
-  doit(Coin::Quarter(UsState::Alabama));
-  doit(Coin::Quarter(UsState::Alaska));
+    doit(Coin::Penny);
+    doit(Coin::Nickel);
+    doit(Coin::Dime);
+    doit(Coin::Quarter(UsState::Alabama));
+    doit(Coin::Quarter(UsState::Alaska));
 }
-
 ```
 
-Вам выбирать какая конструкция подходит для вашего кода лучше сего.
+Вам выбирать какая конструкция подходит для вашего кода лучше всего.
 
 ## Итоги
 
 В этой главе мы рассмотрели, как использовать перечисление (создание, примеры использования).
-Также на пример типа из стандартной библиотеки `Option<T>` выяснили, как
+Также, на примере типа из стандартной библиотеки `Option<T>`, мы выяснили, как
 предотвратить ошибки в коде.  Изучили использование конструкций `match` и `if let`
 для анализа и выборки данных из значений перечислений, а также некоторые возможные
 улучшения и упрощения кода.

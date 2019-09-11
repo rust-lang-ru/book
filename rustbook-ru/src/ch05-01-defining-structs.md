@@ -2,10 +2,10 @@
 
 Внешне структуры похожи на кортежи. Также как кортежи, структуры могут содержать
 разные типы данных. Но в отличии от кортежей, все данные должны быть именованными.
-Поэтому структуры более удобные для создания новых типов данных, т.к. нет необходимости
+Поэтому структуры более удобны для создания новых типов данных, т.к. нет необходимости
 запоминать порядковый номер какого-либо значения внутри экземпляра структуры.
 
-Для определения структуры, необходимо указать ключевое слово и `struct` имя.
+Для определения структуры, необходимо указать ключевое слово `struct` и имя.
 Имя должно описывать содержание. Далее, в фигурных скобках, через запятую, вписывается
 именованный состав данного типа данных. Каждый элемент, *поле*, имеет тип данных.
 Пример 5-1, описывает структуру для хранения информации о учётной записи пользователя:
@@ -38,13 +38,12 @@ struct User {
 
 
 fn main() {
-let user1 = User {
-   email: String::from("someone@example.com"),
-   username: String::from("someusername123"),
-   active: true,
-   sign_in_count: 1,
-};
-
+    let user1 = User {
+        email: String::from("someone@example.com"),
+        username: String::from("someusername123"),
+        active: true,
+        sign_in_count: 1,
+  };
 }
 ```
 
@@ -61,6 +60,7 @@ struct User {
     sign_in_count: u64,
     active: bool,
 }
+
 fn main() {
     let mut user1 = User {
         email: String::from("someone@example.com"),
@@ -77,7 +77,6 @@ fn main() {
         user1.sign_in_count
     );
 }
-
 ```
 
 <span class="caption">Пример 5-3: изменение значения поля `email` структуры `User`</span>
@@ -92,6 +91,7 @@ struct User {
     sign_in_count: u64,
     active: bool,
 }
+
 fn build_user(email: String, username: String) -> User {
     User {
         email: email,
@@ -100,11 +100,11 @@ fn build_user(email: String, username: String) -> User {
         sign_in_count: 1,
     }
 }
-fn main() {
-  let mut user1 = build_user(String::from("someone@example.com"),String::from("someusername123"));
-  user1.email = String::from("anotheremail@example.com");
-  println!("[{};{};{};{}]", user1.username,user1.email,user1.active,user1.sign_in_count);
 
+fn main() {
+    let mut user1 = build_user(String::from("someone@example.com"), String::from("someusername123"));
+    user1.email = String::from("anotheremail@example.com");
+    println!("[{};{};{};{}]", user1.username, user1.email, user1.active, user1.sign_in_count);
 }
 ```
 
@@ -120,6 +120,7 @@ struct User {
     sign_in_count: u64,
     active: bool,
 }
+
 fn build_user(email: String, username: String) -> User {
     User {
         email,
@@ -128,13 +129,12 @@ fn build_user(email: String, username: String) -> User {
         sign_in_count: 1,
     }
 }
+
 fn main() {
-  let mut user1 = build_user(String::from("someone@example.com"),String::from("someusername123"));
-  user1.email = String::from("anotheremail@example.com");
-  println!("[{};{};{};{}]", user1.username,user1.email,user1.active,user1.sign_in_count);
-
+    let mut user1 = build_user(String::from("someone@example.com"), String::from("someusername123"));
+    user1.email = String::from("anotheremail@example.com");
+    println!("[{};{};{};{}]", user1.username, user1.email, user1.active, user1.sign_in_count);
 }
-
 ```
 
 ### Создание экземпляра структуры из экземпляра другой структуры
@@ -149,6 +149,7 @@ struct User {
     sign_in_count: u64,
     active: bool,
 }
+
 fn build_user(email: String, username: String) -> User {
     User {
         email,
@@ -157,19 +158,19 @@ fn build_user(email: String, username: String) -> User {
         sign_in_count: 1,
     }
 }
+
 fn main() {
-  let mut user1 = build_user(String::from("someone@example.com"),String::from("someusername123"));
-  user1.email = String::from("anotheremail@example.com");
-  let user2 = User {
-    email: String::from("another@example.com"),
-    username: String::from("anotherusername567"),
-    active: user1.active,
-    sign_in_count: user1.sign_in_count,
-};
+    let mut user1 = build_user(String::from("someone@example.com"), String::from("someusername123"));
+    user1.email = String::from("anotheremail@example.com");
+    let user2 = User {
+        email: String::from("another@example.com"),
+        username: String::from("anotherusername567"),
+        active: user1.active,
+        sign_in_count: user1.sign_in_count,
+    };
 
-  println!("[{};{};{};{}]", user1.username,user1.email,user1.active,user1.sign_in_count);
-  println!("[{};{};{};{}]", user2.username,user2.email,user2.active,user2.sign_in_count);
-
+    println!("[{};{};{};{}]", user1.username, user1.email, user1.active, user1.sign_in_count);
+    println!("[{};{};{};{}]", user2.username, user2.email, user2.active, user2.sign_in_count);
 }
 ```
 
@@ -186,6 +187,7 @@ struct User {
     sign_in_count: u64,
     active: bool,
 }
+
 fn build_user(email: String, username: String) -> User {
     User {
         email,
@@ -194,17 +196,18 @@ fn build_user(email: String, username: String) -> User {
         sign_in_count: 1,
     }
 }
-fn main() {
-  let mut user1 = build_user(String::from("someone@example.com"),String::from("someusername123"));
-  user1.email = String::from("anotheremail@example.com");
-  let user2 = User {
-    email: String::from("another@example.com"),
-    username: String::from("anotherusername567"),
-    ..user1
-};
 
-  println!("[{};{};{};{}]", user1.username,user1.email,user1.active,user1.sign_in_count);
-  println!("[{};{};{};{}]", user2.username,user2.email,user2.active,user2.sign_in_count);
+fn main() {
+    let mut user1 = build_user(String::from("someone@example.com"), String::from("someusername123"));
+    user1.email = String::from("anotheremail@example.com");
+    let user2 = User {
+        email: String::from("another@example.com"),
+        username: String::from("anotherusername567"),
+        ..user1
+    };
+
+  println!("[{};{};{};{}]", user1.username, user1.email, user1.active, user1.sign_in_count);
+  println!("[{};{};{};{}]", user2.username, user2.email, user2.active, user2.sign_in_count);
 
 }
 ```
@@ -215,7 +218,7 @@ fn main() {
 
 Мы также можем определять структуры, с помощью сокращенной записи, очень напоминающую
 кортежи (такое определение называют *кортежными структурами*). При определении такого
-вида имена полей не определяются.
+вида, имена полей не определяются.
 Пример:
 
 ```rust
@@ -231,17 +234,17 @@ let origin = Point(0, 0, 0);
 
 ### Структуры без полей
 
-Создателю новых типов доступно создание структур без полей. Такой объект бывает
-полезен при более сложной работе, которая будет обсуждать в главе 10.
+Вы также можете создавать структуры без полей. Такой объект бывает
+полезен при более сложной работе. Об этом мы поговорим в главе 10.
 
 > ### Владение данными структуры
 > При определении структуры `User` в примере 5-1 мы предпочли использовать тип `String`
 > вместо `&str`. Это было осознанное решение, т.к. мы хотели чтобы экземпляры структур
 > владели действительными данными во время своего существования в памяти.
 >
-> Конечно, возможно чтобы структуры сохраняли ссылки на данные это накладывает
+> Конечно, возможно чтобы структуры сохраняли ссылки на данные, но это накладывает
 > определённые ограничения, о которых мы поговорим в главе 10. Без учёта времени
-> жизни - такой код не будет действительным:
+> жизни - такой код будет недействительным:
 >
 > <span class="filename">Filename: src/main.rs</span>
 >
@@ -284,13 +287,13 @@ let origin = Point(0, 0, 0);
 > `&str`.
 
 ```rust
-
 struct User {
     username: String,
     email: String,
     sign_in_count: u64,
     active: bool,
 }
+
 fn build_user(email: String, username: String) -> User {
     User {
         email: email,
@@ -299,6 +302,7 @@ fn build_user(email: String, username: String) -> User {
         sign_in_count: 1,
     }
 }
+
 fn main() {
     let mut user1 = build_user(
         String::from("someone@example.com"),
@@ -326,6 +330,4 @@ fn main() {
         user2.sign_in_count
     );
 }
-
-
 ```
