@@ -1,3 +1,0 @@
-files:
-  - source: /rustbook-en/src/**/*.md
-    translation: /rustbook-%two_letters_code%/src/**/%original_file_name%
