@@ -1,4 +1,4 @@
-# Introduction
+# Введение
 
 > Примечание: это издание книги так же, как и [The Rust Programming Language](https://nostarch.com/rust) доступно в печатном и электронном виде от [No Starch Press](https://nostarch.com/) .
 
@@ -14,7 +14,7 @@ traditionally associated with such control.
 
 Rust подходит для многих людей по разным причинам. Приведем несколько самых важных групп.
 
-### Teams of Developers
+### Команды разработчиков
 
 Rust is proving to be a productive tool for collaborating among large teams of
 developers with varying levels of systems programming knowledge. Low-level code
@@ -25,10 +25,10 @@ compile code with these elusive bugs, including concurrency bugs. By working
 alongside the compiler, the team can spend their time focusing on the program’s
 logic rather than chasing down bugs.
 
-Rust also brings contemporary developer tools to the systems programming world:
+Rust также предлагает современные инструменты для разработчиков в мире системного программирования:
 
 - Cargo, встроенный менеджер зависимостей и инструмент сборки,  добавляет, компилирует и управляет зависимостями безболезненно и согласованно, используя экосистему Rust.
-- Rustfmt ensures a consistent coding style across developers.
+- Rustfmt обеспечивает согласованный стиль кодирования для всех разработчиков.
 - Rust Language Server поддерживает интегрированную среду разработки (IDE) с автодополнением кода и встроенными сообщениями об ошибках.
 
 Эти и другие инструменты экосистемы Rust, обеспечивают  разработчикам продуктивность при написании кода системного уровня.
@@ -42,7 +42,7 @@ student questions. Through efforts such as this book, the Rust teams want to
 make systems concepts more accessible to more people, especially those new to
 programming.
 
-### Companies
+### Компании
 
 Hundreds of companies, large and small, use Rust in production for a variety of
 tasks. Those tasks include command line tools, web services, DevOps tooling,
@@ -56,7 +56,7 @@ Rust is for people who want to build the Rust programming language, community,
 developer tools, and libraries. We’d love to have you contribute to the Rust
 language.
 
-### People Who Value Speed and Stability
+### Люди, которые ценят скорость и стабильность
 
 Rust is for people who crave speed and stability in a language. By speed, we
 mean the speed of the programs that you can create with Rust and the speed at
@@ -73,7 +73,7 @@ ambition is to eliminate the trade-offs that programmers have accepted for
 decades by providing safety *and* productivity, speed *and* ergonomics. Give
 Rust a try and see if its choices work for you.
 
-## Who This Book Is For
+## Для кого эта книга
 
 This book assumes that you’ve written code in another programming language but
 doesn’t make any assumptions about which one. We’ve tried to make the material
@@ -82,7 +82,7 @@ don’t spend a lot of time talking about what programming *is* or how to think
 about it. If you’re entirely new to programming, you would be better served by
 reading a book that specifically provides an introduction to programming.
 
-## How to Use This Book
+## Как использовать эту книгу
 
 В целом, эта книга предполагает, что вы читаете ее последовательно от начала до конца. Более поздние главы основываются на концепциях предыдущих. Иногда более ранние главы могут не углубляться в детали темы; мы обычно возвращаемся к теме в следующей главе.
 
@@ -155,13 +155,13 @@ error. Ferris will also help you distinguish code that isn’t meant to work:
 
 Ferris | Пояснения
 --- | ---
-<img src="img/ferris/does_not_compile.svg" class="ferris-explain"> | This code does not compile!
+<img src="img/ferris/does_not_compile.svg" class="ferris-explain"> | Этот код не компилируется!
 <img src="img/ferris/panics.svg" class="ferris-explain"> | Этот код вызывает состояние "panic"!
-<img src="img/ferris/unsafe.svg" class="ferris-explain"> | This code block contains unsafe code.
+<img src="img/ferris/unsafe.svg" class="ferris-explain"> | Этот блок кода содержит небезопасный код.
 <img src="img/ferris/not_desired_behavior.svg" class="ferris-explain"> | Этот код ведет себя не так, как предполагается.
 
 В большинстве случаев мы приведем вас к правильной версии любого кода, который не компилируется.
 
-## Source Code
+## Исходный код
 
 Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub](https://github.com/rust-lang/book/tree/master/src) .
