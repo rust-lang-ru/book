@@ -133,11 +133,9 @@ The first `if` block calls `simulated_expensive_calculation` twice, the `if`
 inside the outer `else` doesn’t call it at all, and the code inside the
 second `else` case calls it once.
 
-<!-- NEXT PARAGRAPH WRAPPED WEIRD INTENTIONALLY SEE #199 -->
-
 The desired behavior of the `generate_workout` function is to first check
-whether the user wants a low-intensity workout (indicated by a number less
-than 25) or a high-intensity workout (a number of 25 or greater).
+whether the user wants a low-intensity workout (indicated by a number less than
+25) or a high-intensity workout (a number of 25 or greater).
 
 Low-intensity workout plans will recommend a number of push-ups and sit-ups
 based on the complex algorithm we’re simulating.
@@ -402,7 +400,7 @@ error[E0308]: mismatched types
   |
   | let n = example_closure(5);
   |                         ^ expected struct `std::string::String`, found
-  integral variable
+  integer
   |
   = note: expected type `std::string::String`
              found type `{integer}`
