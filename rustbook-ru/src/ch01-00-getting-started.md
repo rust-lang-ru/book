@@ -1,7 +1,6 @@
 # Начало работы
 
-Let’s start your Rust journey! There’s a lot to learn, but every journey starts
-somewhere. In this chapter, we’ll discuss:
+Начнем ваше путешествие в Rust! Нужно много всего изучить, но каждое путешествие должно где-то начаться. В этой главе мы обсудим:
 
 - Инсталляция Rust на Linux, macOS и Windows
 - Написание программы печатающей `Hello, world!`
