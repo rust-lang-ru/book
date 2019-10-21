@@ -1,25 +1,13 @@
 ## Установка
 
-The first step is to install Rust. We’ll download Rust through `rustup`, a
-command line tool for managing Rust versions and associated tools. You’ll need
-an internet connection for the download.
+Первым шагом является установка Rust. Мы загрузим Rust используя инструмент командной строки `rustup`, предназначенный для управлениями версиями Rust и другими связанными с ним инструментами. Вам понадобится интернет соединение для его загрузки.
 
-> Замечание: Если по каким-то причинам вы предпочтете не использовать `rustup`, то загляните на страницу [the Rust installation](https://www.rust-lang.org/tools/install) для других вариантов.
+> Замечание: Если по каким-то причинам вы предпочтете не использовать `rustup`, то загляните на страницу [the Rust installation] для других вариантов.
 
-The following steps install the latest stable version of the Rust compiler.
-Rust’s stability guarantees ensure that all the examples in the book that
-compile will continue to compile with newer Rust versions. The output might
-differ slightly between versions, because Rust often improves error messages
-and warnings. In other words, any newer, stable version of Rust you install
-using these steps should work as expected with the content of this book.
+Следующие шаги позволяют установить самую последнюю стабильную версию компилятора Rust. Гарантии стабильности Rust дают возможность того, что все примеры книги будут компилироваться с более новыми версиями компилятора. Вывод сообщений может немного отличаться в зависимости от версии, потому что часто в Rust улучшают сообщения об ошибках и предупреждения. Другими словами, любая более новая, стабильная, установленная по этим шагам версия Rust, должна работать соответственно содержимому данной книги.
 
 > ### Нотация командной строки
-> In this chapter and throughout the book, we’ll show some commands used in the
-> terminal. Lines that you should enter in a terminal all start with `$`. You
-> don’t need to type in the `$` character; it indicates the start of each
-> command. Lines that don’t start with `$` typically show the output of the
-> previous command. Additionally, PowerShell-specific examples will use `>`
-> rather than `$`.
+> В данном главе и потом во всей книге, мы показываем некоторые команды в терминале командной строки. Строки, которые нужно ввести в терминале начинаются с `$`. Но вам не нужно вводить сам символ `$`; он только отображает, что это начало каждой команды. Строки, которые НЕ начинаются с  `$`, обычно показывают вывод выполнения предыдущей команды. В дополнение, примеры специфичные для PowerShell используют символ `>` вместо символа `$`.
 
 ### Установка на Linux или Mac
 
@@ -37,36 +25,23 @@ Rust is installed now. Great!
 
 Если хотите, можете скачать данный скрипт и изучить его перед запуском.
 
-Инсталлятор автоматически добавит папку с компонентами Rust в системный путь PATH
-и их использование будет доступно из командной строки после следующего входа в
-систему. Если необходимо сразу начать работу, пожалуйста, выполните следующую команду:
+Установщик автоматически добавит папку с компонентами Rust в системную переменную PATH и их использование будет доступно из командной строки после следующего входа в систему. Если вы хотите сразу начать работу, то пожалуйста выполните следующую команду:
 
 ```text
 $ source $HOME/.cargo/env
 ```
 
-Или добавьте следующую строку в файл `~/.bash_profile`:
+Как альтернатива, добавьте следующую строку в файл *~/.bash_profile*:
 
 ```text
 $ export PATH="$HOME/.cargo/bin:$PATH"
 ```
 
-Additionally, you’ll need a linker of some kind. It’s likely one is already
-installed, but when you try to compile a Rust program and get errors indicating
-that a linker could not execute, that means a linker isn’t installed on your
-system and you’ll need to install one manually. C compilers usually come with
-the correct linker. Check your platform’s documentation for how to install a C
-compiler. Also, some common Rust packages depend on C code and will need a C
-compiler. Therefore, it might be worth installing one now.
+Дополнительно нужен какой-то вариант программы "линковщика". Возможно какой-то у вас уже установлен. Если при попытке компиляции Rust программы вы получаете ошибки, что "линковщик" не смог загрузиться, то это означает, что он не установлен в системе и вам необходимо установить его вручную. Компиляторы языка C обычно имеют в своем составе корректный линковщик. Поищите как установить на вашу платформу компилятор языка C. Также, некоторые общие Rust пакеты зависят от C кода и им тоже будет необходим компилятор C. Так что, имеет смысл его поставить сейчас.
 
 ### Установка на Windows
 
-On Windows, go to [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install) and follow
-the instructions for installing Rust. At some point in the installation, you’ll
-receive a message explaining that you’ll also need the C++ build tools for
-Visual Studio 2013 or later. The easiest way to acquire the build tools is to
-install [Build Tools for Visual Studio 2019](https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2019). The tools are in
-the Other Tools and Frameworks section.
+Для Windows, посетите ссылку [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install) и следуйте инструкциям для установки Rust. На некотором шаге установки, вы можете получить сообщение объясняющее необходимость инструментов сборки C++ для Visual Studio 2013 или более поздней версии. Самый простой способ получить и инсталлировать [Build Tools for Visual Studio 2019]. Эти инструменты находятся в разделе "Other Tools and Frameworks".
 
 Остальные часть книги использует команды работающие как в *cmd.exe* так и в PowerShell. Есть некоторые отличия, которые мы объясним.
 
@@ -78,8 +53,7 @@ the Other Tools and Frameworks section.
 $ rustup update
 ```
 
-Удалить Rust также просто, как его установить. Для этого необходим выполнить
-следующую команду:
+Удалить Rust также просто, как и установить. Для этого необходимо выполнить команду:
 
 ```text
 $ rustup self uninstall
@@ -87,7 +61,7 @@ $ rustup self uninstall
 
 ### Устранение возможных ошибок
 
-Проверка работы Rust-компилятора:
+Проверка корректной установки и работы Rust-компилятора, откройте и введите:
 
 ```text
 $ rustc --version
@@ -99,16 +73,17 @@ $ rustc --version
 rustc x.y.z (abcabcabc yyyy-mm-dd)
 ```
 
-Если проблема всё ещё не может быть устранена, вот сайты, на страницах которых Вы
-сможете найти ответ или задать вопрос [the #rust IRC channel on irc.mozilla.org](irc://irc.mozilla.org/#rust).<comment>,
-Доступ к данному ресурсу осуществляется с помощь <a href="http://chat.mibbit.com/?server=irc.mozilla.org&channel=%23rust" data-md-type="link">Mibbit</a>. Перейдите по
-ссылке и Вы получите возможность задать Ваш вопрос в чате. Также обратить на форум
-<a href="https://users.rust-lang.org/" data-md-type="link">the Users forum</a> или на <a href="http://stackoverflow.com/questions/tagged/rust" data-md-type="link">Stack Overflow</a>.</comment>
+Если вы видите данную информацию, то вы всё установили корректно. Если нет и вы используете Windows, проверьте что путь к  Rust находится в системной переменной `%PATH%`. Если предыдущее корректно, но Rust все еще не работает, то есть множество мест на страницах которых можно получить помощь. Самое просто в канале #beginners [официального Rust Discord] сервера. Там можно списаться в другими пользователями Rust (Rustaceans -  как мы себя называем) которые могут помочь. Другие хорошие ресурсы включают: пользовательский форум [Users forum] и ресурс [Stack Overflow].
 
 ### Локальная документация
 
-The installation of Rust also includes a copy of the documentation locally, so
-you can read it offline. Run `rustup doc` to open the local documentation in
-your browser.
+Установка Rust также включает в себя копию локальной документации, для чтения без интернета. Запустите команду  `rustup doc` для ее открытия в браузере.
 
 Если Вам необходимо найти описание типа или функции в стандартной библиотеке или вы не знаете, что она делает или как его использовать, то документация станет вашим верным помощником!
+
+
+[the Rust installation]: https://www.rust-lang.org/tools/install
+[Build Tools for Visual Studio 2019]: https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2019
+[официального Rust Discord]: https://discord.gg/rust-lang
+[Users forum]: https://users.rust-lang.org/
+[Stack Overflow]: http://stackoverflow.com/questions/tagged/rust
