@@ -14,5 +14,4 @@ jobs:
       with:
         submodules: recursive
     - run: npm install yaspeller
-    - run: git show -m --name-only -1 --format="format:" | grep --color=never -i '.md'
     - run: git show -m --name-only -1 --format="format:" | grep --color=never -i '.md' | xargs node_modules/.bin/yaspeller -c common-configs/.yaspellerrc
