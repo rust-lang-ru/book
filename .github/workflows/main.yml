@@ -1,0 +1,17 @@
+name: Spellchecking
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  spellchecking:
+    name: Checking
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      with:
+        submodules: recursive
+    - run: npm install yaspeller
+    - run: git show -m --name-only -1 --format="format:" | grep --color=never -i '.md' | xargs node_modules/.bin/yaspeller -c common-configs/.yaspellerrc
