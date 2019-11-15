@@ -2,21 +2,13 @@
 
 Любое значение в Rust является определенным *типом данных (data type)*, которое говорит какие данные указаны, так что Rust знает как с ними работать. Рассмотрим два подмножества тип данных: скалярные (простые) и составные (сложные).
 
-Keep in mind that Rust is a *statically typed* language, which means that it
-must know the types of all variables at compile time. The compiler can usually
-infer what type we want to use based on the value and how we use it. In cases
-when many types are possible, such as when we converted a `String` to a numeric
-type using `parse` in the [“Comparing the Guess to the Secret
-Number”](ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number)<comment> section in
-Chapter 2, we must add a type annotation, like this:</comment>
+Не забывайте, что Rust является *статически типизированным (statically typed)* языком. Это означает, что он должен знать типы всех переменных во время компиляции. Обычно компилятор выводит (infer) какой тип мы хотим использовать основываясь на значении и на том, как мы его используем. Необходимо добавлять аннотацию типа, в случаях когда возможно множество типов. Например, когда мы конвертировали строковый тип `String` в числовой тип с помощью вызова `parse` в разделе [“Сравнение предположения с загаданным номером”](ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number)<comment> главы 2, нужно добавить такую аннотацию типа, как в примере:</comment>
 
 ```rust
 let guess: u32 = "42".parse().expect("Not a number!");
 ```
 
-If we don’t add the type annotation here, Rust will display the following
-error, which means the compiler needs more information from us to know which
-type we want to use:
+Если её не добавить, то Rust покажет следующую ошибку. Она означает, что компилятору от нас необходимо больше информации, чтобы знать какой тип мы хотим использовать:
 
 ```text
 error[E0282]: type annotations needed
@@ -33,19 +25,11 @@ error[E0282]: type annotations needed
 
 ### Скалярные типы данных
 
-A *scalar* type represents a single value. Rust has four primary scalar types:
-integers, floating-point numbers, Booleans, and characters. You may recognize
-these from other programming languages. Let’s jump into how they work in Rust.
+Скалярный *(scalar)* тип представляет единственное значение. В Rust есть четыре скалярных типа: целые числа (integers), вещественные числа (floating-point), двоичные (Booleans) и символьные (characters). Их можно узнать из других языков программирования. Посмотрим на то, как они работают в Rust.
 
 #### Целые числа
 
-An *integer* is a number without a fractional component. We used one integer
-type in Chapter 2, the `u32` type. This type declaration indicates that the
-value it’s associated with should be an unsigned integer (signed integer types
-start with `i`, instead of `u`) that takes up 32 bits of space. Table 3-1 shows
-the built-in integer types in Rust. Each variant in the Signed and Unsigned
-columns (for example, `i16`) can be used to declare the type of an integer
-value.
+*Целое (integer)* является числом без дробной составляющей. Мы использовали целый тип в главе 2, это был  `u32`. Данное объявление типа указывает, что значение связанное с ним должно быть целым без знака (unsigned integer). Типы знаковых целых (signed integer) начинаются с буквы `i`, вместо буквы `u` и занимают до 32 бит памяти. Таблица 3-1 показывает встроенные целые типы Rust. Каждый вариант в колонках Знаковый (Signed) и Беззнаковый (Unsigned) (к примеру `i16`) может использоваться для объявления значения целого типа.
 
 <span class="caption">Таблица 3-1: Целые типы Rust</span>
 
@@ -58,20 +42,9 @@ value.
 128-bit | `i128` | `u128`
 arch | `isize` | `usize`
 
-Each variant can be either signed or unsigned and has an explicit size.
-*Signed* and *unsigned* refer to whether it’s possible for the number to be
-negative or positive—in other words, whether the number needs to have a sign
-with it (signed) or whether it will only ever be positive and can therefore be
-represented without a sign (unsigned). It’s like writing numbers on paper: when
-the sign matters, a number is shown with a plus sign or a minus sign; however,
-when it’s safe to assume the number is positive, it’s shown with no sign.
-Signed numbers are stored using [two’s complement](https://en.wikipedia.org/wiki/Two%27s_complement) representation.
+Каждый вариант может быть или со знаком или без знака, но имеет точный размер. *Знаковый* и *без знака* означает, может ли число быть отрицательным или только положительным. Другими словами, нужно ли числу иметь знак (signed) или оно будет только позитивным и тогда представлено как (unsigned). Это похоже на написание чисел на бумаге: когда знак важен, то число отображено со знаком плюс или минус. Однако, когда можно с уверенностью предположить, что число положительное, то оно отображается без знака. Знаковые числа сохраняются в формате представления [дополнения до двух](https://en.wikipedia.org/wiki/Two%27s_complement).
 
-Each signed variant can store numbers from -(2<sup>n - 1</sup>) to 2<sup>n -
-1</sup> - 1 inclusive, where *n* is the number of bits that variant uses. So an
-`i8` can store numbers from -(2<sup>7</sup>) to 2<sup>7</sup> - 1, which equals
--128 to 127. Unsigned variants can store numbers from 0 to 2<sup>n</sup> - 1,
-so a `u8` can store numbers from 0 to 2<sup>8</sup> - 1, which equals 0 to 255.
+Каждый знаковый вариант может хранить числа от -(2<sup>n - 1</sup>) до 2<sup>n -1</sup> - 1 включительно, где *n* является количеством бит используемых в варианте. Так `i8` может хранить числа от -(2<sup>7</sup>) до 2<sup>7</sup> - 1, что равно от -128 до 127. варианты без знака могут хранить числа от 0 до 2<sup>n</sup> - 1, так `u8` может хранить числа от 0 до 2<sup>8</sup> - 1, т.е. от 0 до 255.
 
 Дополнительные типы, такие как `isize` и `usize` зависят от типа компьютерной системы где работает ваша программа. Они имеют 64 бит, если вы на 64-битной архитектуре и 32 бита, если вы на 32-битной.
 
@@ -90,8 +63,8 @@ Byte (`u8` only) | `b'A'`
 Как узнать, какой литерал необходимо использовать? Если вы не уверены, то варианты по умолчанию в Rust являются хорошим выбором. Типом по умолчанию для целых является `i32`. Данный типа в общем случае самый быстрый даже на 64-битных системах. Основной ситуацией для использования `isize` или `usize` является использование для индексирования некоторой коллекции.
 
 > ##### Переполнение целого (Overflow)
-> Например у нас есть переменная типа `u8`. Она может сохранять значения между 0 и 255. Если попытаться изменить значение вне данного диапазона, например в 256, то произойдет *ошибка переполнения (integer overflow)*. В Rust есть несколько интересных правил включая следующее поведение. При компиляции кода в режиме отладки (debug mode), компилятор Rust включает проверки на переполнение целого, которые приводят к *панике (panic)* во время выполнения, если такое случится. В Rust термин паниковать означает, что программа сразу завершается с ошибкой. Мы обсудим "паники" более детально разделе [“Не восстанавливаемые ошибки с помощью `panic!`”](ch09-01-unrecoverable-errors-with-panic.html)<comment> главы 9.</comment>
-> При компиляции кода в финальную версию (release mode) при помощи флага `--release`, Rust *НЕ* включает проверки переполнения целого, приводящего к панике. Вместо этого в случае переполнения, Rust выполняет *"обертывание" к дополнению до двух (two’s complement wrapping)*. Если кратко, то значения больше чем максимальное значение, которое может хранить тип, "оборачивается" до минимальных значений данного типа. Для типа  `u8`, число 256 превращается в 0, 257 становится 1 и так далее. Программа не будет "паниковать", но переменная получит значение, которого  вы возможно не ожидали. Полагаться на поведение "обертывания целочисленного переполнения" считается ошибкой. Если нужно обернуть явно, то можно использовать тип из стандартной библиотеки [`Wrapping`](../std/num/struct.Wrapping.html).
+> Например у нас есть переменная типа `u8`. Она может сохранять значения между 0 и 255. Если попытаться изменить значение вне данного диапазона, например в 256, то произойдет *ошибка переполнения (integer overflow)*. В Rust есть несколько интересных правил включая следующее поведение. При компиляции кода в режиме отладки (debug mode), компилятор Rust включает проверки на переполнение целого, которые приводят к *панике (panic)* во время выполнения, если такое случится. В Rust термин паниковать означает, что программа сразу завершается с ошибкой. Мы обсудим "паники" более детально разделе [“Не восстанавливаемые ошибки с помощью `panic!`”]<comment> главы 9.</comment>
+> При компиляции кода в финальную версию (release mode) при помощи флага `--release`, Rust *НЕ* включает проверки переполнения целого, приводящего к панике. Вместо этого в случае переполнения, Rust выполняет *"обертывание" к дополнению до двух (two’s complement wrapping)*. Если кратко, то значения больше чем максимальное значение, которое может хранить тип, "оборачивается" до минимальных значений данного типа. Для типа  `u8`, число 256 превращается в 0, 257 становится 1 и так далее. Программа не будет "паниковать", но переменная получит значение, которого  вы возможно не ожидали. Полагаться на поведение "обертывания целочисленного переполнения" считается ошибкой. Если нужно обернуть явно, то можно использовать тип из стандартной библиотеки [`Wrapping`].
 
 #### Числа с плавающей запятой
 
@@ -99,7 +72,7 @@ Byte (`u8` only) | `b'A'`
 
 Пример для чисел с плавающей точкой в действии:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 fn main() {
@@ -152,7 +125,7 @@ fn main() {
 }
 ```
 
-Основной способ использования значений логического типа это условные конструкции, такие как выражение `if`. Мы расскажем про работу выражения `if` в разделе  [“Условные конструкции”](ch03-05-control-flow.html#control-flow)<comment>.</comment>
+Основной способ использования значений логического типа это условные конструкции, такие как выражение `if`. Мы расскажем про работу выражения `if` в разделе  [“Условные конструкции”]<comment>.</comment>
 
 #### Символьный тип данных
 
@@ -168,7 +141,7 @@ fn main() {
 }
 ```
 
-Тип `char` имеет размер в четыре байта и представляет собой скалярное юникод значение (Unicode Scalar Value), что означает представление гораздо больше чем символы набора ASCII. Акцентированные (Accented) буквы, Китайские, Японские и Корейские символы; эмоджи (emoji) и пробелы нулевой длины все являются корректными значениями `char` в Rust. Скалярное юникод значение имеет диапазон от `U+0000` до `U+D7FF` и от `U+E000` до  `U+10FFFF` включительно. Тем не менее, “символ” на самом деле не является концептом в Юникод. Так что человеческая интуиция о том, что такое “символ” может не совпадать с тем, чем является тип `char` в Rust. Более детально мы обсудим тему в разделе [“Сохранение кодированного в UTF-8 текста как строки” ](ch08-02-strings.html#storing-utf-8-encoded-text-with-strings)<comment> главы 8.</comment>
+Тип `char` имеет размер в четыре байта и представляет собой скалярное юникод значение (Unicode Scalar Value), что означает представление гораздо больше чем символы набора ASCII. Акцентированные (Accented) буквы, Китайские, Японские и Корейские символы; эмоджи (emoji) и пробелы нулевой длины все являются корректными значениями `char` в Rust. Скалярное юникод значение имеет диапазон от `U+0000` до `U+D7FF` и от `U+E000` до  `U+10FFFF` включительно. Тем не менее, “символ” на самом деле не является концептом в Юникод. Так что человеческая интуиция о том, что такое “символ” может не совпадать с тем, чем является тип `char` в Rust. Более детально мы обсудим тему в разделе [“Сохранение кодированного в UTF-8 текста как строки” ]<comment> главы 8.</comment>
 
 ### Сложные типы данных
 
@@ -188,9 +161,7 @@ fn main() {
 }
 ```
 
-The variable `tup` binds to the entire tuple, because a tuple is considered a
-single compound element. To get the individual values out of a tuple, we can
-use pattern matching to destructure a tuple value, like this:
+Переменной с именем `tup` привязывается весь кортеж, потому что кортеж является единым комбинированным элементом. Чтобы получить отдельные значения из кортежа, можно использовать сопоставление с образцом (pattern matching) для деструктурирования значений кортежа, как в примере:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -206,9 +177,7 @@ fn main() {
 
 Программа создает кортеж, привязывает его к переменной `tup`. Затем используется шаблон из `let` для присваивания `tup` и превращения его в три отдельных переменные `x`, `y` и  `z`. Это называется *деструктурирование*, потому что оно разрушает один кортеж на три части. В конце программа печатает значение `y`, которое равно `6.4`.
 
-In addition to destructuring through pattern matching, we can access a tuple
-element directly by using a period (`.`) followed by the index of the value we
-want to access. For example:
+В дополнение к деструктурированию с помощью сопоставления шаблонов, можно напрямую получить к элементам кортежа с помощью символа (`.`) и указанием  индекса значения, к которому хотим получить доступ. Например:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -240,13 +209,7 @@ fn main() {
 }
 ```
 
-Arrays are useful when you want your data allocated on the stack rather than
-the heap (we will discuss the stack and the heap more in Chapter 4) or when
-you want to ensure you always have a fixed number of elements. An array isn’t
-as flexible as the vector type, though. A vector is a similar collection type
-provided by the standard library that *is* allowed to grow or shrink in size.
-If you’re unsure whether to use an array or a vector, you should probably use a
-vector. Chapter 8 discusses vectors in more detail.
+Массивы являются полезными, когда вы хотите получить данные в стеке, вместо памяти в куче (heap) (мы обсудим стэк и кучу в главе 4) или когда хотите убедится, что есть всегда фиксированное количество элементов. Массив не является таким же удобным, как тип вектор. Вектор является аналогичным типом для коллекций, предоставленным стандартной библиотекой, которому *можно* увеличиваться или уменьшаться в размере. Если вы не уверены, использовать массив или или вектор, то возможно следует воспользоваться вектором. В главе 8 обсуждаются вектора более детально.
 
 Примером, когда возможно лучше воспользоваться массивом вместо вектора, является программа в которой нужно знать названия месяцев в году. Вряд ли в такой программе необходимо добавлять или удалять месяцы, поэтому можно воспользоваться массивом так как вы знаете, что он всегда включает в себя 12 элементов:
 
@@ -264,10 +227,7 @@ let a: [i32; 5] = [1, 2, 3, 4, 5];
 
 Здесь, `i32` является типом каждого элемента. После точки с запятой указано число `5` указывающее, что массив содержит 5 элементов.
 
-Writing an array’s type this way looks similar to an alternative syntax for
-initializing an array: if you want to create an array that contains the same
-value for each element, you can specify the initial value, followed by a
-semicolon, and then the length of the array in square brackets, as shown here:
+Такая запись типа массив выглядит аналогичной альтернативному синтаксису инициализации массива, когда вы хотите создать массив состоящий из одинаковых значений для каждого элемента. Можно указать начальное значение элемента перед точкой запятой, а затем длину массива внутри квадратных скобок, как в примере:
 
 ```rust
 let a = [3; 5];
@@ -275,10 +235,9 @@ let a = [3; 5];
 
 Массив в переменной `a` будет включать `5` элементов, которые будут установлены в начальное значение равное `3`. Данная запись аналогична коду `let a = [3, 3, 3, 3, 3];`, но более кратким способом.
 
-##### Accessing Array Elements
+##### Доступ к элементам массива
 
-An array is a single chunk of memory allocated on the stack. You can access
-elements of an array using indexing, like this:
+Массив является единым блоком памяти выделенном в стеке. Можно получать доступ к элементам используя индекс:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -295,9 +254,7 @@ fn main() {
 
 ##### Некорректный доступ к элементу массива
 
-What happens if you try to access an element of an array that is past the end
-of the array? Say you change the example to the following code, which will
-compile but exit with an error when it runs:
+Что произойдет, если вы попробуете получить доступ к элементу вне массива, который находится за границами массива? Например, вы изменили пример на следующий код, который будет компилироваться, но завершится с ошибкой при запуске:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -326,8 +283,10 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
 
 Компиляция не вызвала ошибок, но программа завершилась ошибкой *времени выполнения (runtime)* и не выполнилась успешно. Когда вы пробуете получить доступ к элементу используя индекс, Rust проверит, что указанный индекс меньше чем длина массива. Если индекс больше или равен длине массива, Rust вызовет панику (panic).
 
-This is the first example of Rust’s safety principles in action. In many
-low-level languages, this kind of check is not done, and when you provide an
-incorrect index, invalid memory can be accessed. Rust protects you against this
-kind of error by immediately exiting instead of allowing the memory access and
-continuing. Chapter 9 discusses more of Rust’s error handling.
+Это первый пример на деле демонстрирующий принципы безопасности в Rust. Во многих низкоуровневых языках, такие типы проверок не выполняются и когда вы предоставляете некорректный индекс, можно получить доступ к не корректной памяти. Rust защищает вас от такого рода ошибок тем, что немедленно завершает программу, вместо того, чтобы позволить получить такой доступ и продолжить выполнение. В главе 9 больше обсуждается обработка ошибок в Rust.
+
+
+[“Условные конструкции”]: ch03-05-control-flow.html#control-flow
+[“Сохранение кодированного в UTF-8 текста как строки” ]: ch08-02-strings.html#storing-utf-8-encoded-text-with-strings
+[“Не восстанавливаемые ошибки с помощью `panic!`”]: ch09-01-unrecoverable-errors-with-panic.html
+[`Wrapping`]: ../std/num/struct.Wrapping.html
