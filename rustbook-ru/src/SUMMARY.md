@@ -12,7 +12,7 @@
 
     - [Установка](ch01-01-installation.md)
     - [Привет, мир!](ch01-02-hello-world.md)
-    - [Hello, Cargo!](ch01-03-hello-cargo.md)
+    - [Привет, Cargo!](ch01-03-hello-cargo.md)
 
 - [Игра "Угадай число"](ch02-00-guessing-game-tutorial.md)
 
@@ -85,7 +85,7 @@
     - [Working with Environment Variables](ch12-05-working-with-environment-variables.md)
     - [Написание сообщений об ошибках в поток ошибок вместо стандартного потока вывода](ch12-06-writing-to-stderr-instead-of-stdout.md)
 
-## Thinking in Rust
+## Думать на Rust
 
 - [Функциональные возможности языка Rust](ch13-00-functional-features.md)
 
