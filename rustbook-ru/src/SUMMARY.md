@@ -30,7 +30,7 @@
     - [Ссылки и заимствование](ch04-02-references-and-borrowing.md)
     - [Срезы](ch04-03-slices.md)
 
-- [Использование сруктуры для объединения логически связных данных](ch05-00-structs.md)
+- [Использование структур для объединения логически связных данных](ch05-00-structs.md)
 
     - [Определение и инициализация структур](ch05-01-defining-structs.md)
     - [Пример использования структур](ch05-02-example-structs.md)
@@ -48,13 +48,13 @@
 
     - [Пакеты и крейты](ch07-01-packages-and-crates.md)
     - [Объявление модулей для управления областями видимости и приватностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
-    - [Paths for Referring to an Item in the Module Tree](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
-    - [Bringing Paths Into Scope with the `use` Keyword](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
+    - [Варианты указания пути на элемент в дереве модулей](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
+    - [Подключение путей в область действия с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
     - [Разделение модулей на разные файлы](ch07-05-separating-modules-into-different-files.md)
 
 - [Коллекции](ch08-00-common-collections.md)
 
-    - [Storing Lists of Values with Vectors](ch08-01-vectors.md)
+    - [Сохранение списка значений с помощью вектора](ch08-01-vectors.md)
     - [Сохранение UTF-8 текста в строки](ch08-02-strings.md)
     - [Сохранение ключей с ассоциированными значениями в хэш-карты](ch08-03-hash-maps.md)
 
@@ -105,8 +105,8 @@
 - [Умные указатели](ch15-00-smart-pointers.md)
 
     - [Использование `Box<T>` для доступа к данным в куче](ch15-01-box.md)
-    - [Treating Smart Pointers Like Regular References with the `Deref` Trait](ch15-02-deref.md)
-    - [Running Code on Cleanup with the `Drop` Trait](ch15-03-drop.md)
+    - [Работа с умным указателем, как с обычной ссылкой, с помощью типажа `Deref`](ch15-02-deref.md)
+    - [Запуск кода при очистке с типажом `Drop`](ch15-03-drop.md)
     - [Счётчик указателей `Rc<T>`](ch15-04-rc.md)
     - [`RefCell<T>` и шабон внутренней изменяемости](ch15-05-interior-mutability.md)
     - [Циклические ссылки и утечки памяти](ch15-06-reference-cycles.md)
@@ -150,7 +150,7 @@
 
     - [Дополнение A - Ключевые слова](appendix-01-keywords.md)
     - [Дополнение Б - Операторы](appendix-02-operators.md)
-    - [C - Derivable Traits](appendix-03-derivable-traits.md)
+    - [Дополнение В - Выводимые типажи](appendix-03-derivable-traits.md)
     - [Дополнение Г - Полезные инструменты разработки](appendix-04-useful-development-tools.md)
     - [Дополнение Д - Редакции](appendix-05-editions.md)
     - [Дополнение Е - Переводы книги](appendix-06-translation.md)
