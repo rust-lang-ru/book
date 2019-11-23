@@ -1,4 +1,4 @@
-name: Check PRs
+name: Checks
 on:
   push:
     branches:
