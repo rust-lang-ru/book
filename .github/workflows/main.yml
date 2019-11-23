@@ -20,4 +20,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: rust-lang-ru/simpleinfra/gitocalize-bug-checker
+    - uses: rust-lang-ru/simpleinfra/gitocalize-bug-checker@master
