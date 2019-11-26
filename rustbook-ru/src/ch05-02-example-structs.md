@@ -30,8 +30,7 @@ fn area(length: u32, width: u32) -> u32 {
 The area of the rectangle is 1500 square pixels.
 ```
 
-Хотя пример 5-8 работает и расчитывает площадь прямоугольника, мы можем улучшить
-программу. Переменные длина и ширина связаны логически, т.к. они описывают параметры
+Хотя код листинга 5-8 работает и рассчитывает площадь прямоугольника вызывая функцию `area` для каждого изменения, мы можем улучшить программу. Переменные длина и ширина связаны логически, так как они совместно описывают параметры
 прямоугольника.
 
 Проблема данного метода очевидна из сигнатуры `area`:
@@ -63,27 +62,15 @@ fn area(dimensions: (u32, u32)) -> u32 {
 }
 ```
 
-<span class="caption">Listing 5-9: Specifying the width and height of the
-rectangle with a tuple</span>
+<span class="caption">Листинг 5-9: Указание ширины и высоты прямоугольника с помощью кортежа</span>
 
-In one way, this program is better. Tuples let us add a bit of structure, and
-we’re now passing just one argument. But in another way, this version is less
-clear: tuples don’t name their elements, so our calculation has become more
-confusing because we have to index into the parts of the tuple.
+С одной стороны, эта программа стала лучше. Кортежи позволяют лучше структурировать код, теперь мы передаем один аргумент. Но с другой стороны данная версия менее понятная: кортежи не имеют имен для элементов, так что расчёт стал более запутанным из-за необходимости индексирования частей кортежа.
 
-It doesn’t matter if we mix up width and height for the area calculation, but
-if we want to draw the rectangle on the screen, it would matter! We would have
-to keep in mind that `width` is the tuple index `0` and `height` is the tuple
-index `1`. If someone else worked on this code, they would have to figure this
-out and keep it in mind as well. It would be easy to forget or mix up these
-values and cause errors, because we haven’t conveyed the meaning of our data in
-our code.
+Если мы перепутаем местами ширину с высотой при расчете площади, то это не имеет значения. Но если нужно нарисовать прямоугольник на экране, то это уже будет иметь значение! Придётся помнить, что ширина  `width` находится в кортеже с индексом `0`, а высота `height` с индексом `1`. Если кто-то другой поработал бы с кодом, ему бы пришлось разобраться в этом и также помнить про порядок. Легко забыть и перепутать эти значения и это вызовет ошибки, потому что данный код не передаёт наши намерения.
 
 ### Изменения для структур: добавим больше смысла
 
-We use structs to add meaning by labeling the data. We can transform the tuple
-we’re using into a data type with a name for the whole as well as names for the
-parts, as shown in Listing 5-10.
+Мы пользуемся структурами, добавляем с их помощью смысл, помечая данные. Мы можем переделать используемый кортеж в тип данных с именем всей сущности и названиями её части, как показано в листинге 5-10.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -109,24 +96,11 @@ fn area(rectangle: &Rectangle) -> u32 {
 
 <span class="caption">Пример 5-10: Определение структуры <code>Rectangle</code></span>
 
-Here we’ve defined a struct and named it `Rectangle`. Inside the curly
-brackets, we defined the fields as `width` and `height`, both of which have
-type `u32`. Then in `main`, we created a particular instance of `Rectangle`
-that has a width of 30 and a height of 50.
+Здесь мы определили структуру, дали ей имя `Rectangle`. Внутри фигурных скобок определили поля как `width` и `height`, оба типа `u32`. Затем в `main` создали конкретный экземпляр `Rectangle` с шириной в 30 и высотой в 50 единиц.
 
-Our `area` function is now defined with one parameter, which we’ve named
-`rectangle`, whose type is an immutable borrow of a struct `Rectangle`
-instance. As mentioned in Chapter 4, we want to borrow the struct rather than
-take ownership of it. This way, `main` retains its ownership and can continue
-using `rect1`, which is the reason we use the `&` in the function signature and
-where we call the function.
+Наша функция `area` теперь определена с одним параметром названным `rectangle`, чей тип является экземпляром неизменяемой, заимствованной структуры `Rectangle`. Как упоминалось в главе 4, необходимо заимствовать структуру, а не передавать ее во владение. Таким образом функция `main` сохраняет её в собственности и продолжает использоваться `rect1`, что является причиной использования `&` в сигнатуре в месте её вызова.
 
-The `area` function accesses the `width` and `height` fields of the `Rectangle`
-instance. Our function signature for `area` now says exactly what we mean:
-calculate the area of `Rectangle`, using its `width` and `height` fields. This
-conveys that the width and height are related to each other, and it gives
-descriptive names to the values rather than using the tuple index values of `0`
-and `1`. This is a win for clarity.
+Функция `area` имеет доступ к полям `width` и `height` экземпляра `Rectangle`. Сигнатура нашей функции для `area` теперь точно говорит, что мы имели ввиду: посчитать площадь `Rectangle` используя поля `width` и `height`. Это передаёт то, что ширина и высота относятся друг к другу и это сделано назначением понятных имен, вместо использования значений индексов кортежа `0` и `1`. Это плюс к ясности.
 
 ### Добавление полезной функциональности используя выводимые типажи
 
@@ -197,8 +171,7 @@ fn main() {
 }
 ```
 
-<span class="caption">Listing 5-12: Adding the annotation to derive the <code>Debug</code>
-trait and printing the <code>Rectangle</code> instance using debug formatting</span>
+<span class="caption">Листинг 5-12: Добавление аннотации для реализации типажа  <code>Debug</code> и печати экземпляра <code>Rectangle</code> с отладочным форматированием</span>
 
 Теперь при запуске программы не получаем ошибок и увидим следующий вывод:
 
@@ -218,3 +191,5 @@ rect1 is Rectangle {
 Rust предоставляет несколько типажей для использования в аннотации `derive`, они умеют давать полезное поведение пользовательским типам. Эти типажи и их поведение перечислены в приложении C. Мы обсудим как реализовать данные типажи с пользовательским поведением, а также как создавать свои собственные типажи в главе 10.
 
 Функция `area` является довольно специфичной: она считает только площадь прямоугольников. Было бы полезно привязать данное поведение как можно ближе к структуре `Rectangle`, потому что код не будет работать с любым другим типом. Давайте рассмотрим, как можно продолжить изменения этого кода превращая функцию `area` в  `area` *метод* определенный для типа `Rectangle`.
+
+
