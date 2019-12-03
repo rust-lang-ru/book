@@ -1,12 +1,7 @@
 # Игра "Угадай число"
 
-Предлагаю начать программирование прямо сейчас! Мы создадим программу на Rust.
-Будем учиться программированию посредством создания Rust-проекта. Эта глава поможет
-Вам получить практический опыт работы, познакомит с концепциями языка программирования.
-Вы научитесь использовать ключевые слова, такие как `let` и `match`, познакомитесь
-с методами, ассоциированными функциями, научитесь использовать внешние модули и
-многое другое. Мы надеемся, что, изучив материалы этой главы, вы освоите фундаментальные
-знания теории и практики использования возможностей языка Rust.
+Давайте начнём программирование с Rust, работая вместе над практическим проектом! Эта глава ознакомит вас с некоторыми базовыми концепции языка Rust, показывая их применение в реальной программе.
+Вы узнаете про `let`, `match`, методы, ассоциированные функции, использование внешних пакетов и многое другое! Последующие главы расскажут про эти идеи более детально. В этой главе Вы будете практиковать основы.
 
 Мы реализуем простую задачу: угадывание числа. Алгоритм игры следующий: программа
 генерирует целое число от 0 до 100. Игрок должен угадать это число. После каждого
@@ -43,8 +38,7 @@ edition = "2018"
 [dependencies]
 ```
 
-If the author information that Cargo obtained from your environment is not
-correct, fix that in the file and save it again.
+Если информация про авторов, которую Cargo берёт из вашей среды неправильна, исправьте её в файле и сохраните.
 
 As you saw in Chapter 1, `cargo new` generates a “Hello, world!” program for
 you. Check out the *src/main.rs* file:
@@ -169,8 +163,7 @@ let mut bar = 5; // mutable
 > Обратите внимание, что символы `//` - синтаксис, обозначающий комментарий,
 > который размещается на одной строке. Rust игнорирует всё, что размещено в строке комментария. Более подробно см. в главе № 3.
 
-Таким образом выражение `let mut guess` - это объявление изменяемой переменной с
-именем `guess`.
+Давайте вернёмся к нашей программе. Теперь вы знаете, что `let mut guess` создаст изменяемую переменную с именем `guess`. С другой стороны от знака равенства ( `=` ) находится значение, к которому `guess` будет привязано и что является результатом вызова функции `String::new`. Эта функция возвращает новый экземпляр типа данных `String` .<a href="../std/string/struct.String.html" data-md-type="link">`String`</a> <comment> </comment> - строковый тип, предоставляемый стандартной библиотекой, который является строкой текста в формате UTF-8, с возможностью увеличения размера.
 
 The `::` syntax in the `::new` line indicates that `new` is an *associated
 function* of the `String` type. An associated function is implemented on a type,
@@ -181,8 +174,7 @@ This `new` function creates a new, empty string. You’ll find a `new` function
 on many types, because it’s a common name for a function that makes a new value
 of some kind.
 
-To summarize, the `let mut guess = String::new();` line has created a mutable
-variable that is currently bound to a new, empty instance of a `String`. Whew!
+Подытожим, строка `let mut guess = String::new();` создает изменяемую переменную, которая привязывается к пустому новому экземпляру `String`. Ух ты!
 
 Recall that we included the input/output functionality from the standard
 library with `use std::io;` on the first line of the program. Now we’ll call
@@ -193,29 +185,16 @@ io::stdin().read_line(&mut guess)
     .expect("Failed to read line");
 ```
 
-If we hadn’t put the `use std::io` line at the beginning of the program, we
-could have written this function call as `std::io::stdin`. The `stdin` function
-returns an instance of [`std::io::Stdin`](../std/io/struct.Stdin.html)<comment>, which is a
-type that represents a handle to the standard input for your terminal.</comment>
+Если бы мы не добавили строку`use std::io` в начало программы, мы смогли бы вызвать эту функцию как `std::io::stdin`. Функция `stdin` возвращает экземпляр [`std::io::Stdin`](../std/io/struct.Stdin.html), который является типом, предоставляющим обработку стандартного ввода из Вашего терминала.
 
-The next part of the code, `.read_line(&mut guess)`, calls the
-[`read_line`](../std/io/struct.Stdin.html#method.read_line)<comment> method on the standard input handle to
-get input from the user. We’re also passing one argument to <code data-md-type="codespan">read_line</code>: <code data-md-type="codespan">&mut guess</code>.</comment>
+Следующая часть кода, `.read_line(&mut guess)`, вызывает метод [`read_line`](../std/io/struct.Stdin.html#method.read_line) обработчика стандартного ввода для получения данных от пользователя. Мы передаем в функцию `read_line` один аргумент: `&mut guess`.
 
 The job of `read_line` is to take whatever the user types into standard input
 and place that into a string, so it takes that string as an argument. The
 string argument needs to be mutable so the method can change the string’s
 content by adding the user input.
 
-The `&` indicates that this argument is a *reference*, which gives you a way to
-let multiple parts of your code access one piece of data without needing to
-copy that data into memory multiple times. References are a complex feature,
-and one of Rust’s major advantages is how safe and easy it is to use
-references. You don’t need to know a lot of those details to finish this
-program. For now, all you need to know is that like variables, references are
-immutable by default. Hence, you need to write `&mut guess` rather than
-`&guess` to make it mutable. (Chapter 4 will explain references more
-thoroughly.)
+Символ `&` показывает, что аргумент является *ссылкой*, которая даёт возможность получить доступ к данным в нескольких местах кода без необходимости копировать эти данные в памяти несколько раз. Ссылки - это сложная особенность и одно из главных преимуществ Rust, безопасность и легкость использования ссылок. Вам не нужно знать массу деталей для завершения этой программы. В данный момент нужно знать, что ссылки по умолчанию являются неизменяемыми. Следовательно, необходимо написать `&mut guess`, а не `&guess`, чтобы сделать ссылку изменяемой. (Глава 4 объясняет ссылки более тщательно.)
 
 ### Обработка потенциальных ошибок с помощью типа `Result`
 
@@ -235,14 +214,9 @@ written this code as:
 io::stdin().read_line(&mut guess).expect("Failed to read line");
 ```
 
-However, one long line is difficult to read, so it’s best to divide it: two
-lines for two method calls. Now let’s discuss what this line does.
+Тем не менее, одна строка читается сложнее, поэтому лучшим решением будет разделить её: две строки для двух вызовов функций. Давайте теперь объясним, что эта строка делает.
 
-As mentioned earlier, `read_line` puts what the user types into the string
-we’re passing it, but it also returns a value—in this case, an
-[`io::Result`](../std/io/type.Result.html)<comment>. Rust has a number of types named
-<code data-md-type="codespan">Result</code> in its standard library: a generic <a href="../std/result/enum.Result.html" data-md-type="link"><code data-md-type="codespan">Result</code></a></comment><comment>
-as well as specific versions for submodules, such as <code data-md-type="codespan">io::Result</code>.</comment>
+Как упоминалось ранее, `read_line` помещает символы  пользовательского ввода в переменную переданную в неё, но она также имеет возвращаемый тип - в этом случае это [`io::Result`](../std/io/type.Result.html). Rust в стандартной библиотеке имеет несколько типов с именем `Result`: обобщенный тип <a href="../std/result/enum.Result.html" data-md-type="link">`Result`</a>, а также конкретные версии для подмодулей, такие как `io::Result`.
 
 The `Result` types are [*enumerations*](ch06-00-enums.html)<comment>, often referred
 to as <em data-md-type="emphasis">enums</em>. An enumeration is a type that can have a fixed set of values,
@@ -254,16 +228,8 @@ operation was successful, and inside `Ok` is the successfully generated value.
 The `Err` variant means the operation failed, and `Err` contains information
 about how or why the operation failed.
 
-The purpose of these `Result` types is to encode error-handling information.
-Values of the `Result` type, like values of any type, have methods defined on
-them. An instance of `io::Result` has an [`expect` method](../std/result/enum.Result.html#method.expect)<comment> that you can call. If this instance of `io::Result` is an <code data-md-type="codespan">Err</code> value,
-<code data-md-type="codespan">expect</code> will cause the program to crash and display the message that you
-passed as an argument to <code data-md-type="codespan">expect</code>. If the <code data-md-type="codespan">read_line</code> method returns an <code data-md-type="codespan">Err</code>,
-it would likely be the result of an error coming from the underlying operating
-system. If this instance of `io::Result` is an <code data-md-type="codespan">Ok</code> value, <code data-md-type="codespan">expect</code> will take
-the return value that <code data-md-type="codespan">Ok</code> is holding and return just that value to you so you
-can use it. In this case, that value is the number of bytes in what the user
-entered into standard input.</comment>
+Назначение типа `Result` состоит в кодировании информации для обработки ошибки.
+Значения типа`Result`, как и значения любых типов, имеют определённые в них методы. Экземпляр `io::Result` имеет [`expect` метод](../std/result/enum.Result.html#method.expect), который можно вызвать. Если экземпляр `io::Result` является значением `Err`, то метод `expect` вызовет сбой программы и покажет сообщение, которое Вы передали как аргумент в `expect`. Если метод `read_line` вернёт `Err`, это вероятно будет ошибка, происходящая от операционной системы. Если экземпляр `io::Result` будет `Ok`, `expect` возьмёт и вернёт значение содержащееся внутри `Ok`, чтобы его можно было использовать. В этом случае, значением будет число байт, которые пользователь ввел в стандартный поток ввода.
 
 Если Вы не вызовете `expect`, программа скомпилируется, но Вы получите предупреждение:
 
@@ -279,15 +245,13 @@ warning: unused `std::result::Result` which must be used
    = note: #[warn(unused_must_use)] on by default
 ```
 
-Rust warns that you haven’t used the `Result` value returned from `read_line`,
-indicating that the program hasn’t handled a possible error.
+Rust предупреждает, что вы не используете значение `Result` возвращённое из `read_line`, показывая что программа не обрабатывает возможную ошибку.
 
 Правильным способом убрать предупреждение будет обработать ошибку, но так как Вы хотите чтобы программа завершилась, Вы можете использовать `expect`. Вы узнаете про восстановление после ошибок в главе 9.
 
 ### Вывод значений с помощью `println!`
 
-Aside from the closing curly brackets, there’s only one more line to discuss in
-the code added so far, which is the following:
+Помимо закрывающих фигурных скобок присутствует ещё одна строка которую нужно обсудить:
 
 ```rust,ignore
 println!("You guessed: {}", guess);
@@ -311,7 +275,7 @@ println!("x = {} and y = {}", x, y);
 
 ### Тестирование первой части
 
-Let’s test the first part of the guessing game. Run it using `cargo run`:
+Давайте протестирует первую часть игры. Запустите её используя `cargo run`:
 
 ```text
 $ cargo run
@@ -370,8 +334,7 @@ standard for writing version numbers. The number `0.5.5` is actually shorthand
 for <code data-md-type="codespan">^0.5.5</code>, which means “any version that has a public API compatible with
 version 0.5.5.”</comment>
 
-Now, without changing any of the code, let’s build the project, as shown in
-Listing 2-2.
+Давайте теперь соберём наш проект без каких-либо правок кода, как показано в листинге 2-2.
 
 ```text
 $ cargo build
@@ -395,10 +358,7 @@ $ cargo build
 You may see different version numbers (but they will all be compatible with
 the code, thanks to SemVer!), and the lines may be in a different order.
 
-Now that we have an external dependency, Cargo fetches the latest versions of
-everything from the *registry*, which is a copy of data from
-[Crates.io](https://crates.io/). Crates.io is where people in the Rust ecosystem post
-their open source Rust projects for others to use.
+Теперь, когда у нас есть внешняя зависимость, Cargo выбирает последние версии всех крейтов из *реестра*, который является копией данных из [Crates.io](https://crates.io/) . Crates.io - то место, где люди в экосистеме Rust размещают проекты с открытым исходным кодом для других.
 
 After updating the registry, Cargo checks the `[dependencies]` section and
 downloads any crates you don’t have yet. In this case, although we only listed
@@ -406,12 +366,7 @@ downloads any crates you don’t have yet. In this case, although we only listed
 depends on those to work. After downloading the crates, Rust compiles them and
 then compiles the project with the dependencies available.
 
-If you immediately run `cargo build` again without making any changes, you
-won’t get any output aside from the `Finished` line. Cargo knows it has already
-downloaded and compiled the dependencies, and you haven’t changed anything
-about them in your *Cargo.toml* file. Cargo also knows that you haven’t changed
-anything about your code, so it doesn’t recompile that either. With nothing to
-do, it simply exits.
+Если вы сразу же запустите `cargo build` без изменений, то не получите никакого вывода кроме строки `Finished`. Cargo знает, что зависимости скачаны и скомпилированы и вы ничего не изменили в вашем файле {em2}Cargo.toml{/em2}. Cargo также знает, что вы не изменили что-либо в коде, так что он также не будет компилировать снова. Так как нечего делать, он просто выходит.
 
 If you open up the *src/main.rs* file, make a trivial change, and then save it
 and build again, you’ll only see two lines of output:
@@ -422,10 +377,8 @@ $ cargo build
     Finished dev [unoptimized + debuginfo] target(s) in 2.53s
 ```
 
-These lines show Cargo only updates the build with your tiny change to the
-*src/main.rs* file. Your dependencies haven’t changed, so Cargo knows it can
-reuse what it has already downloaded and compiled for those. It just rebuilds
-your part of the code.
+Эти строки показывают, что Cargo обновляет только сборку с вашими небольшими изменениями в файле *src/main.rs*. Остальные зависимости не изменились, поэтому Cargo знает, что может
+использовать то, что он уже скачал и скомпилировал ранее. Он просто пересобирает часть кода.
 
 #### Ensuring Reproducible Builds with the *Cargo.lock* File
 
@@ -436,23 +389,11 @@ happens if next week version 0.5.6 of the `rand` crate comes out and
 contains an important bug fix but also contains a regression that will break
 your code?
 
-The answer to this problem is the *Cargo.lock* file, which was created the
-first time you ran `cargo build` and is now in your *guessing_game* directory.
-When you build a project for the first time, Cargo figures out all the
-versions of the dependencies that fit the criteria and then writes them to
-the *Cargo.lock* file. When you build your project in the future, Cargo will
-see that the *Cargo.lock* file exists and use the versions specified there
-rather than doing all the work of figuring out versions again. This lets you
-have a reproducible build automatically. In other words, your project will
-remain at `0.5.5` until you explicitly upgrade, thanks to the *Cargo.lock*
-file.
+Ответом на эту проблему является файл *Cargo.lock*, который создается впервые при запуске `cargo build` и потом находится в вашем каталоге *guessing_game*. Когда вы впервые собираете проект, Cargo выясняет все версии зависимостей, которые соответствуют критериям, а затем записывает их в файл *Cargo.lock*. Когда в будущем вы будете собирать проект, то Cargo увидит, что файл *Cargo.lock* существует и будет использовать указанные там версии вместо того, чтобы делать всю работу по выяснению версий снова. Это позволяет иметь воспроизводимую сборку автоматически. Другими словами, ваш проект будет оставаться на уровне версии `0.5.5` благодаря *Cargo.lock* файлу, пока не обновите версию явно.
 
 #### Updating a Crate to Get a New Version
 
-When you *do* want to update a crate, Cargo provides another command, `update`,
-which will ignore the *Cargo.lock* file and figure out all the latest versions
-that fit your specifications in *Cargo.toml*. If that works, Cargo will write
-those versions to the *Cargo.lock* file.
+Когда вы *хотите* обновить клейт, Cargo предоставляет другую команду, `update`, которая проигнорирует файл *Cargo.lock* и выяснит все последние версии, которые соответствуют вашим спецификациям в *Cargo.toml* файле. Если это работает, Cargo напишет эти версии в файл *Cargo.lock*.
 
 But by default, Cargo will only look for versions greater than `0.5.5` and less
 than `0.6.0`. If the `rand` crate has released two new versions, `0.5.6` and
@@ -464,31 +405,22 @@ $ cargo update
     Updating rand v0.5.5 -> v0.5.6
 ```
 
-At this point, you would also notice a change in your *Cargo.lock* file noting
-that the version of the `rand` crate you are now using is `0.5.6`.
+В этот момент вы также заметите изменение в файле *Cargo.lock*, отметив что версия крейта `rand`, которую вы сейчас используете является `0.5.6` .
 
-If you wanted to use `rand` version `0.6.0` or any version in the `0.6.x`
-series, you’d have to update the *Cargo.toml* file to look like this instead:
+Если вы хотите использовать крейт `rand` версии `0.6.0` или любую версию в `0.6.x`, то для этого нужно будет обновить файл *Cargo.toml*, чтобы он выглядел следующим образом:
 
 ```toml
 [dependencies]
 rand = "0.6.0"
 ```
 
-The next time you run `cargo build`, Cargo will update the registry of crates
-available and reevaluate your `rand` requirements according to the new version
-you have specified.
+В следующий раз при запуске `cargo build`, Cargo обновит реестр доступных крейтов и пересмотрит ваши требования к `rand` в соответствии с новой версией, которую вы указали.
 
-There’s a lot more to say about [Cargo](http://doc.crates.io)<comment> and <a href="http://doc.crates.io/crates-io.html" data-md-type="link">its
-ecosystem</a></comment><comment> which we’ll discuss in Chapter 14, but
-for now, that’s all you need to know. Cargo makes it very easy to reuse
-libraries, so Rustaceans are able to write smaller projects that are assembled
-from a number of packages.</comment>
+Можно много рассказать про [Cargo](http://doc.crates.io) и [его экосистему](http://doc.crates.io/crates-io.html) которые мы обсудим в главе 14, сейчас это все что вам нужно знать. Cargo позволяет очень легко переиспользовать библиотеки, поэтому Rust разработчики имеют возможность писать меньшие проекты, которые скомпонованы из многих пакетов.
 
 ### Generating a Random Number
 
-Now that you’ve added the `rand` crate to *Cargo.toml*, let’s start using
-`rand`. The next step is to update *src/main.rs*, as shown in Listing 2-3.
+Теперь, когда вы добавили `rand` крейт в *Cargo.toml*, давайте начнем использовать `rand`. Следующим шагом является обновление *src/main.rs*, как показано в листинге 2-3.
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -517,31 +449,13 @@ fn main() {
 <span class="caption">Listing 2-3: Adding code to generate a random
 number</span>
 
-First, we add a `use` line: `use rand::Rng`. The `Rng` trait defines
-methods that random number generators implement, and this trait must be in
-scope for us to use those methods. Chapter 10 will cover traits in detail.
+Сначала, добавим `use` строку вида: `use rand::Rng`. Крейт `Rng` определяет методы, которые реализуют генератор случайных чисел и данный типаж должен быть в области видимости, чтобы использовать его методы. Глава 10 подробно расскажет об типажах.
 
-Next, we’re adding two lines in the middle. The `rand::thread_rng` function
-will give us the particular random number generator that we’re going to use:
-one that is local to the current thread of execution and seeded by the
-operating system. Then we call the `gen_range` method on the random number
-generator. This method is defined by the `Rng` trait that we brought into
-scope with the `use rand::Rng` statement. The `gen_range` method takes two
-numbers as arguments and generates a random number between them. It’s inclusive
-on the lower bound but exclusive on the upper bound, so we need to specify `1`
-and `101` to request a number between 1 and 100.
+Далее добавляем две строки по середине. Функция `rand::thread_rng` предоставит генератор случайных чисел, который мы собираемся использовать: тот, который является локальным для текущего потока выполнения и инициализирован операционной системой. Затем мы вызываем метод `gen_range` у генератора случайного числа. Этот метод объявлен в типаже `Rng`, который мы импортировали в область действия оператором `use rand::Rng`. Метод `gen_range` принимает два числа в качестве аргументов и генерирует случайное число в их диапазоне. Он включает нижнюю границу, но исключает верхнюю границу, поэтому нам нужно указать `1` и `101` чтобы запросить число от 1 до 100.
 
-> Note: You won’t just know which traits to use and which methods and functions
-> to call from a crate. Instructions for using a crate are in each crate’s
-> documentation. Another neat feature of Cargo is that you can run the `cargo doc --open` command, which will build documentation provided by all of your
-> dependencies locally and open it in your browser. If you’re interested in
-> other functionality in the `rand` crate, for example, run `cargo doc --open`
-> and click `rand` in the sidebar on the left.
+> Примечание: вы не будете знать, какие типажи использовать, какие методы и функции вызывать из крейта. Инструкции по использованию крейта есть в каждой документации. Еще одна полезная особенность Cargo - то, что вы можете запустить команду `cargo doc --open`, которая соберет локальную документацию, предоставленную всеми зависимостями и откроет её в браузере. Если вы заинтересованы в других функциях крейта `rand`, например, запустите `cargo doc --open` и нажмите `rand` на боковой панели слева.
 
-The second line that we added to the middle of the code prints the secret
-number. This is useful while we’re developing the program to be able to test
-it, but we’ll delete it from the final version. It’s not much of a game if the
-program prints the answer as soon as it starts!
+Вторая строка, которую мы добавили в середину кода, печатает секретное число. Она полезна, когда при разработке программы, чтобы иметь возможность её тестировать, но мы удалим ее из окончательной версии. Это не интересная игра, если программа сразу печатает ответ при запуске!
 
 Try running the program a few times:
 
@@ -569,9 +483,7 @@ You should get different random numbers, and they should all be numbers between
 
 ## Comparing the Guess to the Secret Number
 
-Now that we have user input and a random number, we can compare them. That step
-is shown in Listing 2-4. Note that this code won’t compile quite yet, as we
-will explain.
+Теперь, когда у нас есть пользовательский ввод и случайное число, можно сравнить их. Этот шаг показан в листинге 2-4. Обратите внимание, что этот код ещё не компилируется, мы объясним.
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -597,40 +509,13 @@ fn main() {
 <span class="caption">Listing 2-4: Handling the possible return values of
 comparing two numbers</span>
 
-The first new bit here is another `use` statement, bringing a type called
-`std::cmp::Ordering` into scope from the standard library. Like `Result`,
-`Ordering` is another enum, but the variants for `Ordering` are `Less`,
-`Greater`, and `Equal`. These are the three outcomes that are possible when you
-compare two values.
+Первый новый код здесь - это еще один оператор `use`, импортирующий в область видимости тип с именем `std::cmp::Ordering` из стандартной библиотеки. Как `Result` , тип `Ordering` - это еще одно перечисление, но вариантами для `Ordering` являются `Less`, `Greater` и `Equal`. Это три результата, которые возможны при сравнении двух значений.
 
-Then we add five new lines at the bottom that use the `Ordering` type. The
-`cmp` method compares two values and can be called on anything that can be
-compared. It takes a reference to whatever you want to compare with: here it’s
-comparing the `guess` to the `secret_number`. Then it returns a variant of the
-`Ordering` enum we brought into scope with the `use` statement. We use a
-[`match`](ch06-02-match.html)<comment> expression to decide what to do next based on
-which variant of `Ordering` was returned from the call to `cmp` with the values
-in `guess` and `secret_number`.</comment>
+Затем мы добавляем пять новых строк внизу, которые используют тип `Ordering`. Метод `cmp` сравнивает два значения и может быть вызван на чем угодно, что можно сравнивать. Метод принимает ссылку на то, с чем вы хотите сравнить: здесь мы сравниваем `guess` с `secret_number`. Затем он возвращает вариант `Ordering` перечисления присутствующий в области видимости благодаря `use`. Используется [`match`](ch06-02-match.html) выражение для решения, что делать дальше на основе полученного варианта `Ordering` из вызова `cmp` со значениями в `guess` и `secret_number`.
 
-A `match` expression is made up of *arms*. An arm consists of a *pattern* and
-the code that should be run if the value given to the beginning of the `match`
-expression fits that arm’s pattern. Rust takes the value given to `match` and
-looks through each arm’s pattern in turn. The `match` construct and patterns
-are powerful features in Rust that let you express a variety of situations your
-code might encounter and make sure that you handle them all. These features
-will be covered in detail in Chapter 6 and Chapter 18, respectively.
+Выражение `match` состоит из *рукавов*. Рукав состоит из *шаблона* и кода, который должен быть запущен, если значение заданное в начале выражение `match` соответствует образцу этого рукава. Rust берёт значение, указанное для `match` и просматривает каждый рукав по очереди. Конструкция `match` и шаблоны являются мощными функциями в Rust, которые позволяют выразить различные ситуации, которые могут встретиться в коде и убедится, что все они обработаны. Эти особенности будут подробно рассмотрены в главе 6 и главе 18 соответственно.
 
-Let’s walk through an example of what would happen with the `match` expression
-used here. Say that the user has guessed 50 and the randomly generated secret
-number this time is 38. When the code compares 50 to 38, the `cmp` method will
-return `Ordering::Greater`, because 50 is greater than 38. The `match`
-expression gets the `Ordering::Greater` value and starts checking each arm’s
-pattern. It looks at the first arm’s pattern, `Ordering::Less`, and sees that
-the value `Ordering::Greater` does not match `Ordering::Less`, so it ignores
-the code in that arm and moves to the next arm. The next arm’s pattern,
-`Ordering::Greater`, *does* match `Ordering::Greater`! The associated code in
-that arm will execute and print `Too big!` to the screen. The `match`
-expression ends because it has no need to look at the last arm in this scenario.
+Давайте разберём пример того, что случилось бы с использованным здесь выражением `match`. Скажем, пользователь угадал 50 и случайно сгенерированное секретное число на этот раз равно 38. Когда код сравнивает 50 с 38, метод `cmp` вернёт `Ordering::Greater`, потому что 50 больше 38. Выражение `match` получает значение `Ordering::Greater` и начинает проверять каждый рукав шаблонов. Он смотрит на шаблон первого рукава, `Ordering::Less`, и видит, что значение `Ordering::Greater` не соответствует `Ordering::Less`, поэтому игнорируется код в этом рукаве и переходит к следующему рукаву. Образец следующего рукава, `Ordering::Greater`, шаблон *совпадает* с `Ordering::Greater`! Связанный с рукавом код выполняется и напечатает `Too big!` на экран. Выражение `match`  заканчивается, потому что нет необходимости смотреть на последний рукав в этом сценарии.
 
 However, the code in Listing 2-4 won’t compile yet. Let’s try it:
 
@@ -650,20 +535,9 @@ error: aborting due to previous error
 Could not compile `guessing_game`.
 ```
 
-The core of the error states that there are *mismatched types*. Rust has a
-strong, static type system. However, it also has type inference. When we wrote
-`let mut guess = String::new()`, Rust was able to infer that `guess` should be
-a `String` and didn’t make us write the type. The `secret_number`, on the other
-hand, is a number type. A few number types can have a value between 1 and 100:
-`i32`, a 32-bit number; `u32`, an unsigned 32-bit number; `i64`, a 64-bit
-number; as well as others. Rust defaults to an `i32`, which is the type of
-`secret_number` unless you add type information elsewhere that would cause Rust
-to infer a different numerical type. The reason for the error is that Rust
-cannot compare a string and a number type.
+Суть ошибки состоит в том, что существуют *не совпадающие типы*. В Rust имеется строгая, статическая система типов. Тем не менее, он также имеет выведение типов. Когда мы написали `let mut guess = String::new()`, Rust смог сделать вывод, что `guess` должен быть `String` и не заставил нас писать тип. Но переменная `secret_number` это также числовой тип с другой стороны. Некоторые числовые типы могут иметь значения от 1 до 100: 32-битное знаковое число `i32`; 32-битное без знаковое число `u32`; 64-битное знаковое `i64`; а также другие. Rust по умолчанию использует `i32`, который является типом для `secret_number`, если вы не добавите информацию о типе в другом месте, что заставит Rust вывести другой числовой тип. Причина ошибки в том, что Rust не может сравнить строковый тип и числовой.
 
-Ultimately, we want to convert the `String` the program reads as input into a
-real number type so we can compare it numerically to the secret number. We can
-do that by adding the following two lines to the `main` function body:
+В конечном счёте, мы хотим преобразовать считываемые программой `String` из стандартного ввода в тип действительного числа, чтобы было можно сравнивать его в числовом виде с загаданным числом. Можно это сделать, добавив следующие две строки в тело `main` функции:
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -695,46 +569,15 @@ let guess: u32 = guess.trim().parse()
     .expect("Please type a number!");
 ```
 
-We create a variable named `guess`. But wait, doesn’t the program already have
-a variable named `guess`? It does, but Rust allows us to *shadow* the previous
-value of `guess` with a new one. This feature is often used in situations in
-which you want to convert a value from one type to another type. Shadowing lets
-us reuse the `guess` variable name rather than forcing us to create two unique
-variables, such as `guess_str` and `guess` for example. (Chapter 3 covers
-shadowing in more detail.)
+Мы создаём переменную с именем `guess`. Но подождите, разве в программе уже нет переменной с именем `guess`? Да это так, но Rust позволяет нам *затенять* предыдущее значение `guess` с помощью нового. Эта функция часто используется в ситуациях где вы хотите преобразовать значение из одного типа в другой. Затенение позволяет повторно использовать имя переменной `guess`, а не заставлять нас создавать две уникальные переменные, вроде `guess_str` и `guess`. (Глава 3 охватывает затенение более подробно.)
 
-We bind `guess` to the expression `guess.trim().parse()`. The `guess` in the
-expression refers to the original `guess` that was a `String` with the input in
-it. The `trim` method on a `String` instance will eliminate any whitespace at
-the beginning and end. Although `u32` can contain only numerical characters,
-the user must press <span class="keystroke">enter</span> to satisfy
-`read_line`. When the user presses <span class="keystroke">enter</span>, a
-newline character is added to the string. For example, if the user types <span class="keystroke">5</span> and presses <span class="keystroke">enter</span>,
-`guess` looks like this: `5\n`. The `\n` represents “newline,” the result of
-pressing <span class="keystroke">enter</span>. The `trim` method eliminates
-`\n`, resulting in just `5`.
+Мы связываем `guess` с выражением `guess.trim().parse()`. Переменная `guess` в выражении ссылается на исходную переменную `guess` которая была типа `String` при вводе данных. Метод `trim` на экземпляре `String` удалит все пробелы в начале и конце. Хотя `u32` может содержать только числовые символы, пользователь должен нажать <span class="keystroke">Enter</span>, чтобы удовлетворить метод `read_line`. Когда пользователь нажимает <span class="keystroke">ввод</span>, символ новой строки добавляется в строку. Например, если пользователь вводит <span class="keystroke">5</span> и нажимает <span class="keystroke">ввод</span>, `guess` выглядит так: `5\n`. Символ `\n` представляет символ «новая строка» как результат нажатия <span class="keystroke">ввода</span>. Метод `trim` исключает `\n`, в результате получаем `5`.
 
-The [`parse` method on strings](../std/primitive.str.html#method.parse)<comment> parses a string into some
-kind of number. Because this method can parse a variety of number types, we
-need to tell Rust the exact number type we want by using <code data-md-type="codespan">let guess: u32</code>. The
-colon (<code data-md-type="codespan">:</code>) after <code data-md-type="codespan">guess</code> tells Rust we’ll annotate the variable’s type. Rust
-has a few built-in number types; the <code data-md-type="codespan">u32</code> seen here is an unsigned, 32-bit
-integer. It’s a good default choice for a small positive number. You’ll learn
-about other number types in Chapter 3. Additionally, the <code data-md-type="codespan">u32</code> annotation in
-this example program and the comparison with <code data-md-type="codespan">secret_number</code> means that Rust
-will infer that <code data-md-type="codespan">secret_number</code> should be a <code data-md-type="codespan">u32</code> as well. So now the
-comparison will be between two values of the same type!</comment>
+Метод [`parse` у строк ](../std/primitive.str.html#method.parse) разбирает строку в число некоторого типа. Поскольку этот метод может анализировать различные типы чисел, то нужно указать точный тип числа, который мы хотим получить с помощью `let guess: u32`. Двоеточие (`:`) после `guess`, говорит Rust что мы аннотировали тип переменной. Rust имеет несколько встроенных числовых типов; здесь вы видите `u32` являющийся 32-битным без знаковым целым числом. Это хороший выбор по умолчанию для небольшого положительного числа. Вы узнаете о других типах чисел в главе 3. Кроме того, аннотация `u32` в этом примере программы и сравнение с `secret_number` означает, что Rust
+выведет что `secret_number` должен иметь тип `u32`. Так что теперь сравнение будет между двумя значениями одного типа!
 
-The call to `parse` could easily cause an error. If, for example, the string
-contained `A👍%`, there would be no way to convert that to a number. Because it
-might fail, the `parse` method returns a `Result` type, much as the `read_line`
-method does (discussed earlier in <a href="#handling-potential-failure-with-the-result-type" data-md-type="link">“Handling Potential Failure with the
-`Result` Type”</a><comment>). We’ll treat this `Result` the same way by using the <code data-md-type="codespan">expect</code> method
-again. If `parse` returns an <code data-md-type="codespan">Err</code> `Result` variant because it couldn’t create
-a number from the string, the <code data-md-type="codespan">expect</code> call will crash the game and print the
-message we give it. If `parse` can successfully convert the string to a number,
-it will return the <code data-md-type="codespan">Ok</code> variant of `Result`, and <code data-md-type="codespan">expect</code> will return the
-number that we want from the <code data-md-type="codespan">Ok</code> value.</comment>
+Вызов метода `parse` может легко вызвать ошибку. Если, например, строка содержит `A👍%` , то нет никакого способа преобразовать его в число. Так как вызов `read_line` может дать сбой, то метод `parse` возвращает тип `Result`, так же как `read_line` метод (обсуждался ранее в {a5}“Обработка потенциального сбоя с помощью `Result` типа"{/a5}). Мы будем обрабатывать этот `Result` снова, используя метод `expect`. Если `parse` возвращает вариант `Err` перечисления `Result`, потому что он не может создать число из строки, то вызов `expect` приведет к сбою игры и распечатает сообщение, которое мы передали в него. Если `parse` сможет успешно преобразовать строку в число, он вернет перечисления `Result` с вариантом `Ok`, а `expect` вернёт
+число, которое мы хотим от значения `Ok`.
 
 Let’s run the program now!
 
@@ -853,10 +696,7 @@ exiting the program, because the loop is the last part of `main`.
 
 ### Handling Invalid Input
 
-To further refine the game’s behavior, rather than crashing the program when
-the user inputs a non-number, let’s make the game ignore a non-number so the
-user can continue guessing. We can do that by altering the line where `guess`
-is converted from a `String` to a `u32`, as shown in Listing 2-5.
+Для дальнейшего улучшения поведения игры вместо аварийного завершения программы при вводе пользователем не числовых значений, давайте заставим игру игнорировать не число, поэтому пользователь может продолжать угадывать. Можно сделать это, изменив строку, где `guess` преобразуется из `String` в `u32`, как показано в листинге 2-5.
 
 <span class="filename">Filename: src/main.rs</span>
 
