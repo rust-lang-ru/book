@@ -10,7 +10,7 @@ jobs:
     name: Spellchecking
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v1
       with:
         submodules: recursive
     - run: npm install yaspeller
