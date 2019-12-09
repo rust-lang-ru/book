@@ -1,28 +1,14 @@
 ## Определение модулей для контроля видимости и конфиденциальности
 
-In this section, we’ll talk about modules and other parts of the module system,
-namely *paths* that allow you to name items; the `use` keyword that brings a
-path into scope; and the `pub` keyword to make items public. We’ll also discuss
-the `as` keyword, external packages, and the glob operator. For now, let’s
-focus on modules!
+В этом разделе мы поговорим о модулях и других частях системы модулей, а именно *пути*(paths), которые позволяют именовать элементы; ключевое слово `use`, которое приносит путь в область видимости; и ключевое слово `pub`, чтобы делать элементы общедоступными. Мы также обсудим ключевое слово `as`, внешние пакеты и оператор glob. А пока давайте сосредоточимся на модулях!
 
-*Modules* let us organize code within a crate into groups for readability and
-easy reuse. Modules also control the *privacy* of items, which is whether an
-item can be used by outside code (*public*) or is an internal implementation
-detail and not available for outside use (*private*).
+*Модули* позволяют организовывать код внутри крейта по группам для удобства чтения и простого повторного использования. Модули также контролируют *конфиденциальность* элементов, то есть элемент может использоваться внешним кодом (*public*) или является деталями внутренней реализации и недоступен для внешнего использования (*private*).
 
 В качестве примера, давайте напишем библиотечный крейт предоставляющий функциональность ресторана. Мы определим сигнатуры функций, но оставим их тела пустыми, чтобы сосредоточиться на организации кода, вместо реализации кода для ресторана.
 
-In the restaurant industry, some parts of a restaurant are referred to as
-*front of house* and others as *back of house*. Front of house is where
-customers are; this is where hosts seat customers, servers take orders and
-payment, and bartenders make drinks. Back of house is where the chefs and cooks
-work in the kitchen, dishwashers clean up, and managers do administrative work.
+В ресторанной индустрии некоторые части ресторана называются *фронтом дома*, а другие *задней частью дома*. Фронт дома это там где находятся клиенты; здесь размещаются места клиентов, официанты принимают заказы и оплаты, а бармены делают напитки. Задняя часть дома это где повара и повара работают на кухне,  моют посудомоечные машины, а менеджеры занимаются административной работой.
 
-To structure our crate in the same way that a real restaurant works, we can
-organize the functions into nested modules. Create a new library named
-`restaurant` by running `cargo new --lib restaurant`; then put the code in
-Listing 7-1 into *src/lib.rs* to define some modules and function signatures.
+Чтобы структурировать крейт аналогично тому, как работает настоящий ресторан, можно организовать функции во вложенные модули. Создадим новую библиотеку с именем `restaurant` выполнив команду `cargo new --lib restaurant`; затем вставим код из листинга 7-1 в файл *src/lib.rs* для определения некоторых модулей и сигнатур функций.
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -46,19 +32,11 @@ mod front_of_house {
 
 <span class="caption">Листинг 7-1. Модуль <code>front_of_house</code> содержащий другие модули, которые затем содержат функции</span>
 
-We define a module by starting with the `mod` keyword and then specify the
-name of the module (in this case, `front_of_house`) and place curly brackets
-around the body of the module. Inside modules, we can have other modules, as in
-this case with the modules `hosting` and `serving`. Modules can also hold
-definitions for other items, such as structs, enums, constants, traits, or—as
-in Listing 7-1—functions.
+Мы определяем модуль, начиная с ключевого слова `mod`, затем определяем название модуля (в данном случае `front_of_house`) и размещаем фигурные скобки вокруг тела модуля. Внутри модулей, можно иметь другие модули, как в случае с модулями `hosting` и `serving`. Модули также могут содержать определения для других элементов, таких как структуры, перечисления, константы, типажи или - как в листинге 7-1 - функции.
 
 Используя модули, можно сгруппировать связанные определения вместе и названия. Программистам, использующим такой код, будет легче найти определения, которые они хотели использовать, потому что они могли бы ориентироваться в сгруппированном коде, вместо того, чтобы прочитать все определения. Программисты, добавляющие новые функции в этот код, будут знать, где разместить код для поддержания порядка в программе.
 
-Earlier, we mentioned that *src/main.rs* and *src/lib.rs* are called crate
-roots. The reason for their name is that the contents of either of these two
-files form a module named `crate` at the root of the crate’s module structure,
-known as the *module tree*.
+Как мы упоминали ранее, файлы *src/main.rs* и *src/lib.rs* называются корнями крейтов. Причина такого  названия в том, что содержимое любого из этих двух файлов формируют модуль с именем `crate` в корне структуры модуля крейта, известное как *дерево модулей*.
 
 Listing 7-2 shows the module tree for the structure in Listing 7-1.
 
@@ -76,13 +54,6 @@ crate
 
 <span class="caption">Листинг 7-2. Дерево модулей для кода в листинге 7-1</span>
 
-This tree shows how some of the modules nest inside one another (for example,
-`hosting` nests inside `front_of_house`). The tree also shows that some modules
-are *siblings* to each other, meaning they’re defined in the same module
-(`hosting` and `serving` are defined within `front_of_house`). To continue the
-family metaphor, if module A is contained inside module B, we say that module A
-is the *child* of module B and that module B is the *parent* of module A.
-Notice that the entire module tree is rooted under the implicit module named
-`crate`.
+Это дерево показывает, как некоторые из модулей вкладываются друг в друга (например, `hosting` находится внутри `front_of_house`). Дерево также показывает, что некоторые модули являются *наследниками* друг друга, то есть они определены в одном модуле (`hosting` и `serving` определены внутри {code5}front_of_house{/code5}). Чтобы продолжить метафору про семейства, если модуль A содержится внутри модуля B, мы говорим, что модуль A является {em6}потомком{/em6} модуля B, а модуль B является *родителем* модуля A. Обратите внимание, что все дерево модулей укоренено в неявном модуле с именем {code7}crate{/code7}
 
 Дерево модулей может напомнить вам дерево каталогов файловой системы на компьютере; это очень удачное сравнение! Так же, как каталоги в файловой системе, для организации кода используются модули. И так же, как для файлов в каталоге, нужен способ найти модули.
