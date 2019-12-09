@@ -4,8 +4,7 @@
 
 То что может содержать пакет определяют несколько правил. Пакет *должен* содержать ни одной или одну крейт библиотеку, и не более. Он может содержать столько исполняемых крейтов, сколько  хотите, но он должен содержать по крайней мере один исполняемый крейт).
 
-Let’s walk through what happens when we create a package. First, we enter the
-command `cargo new`:
+Давайте пройдемся по тому, что происходит, когда мы создаем пакет. Сначала введем команду `cargo new`:
 
 ```text
 $ cargo new my-project
@@ -17,30 +16,12 @@ $ ls my-project/src
 main.rs
 ```
 
-When we entered the command, Cargo created a *Cargo.toml* file, giving us a
-package. Looking at the contents of *Cargo.toml*, there’s no mention of
-*src/main.rs* because Cargo follows a convention that *src/main.rs* is the
-crate root of a binary crate with the same name as the package. Likewise, Cargo
-knows that if the package directory contains *src/lib.rs*, the package contains
-a library crate with the same name as the package, and *src/lib.rs* is its
-crate root. Cargo passes the crate root files to `rustc` to build the library
-or binary.
+После ввода команды, Cargo создал файл *Cargo.toml*, предоставив пакет. Глядя на содержимое *Cargo.toml*, нет упоминания о *src/main.rs* потому что Cargo следует соглашению, что *src/main.rs* является корневым крейтом исполняемого крейта с тем же именем, что и пакет. Аналогично, Cargo знает, что если каталог пакета содержит *src/lib.rs*, то пакет содержит крейт библиотеки с тем же именем, что и пакет и *src/lib.rs* является его корневым крейтом. Cargo передает корневые файлы крейта в `rustc` для создания библиотечного или бинарного исполняемого файла.
 
-Here, we have a package that only contains *src/main.rs*, meaning it only
-contains a binary crate named `my-project`. If a package contains *src/main.rs*
-and *src/lib.rs*, it has two crates: a library and a binary, both with the same
-name as the package. A package can have multiple binary crates by placing files
-in the *src/bin* directory: each file will be a separate binary crate.
+Здесь у нас есть пакет, который содержит только *src/main.rs*, то есть содержит только бинарный крейт с именем `my-project`. Если пакет содержит *src/main.rs* и *src/lib.rs*, то он имеет два крейта: библиотеку и двоичный файл, оба с одинаковыми именами в качестве пакета. Пакет может иметь несколько бинарных крейтов, помещая файлы в каталог *src/bin*: каждый файл будет отдельным бинарным крейтом.
 
 Крейт группирует  в области видимости связанные вместе функциональности, поэтому функциональность легко распределить между несколькими проектами. Например, `rand` крейт, который мы использовали в [Главе 2](ch02-00-guessing-game-tutorial.html#generating-a-random-number)<comment> обеспечивает функциональность генерации случайных чисел. Можно использовать эту функциональность в наших собственных проектах, привнося крейт `rand` в область видимости проекта. Вся функциональность предоставляемая крейтом `rand` доступна через имя крейта `rand`</comment>
 
-Keeping a crate’s functionality in its own scope clarifies whether particular
-functionality is defined in our crate or the `rand` crate and prevents
-potential conflicts. For example, the `rand` crate provides a trait named
-`Rng`. We can also define a `struct` named `Rng` in our own crate. Because a
-crate’s functionality is namespaced in its own scope, when we add `rand` as a
-dependency, the compiler isn’t confused about what the name `Rng` refers to. In
-our crate, it refers to the `struct Rng` that we defined. We would access the
-`Rng` trait from the `rand` crate as `rand::Rng`.
+Сохранение функциональности крейта в его собственной области видимости проясняет, является ли конкретная функциональность определенной в нашем крейте или в крейте `rand`, таким образом предотвращая потенциальные конфликты. Например, крейт `rand` предоставляет типаж с именем `Rng`. Мы также можем определить `struct` с именем `Rng` в нашем собственном крейте. Так как функциональность крейта находится в пространстве имён собственной области видимости, то когда мы добавляем `rand` как зависимость, компилятор не смущен ссылкой на имя `Rng` . В нашем крейте оно относится к объявленной у нас `struct Rng`. А доступ к типажу `Rng` из крейта `rand` мы бы получили как `rand::Rng`.
 
 Let’s move on and talk about the module system!
