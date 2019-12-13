@@ -4,22 +4,12 @@
 
 Путь может принимать две формы:
 
-- An *absolute path* starts from a crate root by using a crate name or aliteral `crate`.
-- A *relative path* starts from the current module and uses `self`, `super`, oran identifier in the current module.
+- *Абсолютный путь* начинается от корня крейта, используя название крейта или ключевое слово `crate`.
+- *Относительный путь* начинается с текущего модуля и использует ключевые слова `self`, `super` или идентификатор в текущем модуле.
 
-Both absolute and relative paths are followed by one or more identifiers
-separated by double colons (`::`).
+Как абсолютные, так и относительные пути сопровождаются одним или несколькими идентификаторами разделенные двойными двоеточиями (`::`).
 
-Let’s return to the example in Listing 7-1. How do we call the
-`add_to_waitlist` function? This is the same as asking, what’s the path of the
-`add_to_waitlist` function? In Listing 7-3, we simplified our code a bit by
-removing some of the modules and functions. We’ll show two ways to call the
-`add_to_waitlist` function from a new function `eat_at_restaurant` defined in
-the crate root. The `eat_at_restaurant` function is part of our library crate’s
-public API, so we mark it with the `pub` keyword. In the <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword" data-md-type="link">”Exposing Paths with
-the `pub` Keyword”</a><comment> section, we’ll go into more detail
-about `pub`. Note that this example won’t compile just yet; we’ll explain why
-in a bit.</comment>
+Давайте вернемся к примеру в листинге 7-1. Как мы вызываем функцию `add_to_waitlist`? Это является те же самым, как спрашивать путь к функции `add_to_waitlist`? В листинге 7-3 мы немного упростили код, удалив некоторые модули и функции. Мы покажем два способа вызова функции `add_to_waitlist` из новой функции `eat_at_restaurant` определенной в корне крейта. Функция `eat_at_restaurant` является частью нашей библиотеки публичного API, поэтому мы помечаем ее ключевым словом `pub`. В разделе <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword" data-md-type="link">”Раскрытие путей с помощью ключевого слова `pub`”</a>, мы рассмотрим более подробно `pub`. Обратите внимание, что этот пример еще не компилируется; мы скоро объясним почему.
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -41,35 +31,13 @@ pub fn eat_at_restaurant() {
 
 <span class="caption">Листинг 7-3. Вызов функции <code>add_to_waitlist</code> с использованием абсолютного и относительного пути</span>
 
-The first time we call the `add_to_waitlist` function in `eat_at_restaurant`,
-we use an absolute path. The `add_to_waitlist` function is defined in the same
-crate as `eat_at_restaurant`, which means we can use the `crate` keyword to
-start an absolute path.
+Первый раз, когда мы вызываем функцию `add_to_waitlist` в функции `eat_at_restaurant`, то используется абсолютный путь. Функция `add_to_waitlist` определена в том же крейте что и `eat_at_restaurant` и это означает, что мы можем использовать ключевое слово `crate` в начале абсолютного пути.
 
-After `crate`, we include each of the successive modules until we make our way
-to `add_to_waitlist`. You can imagine a filesystem with the same structure, and
-we’d specify the path `/front_of_house/hosting/add_to_waitlist` to run the
-`add_to_waitlist` program; using the `crate` name to start from the crate root
-is like using `/` to start from the filesystem root in your shell.
+После `crate` мы включаем каждый из последующих модулей, пока не составим путь к `add_to_waitlist`. Вы можете представить файловую систему с такой же структурой, где мы указали бы путь `/front_of_house/hosting/add_to_waitlist` для запуска программы `add_to_waitlist`; используя слово `crate`, чтобы начать из корня крейта, подобно тому как используется `/` для запуска из корня файловой системы.
 
-The second time we call `add_to_waitlist` in `eat_at_restaurant`, we use a
-relative path. The path starts with `front_of_house`, the name of the module
-defined at the same level of the module tree as `eat_at_restaurant`. Here the
-filesystem equivalent would be using the path
-`front_of_house/hosting/add_to_waitlist`. Starting with a name means that the
-path is relative.
+Второй раз, когда мы вызываем `add_to_waitlist` внутри `eat_at_restaurant`, мы используем относительный путь. Путь начинается с имени модуля `front_of_house`, определенного на том же уровне дерева модулей, что и модуль `eat_at_restaurant`. Здесь будет использоваться путь эквивалентный файловой системе `front_of_house/hosting/add_to_waitlist`. Начало указанное с помощью имени означает, что путь относительный.
 
-Choosing whether to use a relative or absolute path is a decision you’ll make
-based on your project. The decision should depend on whether you’re more likely
-to move item definition code separately from or together with the code that
-uses the item. For example, if we move the `front_of_house` module and the
-`eat_at_restaurant` function into a module named `customer_experience`, we’d
-need to update the absolute path to `add_to_waitlist`, but the relative path
-would still be valid. However, if we moved the `eat_at_restaurant` function
-separately into a module named `dining`, the absolute path to the
-`add_to_waitlist` call would stay the same, but the relative path would need to
-be updated. Our preference is to specify absolute paths because it’s more
-likely to move code definitions and item calls independently of each other.
+Выбор, использовать относительный или абсолютный путь, является решением, которое вы примете на основании вашего проекта. Решение должно зависеть от того, с какой вероятностью вы переместите объявление элемента отдельно от или вместе с кодом использующим этот элемент. Например, в случае перемещения модуля `front_of_house` и его функции `eat_at_restaurant` в другой модуль с именем `customer_experience`, будет необходимо обновить абсолютный путь до `add_to_waitlist`, но относительный путь все равно будет действителен. Однако, если мы переместим отдельно функцию `eat_at_restaurant` в модуль с именем `dining`, то абсолютный путь вызова `add_to_waitlist` останется прежним, а относительный путь нужно будет обновить. Мы предпочитаем указывать абсолютные пути, потому что это позволяет проще перемещать определения кода и вызовы элементов независимо друг от друга.
 
 Давайте попробуем скомпилировать листинг 7-3 и выяснить, почему он еще не скомпилируется! Ошибка, которую мы получаем, показана в листинге 7-4.
 
@@ -97,18 +65,11 @@ error[E0603]: module `hosting` is private
 
 В Rust конфиденциальность работает так, что все элементы (функции, методы, структуры, перечисления, модули и константы) являются по умолчанию приватными. Элементы в родительском модуле не могут  использовать приватные элементы внутри дочерних модулей, но  элементы в дочерних модулях могут использовать элементы у своих родительских модулей. Причина в том, что дочерние модули оборачивают и скрывают детали их реализации, но дочерние модули могут видеть контекст, в котором они определены. Чтобы продолжить с метафорой ресторана, думайте о правилах конфиденциальности как о задней части ресторана: что там есть частные клиенты, но офис-менеджеры могут все видеть и делать в ресторане, в котором они работают.
 
-Rust chose to have the module system function this way so that hiding inner
-implementation details is the default. That way, you know which parts of the
-inner code you can change without breaking outer code. But you can expose inner
-parts of child modules code to outer ancestor modules by using the `pub`
-keyword to make an item public.
+В Rust решили, что система модулей должна функционировать таким образом, чтобы скрыть детали реализации по умолчанию. Таким образом, вы знаете, какие части внутреннего кода вы можете изменять не нарушая работы внешнего код. Но можно раскрывать внутренние части кода дочерних модулей для внешних модулей предков, используя ключевое слово `pub`, чтобы сделать элемент публичным.
 
 ### Раскрытие путей с помощью ключевого слова `pub`
 
-Let’s return to the error in Listing 7-4 that told us the `hosting` module is
-private. We want the `eat_at_restaurant` function in the parent module to have
-access to the `add_to_waitlist` function in the child module, so we mark the
-`hosting` module with the `pub` keyword, as shown in Listing 7-5.
+Давайте вернемся к ошибке в листинге 7-4, которая говорит что модуль `hosting` является приватным. Мы хотим, чтобы функция `eat_at_restaurant` представленная в родительском модуле `eat_at_restaurant` имела доступ к функции `add_to_waitlist` в дочернем модуле, поэтому мы помечаем модуль `hosting` с ключевым словом `pub`, как показано в листинге 7-5.
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -150,11 +111,7 @@ error[E0603]: function `add_to_waitlist` is private
 
 <span class="caption">Листинг 7-6. Ошибки компиляции при сборке кода в листинге 7-5</span>
 
-What happened? Adding the `pub` keyword in front of `mod hosting` makes the
-module public. With this change, if we can access `front_of_house`, we can
-access `hosting`. But the *contents* of `hosting` are still private; making the
-module public doesn’t make its contents public. The `pub` keyword on a module
-only lets code in its ancestor modules refer to it.
+Что произошло? Добавление ключевого слова `pub` перед `mod hosting` делает модуль публичным. После этого изменениея, если мы можем получить доступ к модулю `front_of_house`, то мы можем доступ к модулю `hosting`. Но *содержимое* модуля `hosting` все еще является приватным; превращение  модуля в публичный не делает его содержимое публичным. Ключевое слово `pub` для модуля только позволяет коду в модулях предках обращаться к нему.
 
 Ошибки в листинге 7-6 говорят, что функция `add_to_waitlist` является закрытой. Правила конфиденциальности применяются к структурам, перечислениям, функциям и методам, также как к модулям.
 
@@ -183,34 +140,15 @@ pub fn eat_at_restaurant() {
 
 Теперь код компилируется! Давайте посмотрим на абсолютный и относительный путь и перепроверим, почему добавление ключевого слова `pub` позволяет использовать эти пути в `add_to_waitlist` с учетом правила конфиденциальности.
 
-In the absolute path, we start with `crate`, the root of our crate’s module
-tree. Then the `front_of_house` module is defined in the crate root. The
-`front_of_house` module isn’t public, but because the `eat_at_restaurant`
-function is defined in the same module as `front_of_house` (that is,
-`eat_at_restaurant` and `front_of_house` are siblings), we can refer to
-`front_of_house` from `eat_at_restaurant`. Next is the `hosting` module marked
-with `pub`. We can access the parent module of `hosting`, so we can access
-`hosting`. Finally, the `add_to_waitlist` function is marked with `pub` and we
-can access its parent module, so this function call works!
+В случае абсолютного пути мы начинаем со слова `crate`, который является корнем дерева модуля нашего крейта. Затем модуль `front_of_house` определяется в корне крейта. Модуль `front_of_house` приватный, потому что функция `eat_at_restaurant` определена в том же модуле, что и `front_of_house` (то есть `eat_at_restaurant` и `front_of_house` являются родственными), мы можем сослаться на `front_of_house` из `eat_at_restaurant`. Далее модуль `hosting` помечен с помощью `pub` . Можно получить доступ к родительскому модулю `hosting`. Наконец функция `add_to_waitlist` помечена как `pub` и можно получить доступ к ее родительскому модулю, поэтому этот вызов функции работает!
 
-In the relative path, the logic is the same as the absolute path except for the
-first step: rather than starting from the crate root, the path starts from
-`front_of_house`. The `front_of_house` module is defined within the same module
-as `eat_at_restaurant`, so the relative path starting from the module in which
-`eat_at_restaurant` is defined works. Then, because `hosting` and
-`add_to_waitlist` are marked with `pub`, the rest of the path works, and this
-function call is valid!
+В случае относительного пути логика совпадает со случаем абсолютного пути, за исключением первого шага: вместо того, чтобы начинать с корня крейта, путь начинается с `front_of_house`. Модуль `front_of_house` определен в том же модуле, что и `eat_at_restaurant`, поэтому относительный путь, начинающийся с модуля в котором определен `eat_at_restaurant` тоже работает. Тогда, по причине того, что `hosting` и `add_to_waitlist` помечены как `pub`, остальная часть пути работает, и это вызов функции действителен!
 
 ### Начало относительных путей с `super`
 
-We can also construct relative paths that begin in the parent module by using
-`super` at the start of the path. This is like starting a filesystem path with
-the `..` syntax. Why would we want to do this?
+Также можно построить относительные пути, которые начинаются в родительском модуле, используя ключевое слово `super` в начале пути. Это похоже на синтаксис начала пути файловой системы `..`. Зачем нам так делать?
 
-Consider the code in Listing 7-8 that models the situation in which a chef
-fixes an incorrect order and personally brings it out to the customer. The
-function `fix_incorrect_order` calls the function `serve_order` by specifying
-the path to `serve_order` starting with `super`:
+Рассмотрим код в листинге 7-8, который моделирует ситуацию в которой повар исправляет неправильный заказ и лично выдает его клиенту. Функция `fix_incorrect_order` вызывает функцию `serve_order`, указывая путь к `serve_order` начинающийся с `super`:
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -231,27 +169,11 @@ mod back_of_house {
 <span class="caption">Листинг 7-8. Вызов функции с использованием относительного пути
 начиная с <code>super</code></span>
 
-The `fix_incorrect_order` function is in the `back_of_house` module, so we can
-use `super` to go to the parent module of `back_of_house`, which in this case
-is `crate`, the root. From there, we look for `serve_order` and find it.
-Success! We think the `back_of_house` module and the `serve_order` function are
-likely to stay in the same relationship to each other and get moved together
-should we decide to reorganize the crate’s module tree. Therefore, we used
-`super` so we’ll have fewer places to update code in the future if this code
-gets moved to a different module.
+Функция `fix_incorrect_order` находится в модуле `back_of_house`, поэтому мы можем использовать `super` для перехода к родительскому модулю `back_of_house`, который в этом случае является корнем `crate`. Оттуда мы ищем `serve_order` и находим его. Успех! Мы считаем , что модуль `back_of_house` и функция `serve_order` остаются в одинаковых отношениях друг с другом и должны быть перемещены вместе, если мы решим реорганизовать дерево модулей крейта. Поэтому мы использовали `super`, так что у нас в будущем будет меньше мест обновления кода, если он будет перемещен в другой модуль.
 
 ### Обнародование структур и перечислений
 
-We can also use `pub` to designate structs and enums as public, but there are a
-few extra details. If we use `pub` before a struct definition, we make the
-struct public, but the struct’s fields will still be private. We can make each
-field public or not on a case-by-case basis. In Listing 7-9, we’ve defined a
-public `back_of_house::Breakfast` struct with a public `toast` field but a
-private `seasonal_fruit` field. This models the case in a restaurant where the
-customer can pick the type of bread that comes with a meal, but the chef
-decides which fruit accompanies the meal based on what’s in season and in
-stock. The available fruit changes quickly, so customers can’t choose the fruit
-or even see which fruit they’ll get.
+Можно использовать `pub`, чтобы указать структуры и перечисления как публичные, но есть несколько дополнительных деталей. Если используется `pub` перед определением структуры, то структура становится публичной, но поля структуры все еще будут приватными. Делать ли каждое поле публичным или нет решается в каждом конкретном случае. В листинге 7-9 мы определили публичным `back_of_house::Breakfast` с открытым полем `toast`, но оставили приватным  поле `seasonal_fruit`. Это моделирует случай в ресторане, где клиент может выбрать тип хлеба к блюду, но повар решает, какие фрукты сопровождают блюдо на основании того, какой сейчас сезон и что есть на складе. Доступные фрукты быстро меняются, поэтому покупатели не могут выбирать фрукты или даже посмотреть, какие фрукты они получат.
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -287,21 +209,11 @@ pub fn eat_at_restaurant() {
 
 <span class="caption">Листинг 7-9. Структура с публичными и приватными полями</span>
 
-Because the `toast` field in the `back_of_house::Breakfast` struct is public,
-in `eat_at_restaurant` we can write and read to the `toast` field using dot
-notation. Notice that we can’t use the `seasonal_fruit` field in
-`eat_at_restaurant` because `seasonal_fruit` is private. Try uncommenting the
-line modifying the `seasonal_fruit` field value to see what error you get!
+Поскольку поле `toast` в структуре `back_of_house::Breakfast` является открытым, то в функции `eat_at_restaurant` можно писать и читать поле `toast`, используя точечную нотацию. Обратите внимание, что мы не можем использовать поле `seasonal_fruit` в `eat_at_restaurant`, потому что `seasonal_fruit` является приватным.  Попробуйте удалить комментарий с последней строки для значения поля `seasonal_fruit`, чтобы увидеть ошибку, которую вы получите!
 
-Also, note that because `back_of_house::Breakfast` has a private field, the
-struct needs to provide a public associated function that constructs an
-instance of `Breakfast` (we’ve named it `summer` here). If `Breakfast` didn’t
-have such a function, we couldn’t create an instance of `Breakfast` in
-`eat_at_restaurant` because we couldn’t set the value of the private
-`seasonal_fruit` field in `eat_at_restaurant`.
+Также обратите внимание, что поскольку `back_of_house::Breakfast` имеет приватное поле, то структура должна предоставить публичную ассоциированную функцию, которая создает экземпляр `Breakfast` (мы назвали ее `summer`). Если `Breakfast` не являлась бы такой функцией, мы бы не могли создать экземпляр `Breakfast` внутри `eat_at_restaurant`, потому что мы не смогли бы установить значение приватного поля `seasonal_fruit` в функции `eat_at_restaurant`.
 
-In contrast, if we make an enum public, all of its variants are then public. We
-only need the `pub` before the `enum` keyword, as shown in Listing 7-10.
+В отличии от структуры, если мы сделаем публичным перечисление, то все его варианты будут публичными. Нужно только указать `pub` перед ключевым словом `enum`, как в листинге 7-10.
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -321,13 +233,7 @@ pub fn eat_at_restaurant() {
 
 <span class="caption">Листинг 7-10. Определяя перечисление публичным мы делаем все его варианты публичными</span>
 
-Because we made the `Appetizer` enum public, we can use the `Soup` and `Salad`
-variants in `eat_at_restaurant`. Enums aren’t very useful unless their variants
-are public; it would be annoying to have to annotate all enum variants with
-`pub` in every case, so the default for enum variants is to be public. Structs
-are often useful without their fields being public, so struct fields follow the
-general rule of everything being private by default unless annotated with `pub`.
+Поскольку мы публично обнародовали список `Appetizer`, то можно использовать варианты `Soup` и `Salad` в функции `eat_at_restaurant`. Перечисления не очень полезны, если их варианты являются приватными; было бы досадно каждый раз аннотировать все перечисленные варианты как `pub`, поэтому по умолчанию для вариантов перечислений являются публичными. Структуры часто полезны, если их поля не являются открытыми, поэтому поля структуры следуют общему правилу, согласно которому все по умолчанию является приватными, если не указано `pub`.
 
-There’s one more situation involving `pub` that we haven’t covered, and that is
-our last module system feature: the `use` keyword. We’ll cover `use` by itself
-first, and then we’ll show how to combine `pub` and `use`.
+Есть еще одна ситуация с `pub` которую мы не освещали, и это
+наша последняя особенность модульной системы: ключевое слово `use`. Мы сначала опишем `use` само по себе, а затем покажем как сочетать `pub` и `use`.
