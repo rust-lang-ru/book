@@ -2,7 +2,7 @@
 
 Чтобы показать в Rust, где найти элемент в дереве модуля, мы используем путь таким же образом, как пути используются при навигации по файловой системе. Если хочется вызвать функцию, то  нужно знать к ней путь.
 
-A path can take two forms:
+Путь может принимать две формы:
 
 - An *absolute path* starts from a crate root by using a crate name or aliteral `crate`.
 - A *relative path* starts from the current module and uses `self`, `super`, oran identifier in the current module.
@@ -228,8 +228,8 @@ mod back_of_house {
 # fn main() {}
 ```
 
-<span class="caption">Listing 7-8: Calling a function using a relative path
-starting with <code>super</code></span>
+<span class="caption">Листинг 7-8. Вызов функции с использованием относительного пути
+начиная с <code>super</code></span>
 
 The `fix_incorrect_order` function is in the `back_of_house` module, so we can
 use `super` to go to the parent module of `back_of_house`, which in this case
@@ -240,7 +240,7 @@ should we decide to reorganize the crate’s module tree. Therefore, we used
 `super` so we’ll have fewer places to update code in the future if this code
 gets moved to a different module.
 
-### Making Structs and Enums Public
+### Обнародование структур и перечислений
 
 We can also use `pub` to designate structs and enums as public, but there are a
 few extra details. If we use `pub` before a struct definition, we make the
