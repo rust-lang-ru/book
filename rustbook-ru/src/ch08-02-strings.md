@@ -292,9 +292,7 @@ for b in "नमस्ते".bytes() {
 
 Но не забывайте, что корректные скалярные Unicode значения могут состоять из более чем 1 байта.
 
-Getting grapheme clusters from strings is complex, so this functionality is not
-provided by the standard library. Crates are available on
-[crates.io](https://crates.io/) if this is the functionality you need.
+Извлечение графемных кластеров из строк сложно, поэтому данный функционал не предоставляется в стандартной библиотеке. На [crates.io](https://crates.io/) доступны библиотеки, если Вам нужен данный функционал.
 
 ### Строки не так просты
 
