@@ -2,11 +2,7 @@
 
 Пока что все примеры в этой главе определяли множество модулей в одном файле. Когда модули становятся большими, можно переместить их определения в отдельный файл, чтобы сделать код проще.
 
-For example, let’s start from the code in Listing 7-17 and move the
-`front_of_house` module to its own file *src/front_of_house.rs* by changing the
-crate root file so it contains the code shown in Listing 7-21. In this case,
-the crate root file is *src/lib.rs*, but this procedure also works with binary
-crates whose crate root file is *src/main.rs*.
+Например, давайте начнеём с кода листинга 7-17 и переместим модуль `front_of_house` в свой собственный файл *src/front_of_house.rs*, изменив корневой файл крейта так, чтобы он содержал код показанный в листинге 7-21. В этом случае, корневым файлом крейта является *src/lib.rs*, но эта процедура также работает с исполняемыми крейтами у которых корневой файл крейта *src/main.rs.*
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -24,8 +20,7 @@ pub fn eat_at_restaurant() {
 
 <span class="caption">Листинг 7-21. Объявление модуля <code>front_of_house</code> тело которого будет в <em>src/front_of_house.rs</em></span>
 
-And *src/front_of_house.rs* gets the definitions from the body of the
-`front_of_house` module, as shown in Listing 7-22.
+И *src/front_of_house.rs* получает определения из тела модуля `front_of_house`, как показано в листинге 7-22.
 
 <span class="filename">Файл: src/front_of_house.rs</span>
 
@@ -45,9 +40,7 @@ pub mod hosting {
 pub mod hosting;
 ```
 
-Then we create a *src/front_of_house* directory and a file
-*src/front_of_house/hosting.rs* to contain the definitions made in the
-`hosting` module:
+Затем мы создаем каталог *src/front_of_house* и файл *src/front_of_house/hosting.rs*, чтобы он содержал определения, сделанные в модуле `hosting`:
 
 <span class="filename">Файл: src/front_of_house/hosting.rs</span>
 
@@ -55,21 +48,14 @@ Then we create a *src/front_of_house* directory and a file
 pub fn add_to_waitlist() {}
 ```
 
-The module tree remains the same, and the function calls in `eat_at_restaurant`
-will work without any modification, even though the definitions live in
-different files. This technique lets you move modules to new files as they grow
-in size.
+Дерево модулей остаётся прежним, а вызовы функций в `eat_at_restaurant` будет работать без каких-либо изменений, даже если определения будут в разных файлах. Этот метод позволяет перемещать модули в новые файлы по мере роста их размера.
 
 Обратите внимание, что в выражение 
 `pub use crate::front_of_house::hosting` в файле *src/lib.rs* также не изменилось и использование `use` не влияет на то, какие файлы копилируются как часть крейта. Ключевое слово `mod` объявляет модули, а Rust заглядывает в файл с тем же именем, что и модуль для кода, который входит в этот модуль.
 
 ## Итог
 
-Rust lets you split a package into multiple crates and a crate into modules
-so you can refer to items defined in one module from another module. You can do
-this by specifying absolute or relative paths. These paths can be brought into
-scope with a `use` statement so you can use a shorter path for multiple uses of
-the item in that scope. Module code is private by default, but you can make
-definitions public by adding the `pub` keyword.
+Rust позволяет разбить пакет на несколько крейтов и крейт на модули так, что вы можете ссылаться на элементы определённые в одном модуле из другого модуля. Это можно делать путем указания абсолютных или относительных путей. Пути можно подключить в область видимости оператором `use` так, что можно использовать более короткий путь для многократного использования
+элементов в области видимости. Код модуля по умолчанию является приватным, но можно сделать определения публичными, добавив ключевое слово `pub`.
 
 В следующей главе мы рассмотрим некоторые структуры данных коллекций из стандартной библиотеки, которые можно использовать в своем аккуратно организованном коде.
