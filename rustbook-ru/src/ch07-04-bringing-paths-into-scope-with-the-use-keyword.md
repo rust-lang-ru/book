@@ -1,19 +1,10 @@
 ## Подключение путей в область видимости с помощью ключевого слова `use`
 
-It might seem like the paths we’ve written to call functions so far are
-inconveniently long and repetitive. For example, in Listing 7-7, whether we
-chose the absolute or relative path to the `add_to_waitlist` function, every
-time we wanted to call `add_to_waitlist` we had to specify `front_of_house` and
-`hosting` too. Fortunately, there’s a way to simplify this process. We can
-bring a path into a scope once and then call the items in that path as if
-they’re local items with the `use` keyword.
+Может показаться, что пути, которые мы писали для вызова функций неудобные, длинные и повторяющиеся. Например, в листинге 7-7, где мы выбирали абсолютный или относительный путь к функции`add_to_waitlist` , каждый раз для ее вызова мы должны были указать модули `front_of_house` и `hosting`. К счастью, есть способ упрощения этого процесса. Можно подключить путь в область видимости один раз, а затем вызывать элементы из этого пути будто это локальные элементы используя ключевое слово `use`.
 
-In Listing 7-11, we bring the `crate::front_of_house::hosting` module into the
-scope of the `eat_at_restaurant` function so we only have to specify
-`hosting::add_to_waitlist` to call the `add_to_waitlist` function in
-`eat_at_restaurant`.
+В листинге 7-11 мы подключили модуль `crate::front_of_house::hosting` в область действия функции `eat_at_restaurant` , поэтому нам достаточно только указать `hosting::add_to_waitlist` для вызова функции `add_to_waitlist` внутри `eat_at_restaurant` .
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 mod front_of_house {
@@ -32,20 +23,15 @@ pub fn eat_at_restaurant() {
 # fn main() {}
 ```
 
-<span class="caption">Listing 7-11: Bringing a module into scope with
+<span class="caption">Листинг 7-11. Подключение модуля в область видимости с помощью
 <code>use</code></span>
 
-Adding `use` and a path in a scope is similar to creating a symbolic link in
-the filesystem. By adding `use crate::front_of_house::hosting` in the crate
-root, `hosting` is now a valid name in that scope, just as though the `hosting`
-module had been defined in the crate root. Paths brought into scope with `use`
-also check privacy, like any other paths.
+Добавление `use` и пути в область видимости аналогично созданию символической ссылки в файловой системе. Добавляя `use crate::front_of_house::hosting` в корень крейта, `hosting` теперь является допустимым именем в этой области, как если бы `hosting` модуль был определен в корне крейта. Пути, подключенные в область видимости с помощью `use` также проверяют конфиденциальность как и любые другие пути.
 
-You can also bring an item into scope with `use` and a relative path. Listing
-7-12 shows how to specify a relative path to get the same behavior as in
-Listing 7-11.
+Также можно подключить элемент в область видимости с помощью `use` и относительного пути. Листинг 7-12 показывает как указать относительный путь, чтобы получить то же поведение, что и в
+листинге 7-11.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 mod front_of_house {
@@ -64,16 +50,13 @@ pub fn eat_at_restaurant() {
 # fn main() {}
 ```
 
-<span class="caption">Listing 7-12: Bringing a module into scope with <code>use</code> and
-a relative path</span>
+<span class="caption">Листинг 7-12. Подключение модуля в область видимости с помощью <code>use</code> и относительного пути</span>
 
-### Creating Idiomatic `use` Paths
+### Создание идиоматических путей с помощью `use`
 
-In Listing 7-11, you might have wondered why we specified `use crate::front_of_house::hosting` and then called `hosting::add_to_waitlist` in
-`eat_at_restaurant` rather than specifying the `use` path all the way out to
-the `add_to_waitlist` function to achieve the same result, as in Listing 7-13.
+В листинге 7-11 вы могли бы задаться вопросом, почему мы указали  `use crate::front_of_house::hosting`, а затем вызвали `use crate::front_of_house::hosting` внутри `eat_at_restaurant` вместо указания пути `use` до функции `add_to_waitlist` для получения того же результата, что в листинге 7-13.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 mod front_of_house {
@@ -92,22 +75,14 @@ pub fn eat_at_restaurant() {
 # fn main() {}
 ```
 
-<span class="caption">Listing 7-13: Bringing the <code>add_to_waitlist</code> function
-into scope with <code>use</code>, which is unidiomatic</span>
+<span class="caption">Листинг 7-13. Подключение функции <code>add_to_waitlist</code> 
+в область видимости с помощью <code>use</code> , что является идиоматическим способом</span>
 
-Although both Listing 7-11 and 7-13 accomplish the same task, Listing 7-11 is
-the idiomatic way to bring a function into scope with `use`. Bringing the
-function’s parent module into scope with `use` so we have to specify the parent
-module when calling the function makes it clear that the function isn’t locally
-defined while still minimizing repetition of the full path. The code in Listing
-7-13 is unclear as to where `add_to_waitlist` is defined.
+Хотя листинг 7-11 и 7-13 выполняют одну и ту же задачу, листинг 7-11 является идиоматическим способом подключения функции в область видимости с помощью `use` . Подключение родительского модуля функции в область выидмости используя `use` , так что мы будем указывать родительский модуль в строке вызова функции, дает возможность понять, что эта функция определена не локально, но это все еще минимизирует повторение полного пути. В коде листинга 7-13 не ясно, где именно определена `add_to_waitlist` .
 
-On the other hand, when bringing in structs, enums, and other items with `use`,
-it’s idiomatic to specify the full path. Listing 7-14 shows the idiomatic way
-to bring the standard library’s `HashMap` struct into the scope of a binary
-crate.
+С другой стороны, при подключении структур, перечислений и других элементов используя `use` , идиоматически будет указывать полный путь. Листинг 7-14 показывает идиоматический способ подключения структуры стандартной библиотеки `HashMap` в область видимости исполняемого крейта.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 use std::collections::HashMap;
@@ -118,18 +93,13 @@ fn main() {
 }
 ```
 
-<span class="caption">Listing 7-14: Bringing <code>HashMap</code> into scope in an
-idiomatic way</span>
+<span class="caption">Листинг 7-14. Идиоматический способ подключения <code>HashMap</code> в область видимости</span>
 
-There’s no strong reason behind this idiom: it’s just the convention that has
-emerged, and folks have gotten used to reading and writing Rust code this way.
+За этой идиомой нет веской причины: это просто соглашение, которое появилось и люди привыкли читать и писать код Rust таким образом.
 
-The exception to this idiom is if we’re bringing two items with the same name
-into scope with `use` statements, because Rust doesn’t allow that. Listing 7-15
-shows how to bring two `Result` types into scope that have the same name but
-different parent modules and how to refer to them.
+Исключением этой идиомы является случай, когда мы подключаем два элемента с одинаковыми именами в область видимости используя оператор `use` , потому что Rust не позволяет этого. Листинг 7-15 показывает, как подключить в область действия два типа с одинаковыми именами `Result` , но из разных родительских модулей и как на них ссылаться.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 use std::fmt;
@@ -146,22 +116,16 @@ fn function2() -> io::Result<()> {
 }
 ```
 
-<span class="caption">Listing 7-15: Bringing two types with the same name into
-the same scope requires using their parent modules.</span>
+<span class="caption">Листинг 7-15. Подключение двух типов с одинаковыми именами в
+одну область видимости требует использования их родительских модулей.</span>
 
-As you can see, using the parent modules distinguishes the two `Result` types.
-If instead we specified `use std::fmt::Result` and `use std::io::Result`, we’d
-have two `Result` types in the same scope and Rust wouldn’t know which one we
-meant when we used `Result`.
+Как видите, использование имени родительских модулей позволяет различает два типа `Result` . Если бы вместо этого мы указали `use std::fmt::Result` и `use std::io::Result` , мы бы имели два типа `Result` в одной области видимости, и Rust не будет знать, какой из них мы имели ввиду при использовании в коде `Result` .
 
-### Providing New Names with the `as` Keyword
+### Предоставление новых имен с помощью ключевого слова `as`
 
-There’s another solution to the problem of bringing two types of the same name
-into the same scope with `use`: after the path, we can specify `as` and a new
-local name, or alias, for the type. Listing 7-16 shows another way to write the
-code in Listing 7-15 by renaming one of the two `Result` types using `as`.
+Есть еще одно решение проблемы объединения двух типов с одинаковыми именами в одной области видимости используя `use` : после пути можно указать `as` и его новое локальное имя или псевдоним для типа. Листинг 7-16 показывает другой способ написать код в листинге 7-15 путем переименования одного из двух типов `Result` используя `as` .
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 use std::fmt::Result;
@@ -178,27 +142,17 @@ fn function2() -> IoResult<()> {
 }
 ```
 
-<span class="caption">Listing 7-16: Renaming a type when it’s brought into
-scope with the <code>as</code> keyword</span>
+<span class="caption">Листинг 7-16. Переименование типа с помощью ключевого слова <code>as</code> при его подключении в область видимости</span>
 
-In the second `use` statement, we chose the new name `IoResult` for the
-`std::io::Result` type, which won’t conflict with the `Result` from `std::fmt`
-that we’ve also brought into scope. Listing 7-15 and Listing 7-16 are
-considered idiomatic, so the choice is up to you!
+Во втором операторе `use` мы выбрали новое имя `IoResult` для типа `std::io::Result`, который теперь не будет конфликтовать с `Result` из `std::fmt`, который также подключен в область видимости.  Листинг 7-15 и листинг 7-16 считаются идиоматичными, поэтому выбор за вами!
 
-### Re-exporting Names with `pub use`
+### Реэкспорт имен используя `pub use`
 
-When we bring a name into scope with the `use` keyword, the name available in
-the new scope is private. To enable the code that calls our code to refer to
-that name as if it had been defined in that code’s scope, we can combine `pub`
-and `use`. This technique is called *re-exporting* because we’re bringing
-an item into scope but also making that item available for others to bring into
-their scope.
+Когда мы подключаем имя в область видимости используя ключевое слово `use`, то имя доступное в новой области видимости является приватным. Чтобы позволить коду, который вызывает наш код, ссылаться на это имя как если бы оно было определено в области видимости данного кода, можно объединить `pub` и `use` . Этот метод называется *реэкспортом*, потому что мы подключаем элемент в область видимости, но также делаем этот элемент доступным для подключения в других областях видимости.
 
-Listing 7-17 shows the code in Listing 7-11 with `use` in the root module
-changed to `pub use`.
+Листинг 7-17 показывает код из листинга 7-11 используя `use` в корневом модуле исправленное на `pub use` .
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 mod front_of_house {
@@ -217,28 +171,15 @@ pub fn eat_at_restaurant() {
 # fn main() {}
 ```
 
-<span class="caption">Listing 7-17: Making a name available for any code to use
-from a new scope with <code>pub use</code></span>
+<span class="caption">Листинг 7-17. Указание сделать имя доступным для любого кода из новой области используя <code>pub use</code></span>
 
-By using `pub use`, external code can now call the `add_to_waitlist` function
-using `hosting::add_to_waitlist`. If we hadn’t specified `pub use`, the
-`eat_at_restaurant` function could call `hosting::add_to_waitlist` in its
-scope, but external code couldn’t take advantage of this new path.
+Используя `pub use` , внешний код теперь может вызывать функцию `add_to_waitlist` используя `hosting::add_to_waitlist` . Если бы мы не указали `pub use` , функция `eat_at_restaurant` могла бы вызывать `hosting::add_to_waitlist` в своей области видимости, но внешний код не может воспользоваться этим новым путем.
 
-Re-exporting is useful when the internal structure of your code is different
-from how programmers calling your code would think about the domain. For
-example, in this restaurant metaphor, the people running the restaurant think
-about “front of house” and “back of house.” But customers visiting a restaurant
-probably won’t think about the parts of the restaurant in those terms. With
-`pub use`, we can write our code with one structure but expose a different
-structure. Doing so makes our library well organized for programmers working on
-the library and programmers calling the library.
+Реэкспорт полезен, когда внутренняя структура вашего кода отличается от того, как другие программисты вызывающие ваш код, будут думать о предметной области. Например, в метафоре про ресторан, люди работающие в ресторане, думают о «фронтальной части дома» и «задней части дома». Но вероятно что клиенты посещающие ресторан, не буду думать о частях ресторана в таких терминах. С помощью `pub use` , можно написать код с одной структурой, но предоставить наружу другую структуру. Это делает библиотеку хорошо организованной как для программистов, работающих над библиотека так и и программистов вызывающих библиотеку.
 
 ### Using External Packages
 
-In Chapter 2, we programmed a guessing game project that used an external
-package called `rand` to get random numbers. To use `rand` in our project, we
-added this line to *Cargo.toml*:
+В главе 2 мы запрограммировали проект игры угадывания числа, где использовался внешний пакет для получения случайного числа, называемый `rand` . Чтобы использовать в нашем проекте пакет `rand` , мы добавили строку в *Cargo.toml* :
 
 <!-- When updating the version of `rand` used, also update the version of
 `rand` used in these files so they all match:
@@ -246,22 +187,16 @@ added this line to *Cargo.toml*:
 * ch14-03-cargo-workspaces.md
 -->
 
-<span class="filename">Filename: Cargo.toml</span>
+<span class="filename">Файл: Cargo.toml</span>
 
 ```toml
 [dependencies]
 rand = "0.5.5"
 ```
 
-Adding `rand` as a dependency in *Cargo.toml* tells Cargo to download the
-`rand` package and any dependencies from [crates.io](https://crates.io/) and
-make `rand` available to our project.
+Добавление `rand` в качестве зависимости в *Cargo.toml* указывает Cargo загрузить пакет `rand` и любые зависимости из [crates.io](https://crates.io/) и сделать `rand` доступным для нашего проекта.
 
-Then, to bring `rand` definitions into the scope of our package, we added a
-`use` line starting with the name of the package, `rand`, and listed the items
-we wanted to bring into scope. Recall that in the [“Generating a Random
-Number”](ch02-00-guessing-game-tutorial.html#generating-a-random-number)<comment> section in Chapter 2, we brought the <code data-md-type="codespan">Rng</code> trait
-into scope and called the <code data-md-type="codespan">rand::thread_rng</code> function:</comment>
+Затем, чтобы подключить определения `rand` в область видимости нашего пакета, мы добавили строку `use` начинающуюся с названия пакета `rand` и списка элементов, которые мы хотим подключить в область видимости. Напомним, что в разделе [«Генерация случайного числа"](ch02-00-guessing-game-tutorial.html#generating-a-random-number)<comment> главы 2, мы подключили типаж <code data-md-type="codespan">Rng</code> в область видимости и вызвали функцию <code data-md-type="codespan">rand::thread_rng</code></comment>
 
 ```rust,ignore
 use rand::Rng;
@@ -270,32 +205,21 @@ fn main() {
 }
 ```
 
-Members of the Rust community have made many packages available at
-[crates.io](https://crates.io/), and pulling any of them into your package
-involves these same steps: listing them in your package’s *Cargo.toml* file and
-using `use` to bring items into scope.
+Члены сообщества Rust сделали много пакетов доступными на ресурсе [crates.io](https://crates.io/) , и затягивание любого из них в свой пакет включает в себя эти же шаги: перечисление их в файле *Cargo.toml* вашего пакета и использование `use` для подключения элементов в область видимости.
 
-Note that the standard library (`std`) is also a crate that’s external to our
-package. Because the standard library is shipped with the Rust language, we
-don’t need to change *Cargo.toml* to include `std`. But we do need to refer to
-it with `use` to bring items from there into our package’s scope. For example,
-with `HashMap` we would use this line:
+Обратите внимание, стандартная библиотека ( `std` ) также является крейтом, который является внешним по отношению к нашему пакету. Поскольку стандартная библиотека поставляется с языком Rust, то не нужно вносить изменения в *Cargo.toml* для подключения `std` . Но чтобы добавить ее элементы в область видимости нашего пакета, нам нужно сослаться на нее используя `use`. Например, с `HashMap` мы будем использовать эту строку:
 
 ```rust
 use std::collections::HashMap;
 ```
 
-This is an absolute path starting with `std`, the name of the standard library
-crate.
+Это абсолютный путь, начинающийся с `std` , имя крейта стандартной библиотеки.
 
-### Using Nested Paths to Clean Up Large `use` Lists
+### Использование вложенных путей для уменьшения длинных списков `use`
 
-If we’re using multiple items defined in the same package or same module,
-listing each item on its own line can take up a lot of vertical space in our
-files. For example, these two `use` statements we had in the Guessing Game in
-Listing 2-4 bring items from `std` into scope:
+Если мы используем несколько элементов определенных в одном пакете или в том же модуле, то перечисление каждого элемента в отдельной строке может занимать много вертикального пространства в файле. Например, эти два объявления `use` у нас были  в программе угадывания числа из листинга 2-4 для подключения элементов из `std` в область видимости:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 use std::io;
@@ -303,72 +227,51 @@ use std::cmp::Ordering;
 // ---snip---
 ```
 
-Instead, we can use nested paths to bring the same items into scope in one
-line. We do this by specifying the common part of the path, followed by two
-colons, and then curly brackets around a list of the parts of the paths that
-differ, as shown in Listing 7-18.
+Вместо этого можно использовать вложенные пути, чтобы подключить в область видимости те же элементы одной строкой. Мы делаем это, указывая общую часть пути, за которой следуют два двоеточия, а затем фигурные скобки вокруг списка частей путей, которые
+отличаются, как показано в листинге 7-18.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 use std::{cmp::Ordering, io};
 // ---snip---
 ```
 
-<span class="caption">Listing 7-18: Specifying a nested path to bring multiple
-items with the same prefix into scope</span>
+<span class="caption">Листинг 7-18. Указание вложенного пути для подключения нескольких элементов с одинаковым префиксом в область видимости</span>
 
-In bigger programs, bringing many items into scope from the same package or
-module using nested paths can reduce the number of separate `use` statements
-needed by a lot!
+В больших программах, подключение множества элементов из одного пакета или модуля используя вложенные пути, может уменьшить количество отдельных строк с `use`, когда элементов много.
 
-We can use a nested path at any level in a path, which is useful when combining
-two `use` statements that share a subpath. For example, Listing 7-19 shows two
-`use` statements: one that brings `std::io` into scope and one that brings
-`std::io::Write` into scope.
+Можно использовать вложенный путь на любом уровне, что полезно при объединении двух операторов `use` , которые имеют общий под путь. Например, в листинге 7-19 показаны два операторы `use` : один подключает  `std::io`, другой подключает `std::io::Write` в область видимости.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 use std::io;
 use std::io::Write;
 ```
 
-<span class="caption">Listing 7-19: Two <code>use</code> statements where one is a subpath
-of the other</span>
+<span class="caption">Листинг 7-19. Два оператора <code>use</code> где один содержит под путь другого</span>
 
-The common part of these two paths is `std::io`, and that’s the complete first
-path. To merge these two paths into one `use` statement, we can use `self` in
-the nested path, as shown in Listing 7-20.
+Общей частью этих двух путей является `std::io` , и это полный первый путь. Чтобы объединить эти два пути в одно выражение `use` , мы можем использовать ключевое слово `self` во вложенном пути, как показано в листинге 7-20.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 use std::io::{self, Write};
 ```
 
-<span class="caption">Listing 7-20: Combining the paths in Listing 7-19 into
-one <code>use</code> statement</span>
+<span class="caption">Листинг 7-20. Объединение путей из листинга 7-19 в один оператор <code>use</code></span>
 
-This line brings `std::io` and `std::io::Write` into scope.
+Эта строка подключает `std::io` и `std::io::Write`  в область видимости.
 
-### The Glob Operator
+### Оператор Glob
 
-If we want to bring *all* public items defined in a path into scope, we can
-specify that path followed by `*`, the glob operator:
+Если хотим подключить в область видимости *все* общие элементы, определенные в пути, можно указать путь за которым следует оператор глоб `*` :
 
 ```rust
 use std::collections::*;
 ```
 
-This `use` statement brings all public items defined in `std::collections` into
-the current scope. Be careful when using the glob operator! Glob can make it
-harder to tell what names are in scope and where a name used in your program
-was defined.
+Этот оператор `use` подключает все открытые элементы из модуля `std::collections` в текущая область видимости. Будьте осторожны при использовании оператора глоб! Он может усложнить понимание, какие имена находятся в области видимости и где были определены имена, используемые в вашей программе.
 
-The glob operator is often used when testing to bring everything under test
-into the `tests` module; we’ll talk about that in the [“How to Write
-Tests”](ch11-01-writing-tests.html#how-to-write-tests)<comment> section in Chapter 11. The glob operator
-is also sometimes used as part of the prelude pattern: see <a href="../std/prelude/index.html#other-preludes" data-md-type="link">the standard
-library documentation</a></comment><comment>
-for more information on that pattern.</comment>
+Оператор глоб часто используется при тестировании для подключения всего что есть в модуль `tests` ; мы поговорим об этом в разделе [«Как писать тесты»](ch11-01-writing-tests.html#how-to-write-tests)<comment> главы 11. Оператор glob также иногда используется как часть шаблона автоимпорта прелюдии: смотрите <a href="../std/prelude/index.html#other-preludes" data-md-type="link">стандартная библиотечная документация</a></comment><comment> для получения дополнительной информации об этом шаблоне.</comment>
