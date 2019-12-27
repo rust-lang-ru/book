@@ -72,15 +72,15 @@
 Следующий список содержит все не-литералы, которые не являются операторами.
 То есть они не ведут себя как вызов функции или метода.
 
-Table B-2 shows symbols that appear on their own and are valid in a variety of
-locations.
+Таблица Б-2 показывает символы, которые появляются сами по себе и допустимы в различных
+местах.
 
 <span class="caption">Таблица Б-2: Автономный синтаксис</span>
 
 Обозначение | Объяснение
 --- | ---
 `'ident` | Именованное время жизни или метка цикла
-`...u8`, `...i32`, `...f64`, `...usize`, etc. | Numeric literal of specific type
+`...u8`, `...i32`, `...f64`, `...usize`, etc. | Числовой литерал определённого типа
 `"..."` | Строковый литерал
 `r"..."`, `r#"..."#`, `r##"..."##`, etc. | Необработанный строковый литерал, в котором не обрабатываются escape-символы
 `b"..."` | Строковый байтовый литерал; создает `[u8]` вместо строки
@@ -88,7 +88,7 @@ locations.
 `'...'` | Символьный литерал
 `b'...'` | ASCII байтовый литерал
 <code>|...| expr</code> | Замыкание
-`!` | Always empty bottom type for diverging functions
+`!` | Всегда пустой тип для расходящихся функций
 `_` | «Игнорируемое» связывание шаблонов; также используется для читабельности целочисленных литералов
 
 Таблица Б-3 показывает обозначения которые появляются в контексте путей иерархии модулей
@@ -104,36 +104,34 @@ locations.
 `type::ident`, `<type as trait>::ident` | Ассоциированные константы, функции и типы
 `<type>::...` | Ассоциированный элемент для типа, который не может быть назван прямо (например `<&T>::...`, `<[T]>::...`, etc.)
 `trait::method(...)` | Устранение неоднозначности вызова метода путем именования типажа, который определяет его
-`type::method(...)` | Disambiguating a method call by naming the type for which it’s defined
+`type::method(...)` | Устранение неоднозначности путем вызова метода через имя типа, для которого он определён
 `<type as trait>::method(...)` | Устранение неоднозначности вызова метода путем именования типажа и типа
 
-Table B-4 shows symbols that appear in the context of using generic type
-parameters.
+Таблица Б-4 показывает обозначения которые появляются в контексте использования обобщённых типов параметров
 
 <span class="caption">Таблица Б-4: Обобщения</span>
 
 Обозначение | Объяснение
 --- | ---
-`path<...>` | Specifies parameters to generic type in a type (e.g., `Vec<u8>`)
-`path::<...>`, `method::<...>` | Specifies parameters to generic type, function, or method in an expression; often referred to as turbofish (e.g., `"42".parse::<i32>()`)
-`fn ident<...> ...` | Define generic function
+`path<...>` | Определяет параметры для обобщённых параметров в типе (e.g., `Vec<u8>`)
+`path::<...>`, `method::<...>` | Определяет параметры для обобщённых параметров, функций, или методов в выражении. Часто называют турборыбой (например `"42".parse::<i32>()`)
+`fn ident<...> ...` | Определение обобщённой функции
 `struct ident<...> ...` | Определение обобщенной структуры
-`enum ident<...> ...` | Define generic enumeration
+`enum ident<...> ...` | Объявление обобщённого перечисления
 `impl<...> ...` | Определение обобщенной реализации
 `for<...> type` | Высокоуровневое связывание времени жизни
-`type<ident=type>` | A generic type where one or more associated types have specific assignments (e.g., `Iterator<Item=T>`)
+`type<ident=type>` | Обобщённый тип где один или более ассоциированных типов имеют определённое присваивание (например `Iterator<Item=T>`)
 
-Table B-5 shows symbols that appear in the context of constraining generic type
-parameters with trait bounds.
+Таблица Б-5 показывает обозначения которые появляются в контексте использования обобщённых типов параметров с ограничениями типов
 
 <span class="caption">Таблица Б-5: Ограничения типов</span>
 
 Обозначение | Объяснение
 --- | ---
-`T: U` | Generic parameter `T` constrained to types that implement `U`
-`T: 'a` | Generic type `T` must outlive lifetime `'a` (meaning the type cannot transitively contain any references with lifetimes shorter than `'a`)
-`T : 'static` | Generic type `T` contains no borrowed references other than `'static` ones
-`'b: 'a` | Generic lifetime `'b` must outlive lifetime `'a`
+`T: U` | Обобщённый параметр `T` ограничивается до типов которые реализуют типаж `U`
+`T: 'a` | Обобщённый тип `T` должен существовать не меньше чем `'a` (то есть тип не может иметь ссылки с временем жизни меньше чем `'a`)
+`T : 'static` | Обобщённый тип `T` не имеет заимствованных ссылок кроме имеющих время жизни `'static`
+`'b: 'a` | Обобщённое время жизни `'b` должно быть не меньше чем `'a`
 `T: ?Sized` | Позволяет обобщенным типам параметра иметь динамический размер
 `'a + trait`, `trait + trait` | Соединение ограничений типов
 
