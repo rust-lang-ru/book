@@ -19,34 +19,34 @@
 `%=` | `var %= expr` | Остаток от деления и присваивание | `RemAssign`
 `&` | `&expr`, `&mut expr` | Заимствование | 
 `&` | `&type`, `&mut type`, `&'a type`, `&'a mut type` | Указывает что данный тип заимствуется | 
-`&` | `expr & expr` | Bitwise AND | `BitAnd`
-`&=` | `var &= expr` | Bitwise AND and assignment | `BitAndAssign`
-`&&` | `expr && expr` | Logical AND | 
-`*` | `expr * expr` | Arithmetic multiplication | `Mul`
-`*=` | `var *= expr` | Arithmetic multiplication and assignment | `MulAssign`
+`&` | `expr & expr` | Побитовое И | `BitAnd`
+`&=` | `var &= expr` | Побитовое И и присваивание | `BitAndAssign`
+`&&` | `expr && expr` | Логическое И | 
+`*` | `expr * expr` | Арифметическое умножение | `Mul`
+`*=` | `var *= expr` | Арифметическое умножение и присваивание | `MulAssign`
 `*` | `*expr` | Разыменование ссылки | 
 `*` | `*const type`, `*mut type` | Указывает, что данный тип является сырым указателем | 
 `+` | `trait + trait`, `'a + trait` | Соединение ограничений типа | 
-`+` | `expr + expr` | Arithmetic addition | `Add`
-`+=` | `var += expr` | Arithmetic addition and assignment | `AddAssign`
-`,` | `expr, expr` | Argument and element separator | 
-`-` | `- expr` | Arithmetic negation | `Neg`
-`-` | `expr - expr` | Arithmetic subtraction | `Sub`
-`-=` | `var -= expr` | Arithmetic subtraction and assignment | `SubAssign`
+`+` | `expr + expr` | Арифметическое сложение | `Add`
+`+=` | `var += expr` | Арифметическое сложение и присваивание | `AddAssign`
+`,` | `expr, expr` | Аргумент и разделитель элементов | 
+`-` | `- expr` | Арифметическое отрицание | `Neg`
+`-` | `expr - expr` | Арифметическое вычитание | `Sub`
+`-=` | `var -= expr` | Арифметическое вычитание и присваивание | `SubAssign`
 `->` | `fn(...) -> type`, <code>|...| -> type</code> | Указывает возвращаемый тип функции и замыкания | 
 `.` | `expr.ident` | Доступ к элементу | 
 `..` | `..`, `expr..`, `..expr`, `expr..expr` | Указывает на диапазон чисел, исключая правый | 
 `..=` | `..=expr`, `expr..=expr` | Указывает на диапазон чисел, включая правый | 
 `..` | `..expr` | Синтаксис обновления структуры | 
-`..` | `variant(x, ..)`, `struct_type { x, .. }` | “And the rest” pattern binding | 
+`..` | `variant(x, ..)`, `struct_type { x, .. }` | Привязка «И все остальное» | 
 `...` | `expr...expr` | В шаблоне: шаблон диапазона включая правый элемент | 
-`/` | `expr / expr` | Arithmetic division | `Div`
+`/` | `expr / expr` | Арифметическое деление | `Div`
 `/=` | `var /= expr` | Арифметическое деление и присваивание | `DivAssign`
 `:` | `pat: type`, `ident: type` | Ограничения типов | 
 `:` | `ident: expr` | Инициализация поля структуры | 
 `:` | `'a: loop {...}` | Метка цикла | 
 `;` | `expr;` | Оператор, указывающий на конец высказывания | 
-`;` | `[...; len]` | Part of fixed-size array syntax | 
+`;` | `[...; len]` | Часть синтаксиса массива фиксированного размера | 
 `<<` | `expr << expr` | Битовый сдвиг влево | `Shl`
 `<<=` | `var <<= expr` | Битовый сдвиг влево и присваивание | `ShlAssign`
 `<` | `expr < expr` | Сравнение "меньше чем" | `PartialOrd`
@@ -59,9 +59,9 @@
 `>>` | `expr >> expr` | Битовый сдвиг вправо | `Shr`
 `>>=` | `var >>= expr` | Битовый сдвиг вправо и присваивание | `ShrAssign`
 `@` | `ident @ pat` | Pattern binding | 
-`^` | `expr ^ expr` | Bitwise exclusive OR | `BitXor`
+`^` | `expr ^ expr` | Побитовое исключающее ИЛИ | `BitXor`
 `^=` | `var ^= expr` | Побитовое исключающее ИЛИ и присваивание | `BitXorAssign`
-<code>|</code> | <code>pat | pat</code> | Pattern alternatives | 
+<code>|</code> | <code>pat | pat</code> | Альтернативные шаблоны | 
 <code>|</code> | <code>expr | expr</code> | Побитовое ИЛИ | `BitOr`
 <code>|=</code> | <code>var |= expr</code> | Побитовое ИЛИ и присваивание | `BitOrAssign`
 <code>||</code> | <code>expr || expr</code> | Логическое ИЛИ | 
@@ -97,7 +97,7 @@
 
 Обозначение | Объяснение
 --- | ---
-`ident::ident` | Namespace path
+`ident::ident` | Путь к пространству имен
 `::path` | Путь относительно корня крейта (т. е. явный абсолютный путь)
 `self::path` | Путь относительно текущего модуля (т. е. явный относительный путь).
 `super::path` | Путь относительно родительского модуля текущего модуля
@@ -141,11 +141,11 @@
 
 Обозначение | Объяснение
 --- | ---
-`#[meta]` | Outer attribute
-`#![meta]` | Inner attribute
+`#[meta]` | Внешний атрибут
+`#![meta]` | Внутренний атрибут
 `$ident` | Подстановка в макросе
-`$ident:kind` | Macro capture
-`$(…)…` | Macro repetition
+`$ident:kind` | Захват макроса
+`$(…)…` | Повторение макросов
 
 Таблица Б-7 показывает обозначения, которые создают комментарии.
 
@@ -167,11 +167,11 @@
 Обозначение | Объяснение
 --- | ---
 `()` | Пустой кортеж, он же пустой тип. И литерал и тип.
-`(expr)` | Parenthesized expression
+`(expr)` | Выражение в скобках
 `(expr,)` | Кортеж с одним элементом выражения
 `(type,)` | Кортеж с одним элементом типа
-`(expr, ...)` | Tuple expression
-`(type, ...)` | Tuple type
+`(expr, ...)` | Выражение кортежа
+`(type, ...)` | Тип кортежа
 `expr(expr, ...)` | Выражение вызова функции; также используется для инициализации структур-кортежей и вариантов-кортежей перечисления
 `ident!(...)`, `ident!{...}`, `ident![...]` | Вызов макроса
 `expr.0`, `expr.1`, etc. | Взятие элемента по индексу в кортеже
