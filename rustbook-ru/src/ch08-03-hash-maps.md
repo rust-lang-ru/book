@@ -1,27 +1,14 @@
 ## Хранение ключей со связанными значениями в хэш-картах
 
-Последняя коллекция, которую мы рассмотрим в нашей книге будет *hash map*.
-`HashMap<K, V>` сохраняет ключи типа `K` и значения типа `V`. Данная структура организует и хранит данные
-с помощью *функции хэширования*. Во множестве библиотек языков программирования
-реализована данная структура и функционал. Все они, что неудивительно, имеют разные
-наименования: hash, map, object, hash table, или ассоциированный массив.
+Последняя коллекция, которую мы рассмотрим в нашей книге будет *hash map* (хэш-карта). `HashMap<K, V>` сохраняет ключи типа `K` и значения типа `V`. Данная структура организует и хранит данные с помощью *функции хэширования*. Во множестве языков программирования реализована данная структура, но часто с разными наименованиями: такими как hash, map, object, hash table, dictionary или ассоциированный массив.
 
-Hash maps are useful when you want to look up data not by using an index, as
-you can with vectors, but by using a key that can be of any type. For example,
-in a game, you could keep track of each team’s score in a hash map in which
-each key is a team’s name and the values are each team’s score. Given a team
-name, you can retrieve its score.
+Хеш-карты полезны, когда нужно искать данные не используя индекс, по типу того, как это можно делать в векторах, но с помощью ключа, который может быть любого типа. Например, в игре вы можете отслеживать счет каждой команды в хэш-карте, в которой каждый ключ - это название команды, а значение - счет команды. Для имени команды, вы можете получить ее счет.
 
-We’ll go over the basic API of hash maps in this section, but many more goodies
-are hiding in the functions defined on `HashMap<K, V>` by the standard library.
-As always, check the standard library documentation for more information.
+В этом разделе мы рассмотрим базовый API хеш-карт, но еще много полезных функций скрывается в объявлении типа `HashMap<K, V>` из стандартной библиотеки. Как всегда, обратитесь к документации стандартной библиотеки для получения дополнительной информации.
 
 ### Создание новой хэш-карты
 
-You can create an empty hash map with `new` and add elements with `insert`. In
-Listing 8-20, we’re keeping track of the scores of two teams whose names are
-Blue and Yellow. The Blue team starts with 10 points, and the Yellow team
-starts with 50.
+Можно создать пустую хеш-карту с помощью `new` и добавить элементы с помощью `insert` . В листинге 8-20 мы отслеживаем счет двух команд, имена которых синяя (Blue) и желтая (Yellow).  Синяя команда стартует с 10 очками, а желтая команда с 50.
 
 ```rust
 use std::collections::HashMap;
@@ -32,26 +19,13 @@ scores.insert(String::from("Blue"), 10);
 scores.insert(String::from("Yellow"), 50);
 ```
 
-<span class="caption">Listing 8-20: Creating a new hash map and inserting some
-keys and values</span>
+<span class="caption">Листинг 8-20. Создание новой хэш-карты и вставка в нее некоторых ключей и начальных значений</span>
 
-Note that we need to first `use` the `HashMap` from the collections portion of
-the standard library. Of our three common collections, this one is the least
-often used, so it’s not included in the features brought into scope
-automatically in the prelude. Hash maps also have less support from the
-standard library; there’s no built-in macro to construct them, for example.
+Обратите внимание, что нужно сначала указать строку `use` `HashMap` для ее подключения из коллекций стандартной библиотеки. Из трех коллекций данная является наименее используемой, поэтому она не подключается в область видимости функцией автоматического импорта прелюдии. Хеш-карты также имеют меньшую поддержку со стороны стандартной библиотеки; например, нет встроенного макроса для их конструирования.
 
-Just like vectors, hash maps store their data on the heap. This `HashMap` has
-keys of type `String` and values of type `i32`. Like vectors, hash maps are
-homogeneous: all of the keys must have the same type, and all of the values
-must have the same type.
+Подобно векторам, хеш-карты хранят свои данные в куче. Здесь тип `HashMap` имеет ключи типа `String` и значения типа `i32` . Как и векторы, хэш-карты однородны: все ключи должны иметь одинаковый тип и все значения должны иметь тоже одинаковый тип.
 
-Ещё один способ создания `HashMap`, использование метода вектора кортежей `collect`,
-где каждый кортеж содержит ключ и его значение. Этот метод может объединять любые
-типы данных, даже `HashMap`. Например, если у нас есть список команд и значения
-счёта этих команд в двух различных векторах, мы можем использовать метод `zip`,
-чтобы создать вектор кортежей, где элементы с одинаковыми индексами образуют пары
-"ключ-значение". Далее, мы можем использовать метод `collect` для создания `HashMap`:
+Еще один способ построения хеш-карты - использование метода `collect` на векторе кортежей, где каждый кортеж состоит из ключа и его значения. Метод `collect` собирает данные в несколько типов коллекций, включая `HashMap` . Например, если бы у нас были названия команд и начальные результаты в двух отдельных векторах, то мы могли бы использовать метод `zip` для создания вектора кортежей, где имя «Синяя» спарено с числом 10, и так далее. Тогда мы могли бы использовать метод `collect`, чтобы превратить этот вектор кортежей в хэш-карту, как показано в листинге 8-21.
 
 ```rust
 use std::collections::HashMap;
@@ -62,20 +36,13 @@ let initial_scores = vec![10, 50];
 let scores: HashMap<_, _> = teams.iter().zip(initial_scores.iter()).collect();
 ```
 
-<span class="caption">Listing 8-21: Creating a hash map from a list of teams
-and a list of scores</span>
+<span class="caption">Листинг 8-21. Создание хэш-карты из списка команд и списка результатов</span>
 
-The type annotation `HashMap<_, _>` is needed here because it’s possible to
-`collect` into many different data structures and Rust doesn’t know which you
-want unless you specify. For the parameters for the key and value types,
-however, we use underscores, and Rust can infer the types that the hash map
-contains based on the types of the data in the vectors.
+Здесь нужна аннотация типа `HashMap<_, _>` , поскольку с помощью метода `collect` данные можно собрать во множество различных структур данных и Rust не знает, в какую именно вы хотите собрать, пока вы не укажете это явно. Для параметров типа ключа и значения, мы используем подчеркивания и Rust может вывести типы, которые хеш содержит на основе типов данных из двух векторов.
 
 ### Хеш-карты и владение
 
-For types that implement the `Copy` trait, like `i32`, the values are copied
-into the hash map. For owned values like `String`, the values will be moved and
-the hash map will be the owner of those values, as demonstrated in Listing 8-22.
+Для типов, которые реализуют типаж `Copy` , например `i32` , значения копируются в хэш-карту. Для значений с владением, таких как `String`, значения  будут перемещены в хеш-карту и она станет владельцем этих значений, как показано в листинге 8-22.
 
 ```rust
 use std::collections::HashMap;
@@ -89,22 +56,15 @@ map.insert(field_name, field_value);
 // see what compiler error you get!
 ```
 
-<span class="caption">Listing 8-22: Showing that keys and values are owned by
-the hash map once they’re inserted</span>
+<span class="caption">Листинг 8-22. Показывает, что ключи и значения находятся во владении хэш-карты, как только они были вставлены</span>
 
-We aren’t able to use the variables `field_name` and `field_value` after
-they’ve been moved into the hash map with the call to `insert`.
+Мы не можем использовать переменные `field_name` и `field_value` после того, как их значения были перемещены в хэш-карту вызовом метода `insert` .
 
-If we insert references to values into the hash map, the values won’t be moved
-into the hash map. The values that the references point to must be valid for at
-least as long as the hash map is valid. We’ll talk more about these issues in
-the [“Validating References with
-Lifetimes”](ch10-03-lifetime-syntax.html#validating-references-with-lifetimes)<comment> section in
-Chapter 10.</comment>
+Если мы вставим в хэш-карту ссылки на значения, то они не будут перемещены в хэш-карту. Значения, на которые указывают ссылки, должны быть действительными хотя бы до тех пор, пока хеш-карта действительна. Мы поговорим об этих вопросах подробнее в разделе [«Проверка ссылок с помощью времени жизни»](ch10-03-lifetime-syntax.html#validating-references-with-lifetimes)<comment> главы 10.</comment>
 
 ### Доступ к данным
 
-Для получения данных из `HashMap` используется метод `get`:
+Можно получить значение из хэш-карты предоставляя ключ с помощью метода `get`, как показано в листинге 8-23:
 
 ```rust
 use std::collections::HashMap;
@@ -118,17 +78,11 @@ let team_name = String::from("Blue");
 let score = scores.get(&team_name);
 ```
 
-<span class="caption">Listing 8-23: Accessing the score for the Blue team
-stored in the hash map</span>
+<span class="caption">Листинг 8-23. Доступ к счету "Blue" команды сохраненному в хэш-карте</span>
 
-Here, `score` will have the value that’s associated with the Blue team, and the
-result will be `Some(&10)`. The result is wrapped in `Some` because `get`
-returns an `Option<&V>`; if there’s no value for that key in the hash map,
-`get` will return `None`. The program will need to handle the `Option` in one
-of the ways that we covered in Chapter 6.
+Здесь `score` будет иметь значение, связанное с командой Blue, результат будет `Some(&10)` . Результат обернут в вариант перечисления `Some` потому что `get` возвращает `Option<&V>` ; если для этого ключа нет значения в хэш-карте, `get` вернет `None` . Программа должна будет обрабатывать `Option` в одним из способов, которые мы рассмотрели в главе 6.
 
-We can iterate over each key/value pair in a hash map in a similar manner as we
-do with vectors, using a `for` loop:
+Мы можем перебирать каждую пару ключ/значение в хэш-карте таким же образом, как мы делали с векторами используя цикл `for` :
 
 ```rust
 use std::collections::HashMap;
@@ -152,22 +106,11 @@ Blue: 10
 
 ### Обновление данных
 
-Although the number of keys and values is growable, each key can only have one
-value associated with it at a time. When you want to change the data in a hash
-map, you have to decide how to handle the case when a key already has a value
-assigned. You could replace the old value with the new value, completely
-disregarding the old value. You could keep the old value and ignore the new
-value, only adding the new value if the key *doesn’t* already have a value. Or
-you could combine the old value and the new value. Let’s look at how to do each
-of these!
+Хотя количество ключей и значений может увеличиваться в хэш-карте, каждый ключ может иметь только одно значение, связанное с ним в один момент времени. Когда вы хотите изменить данные в хеш-карте, необходимо решить, как обрабатывать случай, когда ключ уже имеет назначенное значение. Можно заменить старое значение новым, полностью игнорируя старое. Можно сохранить старое значение и игнорировать новое и добавлять новое значение, если только ключ *еще не* имел значения. Или можно было бы объединить старое значение и новое значение. Давайте посмотрим, как сделать каждый из вариантов!
 
 #### Перезаписывание старых данных
 
-If we insert a key and a value into a hash map and then insert that same key
-with a different value, the value associated with that key will be replaced.
-Even though the code in Listing 8-24 calls `insert` twice, the hash map will
-only contain one key/value pair because we’re inserting the value for the Blue
-team’s key both times.
+Если мы вставим ключ и значение в хэш-карту, а затем вставим тот же ключ с другим значением, то значение связанное с этим ключом, будет заменено. Даже несмотря на то, что код в листинге 8-24 вызывает `insert` дважды, хеш-карта будет содержит только одну пару ключ/значение, потому что мы вставляем значение для ключа Blue команды оба раза.
 
 ```rust
 use std::collections::HashMap;
@@ -180,21 +123,13 @@ scores.insert(String::from("Blue"), 25);
 println!("{:?}", scores);
 ```
 
-<span class="caption">Listing 8-24: Replacing a value stored with a particular
-key</span>
+<span class="caption">Листинг 8-24. Замена значения, хранимого конкретным ключом</span>
 
-Будет напечатано `{"Blue": 25}`. Первое значение 10 будет перезаписано.
+Код напечатает `{"Blue": 25}`. Начальное значение 10 будет перезаписано.
 
 #### Только вставка значения, если ключ не имеет значения
 
-It’s common to check whether a particular key has a value and, if it doesn’t,
-insert a value for it. Hash maps have a special API for this called `entry`
-that takes the key you want to check as a parameter. The return value of the
-`entry` method is an enum called `Entry` that represents a value that might or
-might not exist. Let’s say we want to check whether the key for the Yellow team
-has a value associated with it. If it doesn’t, we want to insert the value 50,
-and the same for the Blue team. Using the `entry` API, the code looks like
-Listing 8-25.
+Обычно проверяют, имеется ли значение для конкретного ключа и если нет, то значение для него вставляется. Хеш-карты имеют для этого специальный API  называемый `entry`, который принимает ключ для проверки в качестве входного параметра. Возвращаемое значение метода `entry` - это перечисление `Entry` , представляющее значение, которое может существовать или может отсутствовать. Допустим, мы хотим проверить, имеет ли ключ для Yellow команды связанное с ним значение. Если не имеет то, мы хотим вставить значение 50, и то же самое для Blue команды. Используя API `entry` , код выглядит в листинге 8-25.
 
 ```rust
 use std::collections::HashMap;
@@ -208,29 +143,15 @@ scores.entry(String::from("Blue")).or_insert(50);
 println!("{:?}", scores);
 ```
 
-<span class="caption">Listing 8-25: Using the <code>entry</code> method to only insert if
-the key does not already have a value</span>
+<span class="caption">Листинг 8-25. Использование метода <code>entry</code> для вставки, только если ключ еще не имеет значения</span>
 
-The `or_insert` method on `Entry` is defined to return a mutable reference to
-the value for the corresponding `Entry` key if that key exists, and if not,
-inserts the parameter as the new value for this key and returns a mutable
-reference to the new value. This technique is much cleaner than writing the
-logic ourselves and, in addition, plays more nicely with the borrow checker.
+Метод `or_insert` в `Entry` определен как возвращающий изменяемую ссылку на значение соответствующее ключу `Entry` , когда этот ключ существует, а если его нет, то вставляет параметр в качестве нового значения этого ключа и возвращает изменяемую ссылку на новое значение. Эта техника намного чище, чем написание логики самостоятельно и кроме того, более безопасны и согласуются с правилами заимствования.
 
-Running the code in Listing 8-25 will print `{"Yellow": 50, "Blue": 10}`. The
-first call to `entry` will insert the key for the Yellow team with the value
-50 because the Yellow team doesn’t have a value already. The second call to
-`entry` will not change the hash map because the Blue team already has the
-value 10.
+При выполнении кода листинга 8-25 будет напечатано `{"Yellow": 50, "Blue": 10}` . Первый вызов метода `entry` вставит ключ для Yellow команды со значением 50, потому что для желтой команды еще не имеется значения в хэш-карте. Второй вызов `entry` не изменит хеш-карту, потому что для ключа Blue команды уже имеется значение 10.
 
 #### Обновление значения основанное на предыдущих данных
 
-Another common use case for hash maps is to look up a key’s value and then
-update it based on the old value. For instance, Listing 8-26 shows code that
-counts how many times each word appears in some text. We use a hash map with
-the words as keys and increment the value to keep track of how many times we’ve
-seen that word. If it’s the first time we’ve seen a word, we’ll first insert
-the value 0.
+Другим распространенным вариантом использования хеш-карт является поиск значения по ключу, а затем обновление этого значения на основе старого значения. Например, в листинге 8-26 показан код, который подсчитывает, сколько раз определенное слово появляется в каком-либо тексте. Мы используем хэш-карту со словом в качестве ключа и увеличиваем соответствующее ему значение, чтобы отслеживать, сколько раз в тексте мы увидели слово. Если мы впервые увидели слово, сначала вставляем значение 0.
 
 ```rust
 use std::collections::HashMap;
@@ -247,38 +168,22 @@ for word in text.split_whitespace() {
 println!("{:?}", map);
 ```
 
-<span class="caption">Listing 8-26: Counting occurrences of words using a hash
-map that stores words and counts</span>
+<span class="caption">Листинг 8-26. Подсчет вхождений слов с использованием хеш-карты, которая хранит слова и счетчики</span>
 
-Будет напечатано `{"world": 2, "hello": 1, "wonderful": 1}`. Метод `or_insert`
-возвращает изменяемую ссылку (`&mut V`) по ключу. Мы сохраняем изменяемую ссылку
-в переменной `count`. Для того, чтобы присвоить переменной значение, необходимо
-произвести разименование с помощью звёздочки (`*`). Изменяемая ссылка удаляется
-сразу же после выхода из области видимости цикла `for`. Все эти изменения безопасны
-и согласуются с правилами заимствования.
+Будет напечатано `{"world": 2, "hello": 1, "wonderful": 1}`. Метод `or_insert` возвращает изменяемую ссылку на значение (`&mut V`) по ключу. Мы сохраняем изменяемую ссылку в переменной `count`. Для того, чтобы присвоить переменной значение, необходимо произвести разименование с помощью звёздочки (`*`). Изменяемая ссылка удаляется сразу же после выхода из области видимости цикла `for`. Все эти изменения безопасны и согласуются с правилами заимствования.
 
 ### Функция хэширования
 
-По умолчанию `HashMap` использует криптографическую защитную функцию, которая может
-противостоять DOS-атакам. В этой реализации используется не самый быстрый алгоритм
-хэширования, но достаточно защищенный. Если после профилирования вашего кода окажется,
-что хэш функция очень медленная, вы можете её заменить на другую подобную функцию
-(*hasher*). Эта функция реализует поведение `BuildHasher`. Подробнее о поведении
-вы узнаете в главе 10. Вам совсем не обязательно реализовывать свою собственную функцию
-хэширования. crates.io имеет достаточное количество библиотек для этих целей.
+По умолчанию `HashMap` использует "криптографически сильную" функцию хэширования [^siphash](%5Bhttps://www.131002.net/siphash/siphash.pdf%5D(https://www.131002.net/siphash/siphash.pdf)) , которая может противостоять Denial of Service (DoS) атакам. В этой реализации используется не самый быстрый алгоритм хэширования, но данный компромисс, который идет с падением производительности, стОит того для лучшей безопасности. Если после профилирования вашего кода окажется, что хэш функция по умолчанию очень медленная, вы можете её заменить на другую подобную функцию с помощью указания другой ( *hasher* ). Эта функция реализует типаж `BuildHasher`. Подробнее о типажах вы узнаете в главе 10. Вам совсем не обязательно реализовывать свою собственную функцию хэширования, [crates.io](https://crates.io/) имеет достаточное количество библиотек, предоставляющих реализации для hasher с множеством общих алгоритмов хэширования.
 
-## Summary
+## Итоги
 
-Векторы, строки и хэш-карты помогают вам, когда необходимо сохранять, получать доступ
-и модифицировать данные. Для закрепления рассмотренного материала, пожалуйста,
-выполните следующие учебные задания:
+Векторы, строки и хэш-карты предоставят большое количество функционала для программ, когда необходимо сохранять, получать доступ и модифицировать данные. Теперь вы готовы решить следующие учебные задания:
 
-- Есть список целых чисел. Создайте функцию, входной параметр, которой вектор и возвращает: среднее; медиану (значение центрального элемента списка); значение, которое есть в списке набольшее количество раз.
-- Сконвертируюйте строку в Pig Latin, где первая согласная каждого слова перемещается в конец и добавлением окончания “ay”. Пример, “first” - “irst-fay”. Если слово начинается на гласную, добавляет в конец слова суффикс “hay”. Пример,   “apple” - “apple-hay”.
-- Using a hash map and vectors, create a text interface to allow a user to addemployee names to a department in a company. For example, “Add Sally toEngineering” or “Add Amir to Sales.” Then let the user retrieve a list of allpeople in a department or all people in the company by department, sortedalphabetically.
+- Есть список целых чисел. Создайте функцию, используйте вектор и верните из списка: среднее значение; медиану (значение элемента из середины списка после его сортировки); mode значение (то которое встречается в списке наибольшее количество раз; хэш-карта будет полезна в данном случае)
+- Сконвертируюйте строку в Pig Latin кодировку, где первая согласная каждого слова перемещается в конец и к ней добавляется окончание “ay”. Пример, “first” - “irst-fay”. Если слово начинается на гласную, то в конец слова добавляется суффикс “hay”. Пример, “apple” - “apple-hay”.
+- Используя хеш-карту и векторы, создайте текстовый интерфейс позволяющий пользователю добавлять имена сотрудников к названию отдела компании. Например, “Add Sally to Engineering” or “Add Amir to Sales”. Затем нужно получит список всех людей из отдела или всех людей в компании отсортированным в алфавитном порядке по отделам.
 
-Документация к стандартной библиотеке достаточно подробна и будет вам помогать в
-решении поставленных задач.
+Документация API стандартной библиотеки описывает методы у векторов, строк и хэш-карт, что будет вам помогать в решении упражнений.
 
-We’re getting into more complex programs in which operations can fail, so, it’s
-a perfect time to discuss error handling. We’ll do that next!
+Мы входим в более сложные программы, в которых операции могут потерпеть неудачу, так что это идеальное время для обсуждения обработки ошибок. Мы сделаем это дальше!
