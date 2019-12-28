@@ -9,7 +9,7 @@
 > panic = 'abort'
 > ```
 
-Let’s try calling `panic!` in a simple program:
+Давайте попробуем вызвать `panic!` в простой программе:
 
 <span class="filename">Файл: src/main.rs</span>
 
