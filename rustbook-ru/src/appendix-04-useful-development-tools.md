@@ -19,13 +19,11 @@ $ rustup component add rustfmt
 $ cargo fmt
 ```
 
-Эта команда отформатирует весь код на языке Rust в текущем крейте. Будет изменен только стиль кода, семантика останется прежней. Для большей информации о `rustfmt`, смотрите [документацию](https://github.com/rust-lang/rustfmt).
+Эта команда отформатирует весь код на языке Rust в текущем крейте. Будет изменен только стиль кода, семантика останется прежней. Для большей информации о `rustfmt`, смотрите [документацию].
 
 ### Исправление кода с `rustfix`
 
-The rustfix tool is included with Rust installations and can automatically fix
-some compiler warnings. If you’ve written code in Rust, you’ve probably seen
-compiler warnings. For example, consider this code:
+Инструмент rustfix включён в Rust, и вам не нужно дополнительно его устанавливать. Эта утилита умеет автоматически исправлять некоторые предупреждения компиляции. Если Вы пишите код на Rust, Вы наверное встречали предупреждения компилятора. Например, рассмотрим следующий код:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -135,11 +133,11 @@ fn main() {
 }
 ```
 
-Для большей информации о Clippy смотрите [документацию](https://github.com/rust-lang/rust-clippy).
+Для большей информации о Clippy смотрите [документацию].
 
 ### Интеграция с IDE используя Rust Language Server
 
-Для помощи в интеграции с IDE, Rust распространяет *Rust Language Server* (`rls`). Этот инструмент говорит на [Language Server Protocol](http://langserver.org/), который является спецификацией для общения между IDE и языками программирования. Различные клиенты могут использовать `rls`, например [плагин Rust для Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust).
+Для помощи в интеграции с IDE, Rust распространяет *Rust Language Server* (`rls`). Этот инструмент говорит на [Language Server Protocol], который является спецификацией для общения между IDE и языками программирования. Различные клиенты могут использовать `rls`, например [плагин Rust для Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust).
 
 Для установки `rls`, введите следующее:
 
@@ -149,4 +147,10 @@ $ rustup component add rls
 
 Затем установите поддержу языкового сервера в Вашей IDE. Вы получите такие вещи, как автодополнение, просмотр определения и подсветку ошибок.
 
-Для большей информации про `rls`, смотрите [документацию](https://github.com/rust-lang/rls).
+Для большей информации про `rls`, смотрите [документацию].
+
+
+[документацию]: https://github.com/rust-lang/rustfmt
+[документацию]: https://github.com/rust-lang/rust-clippy
+[Language Server Protocol]: http://langserver.org/
+[документацию]: https://marketplace.visualstudio.com/items?itemName=rust-lang.rust
