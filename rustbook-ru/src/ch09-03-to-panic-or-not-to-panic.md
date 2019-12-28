@@ -1,101 +1,139 @@
-## Ту пи о нот ту пи. Паниковать или нет, вот в чём вопрос. :-)
+## `panic!` или не `panic!`
 
-Как понять, использовать макрос `panic!` или нет и когда лучше всего возвращать
-значение `Result`? Если код уже находится в режиме паник - нет возможности восстановления.
-Заранее Вы только можете выбрать использование `panic!` для разных ситуаций.
-Например, вы решили, что можете решить, что в определенных случаях восстановление
-ненужно. Когда вы возвращаете
-некоторых из них возможно реализовать восстановление состояния работы программы,
-в некоторых нет. Когда вы возвращаете значение перечисления `Result` пользователю
-вашего кода, то вы предлагаете ему опцию, а не решаете за него. Пользователи решают
-- попытаться восстановить текущую работу программы или самим вызвать макрос `panic!`,
-создав невосстанавливаемую ситуацию. Возвращение значение перечисления `Result` -
-это поведение по умолчанию.
+So how do you decide when you should call `panic!` and when you should return
+`Result`? When code panics, there’s no way to recover. You could call `panic!`
+for any error situation, whether there’s a possible way to recover or not, but
+then you’re making the decision on behalf of the code calling your code that a
+situation is unrecoverable. When you choose to return a `Result` value, you
+give the calling code options rather than making the decision for it. The
+calling code could choose to attempt to recover in a way that’s appropriate for
+its situation, or it could decide that an `Err` value in this case is
+unrecoverable, so it can call `panic!` and turn your recoverable error into an
+unrecoverable one. Therefore, returning `Result` is a good default choice when
+you’re defining a function that might fail.
 
-### Примеры, шаблоны кода и тесты: все что нужны для паники
+In rare situations, it’s more appropriate to write code that panics instead of
+returning a `Result`. Let’s explore why it’s appropriate to panic in examples,
+prototype code, and tests. Then we’ll discuss situations in which the compiler
+can’t tell that failure is impossible, but you as a human can. The chapter will
+conclude with some general guidelines on how to decide whether to panic in
+library code.
 
-Очень мало бывает таких ситуаций, когда будет необходимо изменить это поведение.
-Далее, мы разберем работы с макросом `panic!`. Мы напишем и разберем код, протестируем
-его. Далее мы смоделируем ситуации, приводящие к срабатыванию `panic!` в коде стандартной
-библиотеки.
-Выбор вспомогательного метода обработки ошибок зависит от целей и задач, которые вы
-ставите. Методы `unwrap` и `expect` весьма удобны при начальном написании, кода.
+### Примеры, код прототипа и тесты
 
-### Случаи, когда вы можете получить больше информации для анализа, чем компилятор
+When you’re writing an example to illustrate some concept, having robust
+error-handling code in the example as well can make the example less clear. In
+examples, it’s understood that a call to a method like `unwrap` that could
+panic is meant as a placeholder for the way you’d want your application to
+handle errors, which can differ based on what the rest of your code is doing.
 
-Бывают ситуации, когда наилучшим решением было бы вызов метода `unwrap`, в тех случаях,
-когда часть кода вашей программы ожидает значение `Ok`. К сожалению, не всегда
-компилятор может корректно понять логику вашей программы. Если в соответствующем месте
-кода вашей программы вам необходимо получить результат работы в виде значения `Result`,
-то в этом случае, использование метода `unwrap` - наилучший выбор.
-Пример:
+Similarly, the `unwrap` and `expect` methods are very handy when prototyping,
+before you’re ready to decide how to handle errors. They leave clear markers in
+your code for when you’re ready to make your program more robust.
+
+If a method call fails in a test, you’d want the whole test to fail, even if
+that method isn’t the functionality under test. Because `panic!` is how a test
+is marked as a failure, calling `unwrap` or `expect` is exactly what should
+happen.
+
+### Cases in Which You Have More Information Than the Compiler
+
+It would also be appropriate to call `unwrap` when you have some other logic
+that ensures the `Result` will have an `Ok` value, but the logic isn’t
+something the compiler understands. You’ll still have a `Result` value that you
+need to handle: whatever operation you’re calling still has the possibility of
+failing in general, even though it’s logically impossible in your particular
+situation. If you can ensure by manually inspecting the code that you’ll never
+have an `Err` variant, it’s perfectly acceptable to call `unwrap`. Here’s an
+example:
 
 ```rust
 use std::net::IpAddr;
 
-fn main() {
-
-    let home = "127.0.0.1".parse::<IpAddr>().unwrap();
-    println!("{}", home);
-}
-
+let home: IpAddr = "127.0.0.1".parse().unwrap();
 ```
 
-В данном примере, мы создаём экземпляр перечисления `IpAddr` и защищаем код от
-возможных негативных последствий результата работы анализатора с помощью метода
-`unwrap`.
+We’re creating an `IpAddr` instance by parsing a hardcoded string. We can see
+that `127.0.0.1` is a valid IP address, so it’s acceptable to use `unwrap`
+here. However, having a hardcoded, valid string doesn’t change the return type
+of the `parse` method: we still get a `Result` value, and the compiler will
+still make us handle the `Result` as if the `Err` variant is a possibility
+because the compiler isn’t smart enough to see that this string is always a
+valid IP address. If the IP address string came from a user rather than being
+hardcoded into the program and therefore *did* have a possibility of failure,
+we’d definitely want to handle the `Result` in a more robust way instead.
 
 ### Руководство по обработке ошибок
 
-Рекомендуем использовать макрос `panic!`, когда существует вероятность того, что
-программа может войти в ошибочное состояние. Ошибочное состояние - это не выполняются
-предположения, соглашения, когда могут быть недоступны или утеряны какие-либо данные.
-Ошибочное состояние - это непредвиденная основной логикой программы проведение.
-Основные тезисы ошибочного состояния:
-- это состояние не является целью работы программы,
-- необходимо иметь возможность выйти из этого состояния после подобного происшествия,
-- нет идеального способа получения информации о причинах и последствиях
-этого состояния в полном объеме.
+It’s advisable to have your code panic when it’s possible that your code
+could end up in a bad state. In this context, a *bad state* is when some
+assumption, guarantee, contract, or invariant has been broken, such as when
+invalid values, contradictory values, or missing values are passed to your
+code—plus one or more of the following:
+
+- The bad state is not something that’s *expected* to happen occasionally.
+- Your code after this point needs to rely on not being in this bad state.
+- Нет хорошего способа закодировать эту информацию в используемых вами типах.
 
 Если пользователи вашего кода введут неправильные входные данные, то лучшим способом
 реакции на это может быть макрос `panic!` и информирование об этом. Также макрос `panic!`
 удобен при работе со сторонними библиотеками, логику работы кода, которых вы не
 можете контролировать.
 
-Если программа вошла в ошибочное состояние, но это состояние было спрогнозировано,
-наилучшим решением - вернуть значение перечисления `Result` с информацией о проблеме.
+However, when failure is expected, it’s more appropriate to return a `Result`
+than to make a `panic!` call. Examples include a parser being given malformed
+data or an HTTP request returning a status that indicates you have hit a rate
+limit. In these cases, returning a `Result` indicates that failure is an
+expected possibility that the calling code must decide how to handle.
 
-Когда код программы сначала проверяет корректность данных можно вызвать макрос `panic!`,
-лучше всего проинформировать о том, что входные данные неверны.
-Примерами такого поведения могут быть ошибки разбора текстовый информации, или
-сообщения об ошибочных состояниях HTTP запроса.
+When your code performs operations on values, your code should verify the
+values are valid first and panic if the values aren’t valid. This is mostly for
+safety reasons: attempting to operate on invalid data can expose your code to
+vulnerabilities. This is the main reason the standard library will call
+`panic!` if you attempt an out-of-bounds memory access: trying to access memory
+that doesn’t belong to the current data structure is a common security problem.
+Functions often have *contracts*: their behavior is only guaranteed if the
+inputs meet particular requirements. Panicking when the contract is violated
+makes sense because a contract violation always indicates a caller-side bug and
+it’s not a kind of error you want the calling code to have to explicitly
+handle. In fact, there’s no reasonable way for calling code to recover; the
+calling *programmers* need to fix the code. Contracts for a function,
+especially when a violation will cause a panic, should be explained in the API
+documentation for the function.
 
-В стандартной библиотеке наиболее частый вариант обработки ошибок - использования
-`panic!`. Это делается для безопасности. После получения данной информации, программист
-решает что делать и как лучше в данном конкретном случае обработать ошибку.
-В документации сообщается, если такое поведение возможно.
+However, having lots of error checks in all of your functions would be verbose
+and annoying. Fortunately, you can use Rust’s type system (and thus the type
+checking the compiler does) to do many of the checks for you. If your function
+has a particular type as a parameter, you can proceed with your code’s logic
+knowing that the compiler has already ensured you have a valid value. For
+example, if you have a type rather than an `Option`, your program expects to
+have *something* rather than *nothing*. Your code then doesn’t have to handle
+two cases for the `Some` and `None` variants: it will only have one case for
+definitely having a value. Code trying to pass nothing to your function won’t
+even compile, so your function doesn’t have to check for that case at runtime.
+Another example is using an unsigned integer type such as `u32`, which ensures
+the parameter is never negative.
 
-Множественные проверки на ошибки, конечно же делают ваш код более понятным в работе,
-но в тоже время достаточно неудобным для чтения. Для решения этого вопроса, в
-библиотеке Rust существует система типов (тех, которые могут быть обработаны компилятором).
-Эти типы помогают сделать Ваш код компактным и удобным для чтения. Если ваша функция
-имеет определённый параметр, вы даёте компилятору больше информации для анализа и
-принятия решений. Чем большое будет ограничений на тип данных, тем безопаснее будет
-ваш код.
+### Создание пользовательских типов для проверки
 
-### Создание типа данных для проверки
+Let’s take the idea of using Rust’s type system to ensure we have a valid value
+one step further and look at creating a custom type for validation. Recall the
+guessing game in Chapter 2 in which our code asked the user to guess a number
+between 1 and 100. We never validated that the user’s guess was between those
+numbers before checking it against our secret number; we only validated that
+the guess was positive. In this case, the consequences were not very dire: our
+output of “Too high” or “Too low” would still be correct. But it would be a
+useful enhancement to guide the user toward valid guesses and have different
+behavior when a user guesses a number that’s out of range versus when a user
+types, for example, letters instead.
 
-Давайте рассмотрим идею использования типов для проверки корректности данных.
-Для этого будем использовать пример нашей программы "Игры в угадай число" (Глава 2).
-В программе мы не анализировали входные данные. В ней мы просто проверяли данные на
-совпадение. Было бы удобно и интересно, если бы программа реагировала на введенные
-неправильные данные более точно.
-
-Один из способов решения - анализ строки. Рассмотрим пример:
+One way to do this would be to parse the guess as an `i32` instead of only a
+`u32` to allow potentially negative numbers, and then add a check for the
+number being in range, like so:
 
 ```rust,ignore
 loop {
-    // snip
+    // --snip--
 
     let guess: i32 = match guess.trim().parse() {
         Ok(num) => num,
@@ -108,31 +146,35 @@ loop {
     }
 
     match guess.cmp(&secret_number) {
-    // snip
+    // --snip--
 }
 ```
-Выражение `if` проверяет корректность значения - не выходит ли оно за заданный диапазон.
-Если значение в `if` - положительно - вызывается `continue` и итерация повторяется.
-После успешного прохождения дополнительных проверок - происходит сравнение значения
-с секретным числом.
 
-Хотя, конечно, подобные проверки - не идеальное решение, это может быть важно, когда
-в программе необходимо быть уверенным, что далее будет производиться работа с числом,
-входящим в определенный диапазон.
+The `if` expression checks whether our value is out of range, tells the user
+about the problem, and calls `continue` to start the next iteration of the loop
+and ask for another guess. After the `if` expression, we can proceed with the
+comparisons between `guess` and the secret number knowing that `guess` is
+between 1 and 100.
 
-Наилучшим решением может быть новый тип данных, который при создании нового экземпляра
-производит необходимые проверки. Т.е. сокращается количество однотипных действий,
-что может привести к повышению производительности и читаемости кода.
+However, this is not an ideal solution: if it was absolutely critical that the
+program only operated on values between 1 and 100, and it had many functions
+with this requirement, having a check like this in every function would be
+tedious (and might impact performance).
 
-Создадим структуру `Guess`, которая решает поставленную задачу:
+Instead, we can make a new type and put the validations in a function to create
+an instance of the type rather than repeating the validations everywhere. That
+way, it’s safe for functions to use the new type in their signatures and
+confidently use the values they receive. Listing 9-10 shows one way to define a
+`Guess` type that will only create an instance of `Guess` if the `new` function
+receives a value between 1 and 100.
 
 ```rust
 pub struct Guess {
-    value: u32,
+    value: i32,
 }
 
 impl Guess {
-    pub fn new(value: u32) -> Guess {
+    pub fn new(value: i32) -> Guess {
         if value < 1 || value > 100 {
             panic!("Guess value must be between 1 and 100, got {}.", value);
         }
@@ -142,109 +184,57 @@ impl Guess {
         }
     }
 
-    pub fn value(&self) -> u32 {
+    pub fn value(&self) -> i32 {
         self.value
     }
 }
 ```
 
-<span class="caption">Listing 9-8: Тип `Guess`, который создаёт свой экземпляр, только
-на основе данных, соответствующие заданным условиям</span>
+<span class="caption">Listing 9-10: A <code>Guess</code> type that will only continue with
+values between 1 and 100</span>
 
-Мы определили структуру с именем `Guess`, которая имеет поле `value` типа `u32`.
+First, we define a struct named `Guess` that has a field named `value` that
+holds an `i32`. This is where the number will be stored.
 
-Далее, мы реализуем функцию `new`, которая создаёт новый экземпляр `Guess`.
-У функции `new` имеется один входной параметр `value` типа `u32`.
-Код функции `new` тестирует входной параметр, чтобы убедиться, что его значение
-находится между 1 и 100. Если значение выходит за эти приделы, будет вызван
-макрос `panic!`. Условия при котором будет вызван этот макрос будут описаны в генерируемой
-документации к функции `Guess::new`. Мы поговорим подробнее о документации в Главе 14.
-Если результаты проверки значения `value` будут положительными - будет создан экземпляр
-структуры `Guess`.
+Then we implement an associated function named `new` on `Guess` that creates
+instances of `Guess` values. The `new` function is defined to have one
+parameter named `value` of type `i32` and to return a `Guess`. The code in the
+body of the `new` function tests `value` to make sure it’s between 1 and 100.
+If `value` doesn’t pass this test, we make a `panic!` call, which will alert
+the programmer who is writing the calling code that they have a bug they need
+to fix, because creating a `Guess` with a `value` outside this range would
+violate the contract that `Guess::new` is relying on. The conditions in which
+`Guess::new` might panic should be discussed in its public-facing API
+documentation; we’ll cover documentation conventions indicating the possibility
+of a `panic!` in the API documentation that you create in Chapter 14. If
+`value` does pass the test, we create a new `Guess` with its `value` field set
+to the `value` parameter and return the `Guess`.
 
-Далее, мы реализуем метод `value`, который использует ссылку `self` и не имеет
-других параметров. Этот метод возвращает значение поля `value` типа данных `u32`.
-Это синтаксическая структура похожа на реализацию свойства для чтения. Этот метод
-необходим для доступа к значению поля `value`, т.к. доступ к этом полю закрыт
-соответствующим спецификатором. Пользователи данной структуры обязаны использовать
-метод `Guess::new` для создания экземпляра.
+Next, we implement a method named `value` that borrows `self`, doesn’t have any
+other parameters, and returns an `i32`. This kind of method is sometimes called
+a *getter*, because its purpose is to get some data from its fields and return
+it. This public method is necessary because the `value` field of the `Guess`
+struct is private. It’s important that the `value` field be private so code
+using the `Guess` struct is not allowed to set `value` directly: code outside
+the module *must* use the `Guess::new` function to create an instance of
+`Guess`, thereby ensuring there’s no way for a `Guess` to have a `value` that
+hasn’t been checked by the conditions in the `Guess::new` function.
 
-Использование экземпляра структуры `Guess` заметно повышает читабельность кода,
-устраняет повторяемость ненужных проверок. Как следствие, всё это должно привести к
-повышению производительности программ.
+A function that has a parameter or returns only numbers between 1 and 100 could
+then declare in its signature that it takes or returns a `Guess` rather than an
+`i32` and wouldn’t need to do any additional checks in its body.
 
-Полный код улучшенного примера программы "Угадай число":
+## Summary
 
-```rust
-extern crate rand;
+Rust’s error handling features are designed to help you write more robust code.
+The `panic!` macro signals that your program is in a state it can’t handle and
+lets you tell the process to stop instead of trying to proceed with invalid or
+incorrect values. The `Result` enum uses Rust’s type system to indicate that
+operations might fail in a way that your code could recover from. You can use
+`Result` to tell code that calls your code that it needs to handle potential
+success or failure as well. Using `panic!` and `Result` in the appropriate
+situations will make your code more reliable in the face of inevitable problems.
 
-use std::io;
-use std::cmp::Ordering;
-use rand::Rng;
-
-pub struct Guess {
-    value: u32,
-}
-
-impl Guess {
-    pub fn new(value: u32) -> Guess {
-        if value < 1 || value > 100 {
-            panic!("Guess value must be between 1 and 100, got {}.", value);
-        }
-
-        Guess { value }
-    }
-
-    pub fn value(&self) -> u32 {
-        self.value
-    }
-}
-
-fn main() {
-    println!("Guess the number!");
-
-    let secret_number = rand::thread_rng().gen_range(1, 101);
-
-    loop {
-        println!("Please input your guess.");
-
-        let mut guess = String::new();
-
-        io::stdin()
-            .read_line(&mut guess)
-            .expect("Failed to read line");
-
-
-        let guess: i32 = match guess.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
-
-        let guess_item: Guess = Guess::new(guess as u32);
-        let guess: u32 = guess_item.value();
-
-        println!("You guessed: {}", guess);
-
-        match guess.cmp(&secret_number) {
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
-            Ordering::Equal => {
-                println!("You win!");
-                break;
-            }
-        }
-    }
-}
-```
-
-## Итоги
-
-Опции отслеживания и генерации сообщений об ошибках в Rust реализованы таким образом,
-чтобы помочь создавать удобный для чтения и использования код. Макрос `panic!`
-сигнализирует о том, что программа находится в аварийной ситуации и предоставляет
-возможности как для остановки работы программы, так и для восстановления её работы.
-Результатом работы макроса `panic!` является значение перечисления `Result`.
-Вы можете использовать содержание данного значения для анализа случившийся проблемы.
-
-Далее, мы познакомится с удобными практиками стандартной библиотеки использования
-перечислений `Option` и `Result` в шаблонах и рассмотрим возможности работы с шаблонами.
+Now that you’ve seen useful ways that the standard library uses generics with
+the `Option` and `Result` enums, we’ll talk about how generics work and how you
+can use them in your code.
