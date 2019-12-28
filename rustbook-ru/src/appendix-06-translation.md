@@ -1,7 +1,7 @@
 ## Приложение Е: Переводы книги
 
-For resources in languages other than English. Most are still in progress; see
-[the Translations label](https://github.com/rust-lang/book/issues?q=is%3Aopen+is%3Aissue+label%3ATranslations) to help or let us know about a new translation!
+Книга на различных языках кроме английского. Большинство всё ещё в процессе написания. Смотрите
+[таблицу переводов](https://github.com/rust-lang/book/issues?q=is%3Aopen+is%3Aissue+label%3ATranslations) для помощи. Пожалуйста, сообщайте нам о новых переводах!
 
 - [Português](https://github.com/rust-br/rust-book-pt-br) (BR)
 - [Português](https://github.com/nunojesus/rust-book-pt-pt) (PT)
