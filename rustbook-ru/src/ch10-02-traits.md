@@ -126,7 +126,7 @@ let article = NewsArticle {
 println!("New article available! {}", article.summarize());
 ```
 
-This code prints `New article available! (Read more...)`.
+Этот код печатает `New article available! (Read more...)` .
 
 Создание реализации по умолчанию для метода `summarize` не требует от нас изменений чего-либо в реализации `Summary` для типа `Tweet` в листинге 10-13. Причина заключается в том, что синтаксис для переопределения реализации по умолчанию является таким же, как синтаксис для реализации метода типажа, который не имеет реализации по умолчанию.
 
@@ -165,7 +165,7 @@ let tweet = Tweet {
 println!("1 new tweet: {}", tweet.summarize());
 ```
 
-This code prints `1 new tweet: (Read more from @horse_ebooks...)`.
+Этот код печатает `1 new tweet: (Read more from @horse_ebooks...)` .
 
 Обратите внимание, что невозможно вызвать реализацию по умолчанию из переопределенной реализации того же метода.
 
