@@ -4,15 +4,7 @@
 
 Правильность в наших программах - это степень, в которой наш код выполняет то для чего он предназначен. Rust разработан с высокой степенью заботы о правильности программ, но правильность сложна и её не легко доказать. Система типов Rust несёт огромную часть этого бремени, но система типов не может обнаружить каждый вид некорректности. Таким образом, Rust включает в себя поддержку написания автоматизированных программных тестов внутри языка.
 
-As an example, say we write a function called `add_two` that adds 2 to whatever
-number is passed to it. This function’s signature accepts an integer as a
-parameter and returns an integer as a result. When we implement and compile
-that function, Rust does all the type checking and borrow checking that you’ve
-learned so far to ensure that, for instance, we aren’t passing a `String` value
-or an invalid reference to this function. But Rust *can’t* check that this
-function will do precisely what we intend, which is return the parameter plus 2
-rather than, say, the parameter plus 10 or the parameter minus 50! That’s where
-tests come in.
+В качестве примера, скажем, мы пишем функцию с именем `add_two` которая добавляет 2 к любому числу передаваемому в неё. Сигнатура этой функции принимает параметром целое число и возвращает результат целое число. Когда мы реализуем и компилируем такую функцию, Rust выполняет все проверки типов и заимствований про которые вы уже узнали, чтобы убедиться например, что мы не передаем значение `String` или неверную ссылку в эту функцию. Но Rust *не может* проверить, что данная функция будет делать именно то, что мы намереваемся получить, что она возвращает входной параметр плюс 2, а не скажем, параметр плюс 10 или параметр минус 50! Это то, где тесты приходят на помощь.
 
 Мы можем написать тесты, которые утверждают, например, что когда мы передаём `3` в функцию `add_two`, возвращаемое значение будет `5`. Мы можем запускать эти тесты всякий раз, когда мы вносим изменения в наш код, чтобы убедиться, что любое существующее правильное поведение не изменилось.
 
