@@ -7,9 +7,15 @@
 <span class="filename">Файл: poem.txt</span>
 
 ```text
-Далее, мы дополним функционал нашей программы, чтобы иметь возможность читать
-содержимое файла. Для начала создадим файл в корне нашего проекта с текстовыми данными <code data-md-type="codespan">poem.txt</code> и добавим
-в него следующее содержание стихотворение “I’m nobody! Who are you?”:
+I'm nobody! Who are you?
+Are you nobody, too?
+Then there's a pair of us - don't tell!
+They'd banish us, you know.
+
+How dreary to be somebody!
+How public, like a frog
+To tell your name the livelong day
+To an admiring bog!
 ```
 
 <span class="caption">Листинг 12-3: Стихотворение Эмили Дикинсон “I’m nobody! Who are you?”</span>
