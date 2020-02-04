@@ -2,7 +2,7 @@
 
 *от Steve Klabnik, Carol Nichols и участников из сообщества Rust*
 
-[![gitlocalized ](https://gitlocalize.com/repo/3025/ru/badge.svg)](https://gitlocalize.com/repo/3025/ru?utm_source=badge)<br/><br/>Эта версия книги предполагает, что вы используете Rust версии 1.37.0 и больше, а во всех проектах в {em0}Cargo.toml{/em0} установлено {code1}edition="2018"{/code1} для использования идиом 2018 редакции Rust. Для установки или обновления Rust смотрите раздел ["Установка" главы 1]<comment>. Больше информации о редакциях можно найти в <a href="appendix-05-editions.html" data-md-type="link">приложении Д</a></comment><comment>.</comment>
+[![gitlocalized ](https://gitlocalize.com/repo/3025/ru/badge.svg)](https://gitlocalize.com/repo/3025/ru?utm_source=badge)<br/><br/>Эта версия книги предполагает, что вы используете Rust версии 1.37.0 и больше, а во всех проектах в *Cargo.toml* установлено `edition="2018"` для использования идиом 2018 редакции Rust. Для установки или обновления Rust смотрите раздел ["Установка" главы 1]<comment></comment>. Больше информации о редакциях можно найти в [приложении Д]<comment></comment>.
 
 2018 редакция языка Rust включает в себя улучшению, которые делаю Rust более эргономичным и большее лёгким в изучении. Эта версия книги содержит ряд изменений, отражающих эти улучшения:
 
@@ -20,8 +20,8 @@
 HTML-версия книги доступна онлайн по адресам
 [https://doc.rust-lang.org/stable/book/](https://doc.rust-lang.org/stable/book/)<sup>(англ.)</sup> и [https://doc.rust-lang.ru/book](https://doc.rust-lang.ru/book)<sup>(рус.)</sup> и оффлайн, при установке Rust с помощью `rustup`: просто запустите `rustup docs --book` чтобы открыть её.
 
-Английский вариант книги доступен [в печатном виде и в ebook формате от No Starch Press].
+Английский вариант книги доступен [в печатном виде и в ebook формате от No Starch Press](appendix-05-editions.html).
 
 
 ["Установка" главы 1]: ch01-01-installation.html
-[в печатном виде и в ebook формате от No Starch Press]: appendix-05-editions.html
+[приложении Д]: appendix-05-editions.html
