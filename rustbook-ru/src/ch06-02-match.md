@@ -110,10 +110,10 @@ fn value_in_cents(coin: Coin) -> u32 {
         }
     }
 }
+
 fn main() {
     value_in_cents(Coin::Quarter(UsState::Alaska));
 }
-
 ```
 
 Если бы мы сделаем вызов как `value_in_cents(Coin::Quarter(UsState::Alaska))`, то `coin` будет иметь значение `Coin::Quarter(UsState::Alaska)`. Когда мы сравниваем это значение с каждым из рукавов, ни одно из них не совпадёт пока мы не достигнем варианта `Coin::Quarter(state)`. В этой точке привязка для переменной `state` будет иметь значение из перечисления равное `UsState::Alaska`. Можно затем использовать эту привязку в выражении `println!`, получая внутреннее значение состояния из типа `Coin` варианта перечисления `Quarter`.
@@ -145,7 +145,7 @@ fn main() {
 }
 ```
 
-<span class="caption">Листинг 6-5: Функция, которая использует выражение <code>match</code> с типом <code>Option<i32></i32></code></span>
+<span class="caption">Листинг 6-5: Функция, которая использует выражение <code>match</code> с типом <code>Option<i32></code></span>
 
 Давайте рассмотрим первое выполнение `plus_one` более подробно. Когда мы вызываем `plus_one(five)`, то переменная `x` в теле `plus_one` будет иметь значение `Some(5)`. Затем мы сравниваем её с каждым рукавом match выражения.
 
