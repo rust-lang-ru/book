@@ -1,25 +1,22 @@
-## Защита от создания ссылочного зацикливания и утечки памяти
+## Ссылочные зацикливания могут приводить к утечке памяти
 
-Компилятор обеспечивает множеством различных защит от ошибок: от недействительных
-ссылок, эффект гонки. Также весьма удобна система обеспечения очистки ресурсов памяти
-(что также называют утечкой памяти). В тоже время, компилятор не может гарантировать,
-что это невозможно. Иными словами утечка памяти может быть безопасной.
+Гарантии безопасности памяти в Rust затрудняют, но не делают невозможным случайное выделения памяти, которая никогда не очищается (что известно как *утечка памяти* ). Полное предотвращение утечек памяти не гарантируется Rust, так же как не является гарантией отсутствие гонок данных проверенных во время компиляции, а это означает, что утечки памяти безопасны в Rust. Мы можем увидеть, что Rust допускает утечки памяти, используя типы `Rc<T>` и `RefCell<T>`: можно создавать связи, где элементы ссылаются друг на друга в цикле. Это приводит к утечкам памяти, поскольку счетчик ссылок каждого элемента в цикле никогда не достигнет 0, а значения никогда не будут удалены.
 
-Используя умные указатели `Rc<T>` и `RefCell<T>` возможно создать цепочки ссылок,
-где элементы циклично ссылаются друг на друга. Это плохая ситуация, т.к. количество
-ссылок каждого элемента никогда не достигнет 0 и, следовательно, постоянно будет
-находится в памяти. Давайте разберёмся, как это происходит и постараемся найти
-пути предотвращения.
+### Создание ссылочного зацикливания
 
-В примере кода 15-16 мы будем использовать другой вариант определения `List`.
-Мы будем снова сохранять значение `i32` в первом элементе. Второй элемент теперь
-будет `RefCell<Rc<List>>`. Вместо изменения значения первого элемента мы будем
-изменять второй. Мы также добавим метод `tail` для удобного доступа к второму
-элементу:
+Давайте посмотрим, как может произойти ситуация ссылочного зацикливания и как её предотвратить, начиная с определения перечисления `List` и метода `tail` в листинге 15-25:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
-```rust,ignore
+<!-- Hidden fn main is here to disable the automatic wrapping in fn main that
+doc tests do; the `use List` fails if this listing is put within a main -->
+
+```rust
+# fn main() {}
+use std::rc::Rc;
+use std::cell::RefCell;
+use crate::List::{Cons, Nil};
+
 #[derive(Debug)]
 enum List {
     Cons(i32, RefCell<Rc<List>>),
@@ -28,23 +25,21 @@ enum List {
 
 impl List {
     fn tail(&self) -> Option<&RefCell<Rc<List>>> {
-        match *self {
-            Cons(_, ref item) => Some(item),
+        match self {
+            Cons(_, item) => Some(item),
             Nil => None,
         }
     }
 }
 ```
 
-<span class="caption">код 15-16: определение списка cons, который содержит `RefCell`.
-Мы может изменять `Cons` значение, на которое элемент ссылается</span>
+<span class="caption">Листинг 15-25: Определение списка cons, который содержит <code>RefCell</code>, так что можно изменять то, на что ссылается вариант <code>Cons</code></span>
 
-Далее, в коде 15-17, мы создадим экземпляр `List` и сохраним его в переменную `a`,
-которая изначально будет иметь значения `5, Nil`. Далее, мы создаём переменную
-`b` содержащую 10 и ссылку на `a`. И в конце мы изменяем `a` так, что она ссылается
-на `b` вместо `Nil`. Так мы создаём зацикливание ссылок:
+Далее, в коде 15-17, мы создадим экземпляр `List` и сохраним его в переменную `a`, которая изначально будет иметь значения `5, Nil`. Далее, мы создаём переменную `b` содержащую 10 и ссылку на `a`. И в конце мы изменяем `a` так, что она ссылается на `b` вместо `Nil`. Так мы создаём зацикливание ссылок:
 
-<span class="filename">Filename: src/main.rs</span>
+В листинге 15-26 мы добавляем `main` функцию, которая использует определения листинга 15-25. Этот код создает список в переменной `a` и список `b`, который указывает на список `a`. Затем он изменяет список внутри `a` так, чтобы он указывал на `b`, создавая ссылочное зацикливание. В коде есть  инструкции `println!`, чтобы показать значения счетчиков ссылок в различных точках этого процесса.
+
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 # #[derive(Debug)]
@@ -86,60 +81,67 @@ fn main() {
     println!("b rc count after changing a = {}", Rc::strong_count(&b));
     println!("a rc count after changing a = {}", Rc::strong_count(&a));
 
-    // Uncomment the next line to see that we have a cycle; it will
-    // overflow the stack
+    // Удалите коментарий ниже, чтобы увидеть зацикленность;
+    // будет переполнение стека
     // println!("a next item = {:?}", a.tail());
 }
 ```
 
-<span class="caption">код 15-17: создание циклической ссылки</span>
+<span class="caption">Листинг 15-26: Создание ссылочного зацикливания из двух значений <code>List</code> указывающих друг на друга</span>
 
-Мы использовали метод `tail` для получения ссылки на `RefCell` в `a`, которую мы
-поместили в переменную `link`. Далее, мы использовали метод `borrow_mut` для получения
-ссылки на `RefCell` в для изменения экземпляра `Rc`, который содержал `Nil` на
-`Rc` в `b`. В результате мы создали следующее (15-18):
+Мы создаем экземпляр `Rc<List>` содержащий значение `List` в переменной `a` с начальным списком `5, Nil`. Затем мы создаем экземпляр `Rc<List>` содержащий другое значение `List` в переменной `b`, которое содержит значение 10 и указывает на список в `a`.
 
-<img alt="Reference cycle of lists" src="img/trpl15-04.svg" class="center" style="width: 50%;" />
+We modify `a` so it points to `b` instead of `Nil`, creating a cycle. We
+do that by using the `tail` method to get a reference to the
+`RefCell<Rc<List>>` in `a`, which we put in the variable `link`. Then we use
+the `borrow_mut` method on the `RefCell<Rc<List>>` to change the value inside
+from an `Rc<List>` that holds a `Nil` value to the `Rc<List>` in `b`.
 
-<span class="caption">Figure 15-18: A reference cycle of lists `a` and `b`
-pointing to each other</span>
+Когда мы запускаем этот код, оставив последний `println!` закомментированным в данный момент, мы получим вывод:
 
-Если вы раскоментируете последнюю строку с вызовом макроса `println!` вы получите
-ошибку переполнения (overflow).
+```text
+a initial rc count = 1
+a next item = Some(RefCell { value: Nil })
+a rc count after b creation = 2
+b initial rc count = 1
+b next item = Some(RefCell { value: Cons(5, RefCell { value: Nil }) })
+b rc count after changing a = 2
+a rc count after changing a = 2
+```
 
-Посмотрите на результат вывода на консоль! Защита сработала - ничего страшного не
-случилось, но это говорит о более сложной проблема - программа используем больше
-памяти, чем ей нужно.
+Счетчик ссылок экземпляров `Rc<List>` в обоих переменных `a` и `b` равен 2 после того, как мы изменяем список внутри `a`, чтобы он указывал на `b`. В конце `main` Rust сначала попытается удалить `b`, что уменьшит количество экземпляров `Rc<List>` в `b` на 1.
 
-Now, as you can see, creating reference cycles is difficult and inconvenient in
-Rust. But it’s not impossible: preventing memory leaks in the form of reference
-cycles is not one of the guarantees Rust makes. If you have `RefCell<T>` values
-that contain `Rc<T>` values or similar nested combinations of types with
-interior mutability and reference counting, be aware that you’ll have to ensure
-that you don’t create cycles. In the example in Listing 15-14, the solution
-would probably be to not write code that could create cycles like this, since
-we do want `Cons` variants to own the list they point to.
+Однако, поскольку `a` все еще ссылается на `Rc<List>` который был в `b` , этот `Rc<List>` имеет счетчик 1, а не 0, поэтому память, которую `Rc<List>` держит в куче, не будет удалена. Память просто будет навсегда занята со счетчиком 1. Чтобы визуализировать этот ссылочный цикл, мы создали диаграмму на рисунке 15-4.
 
-With data structures like graphs, it’s sometimes necessary to have references
-that create cycles in order to have parent nodes point to their children and
-children nodes point back in the opposite direction to their parents, for
-example. If one of the directions is expressing ownership and the other isn’t,
-one way of being able to model the relationship of the data without creating
-reference cycles and memory leaks is using `Weak<T>`. Let’s explore that next!
+<img alt="Reference cycle of lists" src="../../rustbook-en/src/img/trpl15-04.svg" class="center">
 
-### Предотвращение циклических ссылок: замена умного указателя `Rc<T>` на `Weak<T>`
+<span class="caption">Рисунок 15-4: Ссылочная зацикленность списков <code>a</code> и <code>b</code> указывающих друг на друга</span>
 
-Стандартная библиотека Rust предоставляет умный указатель `Weak<T>`. Его необходимо
-использовать для предотвращения циклических ссылок. Эта проблема решается путем
-однапраленного владения. Мы уже показывали, как клонирования `Rc<T>` увеличивает
-`strong_count` ссылки. `Weak<T>` позволяет не увеличивать `strong_count`, а увеличивать
-`weak_count` на `Rc`. Когда `Rc` выходит за область видимости внутреннее значение
-удаляется если `strong_count` = 0. Для того чтобы получить значение из `Weak<T>`
-прежде всего, нам необходимо обновить его с помощью метода `upgrage`. Результатом
-будет `Some` или `None`.
+Если вы раскомментируете последний `println!` и запустить программу, Rust будет пытаться печатать зацикленность в `a`, указывающей на `b`, указывающей на `a` и так далее, пока не переполниться стек.
 
+В этом случае, сразу после создания ссылочной зацикленности, программа завершается. Последствия зацикленности не очень страшны. Однако, если более сложная программа выделяет много памяти в цикле и удерживает ее в течение длительного времени, программа использует больше памяти, чем необходимо, что может перегрузить систему вызывая утечки памяти.
 
-<span class="filename">Filename: src/main.rs</span>
+Вызвать образование ссылочной зацикленности не просто, но и не невозможно. Если у вас есть значения `RefCell<T>` которые содержат значения `Rc<T>` или аналогичные вложенные комбинации типов с внутренней изменчивостью и подсчетом ссылок, вы должны убедиться, что вы не создаете зацикленность; Вы не можете полагаться на то, что Rust их обнаружит. Создание ссылочной зацикленности являлось бы логической ошибкой в программе, для которой вы должны использовать автоматические тесты, проверку кода и другие практики разработки программного обеспечения для ее минимизации.
+
+Другое решение для избежания ссылочной зацикленности - это реорганизация ваших структур данных, чтобы некоторые ссылки выражали владение, а другие - отсутствие владения. В результате можно иметь циклы, построенные на некоторых отношениях владения и некоторые не основанные на отношениях владения, тогда только отношения владения влияют на то, можно ли удалить значение. В листинге 15-25 мы всегда хотим, чтобы варианты `Cons` владели своим списком, поэтому реорганизация структуры данных невозможна. Давайте рассмотрим пример с использованием графов, состоящих из родительских и дочерних узлов, чтобы увидеть, когда отношения владения не являются подходящим способом предотвращения ссылочной зацикленности.
+
+### Предотвращение ссылочной зацикленности: замена умного указателя `Rc<T>` на `Weak<T>`
+
+До сих пор мы демонстрировали, что вызов `Rc::clone` увеличивает значение `strong_count` экземпляра типа `Rc<T>`, а экземпляр `Rc<T>` очищается только в том случае, если его значение `strong_count` равно 0. Вы также можете создать *слабую ссылку* (weak reference) на значение внутри экземпляра `Rc<T>` путем вызова `Rc::downgrade` и передачи ссылки на `Rc<T>`. Когда вы вызываете `Rc::downgrade`, вы получаете умный указатель типа `Weak<T>`. Вместо увеличения значения `strong_count` в экземпляре `Rc<T>` на 1, вызов `Rc::downgrade` увеличивает значение `weak_count` на 1. Тип `Rc<T>` использует `weak_count` для отслеживания того, сколько существует `Weak<T>` ссылок, аналогично `strong_count`. Разница заключается в том, что `weak_count` не должно быть равно 0, чтобы очистить такой экземпляр типа `Rc<T>`.
+
+Сильные ссылки - это способ, которым вы можете делиться владением экземпляра `Rc<T>`. Слабые ссылки не выражают отношения владения. Они не будут вызывать ссылочную зацикленность, потому что любой цикл, включающий некоторые слабые ссылки, будет прерван, как только счетчик сильных ссылок вовлеченных значений будет равен 0.
+
+Поскольку значение, на которое ссылается `Weak<T>` могло быть удалено, то необходимо убедиться, что это значение все еще существует, чтобы сделать что-либо со значением на которое указывает `Weak<T>`. Делайте это вызывая метод `upgrade` у экземпляра типа `Weak<T>`, который вернет `Option<Rc<T>>`. Вы получите результат `Some`, если значение `Rc<T>` еще не было удалено и результат `None`, если значение `Rc<T>` было удалено. Поскольку `upgrade` возвращает тип `Option<T>`, Rust обеспечит обработку обоих случаев `Some` и `None` и не будет некорректного указателя.
+
+В качестве примера, вместо того чтобы использовать список чей элемент знает только о следующем элементе, мы создадим дерево, чьи элементы знают о своих дочерних элементах *и* о своих родительских элементах.
+
+#### Создание древовидной структуры данных: `Node` с дочерними узлами
+
+To start, we’ll build a tree with nodes that know about their child nodes.
+We’ll create a struct named `Node` that holds its own `i32` value as well as
+references to its children `Node` values:
+
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 use std::rc::Rc;
@@ -151,16 +153,23 @@ struct Node {
     children: RefCell<Vec<Rc<Node>>>,
 }
 ```
-Мы хотим, чтобы `Node` мог иметь своих собственных подчиненных узлов и хотим иметь
-возможность непосредственного доступа к ним. Поэтому в `Vec` элементы `Rc<Node>`.
-Мы также хотим иметь возможность изменять узлы и их подчиненность, поэтому `Vec`
-обёрнут умным указателем `RefCell`. В примере 15-19 мы создадим экземпляр `Node`
-с именем `leaf`с значением 3 и без подчиненных узлов и другой экземпляр `branch`
-со значением 5 и `leaf`:
 
-<span class="filename">Filename: src/main.rs</span>
+Мы хотим, чтобы `Node` владел своими дочерними узлами и мы хотим поделиться этим владением с переменными так, чтобы мы могли напрямую обращаться к каждому `Node` в дереве. Для этого мы определяем внутренние элементы типа `Vec<T>` как значения типа `Rc<Node>`. Мы также хотим изменять те узлы, которые являются дочерними по отношению к другому узлу, поэтому у нас есть тип `RefCell<T>` в поле `children` оборачивающий тип `Vec<Rc<Node>>`.
 
-```rust,ignore
+Далее мы будем использовать наше определение структуры и создадим один экземпляр `Node` с именем `leaf` со значением 3 и без дочерних элементов, а другой экземпляр с именем `branch` со значением 5 и `leaf` в качестве одого из его дочерних элементов, как показано в листинге 15-27:
+
+<span class="filename">Файл: src/main.rs</span>
+
+```rust
+# use std::rc::Rc;
+# use std::cell::RefCell;
+#
+# #[derive(Debug)]
+# struct Node {
+#     value: i32,
+#    children: RefCell<Vec<Rc<Node>>>,
+# }
+#
 fn main() {
     let leaf = Rc::new(Node {
         value: 3,
@@ -169,31 +178,24 @@ fn main() {
 
     let branch = Rc::new(Node {
         value: 5,
-        children: RefCell::new(vec![leaf.clone()]),
+        children: RefCell::new(vec![Rc::clone(&leaf)]),
     });
 }
 ```
 
-<span class="caption">Listing 15-19: Создание узла `leaf` и`branch`, где `branch`
-родитель `leaf`, но `leaf` не имеет ссылки на `branch`</span>
+<span class="caption">Листинг 15-27. Создание узла <code>leaf</code> без дочерних узлов и узла <code>branch</code> с <code>leaf</code> как одним дочерним узлом</span>
 
-The `Node` in `leaf` now has two owners: `leaf` and `branch`, since we clone
-the `Rc` in `leaf` and store that in `branch`. The `Node` in `branch` knows
-it’s related to `leaf` since `branch` has a reference to `leaf` in
-`branch.children`. However, `leaf` doesn’t know that it’s related to `branch`,
-and we’d like `leaf` to know that `branch` is its parent.
+Мы клонируем  содержимое `Rc<Node>` из переменной  `leaf` и сохраняем его в переменной `branch`, что означает, что `Node` в  `leaf` теперь имеет двух владельцев: `leaf` и `branch`. Мы можем получить доступ из `branch` к `leaf` через обращение `branch.children`, но нет способа добраться из  `leaf` к `branch`. Причина в том, что `leaf` не имеет ссылки на `branch` и не знает, что они связаны. Мы хотим, чтобы `leaf` знал, что `branch` является его родителем. Мы сделаем это далее.
 
-To do that, we’re going to add a `parent` field to our `Node` struct
-definition, but what should the type of `parent` be? We know it can’t contain
-an `Rc<T>`, since `leaf.parent` would point to `branch` and `branch.children`
-contains a pointer to `leaf`, which makes a reference cycle. Neither `leaf` nor
-`branch` would get dropped since they would always refer to each other and
-their reference counts would never be zero.
+#### Добавление ссылки от ребенка к его родителю
 
-So instead of `Rc`, we’re going to make the type of `parent` use `Weak<T>`,
-specifically a `RefCell<Weak<Node>>`:
+Для того, чтобы дочерний узел знал о своем родительском узле нужно добавить поле `parent` в наше определение структуры `Node`. Проблема в том, чтобы решить, каким должен быть тип `parent`. Мы знаем, что он не может содержать `Rc<T>`, потому что это создаст ссылочную зацикленность с `leaf.parent` указывающей на `branch` и `branch.children`, указывающе на `leaf`, что приведет к тому, что их значения `strong_count` никогда не будут равны 0.
 
-<span class="filename">Filename: src/main.rs</span>
+Подумаем об этих отношениях по-другому, родительский узел должен владеть своими потомками: если родительский узел удаляется, его дочерние узлы также должны быть удалены. Однако дочерний элемент не должен владеть своим родителем: если мы удаляем дочерний узел то родительский элемент все равно должен существовать. Это случай для использования слабых ссылок!
+
+Поэтому вместо `Rc<T>` мы сделаем так, чтобы поле `parent` использовало тип `Weak<T>`, а именно `RefCell<Weak<Node>>`. Теперь наше определение структуры `Node` выглядит так:
+
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 use std::rc::{Rc, Weak};
@@ -207,14 +209,21 @@ struct Node {
 }
 ```
 
-This way, a node will be able to refer to its parent node if it has one,
-but it does not own its parent. A parent node will be dropped even if
-it has child nodes referring to it, as long as it doesn’t have a parent
-node as well. Now let’s update `main` to look like Listing 15-20:
+Узел сможет ссылаться на свой родительский узел, но не владеет своим родителем. В листинге 15-28 мы обновляем `main` на использование нового определения так, чтобы у узла `leaf` был бы способ ссылаться на его родительский узел `branch`:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
-```rust,ignore
+```rust
+# use std::rc::{Rc, Weak};
+# use std::cell::RefCell;
+#
+# #[derive(Debug)]
+# struct Node {
+#     value: i32,
+#     parent: RefCell<Weak<Node>>,
+#     children: RefCell<Vec<Rc<Node>>>,
+# }
+#
 fn main() {
     let leaf = Rc::new(Node {
         value: 3,
@@ -227,7 +236,7 @@ fn main() {
     let branch = Rc::new(Node {
         value: 5,
         parent: RefCell::new(Weak::new()),
-        children: RefCell::new(vec![leaf.clone()]),
+        children: RefCell::new(vec![Rc::clone(&leaf)]),
     });
 
     *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
@@ -236,30 +245,19 @@ fn main() {
 }
 ```
 
-<span class="caption">Listing 15-20: A `leaf` node and a `branch` node where
-`leaf` has a `Weak` reference to its parent, `branch`</span>
+<span class="caption">Листинг 15-28: Узел <code>leaf</code> со слабой ссылкой на свой родительский узел <code>branch</code>.</span>
 
-Creating the `leaf` node looks similar; since it starts out without a parent,
-we create a new `Weak` reference instance. When we try to get a reference to
-the parent of `leaf` by using the `upgrade` method, we’ll get a `None` value,
-as shown by the first `println!` that outputs:
+Создание узла `leaf` выглядит так же, как при создании узла `leaf` в листинге 15-27, за исключением поля `parent`: узел `leaf` начинается без родителя, поэтому мы создаем новый пустой ссылочный экземпляр `Weak<Node>`.
+
+На этом этапе, когда мы пытаемся получить ссылку на родительский узел у узла `leaf` с помощью метода `upgrade`, мы получаем значение `None`. Мы видим это в выводе первого `println!` выражения:
 
 ```text
 leaf parent = None
 ```
 
-Similarly, `branch` will also have a new `Weak` reference, since `branch` does
-not have a parent node. We still make `leaf` be one of the children of
-`branch`. Once we have a new `Node` instance in `branch`, we can modify `leaf`
-to have a `Weak` reference to `branch` for its parent. We use the `borrow_mut`
-method on the `RefCell` in the `parent` field of `leaf`, then we use the
-`Rc::downgrade` function to create a `Weak` reference to `branch` from the `Rc`
-in `branch.`
+Когда мы создаем узел `branch` у него также будет новая ссылка типа `Weak<Node>` в поле `parent`, потому что узел `branch` не имеет своего родительского узла. У нас все еще есть `leaf` как один из потомков узла `branch`. Когда мы получили экземпляр `Node` в переменной `branch`, мы можем изменить переменную `leaf` чтобы дать ей `Weak<Node>` ссылку на ее родителя. Мы используем метод `borrow_mut` у типа `RefCell<Weak<Node>>` поля `parent` у `leaf`, а затем используем функцию `Rc::downgrade` для создания `Weak<Node>` ссылки на `branch` из `Rc<Node>` в `branch`.
 
-When we print out the parent of `leaf` again, this time we’ll get a `Some`
-variant holding `branch`. Also notice we don’t get a cycle printed out that
-eventually ends in a stack overflow like we did in Listing 15-14: the `Weak`
-references are just printed as `(Weak)`:
+Когда мы снова напечатаем родителя `leaf` то в этот раз мы получим вариант `Some` содержащий `branch`, теперь `leaf` может получить доступ к своему родителю! Когда мы печатаем `leaf`, мы также избегаем цикла, который в конечном итоге заканчивался переполнением стека, как в листинге 15-26; ссылки типа `Weak<Node>`  печатаются как `(Weak)`:
 
 ```text
 leaf parent = Some(Node { value: 5, parent: RefCell { value: (Weak) },
@@ -267,16 +265,25 @@ children: RefCell { value: [Node { value: 3, parent: RefCell { value: (Weak) },
 children: RefCell { value: [] } }] } })
 ```
 
-The fact that we don’t get infinite output (or at least until the stack
-overflows) is one way we can see that we don’t have a reference cycle in this
-case. Another way we can tell is by looking at the values we get from calling
-`Rc::strong_count` and `Rc::weak_count`. In Listing 15-21, let’s create a new
-inner scope and move the creation of `branch` in there, so that we can see what
-happens when `branch` is created and then dropped when it goes out of scope:
+Отсутствие бесконечного вывода означает, что этот код не создал ссылочной зацикленности. Мы также можем сказать это, посмотрев на значения, которые мы получаем при вызове `Rc::strong_count` и `Rc::weak_count`.
 
-<span class="filename">Filename: src/main.rs</span>
+#### Визуализация изменений в `strong_count` и `weak_count`
 
-```rust,ignore
+Давайте посмотрим, как изменяются значения `strong_count` и `weak_count` экземпляров типа `Rc<Node>` с помощью создания новой внутренней области видимости и перемещая создания экземпляра `branch` в эту область. Таким образом можно увидеть, что происходит, когда `branch` создается и затем удаляется при выходе из области видимости. Изменения показаны в листинге 15-29:
+
+<span class="filename">Файл: src/main.rs</span>
+
+```rust
+# use std::rc::{Rc, Weak};
+# use std::cell::RefCell;
+#
+# #[derive(Debug)]
+# struct Node {
+#     value: i32,
+#     parent: RefCell<Weak<Node>>,
+#     children: RefCell<Vec<Rc<Node>>>,
+# }
+#
 fn main() {
     let leaf = Rc::new(Node {
         value: 3,
@@ -294,8 +301,9 @@ fn main() {
         let branch = Rc::new(Node {
             value: 5,
             parent: RefCell::new(Weak::new()),
-            children: RefCell::new(vec![leaf.clone()]),
+            children: RefCell::new(vec![Rc::clone(&leaf)]),
         });
+
         *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
 
         println!(
@@ -320,53 +328,22 @@ fn main() {
 }
 ```
 
-<span class="caption">Listing 15-21: Creating `branch` in an inner scope and
-examining strong and weak reference counts of `leaf` and `branch`</span>
+<span class="caption">Листинг 15-29: Создание <code>branch</code> во внутренней области и проверка сильных и слабых ссылок</span>
 
-Right after creating `leaf`, its strong count is 1 (for `leaf` itself) and its
-weak count is 0. In the inner scope, after we create `branch` and associate
-`leaf` and `branch`, `branch` will have a strong count of 1 (for `branch`
-itself) and a weak count of 1 (for `leaf.parent` pointing to `branch` with a
-`Weak<T>`). `leaf` will have a strong count of 2, since `branch` now has a
-clone the `Rc` of `leaf` stored in `branch.children`. `leaf` still has a weak
-count of 0.
+После того, как `leaf` создан его `Rc<Node>` имеет значения strong count равное 1 и weak count равное 0. Во внутренней области мы создаем `branch` и связываем ее с `leaf`, после чего при печати значений счетчиков `Rc<Node>` в `branch` они будет иметь strong count 1 и weak count 1 (для `leaf.parent` указывающего на `branch` с `Weak<Node>` ). Когда мы распечатаем счетчики из `leaf`, мы увидим, что они будут иметь strong count 2, потому что `branch` теперь имеет клон `Rc<Node>` переменной `leaf` хранящийся в `branch.children`, но все равно будет иметь weak count 0.
 
-When the inner scope ends, `branch` goes out of scope, and its strong count
-decreases to 0, so its `Node` gets dropped. The weak count of 1 from
-`leaf.parent` has no bearing on whether `Node` gets dropped or not, so we don’t
-have a memory leak!
+Когда заканчивается внутренняя область видимости,  `branch` выходит из области видимости и strong count `Rc<Node>` уменьшается до 0, поэтому его `Node` удаляется. Weak count 1 из `leaf.parent` не имеет никакого отношения к тому, был ли `Node` удален, поэтому не будет никаких утечек памяти!
 
-If we try to access the parent of `leaf` after the end of the scope, we’ll get
-`None` again like we did before `leaf` had a parent. At the end of the program,
-`leaf` has a strong count of 1 and a weak count of 0, since `leaf` is now the
-only thing pointing to it again.
+Если мы попытаемся получить доступ к родителю переменной `leaf` после окончания области видимости, мы снова получим значение `None`. В конце программы `Rc<Node>` внутри `leaf` имеет strong count 1 и weak count 0 потому что переменная `leaf` снова является единственной ссылкой на `Rc<Node>`.
 
-All of the logic managing the counts and whether a value should be dropped or
-not was managed by `Rc` and `Weak` and their implementations of the `Drop`
-trait. By specifying that the relationship from a child to its parent should be
-a `Weak<T>` reference in the definition of `Node`, we’re able to have parent
-nodes point to child nodes and vice versa without creating a reference cycle
-and memory leaks.
+Вся логика, которая управляет счетчиками и сбросом их значений, встроена внутри `Rc<T>` и `Weak<T>` и их реализаций типажа `Drop`. Указав, что отношение из дочернего к родительскому элементу должно быть ссылкой типа  `Weak<T>` в определении `Node`, делает возможным иметь родительские узлы, указывающие на дочерние узлы и наоборот, не создавая ссылочной зацикленности и утечек памяти.
 
 ## Итоги
 
-Мы рассмотрели, как вы можете использовать различные типы умных указателей для выбора
-различных гарантий и компромиссов, в отличии от обычных ссылок.
-`Box <T>` имеет известный размер и указывает на данные, выделенные в куче.
-`Rc <T>` отслеживает количество ссылок на данные в куче, так что
-данные могут иметь несколько владельцев.
-`RefCell <T>` с его внутренней изменчивостью дает нам тип, который может использоваться
-там, где нам нужен неизменный тип, и применяет правила заимствования во время
-выполнения, а не во время компиляции.
+В этой главе рассказано как использовать умные указатели для обеспечения различных гарантий и компромиссов по сравнению с обычными ссылками, которые Rust использует по умолчанию. Тип `Box<T>` имеет известный размер и указывает на данные размещенные в куче. Тип `Rc<T>` отслеживает количество ссылок на данные в куче, поэтому данные могут иметь несколько владельцев. Тип `RefCell<T>` с его внутренней изменяемостью предоставляет тип, который можно использовать при необходимости неизменного типа, но необходимости изменить внутреннее значение этого типа; он также обеспечивает соблюдение правил заимствования во время выполнения, а не во время компиляции.
 
-Мы также обсудили типажи `Deref` и` Drop`, которые предоставляют функционал умных
-указателей. Мы исследовали, как можно создать циклические ссылки, которые могут
-вызвать утечку памяти, и как это предотвратить используя `Weak <T>`.
+Мы обсудили также типажи `Deref` и `Drop`, которые обеспечивают бОльшую функциональность умных указателей. Мы исследовали ссылочную зацикленность, которая может вызывать утечки памяти и как это предотвратить с помощью типа `Weak<T>`.
 
-Если эта глава заинтересовала вас, и теперь вы хотите реализовать свои собственные
-умные указатели, проверьте [The Nomicon] чтобы узнать от этом функционале подробнее.
+Если эта глава вызвала у вас интерес и вы хотите реализовать свои собственные умные указатели, обратитесь к [”The Rustonomicon”](https://doc.rust-lang.org/stable/nomicon/) за более полезной информацией.
 
-[The Nomicon]: https://doc.rust-lang.org/stable/nomicon/
-
-Далее, давайте поговорим о параллелизме в Rust. Мы даже узнаем о нескольких новых
-умных указателях, которые могут помочь нам в этом.
+Далее мы поговорим о параллелизме в Rust. Вы даже узнаете о нескольких новых умных указателях.
