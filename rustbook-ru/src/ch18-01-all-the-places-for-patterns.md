@@ -158,9 +158,9 @@ error[E0308]: mismatched types
 
 ### Параметры функции
 
-Function parameters can also be patterns. The code in Listing 18-6, which
-declares a function named `foo` that takes one parameter named `x` of type
-`i32`, should by now look familiar.
+Параметры функции также могут быть образцами. Код в Листинге 18-6, который
+объявляет функцию с именем `foo` которая принимает один параметр с именем `x` типа
+`i32`, к настоящему времени должно выглядеть знакомым.
 
 ```rust
 fn foo(x: i32) {
@@ -168,18 +168,18 @@ fn foo(x: i32) {
 }
 ```
 
-<span class="caption">Listing 18-6: A function signature uses patterns in the
-parameters</span>
+<span class="caption">Листинг 18-6. Сигнатура функции использует образцы в
+параметрах</span>
 
-The `x` part is a pattern! As we did with `let`, we could match a tuple in a
-function’s arguments to the pattern. Listing 18-7 splits the values in a tuple
-as we pass it to a function.
+`x` часть это шаблон! Как и в случае с `let`, мы можем сопоставить кортеж в
+аргументах функции с образцом. Листинг 18-7 разделяет значения в кортеже
+как мы передаем его функции.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 fn print_coordinates(&(x, y): &(i32, i32)) {
-    println!("Current location: ({}, {})", x, y);
+    println!("Текущие координаты: ({}, {})", x, y);
 }
 
 fn main() {
@@ -188,17 +188,13 @@ fn main() {
 }
 ```
 
-<span class="caption">Listing 18-7: A function with parameters that destructure
-a tuple</span>
+<span class="caption">Листинг 18-7. Функция с параметрами, которая разрушает кортеж</span>
 
-This code prints `Current location: (3, 5)`. The values `&(3, 5)` match the
-pattern `&(x, y)`, so `x` is the value `3` and `y` is the value `5`.
+Этот код печатает `текущие координаты: (3, 5)`. Значения `&(3, 5)` соответствуют
+образцу `&(x, y)`, поэтому `x` - это значение `3`, а `y` - это значение `5`.
 
-We can also use patterns in closure parameter lists in the same way as in
-function parameter lists, because closures are similar to functions, as
-discussed in Chapter 13.
+Мы также можем использовать шаблоны в списках параметров замыкания так же, как в
+списки параметров функции, потому что замыкания похожи на функции, как
+обсуждается в главе 13.
 
-At this point, you’ve seen several ways of using patterns, but patterns don’t
-work the same in every place we can use them. In some places, the patterns must
-be irrefutable; in other circumstances, they can be refutable. We’ll discuss
-these two concepts next.
+На данный момент вы видели несколько способов использования шаблонов, но шаблоны не работают одинаково во всех местах, где мы можем их использовать. В некоторых местах шаблоны должны быть неопровержимыми; в других обстоятельствах они могут быть опровергнуты. Мы обсудим эти две концепции далее.
