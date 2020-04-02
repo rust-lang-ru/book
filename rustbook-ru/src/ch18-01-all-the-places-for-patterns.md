@@ -4,11 +4,7 @@
 
 ### Рукава `match`
 
-Как мы уже обсуждали в главе 6, основным местом, где шаблоны используются - это
-рукава выражений `match`. Формально, выражения `match` определятся как объединение
-ключевого слова `match`, значения которое будет сравниваться и одно или несколько
-рукавов, которые составляют шаблон и выражение, которое будет выполнено, если
-значение будет соответствовать шаблону:
+Как обсуждалось в главе 6, мы используем шаблоны в рукавах выражений `match`. Формально выражения `match` определяется как ключевое слово `match`, значение используемое для сопоставления, один или несколько рукавов, которые состоят из шаблона и выражения для выполнения, если значение соответствует шаблону этого рукава, как здесь:
 
 ```text
 match VALUE {
@@ -26,14 +22,9 @@ match VALUE {
 
 В главе 6 мы обсуждали, как использовать выражения `if let` как правило в качестве более короткого способа записи эквивалента `match`, которое обрабатывает только один случай. Дополнительно `if let` может иметь соответствующий `else`, содержащий код для выполнения, если шаблон выражения `if let` не совпадает.
 
-Listing 18-1 shows that it’s also possible to mix and match `if let`, `else if`, and `else if let` expressions. Doing so gives us more flexibility than a
-`match` expression in which we can express only one value to compare with the
-patterns. Also, the conditions in a series of `if let`, `else if`, `else if let` arms aren’t required to relate to each other.
+В листинге 18-1 показано, что можно также смешивать и сопоставлять выражения `if let`, `else if` и `else if let`. Это даёт больше гибкости, чем `match` выражение, в котором можно выразить только одно значение для сравнения с шаблонами. Кроме того, условия в серии `if let`, `else if`, `else if let` не обязаны относиться друг к другу.
 
-The code in Listing 18-1 shows a series of checks for several conditions that
-decide what the background color should be. For this example, we’ve created
-variables with hardcoded values that a real program might receive from user
-input.
+Код в листинге 18-1 показывает серию проверок нескольких условий, определяющих, каким должен быть цвет фона. Для этого примера мы создали переменные с жёстко закодированными значениями, которые реальная программа может получить из пользовательского ввода.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -61,22 +52,11 @@ fn main() {
 
 <span class="caption">Листинг 18-1: Смешанное использование <code>if let</code>, <code>else if</code>, <code>else if let</code> и <code>else</code></span>
 
-If the user specifies a favorite color, that color is the background color. If
-today is Tuesday, the background color is green. If the user specifies
-their age as a string and we can parse it as a number successfully, the color
-is either purple or orange depending on the value of the number. If none of
-these conditions apply, the background color is blue.
+Если пользователь указывает любимый цвет, этот цвет является цветом фона. Если сегодня вторник, цвет фона - зелёный. Если пользователь указывает свой возраст в виде строки, и мы можем успешно проанализировать его и представить числом, то цвет будет либо фиолетовым, либо оранжевым, в зависимости от значения числа. Если ни одно из этих условий не применяется, то цвет фона синий.
 
-This conditional structure lets us support complex requirements. With the
-hardcoded values we have here, this example will print `Using purple as the background color`.
+Эта условная структура позволяет поддерживать сложные требования. С жёстко закодированными значениями, которые у нас здесь есть, этот пример напечатает `Using purple as the background color`.
 
-You can see that `if let` can also introduce shadowed variables in the same way
-that `match` arms can: the line `if let Ok(age) = age` introduces a new
-shadowed `age` variable that contains the value inside the `Ok` variant. This
-means we need to place the `if age > 30` condition within that block: we can’t
-combine these two conditions into `if let Ok(age) = age && age > 30`. The
-shadowed `age` we want to compare to 30 isn’t valid until the new scope starts
-with the curly bracket.
+Можно увидеть, что `if let` может также вводить затенённые переменные, как это можно сделать в `match` рукавах: строка `if let Ok(age) = age` вводит новую затененную переменную `age`, которая содержит значение внутри варианта `Ok`. Это означает, что нам нужно поместить условие `if age > 30` внутри этого блок: мы не можем объединить эти два условия в `if let Ok(age) = age && age > 30`. Затененный `age`, который мы хотим сравнить с 30, не является действительным, пока не начнется новая область видимости с фигурной скобки.
 
 Недостатком использования `if let` выражений является то, что компилятор не проверяет полноту (exhaustiveness) всех вариантов, в то время как с помощью выражения `match` это происходит. Если мы пропустим последний блок `else` и поэтому пропустим обработку некоторых случаев, компилятор не предупредит нас о возможной логической ошибке.
 
@@ -178,9 +158,9 @@ error[E0308]: mismatched types
 
 ### Параметры функции
 
-Function parameters can also be patterns. The code in Listing 18-6, which
-declares a function named `foo` that takes one parameter named `x` of type
-`i32`, should by now look familiar.
+Параметры функции также могут быть образцами. Код в Листинге 18-6, который
+объявляет функцию с именем `foo` которая принимает один параметр с именем `x` типа
+`i32`, к настоящему времени должно выглядеть знакомым.
 
 ```rust
 fn foo(x: i32) {
@@ -193,11 +173,11 @@ fn foo(x: i32) {
 
 `x` часть это шаблон! Как и в случае с `let`, мы можем сопоставить кортеж в аргументах функции с образцом. Листинг 18-7 разделяет значения в кортеже при его передачи в функцию.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 fn print_coordinates(&(x, y): &(i32, i32)) {
-    println!("Current location: ({}, {})", x, y);
+    println!("Текущие координаты: ({}, {})", x, y);
 }
 
 fn main() {
@@ -208,8 +188,8 @@ fn main() {
 
 <span class="caption">Листинг 18-7: Функция с параметрами, которая разрушает кортеж</span>
 
-This code prints `Current location: (3, 5)`. The values `&(3, 5)` match the
-pattern `&(x, y)`, so `x` is the value `3` and `y` is the value `5`.
+Этот код печатает `текущие координаты: (3, 5)`. Значения `&(3, 5)` соответствуют
+образцу `&(x, y)`, поэтому `x` - это значение `3`, а `y` - это значение `5`.
 
 Мы также можем использовать шаблоны в списках параметров замыкания так же, как в списках параметров функции, потому что замыкания похожи на функции, как обсуждалось в главе 13.
 
