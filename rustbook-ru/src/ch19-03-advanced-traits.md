@@ -8,14 +8,10 @@
 
 Мы описали большинство расширенных возможностей в этой главе, как редко необходимые. Ассоциированные типы находятся где-то посередине: они используются реже чем возможности описанные в остальной части книги, но чаще чем многие другие возможности обсуждаемые в этой главе.
 
-Одним из примеров типажа с ассоциированным типом является типаж `Iterator`, который предоставляет стандартная библиотека. Ассоциированный тип называется `Item` и представляет тип для значений, которые перебирает тип реализующий типаж `Iterator`. В разделе <a data-md-type="link" href="ch13-02-iterators.html#the-iterator-trait-and-the-next-method">"Типаж `Iterator` и метод <code data-md-type="codespan">next</code>"</a><comment></comment> главы 13, мы упоминали определение типажа `Iterator` показанное в листинге 19-12.
+Одним из примеров типажа с ассоциированным типом является типаж `Iterator`, который предоставляет стандартная библиотека. Ассоциированный тип называется `Item` и представляет тип для значений, которые перебирает тип реализующий типаж `Iterator`. В разделе <a data-md-type="raw_html" href="ch13-02-iterators.html#the-iterator-trait-and-the-next-method">"Типаж `Iterator` и метод <code data-md-type="raw_html">next</code>"</a><comment></comment> главы 13, мы упоминали определение типажа `Iterator` показанное в листинге 19-12.
 
 ```rust
-pub trait Iterator {
-    type Item;
-
-    fn next(&mut self) -> Option<Self::Item>;
-}
+pub trait Iterator {     type Item;      fn next(&mut self) -> Option<Self::Item>; }
 ```
 
 <span class="caption">Листинг 19-12: Определение типажа <code>Iterator</code>, который имеет ассоциированный тип <code>Item</code></span>
@@ -29,11 +25,7 @@ pub trait Iterator {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-impl Iterator for Counter {
-    type Item = u32;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        // --snip--
+impl Iterator for Counter {     type Item = u32;      fn next(&mut self) -> Option<Self::Item> {         // --snip--
 ```
 
 Этот синтаксис весьма напоминает обобщённые типы. Так почему же типаж `Iterator` не определён обобщённым типом, как показано в листинге 19-13?
@@ -61,29 +53,7 @@ Rust не позволяет создавать собственные опер�
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::ops::Add;
-
-#[derive(Debug, PartialEq)]
-struct Point {
-    x: i32,
-    y: i32,
-}
-
-impl Add for Point {
-    type Output = Point;
-
-    fn add(self, other: Point) -> Point {
-        Point {
-            x: self.x + other.x,
-            y: self.y + other.y,
-        }
-    }
-}
-
-fn main() {
-    assert_eq!(Point { x: 1, y: 0 } + Point { x: 2, y: 3 },
-               Point { x: 3, y: 3 });
-}
+use std::ops::Add;  #[derive(Debug, PartialEq)] struct Point {     x: i32,     y: i32, }  impl Add for Point {     type Output = Point;      fn add(self, other: Point) -> Point {         Point {             x: self.x + other.x,             y: self.y + other.y,         }     } }  fn main() {     assert_eq!(Point { x: 1, y: 0 } + Point { x: 2, y: 3 },                Point { x: 3, y: 3 }); }
 ```
 
 <span class="caption">Листинг 19-14: Реализация типажа <code>Add</code> для перезагрузки оператора <code>+</code> у структуры <code>Point</code></span>
@@ -93,11 +63,7 @@ fn main() {
 Обобщённый тип по умолчанию в этом коде находится в типаже `Add` . Вот его определение:
 
 ```rust
-trait Add<RHS=Self> {
-    type Output;
-
-    fn add(self, rhs: RHS) -> Self::Output;
-}
+trait Add<RHS=Self> {     type Output;      fn add(self, rhs: RHS) -> Self::Output; }
 ```
 
 Этот код должен выглядеть знакомым: типаж с одним методом и ассоциированным типом. Новый синтаксис это `RHS=Self`. Такой синтаксис называется *параметры типа по умолчанию* (default type parameters). Параметр обобщённого типа `RHS` (сокращённо “right hand side”) определяет тип параметра `rhs` в методе `add`. Если мы не укажем конкретный тип для `RHS` при реализации типажа `Add`, то типом для `RHS` по умолчанию будет `Self`, который будет типом для которого реализуется типаж `Add`.
@@ -109,18 +75,7 @@ trait Add<RHS=Self> {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-use std::ops::Add;
-
-struct Millimeters(u32);
-struct Meters(u32);
-
-impl Add<Meters> for Millimeters {
-    type Output = Millimeters;
-
-    fn add(self, other: Meters) -> Millimeters {
-        Millimeters(self.0 + (other.0 * 1000))
-    }
-}
+use std::ops::Add;  struct Millimeters(u32); struct Meters(u32);  impl Add<Meters> for Millimeters {     type Output = Millimeters;      fn add(self, other: Meters) -> Millimeters {         Millimeters(self.0 + (other.0 * 1000))     } }
 ```
 
 <span class="caption">Листинг 19-15: Реализация типажа <code>Add</code> для структуры  <code>Millimeters</code>, чтобы прибавить <code>Millimeters</code> к <code>Meters</code></span>
@@ -145,33 +100,7 @@ impl Add<Meters> for Millimeters {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-trait Pilot {
-    fn fly(&self);
-}
-
-trait Wizard {
-    fn fly(&self);
-}
-
-struct Human;
-
-impl Pilot for Human {
-    fn fly(&self) {
-        println!("This is your captain speaking.");
-    }
-}
-
-impl Wizard for Human {
-    fn fly(&self) {
-        println!("Up!");
-    }
-}
-
-impl Human {
-    fn fly(&self) {
-        println!("*waving arms furiously*");
-    }
-}
+trait Pilot {     fn fly(&self); }  trait Wizard {     fn fly(&self); }  struct Human;  impl Pilot for Human {     fn fly(&self) {         println!("This is your captain speaking.");     } }  impl Wizard for Human {     fn fly(&self) {         println!("Up!");     } }  impl Human {     fn fly(&self) {         println!("*waving arms furiously*");     } }
 ```
 
 <span class="caption">Листинг 19-16: Два типажа определены с методом <code>fly</code> и реализованы у типа <code>Human</code>, а также метод <code>fly</code> реализован непосредственно у <code>Human</code></span>
@@ -181,38 +110,7 @@ impl Human {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# trait Pilot {
-#     fn fly(&self);
-# }
-#
-# trait Wizard {
-#     fn fly(&self);
-# }
-#
-# struct Human;
-#
-# impl Pilot for Human {
-#     fn fly(&self) {
-#         println!("This is your captain speaking.");
-#     }
-# }
-#
-# impl Wizard for Human {
-#     fn fly(&self) {
-#         println!("Up!");
-#     }
-# }
-#
-# impl Human {
-#     fn fly(&self) {
-#         println!("*waving arms furiously*");
-#     }
-# }
-#
-fn main() {
-    let person = Human;
-    person.fly();
-}
+# trait Pilot { #     fn fly(&self); # } # # trait Wizard { #     fn fly(&self); # } # # struct Human; # # impl Pilot for Human { #     fn fly(&self) { #         println!("This is your captain speaking."); #     } # } # # impl Wizard for Human { #     fn fly(&self) { #         println!("Up!"); #     } # } # # impl Human { #     fn fly(&self) { #         println!("*waving arms furiously*"); #     } # } # fn main() {     let person = Human;     person.fly(); }
 ```
 
 <span class="caption">Листинг 19-17: Вызов <code>fly</code> у экземпляра <code>Human</code></span>
@@ -224,40 +122,7 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# trait Pilot {
-#     fn fly(&self);
-# }
-#
-# trait Wizard {
-#     fn fly(&self);
-# }
-#
-# struct Human;
-#
-# impl Pilot for Human {
-#     fn fly(&self) {
-#         println!("This is your captain speaking.");
-#     }
-# }
-#
-# impl Wizard for Human {
-#     fn fly(&self) {
-#         println!("Up!");
-#     }
-# }
-#
-# impl Human {
-#     fn fly(&self) {
-#         println!("*waving arms furiously*");
-#     }
-# }
-#
-fn main() {
-    let person = Human;
-    Pilot::fly(&person);
-    Wizard::fly(&person);
-    person.fly();
-}
+# trait Pilot { #     fn fly(&self); # } # # trait Wizard { #     fn fly(&self); # } # # struct Human; # # impl Pilot for Human { #     fn fly(&self) { #         println!("This is your captain speaking."); #     } # } # # impl Wizard for Human { #     fn fly(&self) { #         println!("Up!"); #     } # } # # impl Human { #     fn fly(&self) { #         println!("*waving arms furiously*"); #     } # } # fn main() {     let person = Human;     Pilot::fly(&person);     Wizard::fly(&person);     person.fly(); }
 ```
 
 <span class="caption">Листинг 19-18: Указание какой метода <code>fly</code> мы хотим вызвать</span>
@@ -267,9 +132,7 @@ fn main() {
 Выполнение этого кода выводит следующее:
 
 ```text
-This is your captain speaking.
-Up!
-*waving arms furiously*
+This is your captain speaking. Up! *waving arms furiously*
 ```
 
 Поскольку метод `fly` принимает параметр `self`, если у нас было два *типа* оба реализующих один *типаж*, то Rust может понять, какую реализацию типажа использовать в зависимости от типа `self`.
@@ -279,27 +142,7 @@ Up!
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-trait Animal {
-    fn baby_name() -> String;
-}
-
-struct Dog;
-
-impl Dog {
-    fn baby_name() -> String {
-        String::from("Spot")
-    }
-}
-
-impl Animal for Dog {
-    fn baby_name() -> String {
-        String::from("puppy")
-    }
-}
-
-fn main() {
-    println!("A baby dog is called a {}", Dog::baby_name());
-}
+trait Animal {     fn baby_name() -> String; }  struct Dog;  impl Dog {     fn baby_name() -> String {         String::from("Spot")     } }  impl Animal for Dog {     fn baby_name() -> String {         String::from("puppy")     } }  fn main() {     println!("A baby dog is called a {}", Dog::baby_name()); }
 ```
 
 <span class="caption">Листинг 19-19: Типаж с ассоциированной функцией и тип с ассоциированной функцией с тем же именем, которая тоже реализует типаж</span>
@@ -317,9 +160,7 @@ A baby dog is called a Spot
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    println!("A baby dog is called a {}", Animal::baby_name());
-}
+fn main() {     println!("A baby dog is called a {}", Animal::baby_name()); }
 ```
 
 <span class="caption">Листинг 19-20. Попытка вызвать функцию <code>baby_name</code> из типажа <code>Animal</code>, но Rust не знает какую реализацию использовать</span>
@@ -327,13 +168,7 @@ fn main() {
 Так как `Animal::baby_name` является ассоциированной функцией не имеющей `self` параметра в сигнатуре, а не методом, то Rust не может понять, какую реализацию `Animal::baby_name` мы хотим вызвать. Мы получим эту ошибку компилятора:
 
 ```text
-error[E0283]: type annotations required: cannot resolve `_: Animal`
-  --> src/main.rs:20:43
-   |
-20 |     println!("A baby dog is called a {}", Animal::baby_name());
-   |                                           ^^^^^^^^^^^^^^^^^
-   |
-   = note: required by `Animal::baby_name`
+error[E0283]: type annotations required: cannot resolve `_: Animal`   --> src/main.rs:20:43    | 20 |     println!("A baby dog is called a {}", Animal::baby_name());    |                                           ^^^^^^^^^^^^^^^^^    |    = note: required by `Animal::baby_name`
 ```
 
 Чтобы устранить неоднозначность и сказать Rust, что мы хотим использовать реализацию `Animal` для `Dog`, нужно использовать полный синтаксис. Листинг 19-21 демонстрирует, как использовать полный синтаксис.
@@ -341,27 +176,7 @@ error[E0283]: type annotations required: cannot resolve `_: Animal`
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# trait Animal {
-#     fn baby_name() -> String;
-# }
-#
-# struct Dog;
-#
-# impl Dog {
-#     fn baby_name() -> String {
-#         String::from("Spot")
-#     }
-# }
-#
-# impl Animal for Dog {
-#     fn baby_name() -> String {
-#         String::from("puppy")
-#     }
-# }
-#
-fn main() {
-    println!("A baby dog is called a {}", <Dog as Animal>::baby_name());
-}
+# trait Animal { #     fn baby_name() -> String; # } # # struct Dog; # # impl Dog { #     fn baby_name() -> String { #         String::from("Spot") #     } # } # # impl Animal for Dog { #     fn baby_name() -> String { #         String::from("puppy") #     } # } # fn main() {     println!("A baby dog is called a {}", <Dog as Animal>::baby_name()); }
 ```
 
 <span class="caption">Листинг 19-21: Использование полностью квалифицированного синтаксиса для указания, что мы мы хотим вызвать функцию <code>baby_name</code> у типажа <code>Animal</code> реализованную в <code>Dog</code></span>
@@ -387,11 +202,7 @@ A baby dog is called a puppy
 Например, мы хотим создать типаж `OutlinePrint` с методом `outline_print`, который будет печатать значение обрамлённое звёздочками. Мы хотим чтобы структура `Point` реализующая типаж `Display` вывела на печать `(x, y)` при вызове `outline_print` у экземпляра `Point`, который имеет значение `1` для `x` и значение `3` для `y`. Она должна напечатать следующее:
 
 ```text
-**********
-*        *
-* (1, 3) *
-*        *
-**********
+********** *        * * (1, 3) * *        * **********
 ```
 
 В реализации `outline_print` мы хотим использовать функциональность типажа `Display`. Поэтому нам нужно указать, что типаж `OutlinePrint` будет работать только для типов, которые также реализуют `Display` и предоставляют функциональность, которая нужна в `OutlinePrint`. Мы можем сделать это в объявлении типажа, указав `OutlinePrint: Display`. Этот метод похож на добавление ограничения в типаж. В листинге 19-22 показана реализация типажа `OutlinePrint`.
@@ -399,19 +210,7 @@ A baby dog is called a puppy
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::fmt;
-
-trait OutlinePrint: fmt::Display {
-    fn outline_print(&self) {
-        let output = self.to_string();
-        let len = output.len();
-        println!("{}", "*".repeat(len + 4));
-        println!("*{}*", " ".repeat(len + 2));
-        println!("* {} *", output);
-        println!("*{}*", " ".repeat(len + 2));
-        println!("{}", "*".repeat(len + 4));
-    }
-}
+use std::fmt;  trait OutlinePrint: fmt::Display {     fn outline_print(&self) {         let output = self.to_string();         let len = output.len();         println!("{}", "*".repeat(len + 4));         println!("*{}*", " ".repeat(len + 2));         println!("* {} *", output);         println!("*{}*", " ".repeat(len + 2));         println!("{}", "*".repeat(len + 4));     } }
 ```
 
 <span class="caption">Листинг 19-22: Реализация типажа <code>OutlinePrint</code> которая требует функциональности типажа <code>Display</code></span>
@@ -423,26 +222,13 @@ trait OutlinePrint: fmt::Display {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# trait OutlinePrint {}
-struct Point {
-    x: i32,
-    y: i32,
-}
-
-impl OutlinePrint for Point {}
+# trait OutlinePrint {} struct Point {     x: i32,     y: i32, }  impl OutlinePrint for Point {}
 ```
 
 Мы получаем сообщение о том, что требуется реализация `Display`, но её нет:
 
 ```text
-error[E0277]: the trait bound `Point: std::fmt::Display` is not satisfied
-  --> src/main.rs:20:6
-   |
-20 | impl OutlinePrint for Point {}
-   |      ^^^^^^^^^^^^ `Point` cannot be formatted with the default formatter;
-try using `:?` instead if you are using a format string
-   |
-   = help: the trait `std::fmt::Display` is not implemented for `Point`
+error[E0277]: the trait bound `Point: std::fmt::Display` is not satisfied   --> src/main.rs:20:6    | 20 | impl OutlinePrint for Point {}    |      ^^^^^^^^^^^^ `Point` cannot be formatted with the default formatter; try using `:?` instead if you are using a format string    |    = help: the trait `std::fmt::Display` is not implemented for `Point`
 ```
 
 Чтобы исправить, мы реализуем `Display` у структуры `Point` и выполняем требуемое ограничение `OutlinePrint`, вот так:
@@ -450,18 +236,7 @@ try using `:?` instead if you are using a format string
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# struct Point {
-#     x: i32,
-#     y: i32,
-# }
-#
-use std::fmt;
-
-impl fmt::Display for Point {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "({}, {})", self.x, self.y)
-    }
-}
+# struct Point { #     x: i32, #     y: i32, # } # use std::fmt;  impl fmt::Display for Point {     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {         write!(f, "({}, {})", self.x, self.y)     } }
 ```
 
 Тогда реализация типажа `OutlinePrint` для структуры `Point` будет скомпилирована успешно и мы можем вызвать `outline_print` у экземпляра `Point` для отображения значения обрамлённое звёздочками.
@@ -475,26 +250,13 @@ impl fmt::Display for Point {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::fmt;
-
-struct Wrapper(Vec<String>);
-
-impl fmt::Display for Wrapper {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}]", self.0.join(", "))
-    }
-}
-
-fn main() {
-    let w = Wrapper(vec![String::from("hello"), String::from("world")]);
-    println!("w = {}", w);
-}
+use std::fmt;  struct Wrapper(Vec<String>);  impl fmt::Display for Wrapper {     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {         write!(f, "[{}]", self.0.join(", "))     } }  fn main() {     let w = Wrapper(vec![String::from("hello"), String::from("world")]);     println!("w = {}", w); }
 ```
 
 <span class="caption">Листинг 19-23: Создание типа <code>Wrapper</code> вокруг типа <code>Vec<String></code> для реализации типажа <code>Display</code></span>
 
 Реализация `Display` использует `self.0` для доступа к внутреннему `Vec<T>`, потому что `Wrapper` это структура кортежа, а `Vec<T>` это элемент с индексом 0 в кортеже. Затем мы можем использовать функциональные возможности типа `Display` у `Wrapper`.
 
-Недостатком использования этой техники является то, что `Wrapper` является новым типом, поэтому он не имеет методов для значения, которое он держит в себе. Мы должны были бы реализовать все методы для `Vec<T>` непосредственно во `Wrapper`, так чтобы эти методы делегировались внутреннему `self.0`, что позволило бы нам обращаться с `Wrapper` точно так же, как с `Vec<T>`. Если бы мы хотели, чтобы новый тип имел каждый метод имеющийся у внутреннего типа, реализуя типаж `Deref` (обсуждается в разделе <a data-md-type="link" href="ch15-02-deref.html#treating-smart-pointers-like-regular-references-with-the-deref-trait">"Работа с умными указателями как с обычными ссылками с помощью `Deref` типажа"</a><comment></comment> главы 15) у `Wrapper` для возвращения внутреннего типа, то это было бы решением. Если мы не хотим, чтобы тип `Wrapper` имел все методы внутреннего типа, например, для ограничения поведения типа `Wrapper`, то пришлось бы вручную реализовать только те методы, которые нам нужны.
+Недостатком использования этой техники является то, что `Wrapper` является новым типом, поэтому он не имеет методов для значения, которое он держит в себе. Мы должны были бы реализовать все методы для `Vec<T>` непосредственно во `Wrapper`, так чтобы эти методы делегировались внутреннему `self.0`, что позволило бы нам обращаться с `Wrapper` точно так же, как с `Vec<T>`. Если бы мы хотели, чтобы новый тип имел каждый метод имеющийся у внутреннего типа, реализуя типаж `Deref` (обсуждается в разделе <a data-md-type="raw_html" href="ch15-02-deref.html#treating-smart-pointers-like-regular-references-with-the-deref-trait">"Работа с умными указателями как с обычными ссылками с помощью `Deref` типажа"</a><comment></comment> главы 15) у `Wrapper` для возвращения внутреннего типа, то это было бы решением. Если мы не хотим, чтобы тип `Wrapper` имел все методы внутреннего типа, например, для ограничения поведения типа `Wrapper`, то пришлось бы вручную реализовать только те методы, которые нам нужны.
 
 Теперь вы знаете, как используется newtype шаблон по отношению к типажам; это также полезный шаблон, даже когда типажи не используются. Давайте переключимся и посмотрим на некоторые продвинутые способы взаимодействия с системой типов Rust.
