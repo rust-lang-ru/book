@@ -42,7 +42,7 @@ condition was true
 let number = 7;
 ```
 
-Run the program again, and look at the output:
+Результат работы программы:
 
 ```text
 $ cargo run
