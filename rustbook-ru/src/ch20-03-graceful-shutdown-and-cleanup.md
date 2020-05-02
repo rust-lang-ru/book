@@ -8,7 +8,7 @@
 
 Давайте начнем с реализации `Drop` у нашего пула потоков. Когда пул удаляется, все наши потоки должны объединиться (join), чтобы убедиться, что они завершают свою работу. В коде 20-23 показана первая попытка реализации `Drop`, код пока не работает.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
 impl Drop for ThreadPool {
@@ -40,7 +40,7 @@ error[E0507]: cannot move out of borrowed content
 
 Итак, мы хотим обновить объявление `Worker` следующим образом:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 # use std::thread;
@@ -76,7 +76,7 @@ error[E0308]: mismatched types
 
 Давайте обратимся ко второй ошибке, которая указывает на код в конце `Worker::new`; нам нужно обернуть значение `thread` в вариант `Some` при создании нового `Worker`. Внесите следующие изменения, чтобы исправить эту ошибку:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
 impl Worker {
@@ -93,7 +93,7 @@ impl Worker {
 
 Первая ошибка находится в нашей реализации `Drop`. Ранее мы упоминали, что намеревались вызвать `take` для параметра `Option`, чтобы забрать `thread` из процесса `worker`. Следующие изменения делают это:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
 impl Drop for ThreadPool {
@@ -117,7 +117,7 @@ impl Drop for ThreadPool {
 
 Для решения этой проблемы, мы изменим потоки так, чтобы они прослушивали либо задачи `Job` для ее выполнения, либо сигнал, что они должны прекратить прослушивание и выйти из бесконечного цикла. Вместо отправки экземпляров задач `Job`, наш канал отправит один из этих двух вариантов перечисления.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 # struct Job;
@@ -131,7 +131,7 @@ enum Message {
 
 Нам нужно настроить канал для использования значений типа `Message`, а не типа `Job` как показано в коде 20-24.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
 pub struct ThreadPool {
@@ -193,7 +193,7 @@ impl Worker {
 
 С такими изменениями код компилируется и продолжит функционировать так же, как и после кода 20-21. Но мы получим предупреждение, потому что мы не создаем сообщения типа `Terminate`. Давайте исправим это предупреждение, изменив нашу реализацию `Drop` как в коде 20-25.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
 impl Drop for ThreadPool {
@@ -227,7 +227,7 @@ impl Drop for ThreadPool {
 
 Чтобы увидеть этот код в действии, давайте изменим `main`, чтобы принимать только два запроса, прежде чем корректно завершить работу сервера как показано в коде 20-26.
 
-<span class="filename">Filename: src/bin/main.rs</span>
+<span class="filename">Файл: src/bin/main.rs</span>
 
 ```rust,ignore
 fn main() {
@@ -282,7 +282,7 @@ Shutting down worker 3
 
 Вот полный код для справки:
 
-<span class="filename">Filename: src/bin/main.rs</span>
+<span class="filename">Файл: src/bin/main.rs</span>
 
 ```rust,ignore
 use hello::ThreadPool;
@@ -334,7 +334,7 @@ fn handle_connection(mut stream: TcpStream) {
 }
 ```
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust
 use std::thread;
@@ -465,6 +465,6 @@ impl Worker {
 - Используйте `ThreadPool` для выполнения некоторых других задач, помимо обслуживания веб-запросов.
 - Найдите крейт для пула потоков на [crates.io](https://crates.io/) и реализуйте аналогичный веб-сервер, используя такой крейт. Затем сравните его API и надежность с пулом потоков, который мы реализовали.
 
-## Summary
+## Итоги
 
 Отличная работа! Вы сделали это к концу книги! Мы хотим поблагодарить вас за то, что присоединились к нам в этом путешествии по языку Rust. Теперь вы готовы реализовать свои собственные проекты на Rust и помочь с проектами другим людям. Имейте в виду, что существует приветливое сообщество других Rust разработчиков, которые хотели бы помочь вам с любыми сложными задачами с которыми вы столкнетесь в своем Rust путешествии.
