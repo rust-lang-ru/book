@@ -1,6 +1,6 @@
 # Язык программирования Rust (The Rust Programming Language)
 
-В данном репозитории содержится перевод книги The Rust Programmin Language.
+В данном репозитории содержится перевод книги [The Rust Programmin Language](https://github.com/rust-lang/book).
 Пока что этот репозиторий пуст, но надеемся, что это не на долго.
 
 ## Зачем ещё один репозиторий?
