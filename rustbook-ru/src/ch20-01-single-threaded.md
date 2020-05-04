@@ -11,9 +11,7 @@ TCP - это протокол нижнего уровня, который опи
 Наш веб-сервер должен прослушивать TCP-соединение, так что это будет первой частью над которой мы будем работать. Стандартная библиотека предлагает модуль `std::net` который позволяет нам это делать. Давайте сделаем новый проект обычным способом:
 
 ```text
-$ cargo new hello
-     Created binary (application) `hello` project
-$ cd hello
+$ cargo new hello      Created binary (application) `hello` project $ cd hello
 ```
 
 Теперь введите код из листинга 20-1 в файл *src/main.rs* для начала. Этот код будет прослушивать входящие TCP потоки по адресу `127.0.0.1:7878`. Когда сервер принимает входящий поток, он напечатает `Connection established!`.
@@ -21,17 +19,7 @@ $ cd hello
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-use std::net::TcpListener;
-
-fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
-
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
-
-        println!("Connection established!");
-    }
-}
+use std::net::TcpListener;  fn main() {     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();      for stream in listener.incoming() {         let stream = stream.unwrap();          println!("Connection established!");     } }
 ```
 
 <span class="caption">Листинг 20-1: Приём и прослушивание входящих потоков, печать сообщения, когда мы получаем поток</span>
@@ -68,27 +56,7 @@ Connection established!
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-use std::io::prelude::*;
-use std::net::TcpStream;
-use std::net::TcpListener;
-
-fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
-
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
-
-        handle_connection(stream);
-    }
-}
-
-fn handle_connection(mut stream: TcpStream) {
-    let mut buffer = [0; 512];
-
-    stream.read(&mut buffer).unwrap();
-
-    println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
-}
+use std::io::prelude::*; use std::net::TcpStream; use std::net::TcpListener;  fn main() {     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();      for stream in listener.incoming() {         let stream = stream.unwrap();          handle_connection(stream);     } }  fn handle_connection(mut stream: TcpStream) {     let mut buffer = [0; 512];      stream.read(&mut buffer).unwrap();      println!("Request: {}", String::from_utf8_lossy(&buffer[..])); }
 ```
 
 <span class="caption">Листинг 20-2: Чтение из потока <code>TcpStream</code> и печать данных</span>
@@ -104,20 +72,7 @@ fn handle_connection(mut stream: TcpStream) {
 Давайте попробуем этот код! Запустите программу и снова сделайте запрос в веб-браузере. Обратите внимание, что мы все равно получим страницу с ошибкой в браузере, но наш вывод программы в терминале теперь будет выглядеть примерно так:
 
 ```text
-$ cargo run
-   Compiling hello v0.1.0 (file:///projects/hello)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.42 secs
-     Running `target/debug/hello`
-Request: GET / HTTP/1.1
-Host: 127.0.0.1:7878
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
-Firefox/52.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-������������������������������������
+$ cargo run    Compiling hello v0.1.0 (file:///projects/hello)     Finished dev [unoptimized + debuginfo] target(s) in 0.42 secs      Running `target/debug/hello` Request: GET / HTTP/1.1 Host: 127.0.0.1:7878 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 Accept-Language: en-US,en;q=0.5 Accept-Encoding: gzip, deflate Connection: keep-alive Upgrade-Insecure-Requests: 1 ������������������������������������
 ```
 
 В зависимости от вашего браузера, вы можете получить немного другие результаты. Теперь, когда мы печатаем данные запроса, мы можем понять, почему мы получаем несколько соединений от одного запроса браузера посмотрев на путь после `Request: GET`. Если повторные соединения запрашивают путь */*, мы знаем, что браузер пытается запросить */* повторно, потому что он не получает ответ от нашей программы.
@@ -129,9 +84,7 @@ Upgrade-Insecure-Requests: 1
 HTTP - это текстовый протокол и запрос имеет следующий формат:
 
 ```text
-Method Request-URI HTTP-Version CRLF
-headers CRLF
-message-body
+Method Request-URI HTTP-Version CRLF headers CRLF message-body
 ```
 
 Первая строка - это *строка запроса* (request line), которая содержит информацию о том, что запрашивает клиент. Первая часть строки запроса указывает используемый *метод*, например, `GET` или `POST`, который описывает, как клиент делает этот запрос. Наш клиент использовал запрос `GET`.
@@ -153,9 +106,7 @@ message-body
 Теперь мы реализуем отправку данных в ответ на запрос клиента. Ответы имеют следующий формат:
 
 ```text
-HTTP-Version Status-Code Reason-Phrase CRLF
-headers CRLF
-message-body
+HTTP-Version Status-Code Reason-Phrase CRLF headers CRLF message-body
 ```
 
 Первая строка является *строкой состояния*, содержащая версию HTTP используемого для ответа, числовой код состояния, который суммирует результат запроса и фразу причины, которая представляет текстовое описание кода состояния. После последовательности CRLF находятся любые заголовки, другая последовательность CRLF и тело ответа.
@@ -171,18 +122,7 @@ HTTP/1.1 200 OK\r\n\r\n
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::io::prelude::*;
-# use std::net::TcpStream;
-fn handle_connection(mut stream: TcpStream) {
-    let mut buffer = [0; 512];
-
-    stream.read(&mut buffer).unwrap();
-
-    let response = "HTTP/1.1 200 OK\r\n\r\n";
-
-    stream.write(response.as_bytes()).unwrap();
-    stream.flush().unwrap();
-}
+# use std::io::prelude::*; # use std::net::TcpStream; fn handle_connection(mut stream: TcpStream) {     let mut buffer = [0; 512];      stream.read(&mut buffer).unwrap();      let response = "HTTP/1.1 200 OK\r\n\r\n";      stream.write(response.as_bytes()).unwrap();     stream.flush().unwrap(); }
 ```
 
 <span class="caption">Листинг 20-3: Запись короткого успешного HTTP ответа в поток</span>
@@ -200,17 +140,7 @@ fn handle_connection(mut stream: TcpStream) {
 <span class="filename">Файл: hello.html</span>
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Hello!</title>
-  </head>
-  <body>
-    <h1>Hello!</h1>
-    <p>Hi from Rust</p>
-  </body>
-</html>
+<!DOCTYPE html> <html lang="en">   <head>     <meta charset="utf-8">     <title>Hello!</title>   </head>   <body>     <h1>Hello!</h1>     <p>Hi from Rust</p>   </body> </html>
 ```
 
 <span class="caption">Листинг 20-4: Пример HTML файла для возврата в ответ</span>
@@ -220,22 +150,7 @@ fn handle_connection(mut stream: TcpStream) {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::io::prelude::*;
-# use std::net::TcpStream;
-use std::fs;
-// --snip--
-
-fn handle_connection(mut stream: TcpStream) {
-    let mut buffer = [0; 512];
-    stream.read(&mut buffer).unwrap();
-
-    let contents = fs::read_to_string("hello.html").unwrap();
-
-    let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", contents);
-
-    stream.write(response.as_bytes()).unwrap();
-    stream.flush().unwrap();
-}
+# use std::io::prelude::*; # use std::net::TcpStream; use std::fs; // --snip--  fn handle_connection(mut stream: TcpStream) {     let mut buffer = [0; 512];     stream.read(&mut buffer).unwrap();      let contents = fs::read_to_string("hello.html").unwrap();      let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", contents);      stream.write(response.as_bytes()).unwrap();     stream.flush().unwrap(); }
 ```
 
 <span class="caption">Листинг 20-5: Отправка содержимого <em>hello.html</em> как тело ответа</span>
@@ -255,28 +170,7 @@ fn handle_connection(mut stream: TcpStream) {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::io::prelude::*;
-# use std::net::TcpStream;
-# use std::fs;
-// --snip--
-
-fn handle_connection(mut stream: TcpStream) {
-    let mut buffer = [0; 512];
-    stream.read(&mut buffer).unwrap();
-
-    let get = b"GET / HTTP/1.1\r\n";
-
-    if buffer.starts_with(get) {
-        let contents = fs::read_to_string("hello.html").unwrap();
-
-        let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", contents);
-
-        stream.write(response.as_bytes()).unwrap();
-        stream.flush().unwrap();
-    } else {
-        // some other request
-    }
-}
+# use std::io::prelude::*; # use std::net::TcpStream; # use std::fs; // --snip--  fn handle_connection(mut stream: TcpStream) {     let mut buffer = [0; 512];     stream.read(&mut buffer).unwrap();      let get = b"GET / HTTP/1.1\r\n";      if buffer.starts_with(get) {         let contents = fs::read_to_string("hello.html").unwrap();          let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", contents);          stream.write(response.as_bytes()).unwrap();         stream.flush().unwrap();     } else {         // some other request     } }
 ```
 
 <span class="caption">Листинг 20-6: Сопоставление запроса и обработка запросов для корневого ресурса <em>/</em>, отличающимся от запросов других ресурсов</span>
@@ -292,23 +186,7 @@ fn handle_connection(mut stream: TcpStream) {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::io::prelude::*;
-# use std::net::TcpStream;
-# use std::fs;
-# fn handle_connection(mut stream: TcpStream) {
-# if true {
-// --snip--
-
-} else {
-    let status_line = "HTTP/1.1 404 NOT FOUND\r\n\r\n";
-    let contents = fs::read_to_string("404.html").unwrap();
-
-    let response = format!("{}{}", status_line, contents);
-
-    stream.write(response.as_bytes()).unwrap();
-    stream.flush().unwrap();
-}
-# }
+# use std::io::prelude::*; # use std::net::TcpStream; # use std::fs; # fn handle_connection(mut stream: TcpStream) { # if true { // --snip--  } else {     let status_line = "HTTP/1.1 404 NOT FOUND\r\n\r\n";     let contents = fs::read_to_string("404.html").unwrap();      let response = format!("{}{}", status_line, contents);      stream.write(response.as_bytes()).unwrap();     stream.flush().unwrap(); } # }
 ```
 
 <span class="caption">Листинга  20-7: Отвечаем кодом состояния 404 и страницей ошибки, если было запрошено что-то отличающееся от ресурса <em>/</em></span>
@@ -318,17 +196,7 @@ fn handle_connection(mut stream: TcpStream) {
 <span class="filename">Файл: 404.html</span>
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Hello!</title>
-  </head>
-  <body>
-    <h1>Oops!</h1>
-    <p>Sorry, I don't know what you're asking for.</p>
-  </body>
-</html>
+<!DOCTYPE html> <html lang="en">   <head>     <meta charset="utf-8">     <title>Hello!</title>   </head>   <body>     <h1>Oops!</h1>     <p>Sorry, I don't know what you're asking for.</p>   </body> </html>
 ```
 
 <span class="caption">Листинг 20-8: Пример содержимого страницы для отправки с любым ответом 404</span>
@@ -342,31 +210,7 @@ fn handle_connection(mut stream: TcpStream) {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::io::prelude::*;
-# use std::net::TcpStream;
-# use std::fs;
-// --snip--
-
-fn handle_connection(mut stream: TcpStream) {
-#     let mut buffer = [0; 512];
-#     stream.read(&mut buffer).unwrap();
-#
-#     let get = b"GET / HTTP/1.1\r\n";
-    // --snip--
-
-    let (status_line, filename) = if buffer.starts_with(get) {
-        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
-    } else {
-        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
-    };
-
-    let contents = fs::read_to_string(filename).unwrap();
-
-    let response = format!("{}{}", status_line, contents);
-
-    stream.write(response.as_bytes()).unwrap();
-    stream.flush().unwrap();
-}
+# use std::io::prelude::*; # use std::net::TcpStream; # use std::fs; // --snip--  fn handle_connection(mut stream: TcpStream) { #     let mut buffer = [0; 512]; #     stream.read(&mut buffer).unwrap(); # #     let get = b"GET / HTTP/1.1\r\n";     // --snip--      let (status_line, filename) = if buffer.starts_with(get) {         ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")     } else {         ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")     };      let contents = fs::read_to_string(filename).unwrap();      let response = format!("{}{}", status_line, contents);      stream.write(response.as_bytes()).unwrap();     stream.flush().unwrap(); }
 ```
 
 <span class="caption">Листинг 20-9: Рефакторинг блоков <code>if</code> и <code>else</code>, содержащих только код различающийся в обоих случаях</span>
