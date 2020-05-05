@@ -30,7 +30,7 @@ $ cargo run    Compiling branches v0.1.0 (file:///projects/branches)     Finishe
 let number = 7;
 ```
 
-Run the program again, and look at the output:
+Результат работы программы:
 
 ```text
 $ cargo run    Compiling branches v0.1.0 (file:///projects/branches)     Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs      Running `target/debug/branches` condition was false
