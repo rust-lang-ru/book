@@ -11,15 +11,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let number = 3;
-
-    if number < 5 {
-        println!("condition was true");
-    } else {
-        println!("condition was false");
-    }
-}
+fn main() {     let number = 3;      if number < 5 {         println!("condition was true");     } else {         println!("condition was false");     } }
 ```
 
 Все выражения `if` начинаются с ключевого слова `if`, за которым следует логическое условие. В данном случае, условие проверяет имеет ли переменная `number` значение меньше, чем 5. Блок кода, который мы хотим выполнить, если условие истинно, размещён сразу после условия в фигурных скобках. Блоки кода ассоциированные с условиями в выражении `if` иногда называют  *ветками/arms*, подобно веткам в выражении `match` из секции [“Сравнение предположения и загаданный номер”](ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number)<comment> главы 2.</comment>
@@ -29,11 +21,7 @@ fn main() {
 Результат работы программы:
 
 ```text
-$ cargo run
-   Compiling branches v0.1.0 (file:///projects/branches)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs
-     Running `target/debug/branches`
-condition was true
+$ cargo run    Compiling branches v0.1.0 (file:///projects/branches)     Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs      Running `target/debug/branches` condition was true
 ```
 
 Попробуем поменять число в значение, которое сделает условие ложным и посмотрим, что будет:
@@ -42,14 +30,10 @@ condition was true
 let number = 7;
 ```
 
-Результат работы программы:
+Run the program again, and look at the output:
 
 ```text
-$ cargo run
-   Compiling branches v0.1.0 (file:///projects/branches)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs
-     Running `target/debug/branches`
-condition was false
+$ cargo run    Compiling branches v0.1.0 (file:///projects/branches)     Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs      Running `target/debug/branches` condition was false
 ```
 
 Также стоит отметить, что условие в этом коде *должно* быть типом `bool` . Если условие не будет `bool` , то вы получите ошибку. Например, попробуйте запустить следующий код:
@@ -57,26 +41,13 @@ condition was false
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let number = 3;
-
-    if number {
-        println!("number was three");
-    }
-}
+fn main() {     let number = 3;      if number {         println!("number was three");     } }
 ```
 
 На этот раз условие `if` вычисляется в значение `3` и Rust генерирует ошибку:
 
 ```text
-error[E0308]: mismatched types
- --> src/main.rs:4:8
-  |
-4 |     if number {
-  |        ^^^^^^ expected bool, found integer
-  |
-  = note: expected type `bool`
-             found type `{integer}`
+error[E0308]: mismatched types  --> src/main.rs:4:8   | 4 |     if number {   |        ^^^^^^ expected bool, found integer   |   = note: expected type `bool`              found type `{integer}`
 ```
 
 Ошибка говорит, что Rust ожидал тип `bool`, но получил  целое. В отличии от других языков вроде Ruby и JavaScript, Rust не будет пытаться автоматически конвертировать не двоичные типы в двоичные. Необходимо быть явными и всегда предоставлять двоичный тип в выражение `if` в качестве условия. Если нужно выполнить блок `if`, когда номер не равен значению `0`, то можно изменить выражение `if` следующим образом:
@@ -84,13 +55,7 @@ error[E0308]: mismatched types
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let number = 3;
-
-    if number != 0 {
-        println!("number was something other than zero");
-    }
-}
+fn main() {     let number = 3;      if number != 0 {         println!("number was something other than zero");     } }
 ```
 
 Будет выведена следующая строка `number was something other than zero`.
@@ -102,29 +67,13 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let number = 6;
-
-    if number % 4 == 0 {
-        println!("number is divisible by 4");
-    } else if number % 3 == 0 {
-        println!("number is divisible by 3");
-    } else if number % 2 == 0 {
-        println!("number is divisible by 2");
-    } else {
-        println!("number is not divisible by 4, 3, or 2");
-    }
-}
+fn main() {     let number = 6;      if number % 4 == 0 {         println!("number is divisible by 4");     } else if number % 3 == 0 {         println!("number is divisible by 3");     } else if number % 2 == 0 {         println!("number is divisible by 2");     } else {         println!("number is not divisible by 4, 3, or 2");     } }
 ```
 
-Программа имеет четыре возможных варианта ветвления. После запуска, вы увидите следующий вывод:
+Результат работы программы:
 
 ```text
-$ cargo run
-   Compiling branches v0.1.0 (file:///projects/branches)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs
-     Running `target/debug/branches`
-number is divisible by 3
+$ cargo run    Compiling branches v0.1.0 (file:///projects/branches)     Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs      Running `target/debug/branches` number is divisible by 3
 ```
 
 Во время выполнения, программа проверяет каждое выражение  `if` по порядку и выполняет первый блок для которого условие вычисляется в истинное. Заметьте, что не смотря на то что 6 делится на 2, мы не увидим вывод `number is divisible by 2` , также не увидим вывод текста`number is not divisible by 4, 3, or 2` и блока `else`. Причина в том, что Rust выполняет блок только для первого встретившегося истинного условия и как только он найден, то он не проверяет остальные варианты.
@@ -138,16 +87,7 @@ number is divisible by 3
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let condition = true;
-    let number = if condition {
-        5
-    } else {
-        6
-    };
-
-    println!("The value of number is: {}", number);
-}
+fn main() {     let condition = true;     let number = if condition {         5     } else {         6     };      println!("The value of number is: {}", number); }
 ```
 
 <span class="caption">Листинг 3-4: Присвоение результата <code>if</code>-выражения переменной при её инициализации</span>
@@ -155,11 +95,7 @@ fn main() {
 Переменная `number` будет привязана к значению, которое является результатом выражения `if`. Запустим код и посмотрим, что происходит:
 
 ```text
-$ cargo run
-   Compiling branches v0.1.0 (file:///projects/branches)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.30 secs
-     Running `target/debug/branches`
-The value of number is: 5
+$ cargo run    Compiling branches v0.1.0 (file:///projects/branches)     Finished dev [unoptimized + debuginfo] target(s) in 0.30 secs      Running `target/debug/branches` The value of number is: 5
 ```
 
 Запомните, что блоки кода вычисляются последним выражением внутри их, и числа сами по себе также являются выражениями. В данном случае, значение всего выражения `if` зависит от того, какой блок выполняется. Это значит, что значения которые могут быть результатом из каждой ветви выражения `if` должны иметь одинаковый тип. В листинге 3-2 результирующим типом обоих ветвей выражения `if` и `else` было целое число типа `i32`. Если типы в ветках не будут совпадать как в примере, то будет ошибка:
@@ -167,35 +103,13 @@ The value of number is: 5
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let condition = true;
-
-    let number = if condition {
-        5
-    } else {
-        "six"
-    };
-
-    println!("The value of number is: {}", number);
-}
+fn main() {     let condition = true;      let number = if condition {         5     } else {         "six"     };      println!("The value of number is: {}", number); }
 ```
 
 При попытке компиляции этого кода, мы получим ошибку. Ветви  `if` и `else` имеют не совместимые типы значений и компилятор Rust точно указывает, где находится проблема в программе:
 
 ```text
-error[E0308]: if and else have incompatible types
- --> src/main.rs:4:18
-  |
-4 |       let number = if condition {
-  |  __________________^
-5 | |         5
-6 | |     } else {
-7 | |         "six"
-8 | |     };
-  | |_____^ expected integer, found &str
-  |
-  = note: expected type `{integer}`
-             found type `&str`
+error[E0308]: if and else have incompatible types  --> src/main.rs:4:18   | 4 |       let number = if condition {   |  __________________^ 5 | |         5 6 | |     } else { 7 | |         "six" 8 | |     };   | |_____^ expected integer, found &str   |   = note: expected type `{integer}`              found type `&str`
 ```
 
 Выражение в блоке `if` вычисляется как целое число, а выражение в блоке `else` вычисляется как строка. Это не будет работать, потому что переменные должны иметь одинаковый тип. Rust должен безусловно знать во время компиляции, какой тип имеет переменная `number`, поэтому он может проверить во время компиляции, что её тип корректен везде, где мы используем `number`. Rust не сможет сделать этого, если тип `number` может быть определён только во время выполнения. Тогда компилятор был бы более сложным и давал бы меньше гарантий о коде, потому что должен был бы отслеживать несколько гипотетических типов для любой переменной.
@@ -215,25 +129,13 @@ error[E0308]: if and else have incompatible types
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-fn main() {
-    loop {
-        println!("again!");
-    }
-}
+fn main() {     loop {         println!("again!");     } }
 ```
 
 После запуска программы, мы увидим что сообщение `again!` будет печататься снова и снова без остановки, пока вы не остановите программу. Большинство терминалов поддерживает клавиатурное сокращение `ctrl-c` для прерывания работы программы, которая ушла в бесконечный цикл. Попробуйте сами:
 
 ```text
-$ cargo run
-   Compiling loops v0.1.0 (file:///projects/loops)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.29 secs
-     Running `target/debug/loops`
-again!
-again!
-again!
-again!
-^Cagain!
+$ cargo run    Compiling loops v0.1.0 (file:///projects/loops)     Finished dev [unoptimized + debuginfo] target(s) in 0.29 secs      Running `target/debug/loops` again! again! again! again! ^Cagain!
 ```
 
 Обозначение `^C` представляет место, где вы нажали сочетание клавиш `ctrl-c`. Вы могли увидеть или не увидеть напечатанное слово `again!` после вывода `^C`, это зависит от того, находился ли код в цикле или нет, на момент поступления сигнала прерывания работы программы.
@@ -245,19 +147,7 @@ again!
 Вы можете использовать `loop` когда выполняете операцию, которая может вызвать ошибку, вроде проверки закончил ли поток свою работу. Тем не менее, вы хотели бы передать результат этой операции остальной части вашего кода. Чтобы это сделать, можно добавить значение, которое вы хотите вернуть после выражения `break`, которое используется для остановки цикла; данное значение будет возвращено из цикла, так что его можно использовать как показано ниже:
 
 ```rust
-fn main() {
-    let mut counter = 0;
-
-    let result = loop {
-        counter += 1;
-
-        if counter == 10 {
-            break counter * 2;
-        }
-    };
-
-    println!("The result is {}", result);
-}
+fn main() {     let mut counter = 0;      let result = loop {         counter += 1;          if counter == 10 {             break counter * 2;         }     };      println!("The result is {}", result); }
 ```
 
 Перед циклом объявляется переменная с именем `counter` и её значение инициализируется в `0`. Затем объявляется переменная с именем `result` для хранения значения, возвращаемого из цикла. На каждом проходе цикла добавляется `1` к переменной `counter` и затем проверяется, равен ли этот счётчик значению `10`. Если равен, то используется ключевое слово `break` со значением `counter * 2`. После цикла используется точка с запятой в конце операции, которая назначает значение переменной  `result`. В заключении, печатается значение из переменной `result`, которое в данном случае равно 20.
@@ -271,17 +161,7 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let mut number = 3;
-
-    while number != 0 {
-        println!("{}!", number);
-
-        number -= 1;
-    }
-
-    println!("LIFTOFF!!!");
-}
+fn main() {     let mut number = 3;      while number != 0 {         println!("{}!", number);          number -= 1;     }      println!("LIFTOFF!!!"); }
 ```
 
 <span class="caption">Листинг 3-3: Использует цикл <code>while</code> для выполнения кода, пока условие истинно</span>
@@ -295,16 +175,7 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let a = [10, 20, 30, 40, 50];
-    let mut index = 0;
-
-    while index < 5 {
-        println!("the value is: {}", a[index]);
-
-        index += 1;
-    }
-}
+fn main() {     let a = [10, 20, 30, 40, 50];     let mut index = 0;      while index < 5 {         println!("the value is: {}", a[index]);          index += 1;     } }
 ```
 
 <span class="caption">Листинг 3-4: Проход по элементам коллекции используя цикл <code>while</code></span>
@@ -312,15 +183,7 @@ fn main() {
 Данный код проходит по всем элементам массива. Он начинается с индекса `0` и затем идёт далее, пока не достигнет последнего индекса массива (когда условие `index < 5` больше не является истинным). Запуск данного кода печатает каждый элемента массива:
 
 ```text
-$ cargo run
-   Compiling loops v0.1.0 (file:///projects/loops)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.32 secs
-     Running `target/debug/loops`
-the value is: 10
-the value is: 20
-the value is: 30
-the value is: 40
-the value is: 50
+$ cargo run    Compiling loops v0.1.0 (file:///projects/loops)     Finished dev [unoptimized + debuginfo] target(s) in 0.32 secs      Running `target/debug/loops` the value is: 10 the value is: 20 the value is: 30 the value is: 40 the value is: 50
 ```
 
 Все пять значений печатаются в терминале как и ожидалось. Даже если `index` в некоторый момент достигнет значения `5` , то цикл прекратит выполнение до того, как мы попытаемся извлечь шестой, не существующий элемент из массива.
@@ -332,13 +195,7 @@ the value is: 50
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let a = [10, 20, 30, 40, 50];
-
-    for element in a.iter() {
-        println!("the value is: {}", element);
-    }
-}
+fn main() {     let a = [10, 20, 30, 40, 50];      for element in a.iter() {         println!("the value is: {}", element);     } }
 ```
 
 <span class="caption">Листинг 3-5: Проход по всем элементам коллекции используя цикл <code>for</code></span>
@@ -354,12 +211,7 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    for number in (1..4).rev() {
-        println!("{}!", number);
-    }
-    println!("LIFTOFF!!!");
-}
+fn main() {     for number in (1..4).rev() {         println!("{}!", number);     }     println!("LIFTOFF!!!"); }
 ```
 
 Данный код выглядит лучше, не так ли?
