@@ -53,11 +53,10 @@ for (i, &item) in bytes.iter().enumerate() {
         return i;
     }
 }
-
 s.len()
 ```
 
-Теперь у нас есть способ выяснить индекс первого слова в строке, но есть проблема. Мы возвращаем тип `usize` сам по себе, но он имеет значимое число только в контексте `&String`. Другими словами, так как оно является отдельным значением полученным из содержимого `String`, то нет гарантии, что оно будет действительным в будущем. Рассмотрим программу листинга 4-8, которая использует функцию `first_word` из листинга 4-7.
+<img alt="world containing a pointer to the 6th byte of String s and a length 5" src="https://github.com/ruRust/book/blob/master/rustbook-en/src/img/trpl04-06.svg?raw=true" class="center" style="width: 50%;" data-src-original="../../rustbook-en/src/img/trpl04-06.svg">
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -117,7 +116,7 @@ let world = &s[6..11];
 
 Рисунок 4-12 отображает это на диаграмме.
 
-<img alt="world containing a pointer to the 6th byte of String s and a length 5" src="../../rustbook-en/src/img/trpl04-06.svg" class="center" style="width: 50%;">
+<img alt="world containing a pointer to the 6th byte of String s and a length 5" src="https://github.com/ruRust/book/blob/master/rustbook-en/src/img/trpl04-06.svg?raw=true" class="center" style="width: 50%;">
 
 <span class="caption">Рисунок 4-12: Строковый срез ссылается на часть <code>String</code></span>
 
