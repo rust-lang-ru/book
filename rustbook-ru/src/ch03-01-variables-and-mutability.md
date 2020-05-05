@@ -9,25 +9,13 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let x = 5;
-    println!("The value of x is: {}", x);
-    x = 6;
-    println!("The value of x is: {}", x);
-}
+fn main() {     let x = 5;     println!("The value of x is: {}", x);     x = 6;     println!("The value of x is: {}", x); }
 ```
 
 Сохраните код программы и выполните команду `cargo run`. В командной строке вы увидите сообщение об ошибке:
 
 ```text
-error[E0384]: cannot assign twice to immutable variable `x`
- --> src/main.rs:4:5
-  |
-2 |     let x = 5;
-  |         - first assignment to `x`
-3 |     println!("The value of x is: {}", x);
-4 |     x = 6;
-  |     ^^^^^ cannot assign twice to immutable variable
+error[E0384]: cannot assign twice to immutable variable `x`  --> src/main.rs:4:5   | 2 |     let x = 5;   |         - first assignment to `x` 3 |     println!("The value of x is: {}", x); 4 |     x = 6;   |     ^^^^^ cannot assign twice to immutable variable
 ```
 
 Данный пример показывает как компилятор помогает найти ошибки в программах. Несмотря на то, что ошибки компилятора могут вызывать разочарование, они означают, что ваша программа ещё не выполняет то, что вы от неё хотите. Ошибки *не означают*, что вы пока не являетесь хорошим программистом! Опытные разработчики Rust также получают ошибки компиляции.
@@ -45,23 +33,13 @@ error[E0384]: cannot assign twice to immutable variable `x`
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let mut x = 5;
-    println!("The value of x is: {}", x);
-    x = 6;
-    println!("The value of x is: {}", x);
-}
+fn main() {     let mut x = 5;     println!("The value of x is: {}", x);     x = 6;     println!("The value of x is: {}", x); }
 ```
 
 Запустив программу, мы получим результат:
 
 ```text
-$ cargo run
-   Compiling variables v0.1.0 (file:///projects/variables)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.30 secs
-     Running `target/debug/variables`
-The value of x is: 5
-The value of x is: 6
+$ cargo run    Compiling variables v0.1.0 (file:///projects/variables)     Finished dev [unoptimized + debuginfo] target(s) in 0.30 secs      Running `target/debug/variables` The value of x is: 5 The value of x is: 6
 ```
 
 Мы разрешили изменять значение, которое назначили `x` со значения `5` на значение `6`, когда использовано `mut`. В некоторых случаях, вам захочется сделать переменную изменяемой, потому что так становится проще писать код, в отличии от случая, когда есть только неизменяемые переменные.
@@ -97,25 +75,13 @@ const MAX_POINTS: u32 = 100_000;
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let x = 5;
-
-    let x = x + 1;
-
-    let x = x * 2;
-
-    println!("The value of x is: {}", x);
-}
+fn main() {     let x = 5;      let x = x + 1;      let x = x * 2;      println!("The value of x is: {}", x); }
 ```
 
 Программа сначала связывает значение `5` с переменной `x`. Затем `x` затеняется повторением кода  `let x =` с помощью начального значения и прибавления к нему `1`, так что значение `x` становится равным `6`. Третье выражение `let` также затеняет переменную `x`, умножением предыдущее значение на `2`. Это даёт переменной `x` финальное значение равное `12`. При запуске программы мы получим вывод:
 
 ```text
-$ cargo run
-   Compiling variables v0.1.0 (file:///projects/variables)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs
-     Running `target/debug/variables`
-The value of x is: 12
+$ cargo run    Compiling variables v0.1.0 (file:///projects/variables)     Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs      Running `target/debug/variables` The value of x is: 12
 ```
 
 Затенение отличается от объявления переменной с помощью `mut`, так как мы получим ошибку компиляции, если случайно попробуем переназначить значение без использования ключевого слова `let`. Используя `let`, можно выполнить несколько превращений над значением, при этом оставляя переменную неизменяемой, после того как все эти превращения завершены.
@@ -123,28 +89,19 @@ The value of x is: 12
 Другой разницей между `mut` и затенением является то, что мы создаём совершенно новую переменную, когда снова используем слово `let`. Мы можем даже изменить тип значения, но снова использовать предыдущее имя. К примеру, наша программа спрашивает пользователя сколько пробелов он хочет разместить между некоторым текстом, запрашивая символы пробела, но мы на самом деле хотим сохранить данный ввод как число:
 
 ```rust
-let spaces = "   ";
-let spaces = spaces.len();
+let spaces = "   "; let spaces = spaces.len();
 ```
 
 Данная конструкция разрешена, потому что первая переменная `spaces` является строковым типом, а вторая переменная `spaces` числовым. Она является совершенно новой переменной с одинаковым именем, что было у первой. Таким образом, затенение избавляет нас от необходимости придумывать разные имена, вроде `spaces_str` и  `spaces_num`. Вместо этого можно использовать снова более простое имя `spaces`. Тем не менее, если попробовать использовать для этого `mut` как показано ниже, то мы получим ошибку компиляции:
 
 ```rust,ignore,does_not_compile
-let mut spaces = "   ";
-spaces = spaces.len();
+let mut spaces = "   "; spaces = spaces.len();
 ```
 
 Ошибка говорит, что не разрешается менять тип переменной:
 
 ```text
-error[E0308]: mismatched types
- --> src/main.rs:3:14
-  |
-3 |     spaces = spaces.len();
-  |              ^^^^^^^^^^^^ expected &str, found usize
-  |
-  = note: expected type `&str`
-             found type `usize`
+error[E0308]: mismatched types  --> src/main.rs:3:14   | 3 |     spaces = spaces.len();   |              ^^^^^^^^^^^^ expected &str, found usize   |   = note: expected type `&str`              found type `usize`
 ```
 
 Теперь, когда вы имеете представление о работе с переменными, посмотрим на большее количество типов данных, которые они могут иметь.
