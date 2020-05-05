@@ -45,7 +45,12 @@ error[E0384]: cannot assign twice to immutable variable `x`
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {     let mut x = 5;     println!("The value of x is: {}", x);     x = 6;     println!("The value of x is: {}", x); }
+fn main() {
+    let mut x = 5;
+    println!("The value of x is: {}", x);
+    x = 6;
+    println!("The value of x is: {}", x);
+}
 ```
 
 Запустив программу, мы получим результат:
