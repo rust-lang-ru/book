@@ -44,7 +44,13 @@ Another function.
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {     another_function(5); }  fn another_function(x: i32) {     println!("The value of x is: {}", x); }
+fn main() {
+    another_function(5);
+}
+
+fn another_function(x: i32) {
+    println!("The value of x is: {}", x);
+}
 ```
 
 Попробуйте запустить программу, вы должны получить следующий вывод:
@@ -102,7 +108,9 @@ The value of y is: 6
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {     let y = 6; }
+fn main() {
+    let y = 6;
+}
 ```
 
 <span class="caption">Листинг 3-1: Объявление функции <code>main</code> включающей один оператор</span>
