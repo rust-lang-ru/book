@@ -1,9 +1,8 @@
 ## Дополнение Ё - Как создается Rust и “Nightly Rust”
 
-This appendix is about how Rust is made and how that affects you as a Rust
-developer.
+Это дополнение рассказывает как создается Rust, и как это влияет на Вас как на разработчика.
 
-### Stability Without Stagnation
+### Стабильность без стагнации
 
 As a language, Rust cares a *lot* about the stability of your code. We want
 Rust to be a rock-solid foundation you can build on, and if things were
@@ -16,7 +15,7 @@ and our guiding principle is this: you should never have to fear upgrading to a
 new version of stable Rust. Each upgrade should be painless, but should also
 bring you new features, fewer bugs, and faster compile times.
 
-### Choo, Choo! Release Channels and Riding the Trains
+### Ту-ту! Каналы выпуска и поездка на поезде
 
 Rust development operates on a *train schedule*. That is, all development is
 done on the `master` branch of the Rust repository. Releases follow a software
@@ -24,11 +23,10 @@ release train model, which has been used by Cisco IOS and other software
 projects. There are three *release channels* for Rust:
 
 - Nightly
-- Beta
+- Бета (Beta)
 - Stable
 
-Most Rust developers primarily use the stable channel, but those who want to
-try out experimental new features may use nightly or beta.
+Большинство Rust разработчиков используют стабильную версию, но те кто хотят попробовать эксперементальные новые функции, должны использовать Nightly или Beta.
 
 Here’s an example of how the development and release process works: let’s
 assume that the Rust team is working on the release of Rust 1.5. That release
@@ -52,9 +50,7 @@ nightly: * - - * - - *
 beta:                *
 ```
 
-Most Rust users do not use beta releases actively, but test against beta in
-their CI system to help Rust discover possible regressions. In the meantime,
-there’s still a nightly release every night:
+Многие пользователи Rust не используют активно бета-версию, но тестируют бета-версию в их системе CI для помощи Rust обнаружить проблемы обратной совместимости. В это время каждую ночь выпускается новая версия Nightly:
 
 ```text
 nightly: * - - * - - * - - * - - *
@@ -114,7 +110,7 @@ work as expected, you can report it to the team and get it fixed before the
 next stable release happens! Breakage in a beta release is relatively rare, but
 `rustc` is still a piece of software, and bugs do exist.
 
-### Unstable Features
+### Нестабильные функции
 
 There’s one more catch with this release model: unstable features. Rust uses a
 technique called “feature flags” to determine what features are enabled in a
@@ -135,11 +131,9 @@ features are still changing, and surely they’ll be different between when this
 book was written and when they get enabled in stable builds. You can find
 documentation for nightly-only features online.
 
-### Rustup and the Role of Rust Nightly
+### Rustup и роль ночной версии Rust
 
-Rustup makes it easy to change between different release channels of Rust, on a
-global or per-project basis. By default, you’ll have stable Rust installed. To
-install nightly, for example:
+Rustup делает легким изменение между различными каналами Rust, на глобальном или локальном для проекта уровне. По умолчанию устанавливается стабильная версия Rust. Для установки ночной версии выполните команду:
 
 ```text
 $ rustup install nightly
