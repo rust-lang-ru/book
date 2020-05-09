@@ -57,7 +57,15 @@ s.len()
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {     let s = String::from("hello");      change(&s); }  fn change(some_string: &String) {     some_string.push_str(", world"); }
+fn main() {
+    let s = String::from("hello");
+
+    change(&s);
+}
+
+fn change(some_string: &String) {
+    some_string.push_str(", world");
+}
 ```
 
 <span class="caption">Listing 4-6: Попытка модификации заимствованной переменной</span>
