@@ -33,12 +33,7 @@ fn calculate_length(s: &String) -> usize {
 Давайте подробнее рассмотрим механизм вызова функции:
 
 ```rust
-# fn calculate_length(s: &String) -> usize {
-#     s.len()
-# }
-let s1 = String::from("hello");
-
-let len = calculate_length(&s1);
+# fn calculate_length(s: &String) -> usize { #     s.len() # } let s1 = String::from("hello");  let len = calculate_length(&s1);
 ```
 
 Синтаксическая конструкция `&s1` позволяет создать  ссылку, которая *ссылается* на значение переменной `s1`, но не владеет ей. Т.к. нет передачи владения, то значение на которое она указывает не будет удалено, когда ссылка выйдет из области видимости.
@@ -46,11 +41,7 @@ let len = calculate_length(&s1);
 Сигнатура функции использует `&` для индикации того, что типа параметра `s` является ссылкой. Добавим объясняющие комментарии:
 
 ```rust
-fn calculate_length(s: &String) -> usize { // s ссылка на тип String
-
-s.len()
-} // Здесь, s выходит из области видимости. Но поскольку у s нет владения того,
-// на что она ссылается, то здесь ничего не происходит.
+fn calculate_length(s: &String) -> usize { // s ссылка на тип String  s.len() } // Здесь, s выходит из области видимости. Но поскольку у s нет владения того, // на что она ссылается, то здесь ничего не происходит.
 ```
 
 Область видимости, в которой переменная `s` действительна, является такой же как у любого другого параметра функции, но мы не освобождаем значение на которое указывает ссылка, когда эта переменная уходит из области видимости, так как нет владения. Когда функции имеют параметры ссылки вместо значений, то не нужно возвращать значения, чтобы вернуть владение обратно, по причине полного отсутствия такого владения.
@@ -62,15 +53,7 @@ s.len()
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let s = String::from("hello");
-
-    change(&s);
-}
-
-fn change(some_string: &String) {
-    some_string.push_str(", world");
-}
+fn main() {     let s = String::from("hello");      change(&s); }  fn change(some_string: &String) {     some_string.push_str(", world"); }
 ```
 
 <span class="caption">Listing 4-6: Попытка модификации заимствованной переменной</span>
@@ -78,13 +61,7 @@ fn change(some_string: &String) {
 Вот ошибка:
 
 ```text
-error[E0596]: cannot borrow immutable borrowed content `*some_string` as mutable
- --> error.rs:8:5
-  |
-7 | fn change(some_string: &String) {
-  |                        ------- use `&mut String` here to make mutable
-8 |     some_string.push_str(", world");
-  |     ^^^^^^^^^^^ cannot borrow as mutable
+error[E0596]: cannot borrow immutable borrowed content `*some_string` as mutable  --> error.rs:8:5   | 7 | fn change(some_string: &String) {   |                        ------- use `&mut String` here to make mutable 8 |     some_string.push_str(", world");   |     ^^^^^^^^^^^ cannot borrow as mutable
 ```
 
 Как и переменные являются не изменяемыми по умолчанию, ссылочные переменные тоже являются неизменяемыми. Т.е. нельзя изменять данные по ссылке.
@@ -96,15 +73,7 @@ error[E0596]: cannot borrow immutable borrowed content `*some_string` as mutable
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let mut s = String::from("hello");
-
-    change(&mut s);
-}
-
-fn change(some_string: &mut String) {
-    some_string.push_str(", world");
-}
+fn main() {     let mut s = String::from("hello");      change(&mut s); }  fn change(some_string: &mut String) {     some_string.push_str(", world"); }
 ```
 
 Первое, мы должны поменять `s` добавив `mut`. Затем нужно создать изменяемую ссылку с помощью `&mut s` и принять изменяемую ссылку с помощью `some_string: &mut String`.
@@ -114,27 +83,13 @@ fn change(some_string: &mut String) {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-let mut s = String::from("hello");
-
-let r1 = &mut s;
-let r2 = &mut s;
-
-println!("{}, {}", r1, r2);
+let mut s = String::from("hello");  let r1 = &mut s; let r2 = &mut s;  println!("{}, {}", r1, r2);
 ```
 
 Описание ошибки:
 
 ```text
-error[E0499]: cannot borrow `s` as mutable more than once at a time
- --> src/main.rs:5:14
-  |
-4 |     let r1 = &mut s;
-  |              ------ first mutable borrow occurs here
-5 |     let r2 = &mut s;
-  |              ^^^^^^ second mutable borrow occurs here
-6 |
-7 |     println!("{}, {}", r1, r2);
-  |                        -- first borrow later used here
+error[E0499]: cannot borrow `s` as mutable more than once at a time  --> src/main.rs:5:14   | 4 |     let r1 = &mut s;   |              ------ first mutable borrow occurs here 5 |     let r2 = &mut s;   |              ^^^^^^ second mutable borrow occurs here 6 | 7 |     println!("{}, {}", r1, r2);   |                        -- first borrow later used here
 ```
 
 Это ограничение позволяет изменять данные, но в очень контролируемой манере. Это то с чем новички сражаются, потому что большинство языков позволяет изменения, когда бы вы ни захотели, но так сделано для минимизации ошибок.
@@ -150,42 +105,19 @@ error[E0499]: cannot borrow `s` as mutable more than once at a time
 Создание вложенных областей видимости с помощью фигурных скобок разрешается для создания множества изменяемых ссылок, но только не *одновременных*:
 
 ```rust
-let mut s = String::from("hello");
-
-{
-    let r1 = &mut s;
-
-} // // r1 выходит их обл.видимости, теперь можно создавать новую ссылку без проблем.
-
-let r2 = &mut s;
+let mut s = String::from("hello");  {     let r1 = &mut s;  } // // r1 выходит их обл.видимости, теперь можно создавать новую ссылку без проблем.  let r2 = &mut s;
 ```
 
 Подобное правило существует и для комбинации изменяемых и неизменяемых ссылочных переменных. Пример кода с ошибкой:
 
 ```rust,ignore,does_not_compile
-let mut s = String::from("hello");
-
-let r1 = &s; // нет проблемы
-let r2 = &s; // нет проблемы
-let r3 = &mut s; // БОЛЬШАЯ ПРОБЛЕМА
-
-println!("{}, {}, and {}", r1, r2, r3);
+let mut s = String::from("hello");  let r1 = &s; // нет проблемы let r2 = &s; // нет проблемы let r3 = &mut s; // БОЛЬШАЯ ПРОБЛЕМА  println!("{}, {}, and {}", r1, r2, r3);
 ```
 
 Ошибка:
 
 ```text
-error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
- --> src/main.rs:6:14
-  |
-4 |     let r1 = &s; // no problem
-  |              -- immutable borrow occurs here
-5 |     let r2 = &s; // no problem
-6 |     let r3 = &mut s; // BIG PROBLEM
-  |              ^^^^^^ mutable borrow occurs here
-7 |
-8 |     println!("{}, {}, and {}", r1, r2, r3);
-  |                                -- immutable borrow later used here
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable  --> src/main.rs:6:14   | 4 |     let r1 = &s; // no problem   |              -- immutable borrow occurs here 5 |     let r2 = &s; // no problem 6 |     let r3 = &mut s; // BIG PROBLEM   |              ^^^^^^ mutable borrow occurs here 7 | 8 |     println!("{}, {}, and {}", r1, r2, r3);   |                                -- immutable borrow later used here
 ```
 
 Вот так! Мы *также* не можем иметь изменяемую ссылочную переменную, пока существует неизменяемая ссылочная переменная. Пользователи неизменяемой ссылки не ожидают внезапного изменения значения на которые она указывает! Тем не менее, наличие множества неизменяемых переменных допускается, т.к. ни один из читающих данные не может изменить данные, которые все остальные также читают .
@@ -197,15 +129,7 @@ edition2018 not work. The bug is currently fixed in nightly, so when we update
 the book to >= 1.35, `ignore` can be removed from this example. -->
 
 ```rust,edition2018,ignore
-let mut s = String::from("hello");
-
-let r1 = &s; // нет проблем
-let r2 = &s; // нет проблем
-println!("{} and {}", r1, r2);
-// r1 и r2 больше не используются после этого места
-
-let r3 = &mut s; // нет проблем
-println!("{}", r3);
+let mut s = String::from("hello");  let r1 = &s; // нет проблем let r2 = &s; // нет проблем println!("{} and {}", r1, r2); // r1 и r2 больше не используются после этого места  let r3 = &mut s; // нет проблем println!("{}", r3);
 ```
 
 Области видимости неизменяемых ссылочных переменных `r1` и `r2` заканчиваются после  `println!`, там где их последний раз использовали, что происходит перед созданием изменяемой ссылочной переменной `r3`. Данные области не пересекаются, так что этот код разрешён.
@@ -221,36 +145,19 @@ println!("{}", r3);
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let reference_to_nothing = dangle();
-}
-
-fn dangle() -> &String {
-    let s = String::from("hello");
-
-    &s
-}
+fn main() {     let reference_to_nothing = dangle(); }  fn dangle() -> &String {     let s = String::from("hello");      &s }
 ```
 
 Здесь ошибка:
 
 ```text
-error[E0106]: missing lifetime specifier
- --> main.rs:5:16
-  |
-5 | fn dangle() -> &String {
-  |                ^ expected lifetime parameter
-  |
-  = help: this function's return type contains a borrowed value, but there is
-  no value for it to be borrowed from
-  = help: consider giving it a 'static lifetime
+error[E0106]: missing lifetime specifier  --> main.rs:5:16   | 5 | fn dangle() -> &String {   |                ^ expected lifetime parameter   |   = help: this function's return type contains a borrowed value, but there is   no value for it to be borrowed from   = help: consider giving it a 'static lifetime
 ```
 
 Эта ошибка сообщает об ещё не освещённой нами возможности языка Rust : времени жизни переменной. Мы расскажем подробнее о этой возможности в главе 10. Но если вы проигнорируете раздел о времени жизни, сообщение содержит ключ к тому, почему этот код является проблемой:
 
 ```text
-this function's return type contains a borrowed value, but there is no value
-for it to be borrowed from.
+this function's return type contains a borrowed value, but there is no value for it to be borrowed from.
 ```
 
 Давайте пристальней рассмотрим, что же происходит на каждой стадии работы кода, который создаёт `недействительную` ссылку:
@@ -270,11 +177,7 @@ fn dangle() -> &String { // функция dangle возвращает ссыл�
 Решением является вернуть непосредственно `String`:
 
 ```rust
-fn no_dangle() -> String {
-    let s = String::from("hello");
-
-    s
-}
+fn no_dangle() -> String {     let s = String::from("hello");      s }
 ```
 
 Это решение работает без проблем. Владение перемещено наружу и ничего не удаляется  из памяти.
