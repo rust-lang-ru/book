@@ -33,12 +33,7 @@ fn calculate_length(s: &String) -> usize {
 Давайте подробнее рассмотрим механизм вызова функции:
 
 ```rust
-# fn calculate_length(s: &String) -> usize {
-#     s.len()
-# }
-let s1 = String::from("hello");
-
-let len = calculate_length(&s1);
+# fn calculate_length(s: &String) -> usize { #     s.len() # } let s1 = String::from("hello");  let len = calculate_length(&s1);
 ```
 
 Синтаксическая конструкция `&s1` позволяет создать  ссылку, которая *ссылается* на значение переменной `s1`, но не владеет ей. Т.к. нет передачи владения, то значение на которое она указывает не будет удалено, когда ссылка выйдет из области видимости.
@@ -47,9 +42,10 @@ let len = calculate_length(&s1);
 
 ```rust
 fn calculate_length(s: &String) -> usize { // s ссылка на тип String
-    s.len()
+
+s.len()
 } // Здесь, s выходит из области видимости. Но поскольку у s нет владения того,
-  // на что она ссылается, то здесь ничего не происходит.
+// на что она ссылается, то здесь ничего не происходит.
 ```
 
 Область видимости, в которой переменная `s` действительна, является такой же как у любого другого параметра функции, но мы не освобождаем значение на которое указывает ссылка, когда эта переменная уходит из области видимости, так как нет владения. Когда функции имеют параметры ссылки вместо значений, то не нужно возвращать значения, чтобы вернуть владение обратно, по причине полного отсутствия такого владения.
@@ -61,15 +57,7 @@ fn calculate_length(s: &String) -> usize { // s ссылка на тип String
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let s = String::from("hello");
-
-    change(&s);
-}
-
-fn change(some_string: &String) {
-    some_string.push_str(", world");
-}
+fn main() {     let s = String::from("hello");      change(&s); }  fn change(some_string: &String) {     some_string.push_str(", world"); }
 ```
 
 <span class="caption">Listing 4-6: Попытка модификации заимствованной переменной</span>
@@ -125,14 +113,15 @@ println!("{}, {}", r1, r2);
 
 ```text
 error[E0499]: cannot borrow `s` as mutable more than once at a time
- --> borrow_twice.rs:5:19
+ --> src/main.rs:5:14
   |
 4 |     let r1 = &mut s;
-  |                   - first mutable borrow occurs here
+  |              ------ first mutable borrow occurs here
 5 |     let r2 = &mut s;
-  |                   ^ second mutable borrow occurs here
-6 | }
-  | - first borrow ends here
+  |              ^^^^^^ second mutable borrow occurs here
+6 |
+7 |     println!("{}, {}", r1, r2);
+  |                        -- first borrow later used here
 ```
 
 Это ограничение позволяет изменять данные, но в очень контролируемой манере. Это то с чем новички сражаются, потому что большинство языков позволяет изменения, когда бы вы ни захотели, но так сделано для минимизации ошибок.
@@ -153,7 +142,7 @@ let mut s = String::from("hello");
 {
     let r1 = &mut s;
 
-} // r1 выходит их обл.видимости, теперь можно создавать новую ссылку без проблем.
+} // // r1 выходит их обл.видимости, теперь можно создавать новую ссылку без проблем.
 
 let r2 = &mut s;
 ```
@@ -176,10 +165,10 @@ println!("{}, {}, and {}", r1, r2, r3);
 error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
  --> src/main.rs:6:14
   |
-4 |     let r1 = &s; // нет проблемы
+4 |     let r1 = &s; // no problem
   |              -- immutable borrow occurs here
-5 |     let r2 = &s; // нет проблемы
-6 |     let r3 = &mut s; // БОЛЬШАЯ ПРОБЛЕМА
+5 |     let r2 = &s; // no problem
+6 |     let r3 = &mut s; // BIG PROBLEM
   |              ^^^^^^ mutable borrow occurs here
 7 |
 8 |     println!("{}, {}, and {}", r1, r2, r3);
@@ -257,12 +246,10 @@ for it to be borrowed from.
 
 ```rust,ignore,does_not_compile
 fn dangle() -> &String { // функция dangle возвращает ссылку на String
+      let s = String::from("hello"); // s это новая String
 
-    let s = String::from("hello"); // s это новая String
-
-    &s // здесь возвращаем ссылку на String, s
-} // Здесь, s уходит из обл.видим-ти и удаляется. Её память очищена.
-  // Опасность!
+      &s // здесь возвращаем ссылку на String, s
+} // Здесь, s уходит из обл.видим-ти и удаляется. Её память очищена.   // Опасность!
 ```
 
 По причине того, что переменная `s` создана внутри функции `dangle`, то при завершении `dangle` содержимое памяти для `s` будет удалено из памяти. Но мы пытаемся вернуть ссылку на эту память. Это означает, что данная ссылка могла бы указывать на недействительную `String`. Это плохо! Rust не позволит нам этого сделать.
