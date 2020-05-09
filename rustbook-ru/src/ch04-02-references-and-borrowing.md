@@ -33,7 +33,12 @@ fn calculate_length(s: &String) -> usize {
 Давайте подробнее рассмотрим механизм вызова функции:
 
 ```rust
-# fn calculate_length(s: &String) -> usize { #     s.len() # } let s1 = String::from("hello");  let len = calculate_length(&s1);
+# fn calculate_length(s: &String) -> usize {
+#     s.len()
+# }
+let s1 = String::from("hello");
+
+let len = calculate_length(&s1);
 ```
 
 Синтаксическая конструкция `&s1` позволяет создать  ссылку, которая *ссылается* на значение переменной `s1`, но не владеет ей. Т.к. нет передачи владения, то значение на которое она указывает не будет удалено, когда ссылка выйдет из области видимости.
