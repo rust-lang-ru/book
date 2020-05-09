@@ -9,7 +9,8 @@
 Для создания нового проекта, в строке терминала перейдите в папку *projects*, которую вы создали в главе 1. С помощью уже знакомой Вам утилиты `cargo` создайте новый проект:
 
 ```text
-$ cargo new guessing_game $ cd guessing_game
+$ cargo new guessing_game
+$ cd guessing_game
 ```
 
 Первая команда, `cargo new` принимает в качестве первого аргумента имя нового проекта (`guessing_game`). Вторая команда изменяет текущий каталог на директорию проекта.
@@ -19,7 +20,13 @@ $ cargo new guessing_game $ cd guessing_game
 <span class="filename">Файл: Cargo.toml</span>
 
 ```toml
-[package] name = "guessing_game" version = "0.1.0" authors = ["Your Name <you@example.com>"] edition = "2018"  [dependencies]
+[package]
+name = "guessing_game"
+version = "0.1.0"
+authors = ["Your Name <you@example.com>"]
+edition = "2018"
+
+[dependencies]
 ```
 
 Если информация об авторе, которую Cargo берёт из вашей среды неправильна, исправьте её в файле и сохраните.
@@ -29,13 +36,19 @@ $ cargo new guessing_game $ cd guessing_game
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {     println!("Hello, world!"); }
+fn main() {
+    println!("Hello, world!");
+}
 ```
 
 Давайте теперь скомпилируем эту программу и запустим её с помощью команды `cargo run`:
 
 ```text
-$ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)     Finished dev [unoptimized + debuginfo] target(s) in 1.50 secs      Running `target/debug/guessing_game` Hello, world!
+$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.50 secs
+     Running `target/debug/guessing_game`
+Hello, world!
 ```
 
 Команда `run` полезна, когда нужно быстро скомпилировать и запустить программу на выполнение. Например в этой игре мы будем тестировать каждую часть перед переходом к следующей.
@@ -49,7 +62,20 @@ $ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)  
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-use std::io;  fn main() {     println!("Guess the number!");      println!("Please input your guess.");      let mut guess = String::new();      io::stdin().read_line(&mut guess)         .expect("Failed to read line");      println!("You guessed: {}", guess); }
+use std::io;
+
+fn main() {
+    println!("Guess the number!");
+
+    println!("Please input your guess.");
+
+    let mut guess = String::new();
+
+    io::stdin().read_line(&mut guess)
+        .expect("Failed to read line");
+
+    println!("You guessed: {}", guess);
+}
 ```
 
 <span class="caption">Листинг 2-1: Программа просит ввести догадку, а потом печатает её</span>
@@ -73,7 +99,9 @@ fn main() {
 Как вы уже узнали из главы 1, макрос `println!` выводит строку на экран:
 
 ```rust,ignore
-println!("Guess the number!");  println!("Please input your guess.");
+println!("Guess the number!");
+
+println!("Please input your guess.");
 ```
 
 Этот код печатает подсказку с указанием игры и приглашает пользователя ввести число.
@@ -95,7 +123,8 @@ let foo = bar;
 В этой строке создаётся переменная с именем `foo`, которая связывается со значением из переменной `bar`. Особенностью языка Rust является то, что переменные по умолчанию неизменяемые. Мы рассмотрим эту концепцию более детально в разделе [“Переменные и понятие изменяемости”](ch03-01-variables-and-mutability.html#variables-and-mutability)<comment> главы 3. Предложенный пример показывает, как использовать ключевое слово <code>mut</code> перед именем переменной для того, чтобы сделать переменную изменяемой.</comment>
 
 ```rust,ignore
-let foo = 5; // НЕизменяемая - immutable let mut bar = 5; // изменяемая - mutable
+let foo = 5; // НЕизменяемая - immutable
+let mut bar = 5; // изменяемая - mutable
 ```
 
 > Обратите внимание, что символы `//` - синтаксис, обозначающий комментарий, который размещается на одной строке. Rust игнорирует всё, что размещено в строке комментария. Более подробно см. в главе № 3.
@@ -111,7 +140,8 @@ let foo = 5; // НЕизменяемая - immutable let mut bar = 5; // изм�
 Напомним, что мы подключили функции ввода-вывода из стандартной библиотеки с помощью `use std::io;` в первой строчке программы. Теперь мы вызовем функцию `stdin` из модуля `io`:
 
 ```rust,ignore
-io::stdin().read_line(&mut guess)     .expect("Failed to read line");
+io::stdin().read_line(&mut guess)
+    .expect("Failed to read line");
 ```
 
 Если бы мы не добавили строку`use std::io` в начало программы, мы смогли бы вызвать эту функцию как `std::io::stdin`. Функция `stdin` возвращает экземпляр [`std::io::Stdin`], который является типом, предоставляющим обработку стандартного ввода из Вашего терминала.
@@ -149,7 +179,15 @@ io::stdin().read_line(&mut guess).expect("Failed to read line");
 Если Вы не вызовете `expect`, программа скомпилируется, но Вы получите предупреждение:
 
 ```text
-$ cargo build    Compiling guessing_game v0.1.0 (file:///projects/guessing_game) warning: unused `std::result::Result` which must be used   --> src/main.rs:10:5    | 10 |     io::stdin().read_line(&mut guess);    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^    |    = note: #[warn(unused_must_use)] on by default
+$ cargo build
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+warning: unused `std::result::Result` which must be used
+  --> src/main.rs:10:5
+   |
+10 |     io::stdin().read_line(&mut guess);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: #[warn(unused_must_use)] on by default
 ```
 
 Rust предупреждает, что вы не используете значение `Result` возвращённое из `read_line`, показывая что программа не обрабатывает возможную ошибку.
@@ -167,7 +205,10 @@ println!("You guessed: {}", guess);
 Эта строка выведет строку, в которую сохранён ввод пользователя. Фигурные скобки `{}` являются заполнителем: думайте о  `{}` как о маленьком крабе, в клешнях которого находится значение. Вы можете вывести больше одного значения используя фигурные скобки: первые скобки держат первое значение перечисленное после форматируемой строки, вторые скобки держат второе значение, и так далее. Печать нескольких значений одним вызовом макроса `println!` выглядит так:
 
 ```rust
-let x = 5; let y = 10;  println!("x = {} and y = {}", x, y);
+let x = 5;
+let y = 10;
+
+println!("x = {} and y = {}", x, y);
 ```
 
 Этот код выведет `x = 5 and y = 10`.
@@ -177,7 +218,14 @@ let x = 5; let y = 10;  println!("x = {} and y = {}", x, y);
 Давайте протестирует первую часть игры. Запустите её используя `cargo run`:
 
 ```text
-$ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)     Finished dev [unoptimized + debuginfo] target(s) in 2.53 secs      Running `target/debug/guessing_game` Guess the number! Please input your guess. 6 You guessed: 6
+$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 2.53 secs
+     Running `target/debug/guessing_game`
+Guess the number!
+Please input your guess.
+6
+You guessed: 6
 ```
 
 На данный момент первая часть игры завершена: мы получаем ввод с клавиатуры и затем выводим его.
@@ -201,7 +249,8 @@ $ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)  
 <span class="filename">Файл: Cargo.toml</span>
 
 ```toml
-[dependencies] rand = "0.5.5"
+[dependencies]
+rand = "0.5.5"
 ```
 
 Все что следует за заголовком в файле *Cargo.toml* является частью раздела, продолжающегося до следующего заголовка. Секция `[dependencies]` указывает Cargo какие внешние крейты и какие их версии нужны в проекте. В данном случае мы пишем крейт `rand` с указанием версии `0.5.5`. Cargo понимает [семантическое версионирование]<comment data-md-type="raw_html"> (иногда называемое <em data-md-type="raw_html">SemVer</em>), которое является стандартом для записи номеров версий. Число `0.5.5` является укороченной версией <code data-md-type="raw_html">^0.5.5</code>, которая подразумевает “любая версия которая имеет публичный API совместимый с версией 0.5.5.”</comment>
@@ -209,7 +258,20 @@ $ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)  
 Давайте теперь соберём наш проект без каких-либо правок кода, как показано в листинге 2-2.
 
 ```text
-$ cargo build     Updating crates.io index   Downloaded rand v0.5.5   Downloaded libc v0.2.62   Downloaded rand_core v0.2.2   Downloaded rand_core v0.3.1   Downloaded rand_core v0.4.2    Compiling rand_core v0.4.2    Compiling libc v0.2.62    Compiling rand_core v0.3.1    Compiling rand_core v0.2.2    Compiling rand v0.5.5    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)     Finished dev [unoptimized + debuginfo] target(s) in 2.53 s
+$ cargo build
+    Updating crates.io index
+  Downloaded rand v0.5.5
+  Downloaded libc v0.2.62
+  Downloaded rand_core v0.2.2
+  Downloaded rand_core v0.3.1
+  Downloaded rand_core v0.4.2
+   Compiling rand_core v0.4.2
+   Compiling libc v0.2.62
+   Compiling rand_core v0.3.1
+   Compiling rand_core v0.2.2
+   Compiling rand v0.5.5
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 2.53 s
 ```
 
 <span class="caption">Листинг 2-2: Вывод работы команды <code>cargo build</code> после добавления пакета rand в зависимости</span>
@@ -225,7 +287,9 @@ $ cargo build     Updating crates.io index   Downloaded rand v0.5.5   Downloaded
 Если *открыть* файл *src/main.rs*  и внести простое изменение, сохранить его и собрать снова, то вы увидите только две строки вывода:
 
 ```text
-$ cargo build    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)     Finished dev [unoptimized + debuginfo] target(s) in 2.53s
+$ cargo build
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 2.53s
 ```
 
 Эти строки показывают, что Cargo обновляет только сборку с вашими небольшими изменениями в файле *src/main.rs*. Остальные зависимости не изменились, поэтому Cargo знает, что может использовать то, что он уже скачал и скомпилировал ранее. Он просто пересобирает часть кода.
@@ -243,7 +307,9 @@ $ cargo build    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
 Но по умолчанию Cargo будет искать только версии больше `0.5.5` и меньше, чем `0.6.0` . Если крейт `rand` выпустил две новые версии, `0.5.6` и `0.6.0` , вы увидите следующее при запуске `cargo update` :
 
 ```text
-$ cargo update     Updating crates.io index     Updating rand v0.5.5 -> v0.5.6
+$ cargo update
+    Updating crates.io index
+    Updating rand v0.5.5 -> v0.5.6
 ```
 
 В этот момент вы также заметите изменение в файле *Cargo.lock*, отметив что версия крейта `rand`, которую вы сейчас используете является `0.5.6` .
@@ -251,7 +317,8 @@ $ cargo update     Updating crates.io index     Updating rand v0.5.5 -> v0.5.6
 Если вы хотите использовать крейт `rand` версии `0.6.0` или любую версию в `0.6.x`, то для этого нужно будет обновить файл *Cargo.toml*, чтобы он выглядел следующим образом:
 
 ```toml
-[dependencies] rand = "0.6.0"
+[dependencies]
+rand = "0.6.0"
 ```
 
 В следующий раз при запуске `cargo build`, Cargo обновит реестр доступных крейтов и пересмотрит ваши требования к `rand` в соответствии с новой версией, которую вы указали.
@@ -265,7 +332,25 @@ $ cargo update     Updating crates.io index     Updating rand v0.5.5 -> v0.5.6
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-use std::io; use rand::Rng;  fn main() {     println!("Guess the number!");      let secret_number = rand::thread_rng().gen_range(1, 101);      println!("The secret number is: {}", secret_number);      println!("Please input your guess.");      let mut guess = String::new();      io::stdin().read_line(&mut guess)         .expect("Failed to read line");      println!("You guessed: {}", guess); }
+use std::io;
+use rand::Rng;
+
+fn main() {
+    println!("Guess the number!");
+
+    let secret_number = rand::thread_rng().gen_range(1, 101);
+
+    println!("The secret number is: {}", secret_number);
+
+    println!("Please input your guess.");
+
+    let mut guess = String::new();
+
+    io::stdin().read_line(&mut guess)
+        .expect("Failed to read line");
+
+    println!("You guessed: {}", guess);
+}
 ```
 
 <span class="caption">Листинг 2-3: Добавление кода для генерации случайного числа</span>
@@ -281,7 +366,22 @@ use std::io; use rand::Rng;  fn main() {     println!("Guess the number!");     
 Попробуйте запустить программу несколько раз:
 
 ```text
-$ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)     Finished dev [unoptimized + debuginfo] target(s) in 2.53 secs      Running `target/debug/guessing_game` Guess the number! The secret number is: 7 Please input your guess. 4 You guessed: 4 $ cargo run      Running `target/debug/guessing_game` Guess the number! The secret number is: 83 Please input your guess. 5 You guessed: 5
+$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 2.53 secs
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 7
+Please input your guess.
+4
+You guessed: 4
+$ cargo run
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 83
+Please input your guess.
+5
+You guessed: 5
 ```
 
 Вы должны получить разные случайные числа, и все они должны быть числами между 1 и 100. Отличная работа!
@@ -293,7 +393,22 @@ $ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)  
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-use std::io; use std::cmp::Ordering; use rand::Rng;  fn main() {      // ---snip---      println!("You guessed: {}", guess);      match guess.cmp(&secret_number) {         Ordering::Less => println!("Too small!"),         Ordering::Greater => println!("Too big!"),         Ordering::Equal => println!("You win!"),     } }
+use std::io;
+use std::cmp::Ordering;
+use rand::Rng;
+
+fn main() {
+
+    // ---snip---
+
+    println!("You guessed: {}", guess);
+
+    match guess.cmp(&secret_number) {
+        Ordering::Less => println!("Too small!"),
+        Ordering::Greater => println!("Too big!"),
+        Ordering::Equal => println!("You win!"),
+    }
+}
 ```
 
 <span class="caption">Листинг 2-4. Обработка возможных возвращаемых значений сравнивая два числа</span>
@@ -309,7 +424,19 @@ use std::io; use std::cmp::Ordering; use rand::Rng;  fn main() {      // ---snip
 Однако код в листинге 2-4 ещё не компилируется. Давайте попробуем:
 
 ```text
-$ cargo build    Compiling guessing_game v0.1.0 (file:///projects/guessing_game) error[E0308]: mismatched types   --> src/main.rs:23:21    | 23 |     match guess.cmp(&secret_number) {    |                     ^^^^^^^^^^^^^^ expected struct `std::string::String`, found integer    |    = note: expected type `&std::string::String`    = note:    found type `&{integer}`  error: aborting due to previous error Could not compile `guessing_game`.
+$ cargo build
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+error[E0308]: mismatched types
+  --> src/main.rs:23:21
+   |
+23 |     match guess.cmp(&secret_number) {
+   |                     ^^^^^^^^^^^^^^ expected struct `std::string::String`, found integer
+   |
+   = note: expected type `&std::string::String`
+   = note:    found type `&{integer}`
+
+error: aborting due to previous error
+Could not compile `guessing_game`.
 ```
 
 Суть ошибки состоит в том, что существуют *не совпадающие типы*. В Rust имеется строгая, статическая система типов. Тем не менее, он также имеет выведение типов. Когда мы написали `let mut guess = String::new()`, Rust смог сделать вывод, что `guess` должен быть `String` и не заставил нас писать тип. Но переменная `secret_number` это также числовой тип с другой стороны. Некоторые числовые типы могут иметь значения от 1 до 100: 32-битное знаковое число `i32`; 32-битное без знаковое число `u32`; 64-битное знаковое `i64`; а также другие. Rust по умолчанию использует `i32`, который является типом для `secret_number`, если вы не добавите информацию о типе в другом месте, что заставит Rust вывести другой числовой тип. Причина ошибки в том, что Rust не может сравнить строковый тип и числовой.
@@ -319,13 +446,31 @@ $ cargo build    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-// --snip--      let mut guess = String::new();      io::stdin().read_line(&mut guess)         .expect("Failed to read line");      let guess: u32 = guess.trim().parse()         .expect("Please type a number!");      println!("You guessed: {}", guess);      match guess.cmp(&secret_number) {         Ordering::Less => println!("Too small!"),         Ordering::Greater => println!("Too big!"),         Ordering::Equal => println!("You win!"),     } }
+// --snip--
+
+    let mut guess = String::new();
+
+    io::stdin().read_line(&mut guess)
+        .expect("Failed to read line");
+
+    let guess: u32 = guess.trim().parse()
+        .expect("Please type a number!");
+
+    println!("You guessed: {}", guess);
+
+    match guess.cmp(&secret_number) {
+        Ordering::Less => println!("Too small!"),
+        Ordering::Greater => println!("Too big!"),
+        Ordering::Equal => println!("You win!"),
+    }
+}
 ```
 
 Две новые строки:
 
 ```rust,ignore
-let guess: u32 = guess.trim().parse()     .expect("Please type a number!");
+let guess: u32 = guess.trim().parse()
+    .expect("Please type a number!");
 ```
 
 Мы создаём переменную с именем `guess`. Но подождите, разве в программе уже нет переменной с именем `guess`? Да это так, но Rust позволяет нам *затенять* предыдущее значение `guess` с помощью нового. Эта функция часто используется в ситуациях где вы хотите преобразовать значение из одного типа в другой. Затенение позволяет повторно использовать имя переменной `guess`, а не заставлять нас создавать две уникальные переменные, вроде `guess_str` и `guess`. (Глава 3 охватывает затенение более подробно.)
@@ -339,7 +484,16 @@ let guess: u32 = guess.trim().parse()     .expect("Please type a number!");
 Давайте запустим программу сейчас!
 
 ```text
-$ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)     Finished dev [unoptimized + debuginfo] target(s) in 0.43 secs      Running `target/debug/guessing_game` Guess the number! The secret number is: 58 Please input your guess.   76 You guessed: 76 Too big!
+$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.43 secs
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 58
+Please input your guess.
+  76
+You guessed: 76
+Too big!
 ```
 
 Хорошо! Несмотря на то, что были добавлены пробелы перед догадкой, программа все равно вывела пользовательское предположение 76. Запустите программу несколько раз для проверки разного поведение с разными видами ввода: догадка правильная, догадка слишком велика и слишком мала.
@@ -353,7 +507,22 @@ $ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)  
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-// --snip--      println!("The secret number is: {}", secret_number);      loop {         println!("Please input your guess.");          // --snip--          match guess.cmp(&secret_number) {             Ordering::Less => println!("Too small!"),             Ordering::Greater => println!("Too big!"),             Ordering::Equal => println!("You win!"),         }     } }
+// --snip--
+
+    println!("The secret number is: {}", secret_number);
+
+    loop {
+        println!("Please input your guess.");
+
+        // --snip--
+
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => println!("You win!"),
+        }
+    }
+}
 ```
 
 Как видите, мы переместили весь код вывода подсказки и ввода догадки в цикл. Обязательно сделайте отступ в строках внутри цикла по четыре пробела на каждой строке и снова запустите программу. Обратите внимание, что есть новая проблема, потому что программа выполняет именно то, что мы ей написали: запрашивает новую догадку до бесконечности! Похоже, что пользователь не сможет выйти!
@@ -361,7 +530,29 @@ $ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)  
 Пользователь всегда может прервать программу, используя сочетание клавиш <span class="keystroke">ctrl-c</span> . Но есть ещё один способ избежать этого, как упоминалось в обсуждении `parse` раздела ["Сравнение догадки секретный номер"”](#comparing-the-guess-to-the-secret-number)<comment> : если пользователь вводит не числовой ответ, программа завершится сбоем. Пользователь может воспользоваться этим, чтобы выйти, как показано здесь:</comment>
 
 ```text
-$ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)     Finished dev [unoptimized + debuginfo] target(s) in 1.50 secs      Running `target/debug/guessing_game` Guess the number! The secret number is: 59 Please input your guess. 45 You guessed: 45 Too small! Please input your guess. 60 You guessed: 60 Too big! Please input your guess. 59 You guessed: 59 You win! Please input your guess. quit thread 'main' panicked at 'Please type a number!: ParseIntError { kind: InvalidDigit }', src/libcore/result.rs:785 note: Run with `RUST_BACKTRACE=1` for a backtrace. error: Process didn't exit successfully: `target/debug/guess` (exit code: 101)
+$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.50 secs
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 59
+Please input your guess.
+45
+You guessed: 45
+Too small!
+Please input your guess.
+60
+You guessed: 60
+Too big!
+Please input your guess.
+59
+You guessed: 59
+You win!
+Please input your guess.
+quit
+thread 'main' panicked at 'Please type a number!: ParseIntError { kind: InvalidDigit }', src/libcore/result.rs:785
+note: Run with `RUST_BACKTRACE=1` for a backtrace.
+error: Process didn't exit successfully: `target/debug/guess` (exit code: 101)
 ```
 
 Ввод `quit` в самом деле завершит игру, как и любой другой ввод не являющийся числом. Однако это не оптимально, если не сказать больше. Мы хотим, чтобы игра автоматически остановилась, когда будет угадан правильный номер.
@@ -373,7 +564,18 @@ $ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)  
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-// --snip--          match guess.cmp(&secret_number) {             Ordering::Less => println!("Too small!"),             Ordering::Greater => println!("Too big!"),             Ordering::Equal => {                 println!("You win!");                 break;             }         }     } }
+// --snip--
+
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => {
+                println!("You win!");
+                break;
+            }
+        }
+    }
+}
 ```
 
 Добавление строки `break` после `You win!` заставляет программу выходить из цикла, когда пользователь правильно угадывает число. Выход из цикла также означает выход из программы, потому что цикл является последней частью `main` .
@@ -385,7 +587,19 @@ $ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)  
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-// --snip--  io::stdin().read_line(&mut guess)     .expect("Failed to read line");  let guess: u32 = match guess.trim().parse() {     Ok(num) => num,     Err(_) => continue, };  println!("You guessed: {}", guess);  // --snip--
+// --snip--
+
+io::stdin().read_line(&mut guess)
+    .expect("Failed to read line");
+
+let guess: u32 = match guess.trim().parse() {
+    Ok(num) => num,
+    Err(_) => continue,
+};
+
+println!("You guessed: {}", guess);
+
+// --snip--
 ```
 
 <span class="caption">Листинг 2-5. Игнорирование догадки не являющейся числом и запрос другого предположения вместо сбоя программы</span>
@@ -399,7 +613,25 @@ $ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)  
 Теперь все в программе должно работать как положено. Давай попробуем:
 
 ```text
-$ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)      Running `target/debug/guessing_game` Guess the number! The secret number is: 61 Please input your guess. 10 You guessed: 10 Too small! Please input your guess. 99 You guessed: 99 Too big! Please input your guess. foo Please input your guess. 61 You guessed: 61 You win!
+$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 61
+Please input your guess.
+10
+You guessed: 10
+Too small!
+Please input your guess.
+99
+You guessed: 99
+Too big!
+Please input your guess.
+foo
+Please input your guess.
+61
+You guessed: 61
+You win!
 ```
 
 Потрясающе! С помощью небольшого финального улучшения мы закончим игру в догадки. Помните, что программа все ещё печатает загаданный номер. Это хорошо работало для тестирования, но это нарушает игру. Давайте удалим `println!` который выводит загаданное число. Листинг 2-6 показывает окончательный код.
@@ -407,7 +639,40 @@ $ cargo run    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)  
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-use std::io; use std::cmp::Ordering; use rand::Rng;  fn main() {     println!("Guess the number!");      let secret_number = rand::thread_rng().gen_range(1, 101);      loop {         println!("Please input your guess.");          let mut guess = String::new();          io::stdin().read_line(&mut guess)             .expect("Failed to read line");          let guess: u32 = match guess.trim().parse() {             Ok(num) => num,             Err(_) => continue,         };          println!("You guessed: {}", guess);          match guess.cmp(&secret_number) {             Ordering::Less => println!("Too small!"),             Ordering::Greater => println!("Too big!"),             Ordering::Equal => {                 println!("You win!");                 break;             }         }     } }
+use std::io;
+use std::cmp::Ordering;
+use rand::Rng;
+
+fn main() {
+    println!("Guess the number!");
+
+    let secret_number = rand::thread_rng().gen_range(1, 101);
+
+    loop {
+        println!("Please input your guess.");
+
+        let mut guess = String::new();
+
+        io::stdin().read_line(&mut guess)
+            .expect("Failed to read line");
+
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+
+        println!("You guessed: {}", guess);
+
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => {
+                println!("You win!");
+                break;
+            }
+        }
+    }
+}
 ```
 
 <span class="caption">Листинг 2-6: Полный код игры угадывания числа</span>
