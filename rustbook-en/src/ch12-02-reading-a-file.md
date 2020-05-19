@@ -11,7 +11,15 @@ Who are you?”
 <span class="filename">Filename: poem.txt</span>
 
 ```text
-{{#include ../listings/ch12-an-io-project/listing-12-03/poem.txt}}
+I'm nobody! Who are you?
+Are you nobody, too?
+Then there's a pair of us - don't tell!
+They'd banish us, you know.
+
+How dreary to be somebody!
+How public, like a frog
+To tell your name the livelong day
+To an admiring bog!
 ```
 
 <span class="caption">Listing 12-3: A poem by Emily Dickinson makes a good test
@@ -23,7 +31,24 @@ shown in Listing 12-4.
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,should_panic
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-04/src/main.rs:here}}
+use std::env;
+use std::fs;
+
+fn main() {
+#     let args: Vec<String> = env::args().collect();
+#
+#     let query = &args[1];
+#     let filename = &args[2];
+#
+#     println!("Searching for {}", query);
+    // --snip--
+    println!("In file {}", filename);
+
+    let contents = fs::read_to_string(filename)
+        .expect("Something went wrong reading the file");
+
+    println!("With text:\n{}", contents);
+}
 ```
 
 <span class="caption">Listing 12-4: Reading the contents of the file specified
@@ -45,7 +70,22 @@ we haven’t implemented the searching part yet) and the *poem.txt* file as the
 second argument:
 
 ```text
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-04/output.txt}}
+$ cargo run the poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+     Running `target/debug/minigrep the poem.txt`
+Searching for the
+In file poem.txt
+With text:
+I'm nobody! Who are you?
+Are you nobody, too?
+Then there's a pair of us — don't tell!
+They'd banish us, you know.
+
+How dreary to be somebody!
+How public, like a frog
+To tell your name the livelong day
+To an admiring bog!
 ```
 
 Great! The code read and then printed the contents of the file. But the code

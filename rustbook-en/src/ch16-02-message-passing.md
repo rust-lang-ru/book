@@ -3,8 +3,8 @@
 One increasingly popular approach to ensuring safe concurrency is *message
 passing*, where threads or actors communicate by sending each other messages
 containing data. Here’s the idea in a slogan from [the Go language
-documentation](https://golang.org/doc/effective_go.html#concurrency): 
-“Do not communicate by sharing memory; instead, share memory by communicating.”
+documentation](http://golang.org/doc/effective_go.html): “Do not communicate by
+sharing memory; instead, share memory by communicating.”
 
 One major tool Rust has for accomplishing message-sending concurrency is the
 *channel*, a programming concept that Rust’s standard library provides an
@@ -36,7 +36,11 @@ want to send over the channel.
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-06/src/main.rs}}
+use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+}
 ```
 
 <span class="caption">Listing 16-6: Creating a channel and assigning the two
@@ -68,7 +72,17 @@ sending a chat message from one thread to another.
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-07/src/main.rs}}
+use std::thread;
+use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+}
 ```
 
 <span class="caption">Listing 16-7: Moving `tx` to a spawned thread and sending
@@ -93,7 +107,20 @@ end of the river or like getting a chat message.
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-08/src/main.rs}}
+use std::thread;
+use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {}", received);
+}
 ```
 
 <span class="caption">Listing 16-8: Receiving the value “hi” in the main thread
@@ -121,10 +148,6 @@ thread is appropriate.
 When we run the code in Listing 16-8, we’ll see the value printed from the main
 thread:
 
-<!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
-changes in the compiler -->
-
 ```text
 Got: hi
 ```
@@ -144,7 +167,21 @@ this code isn’t allowed:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-09/src/main.rs}}
+use std::thread;
+use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+        println!("val is {}", val);
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {}", received);
+}
 ```
 
 <span class="caption">Listing 16-9: Attempting to use `val` after we’ve sent it
@@ -158,7 +195,16 @@ unexpected results due to inconsistent or nonexistent data. However, Rust gives
 us an error if we try to compile the code in Listing 16-9:
 
 ```text
-{{#include ../listings/ch16-fearless-concurrency/listing-16-09/output.txt}}
+error[E0382]: use of moved value: `val`
+  --> src/main.rs:10:31
+   |
+9  |         tx.send(val).unwrap();
+   |                 --- value moved here
+10 |         println!("val is {}", val);
+   |                               ^^^ value used here after move
+   |
+   = note: move occurs because `val` has type `std::string::String`, which does
+not implement the `Copy` trait
 ```
 
 Our concurrency mistake has caused a compile time error. The `send` function
@@ -177,7 +223,31 @@ pause for a second between each message.
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-10/src/main.rs}}
+use std::thread;
+use std::sync::mpsc;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {}", received);
+    }
+}
 ```
 
 <span class="caption">Listing 16-10: Sending multiple messages and pausing
@@ -194,10 +264,6 @@ printing it. When the channel is closed, iteration will end.
 
 When running the code in Listing 16-10, you should see the following output
 with a 1-second pause in between each line:
-
-<!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
-changes in the compiler -->
 
 ```text
 Got: hi
@@ -220,7 +286,50 @@ so by cloning the transmitting half of the channel, as shown in Listing 16-11:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-11/src/main.rs:here}}
+# use std::thread;
+# use std::sync::mpsc;
+# use std::time::Duration;
+#
+# fn main() {
+// --snip--
+
+let (tx, rx) = mpsc::channel();
+
+let tx1 = mpsc::Sender::clone(&tx);
+thread::spawn(move || {
+    let vals = vec![
+        String::from("hi"),
+        String::from("from"),
+        String::from("the"),
+        String::from("thread"),
+    ];
+
+    for val in vals {
+        tx1.send(val).unwrap();
+        thread::sleep(Duration::from_secs(1));
+    }
+});
+
+thread::spawn(move || {
+    let vals = vec![
+        String::from("more"),
+        String::from("messages"),
+        String::from("for"),
+        String::from("you"),
+    ];
+
+    for val in vals {
+        tx.send(val).unwrap();
+        thread::sleep(Duration::from_secs(1));
+    }
+});
+
+for received in rx {
+    println!("Got: {}", received);
+}
+
+// --snip--
+# }
 ```
 
 <span class="caption">Listing 16-11: Sending multiple messages from multiple
@@ -233,10 +342,6 @@ a second spawned thread. This gives us two threads, each sending different
 messages to the receiving end of the channel.
 
 When you run the code, your output should look something like this:
-
-<!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
-changes in the compiler -->
 
 ```text
 Got: hi

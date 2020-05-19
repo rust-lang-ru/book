@@ -76,13 +76,22 @@ A consequence of the borrowing rules is that when you have an immutable value,
 you can’t borrow it mutably. For example, this code won’t compile:
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch15-smart-pointers/no-listing-01-cant-borrow-immutable-as-mutable/src/main.rs}}
+fn main() {
+    let x = 5;
+    let y = &mut x;
+}
 ```
 
 If you tried to compile this code, you’d get the following error:
 
 ```text
-{{#include ../listings/ch15-smart-pointers/no-listing-01-cant-borrow-immutable-as-mutable/output.txt}}
+error[E0596]: cannot borrow immutable local variable `x` as mutable
+ --> src/main.rs:3:18
+  |
+2 |     let x = 5;
+  |         - consider changing this to `mut x`
+3 |     let y = &mut x;
+  |                  ^ cannot borrow mutably
 ```
 
 However, there are situations in which it would be useful for a value to mutate
@@ -125,7 +134,40 @@ called `Messenger`. Listing 15-20 shows the library code:
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-20/src/lib.rs}}
+pub trait Messenger {
+    fn send(&self, msg: &str);
+}
+
+pub struct LimitTracker<'a, T: Messenger> {
+    messenger: &'a T,
+    value: usize,
+    max: usize,
+}
+
+impl<'a, T> LimitTracker<'a, T>
+    where T: Messenger {
+    pub fn new(messenger: &T, max: usize) -> LimitTracker<T> {
+        LimitTracker {
+            messenger,
+            value: 0,
+            max,
+        }
+    }
+
+    pub fn set_value(&mut self, value: usize) {
+        self.value = value;
+
+        let percentage_of_max = self.value as f64 / self.max as f64;
+
+        if percentage_of_max >= 1.0 {
+            self.messenger.send("Error: You are over your quota!");
+        } else if percentage_of_max >= 0.9 {
+             self.messenger.send("Urgent warning: You've used up over 90% of your quota!");
+        } else if percentage_of_max >= 0.75 {
+            self.messenger.send("Warning: You've used up over 75% of your quota!");
+        }
+    }
+}
 ```
 
 <span class="caption">Listing 15-20: A library to keep track of how close a
@@ -152,7 +194,36 @@ implement a mock object to do just that, but the borrow checker won’t allow it
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-21/src/lib.rs:here}}
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct MockMessenger {
+        sent_messages: Vec<String>,
+    }
+
+    impl MockMessenger {
+        fn new() -> MockMessenger {
+            MockMessenger { sent_messages: vec![] }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&self, message: &str) {
+            self.sent_messages.push(String::from(message));
+        }
+    }
+
+    #[test]
+    fn it_sends_an_over_75_percent_warning_message() {
+        let mock_messenger = MockMessenger::new();
+        let mut limit_tracker = LimitTracker::new(&mock_messenger, 100);
+
+        limit_tracker.set_value(80);
+
+        assert_eq!(mock_messenger.sent_messages.len(), 1);
+    }
+}
 ```
 
 <span class="caption">Listing 15-21: An attempt to implement a `MockMessenger`
@@ -179,7 +250,13 @@ of should now have one message in it.
 However, there’s one problem with this test, as shown here:
 
 ```text
-{{#include ../listings/ch15-smart-pointers/listing-15-21/output.txt}}
+error[E0596]: cannot borrow immutable field `self.sent_messages` as mutable
+  --> src/lib.rs:52:13
+   |
+51 |         fn send(&self, message: &str) {
+   |                 ----- use `&mut self` here to make mutable
+52 |             self.sent_messages.push(String::from(message));
+   |             ^^^^^^^^^^^^^^^^^^ cannot mutably borrow immutable field
 ```
 
 We can’t modify the `MockMessenger` to keep track of the messages, because the
@@ -196,7 +273,73 @@ shows what that looks like:
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-22/src/lib.rs:here}}
+# pub trait Messenger {
+#     fn send(&self, msg: &str);
+# }
+#
+# pub struct LimitTracker<'a, T: Messenger> {
+#     messenger: &'a T,
+#     value: usize,
+#     max: usize,
+# }
+#
+# impl<'a, T> LimitTracker<'a, T>
+#     where T: Messenger {
+#     pub fn new(messenger: &T, max: usize) -> LimitTracker<T> {
+#         LimitTracker {
+#             messenger,
+#             value: 0,
+#             max,
+#         }
+#     }
+#
+#     pub fn set_value(&mut self, value: usize) {
+#         self.value = value;
+#
+#         let percentage_of_max = self.value as f64 / self.max as f64;
+#
+#         if percentage_of_max >= 1.0 {
+#             self.messenger.send("Error: You are over your quota!");
+#         } else if percentage_of_max >= 0.9 {
+#              self.messenger.send("Urgent warning: You've used up over 90% of your quota!");
+#         } else if percentage_of_max >= 0.75 {
+#             self.messenger.send("Warning: You've used up over 75% of your quota!");
+#         }
+#     }
+# }
+#
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::cell::RefCell;
+
+    struct MockMessenger {
+        sent_messages: RefCell<Vec<String>>,
+    }
+
+    impl MockMessenger {
+        fn new() -> MockMessenger {
+            MockMessenger { sent_messages: RefCell::new(vec![]) }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&self, message: &str) {
+            self.sent_messages.borrow_mut().push(String::from(message));
+        }
+    }
+
+    #[test]
+    fn it_sends_an_over_75_percent_warning_message() {
+        // --snip--
+#         let mock_messenger = MockMessenger::new();
+#         let mut limit_tracker = LimitTracker::new(&mock_messenger, 100);
+#         limit_tracker.set_value(75);
+
+        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
+    }
+}
+# fn main() {}
 ```
 
 <span class="caption">Listing 15-22: Using `RefCell<T>` to mutate an inner
@@ -245,7 +388,15 @@ at runtime.
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust,ignore,panics
-{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-23/src/lib.rs:here}}
+impl Messenger for MockMessenger {
+    fn send(&self, message: &str) {
+        let mut one_borrow = self.sent_messages.borrow_mut();
+        let mut two_borrow = self.sent_messages.borrow_mut();
+
+        one_borrow.push(String::from(message));
+        two_borrow.push(String::from(message));
+    }
+}
 ```
 
 <span class="caption">Listing 15-23: Creating two mutable references in the
@@ -258,7 +409,10 @@ which isn’t allowed. When we run the tests for our library, the code in Listin
 15-23 will compile without any errors, but the test will fail:
 
 ```text
-{{#include ../listings/ch15-smart-pointers/listing-15-23/output.txt}}
+---- tests::it_sends_an_over_75_percent_warning_message stdout ----
+	thread 'tests::it_sends_an_over_75_percent_warning_message' panicked at
+'already borrowed: BorrowMutError', src/libcore/result.rs:906:4
+note: Run with `RUST_BACKTRACE=1` for a backtrace.
 ```
 
 Notice that the code panicked with the message `already borrowed:
@@ -293,7 +447,30 @@ the lists:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-24/src/main.rs}}
+#[derive(Debug)]
+enum List {
+    Cons(Rc<RefCell<i32>>, Rc<List>),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::rc::Rc;
+use std::cell::RefCell;
+
+fn main() {
+    let value = Rc::new(RefCell::new(5));
+
+    let a = Rc::new(Cons(Rc::clone(&value), Rc::new(Nil)));
+
+    let b = Cons(Rc::new(RefCell::new(6)), Rc::clone(&a));
+    let c = Cons(Rc::new(RefCell::new(10)), Rc::clone(&a));
+
+    *value.borrow_mut() += 10;
+
+    println!("a after = {:?}", a);
+    println!("b after = {:?}", b);
+    println!("c after = {:?}", c);
+}
 ```
 
 <span class="caption">Listing 15-24: Using `Rc<RefCell<i32>>` to create a
@@ -321,7 +498,9 @@ When we print `a`, `b`, and `c`, we can see that they all have the modified
 value of 15 rather than 5:
 
 ```text
-{{#include ../listings/ch15-smart-pointers/listing-15-24/output.txt}}
+a after = Cons(RefCell { value: 15 }, Nil)
+b after = Cons(RefCell { value: 6 }, Cons(RefCell { value: 15 }, Nil))
+c after = Cons(RefCell { value: 10 }, Cons(RefCell { value: 15 }, Nil))
 ```
 
 This technique is pretty neat! By using `RefCell<T>`, we have an outwardly

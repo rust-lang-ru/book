@@ -12,7 +12,9 @@ the `iter` method defined on `Vec<T>`. This code by itself doesn’t do anything
 useful.
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-13/src/main.rs:here}}
+let v1 = vec![1, 2, 3];
+
+let v1_iter = v1.iter();
 ```
 
 <span class="caption">Listing 13-13: Creating an iterator</span>
@@ -28,7 +30,13 @@ called using the iterator in `v1_iter`, each element in the iterator is used in
 one iteration of the loop, which prints out each value.
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-14/src/main.rs:here}}
+let v1 = vec![1, 2, 3];
+
+let v1_iter = v1.iter();
+
+for val in v1_iter {
+    println!("Got: {}", val);
+}
 ```
 
 <span class="caption">Listing 13-14: Using an iterator in a `for` loop</span>
@@ -78,7 +86,17 @@ from the vector.
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-15/src/lib.rs:here}}
+#[test]
+fn iterator_demonstration() {
+    let v1 = vec![1, 2, 3];
+
+    let mut v1_iter = v1.iter();
+
+    assert_eq!(v1_iter.next(), Some(&1));
+    assert_eq!(v1_iter.next(), Some(&2));
+    assert_eq!(v1_iter.next(), Some(&3));
+    assert_eq!(v1_iter.next(), None);
+}
 ```
 
 <span class="caption">Listing 13-15: Calling the `next` method on an
@@ -117,7 +135,16 @@ test illustrating a use of the `sum` method:
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-16/src/lib.rs:here}}
+#[test]
+fn iterator_sum() {
+    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+
+    let total: i32 = v1_iter.sum();
+
+    assert_eq!(total, 6);
+}
 ```
 
 <span class="caption">Listing 13-16: Calling the `sum` method to get the total
@@ -142,7 +169,9 @@ incremented by 1. However, this code produces a warning:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,not_desired_behavior
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-17/src/main.rs:here}}
+let v1: Vec<i32> = vec![1, 2, 3];
+
+v1.iter().map(|x| x + 1);
 ```
 
 <span class="caption">Listing 13-17: Calling the iterator adaptor `map` to
@@ -151,7 +180,14 @@ create a new iterator</span>
 The warning we get is this:
 
 ```text
-{{#include ../listings/ch13-functional-features/listing-13-17/output.txt}}
+warning: unused `std::iter::Map` which must be used: iterator adaptors are lazy
+and do nothing unless consumed
+ --> src/main.rs:4:5
+  |
+4 |     v1.iter().map(|x| x + 1);
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: #[warn(unused_must_use)] on by default
 ```
 
 The code in Listing 13-17 doesn’t do anything; the closure we’ve specified
@@ -169,7 +205,11 @@ containing each item from the original vector incremented by 1.
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-18/src/main.rs:here}}
+let v1: Vec<i32> = vec![1, 2, 3];
+
+let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
+
+assert_eq!(v2, vec![2, 3, 4]);
 ```
 
 <span class="caption">Listing 13-18: Calling the `map` method to create a new
@@ -197,7 +237,36 @@ instances. It will return only shoes that are the specified size.
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-19/src/lib.rs}}
+#[derive(PartialEq, Debug)]
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+fn shoes_in_my_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
+    shoes.into_iter()
+        .filter(|s| s.size == shoe_size)
+        .collect()
+}
+
+#[test]
+fn filters_by_size() {
+    let shoes = vec![
+        Shoe { size: 10, style: String::from("sneaker") },
+        Shoe { size: 13, style: String::from("sandal") },
+        Shoe { size: 10, style: String::from("boot") },
+    ];
+
+    let in_my_size = shoes_in_my_size(shoes, 10);
+
+    assert_eq!(
+        in_my_size,
+        vec![
+            Shoe { size: 10, style: String::from("sneaker") },
+            Shoe { size: 10, style: String::from("boot") },
+        ]
+    );
+}
 ```
 
 <span class="caption">Listing 13-19: Using the `filter` method with a closure
@@ -242,7 +311,15 @@ Listing 13-20 has the definition of the `Counter` struct and an associated
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-20/src/lib.rs}}
+struct Counter {
+    count: u32,
+}
+
+impl Counter {
+    fn new() -> Counter {
+        Counter { count: 0 }
+    }
+}
 ```
 
 <span class="caption">Listing 13-20: Defining the `Counter` struct and a `new`
@@ -262,7 +339,23 @@ iterator is used, as shown in Listing 13-21:
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-21/src/lib.rs:here}}
+# struct Counter {
+#     count: u32,
+# }
+#
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.count += 1;
+
+        if self.count < 6 {
+            Some(self.count)
+        } else {
+            None
+        }
+    }
+}
 ```
 
 <span class="caption">Listing 13-21: Implementing the `Iterator` trait on our
@@ -273,10 +366,9 @@ iterator will return `u32` values. Again, don’t worry about associated types
 yet, we’ll cover them in Chapter 19.
 
 We want our iterator to add 1 to the current state, so we initialized `count`
-to 0 so it would return 1 first. If the value of `count` is less than 5, `next`
-will increment `count` and return the current value wrapped in `Some`. Once
-`count` is 5, our iterator will stop incrementing `count` and always return
-`None`.
+to 0 so it would return 1 first. If the value of `count` is less than 6, `next`
+will return the current value wrapped in `Some`, but if `count` is 6 or higher,
+our iterator will return `None`.
 
 #### Using Our `Counter` Iterator’s `next` Method
 
@@ -288,7 +380,35 @@ with the iterator created from a vector in Listing 13-15.
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-22/src/lib.rs:here}}
+# struct Counter {
+#     count: u32,
+# }
+#
+# impl Iterator for Counter {
+#     type Item = u32;
+#
+#     fn next(&mut self) -> Option<Self::Item> {
+#         self.count += 1;
+#
+#         if self.count < 6 {
+#             Some(self.count)
+#         } else {
+#             None
+#         }
+#     }
+# }
+#
+#[test]
+fn calling_next_directly() {
+    let mut counter = Counter::new();
+
+    assert_eq!(counter.next(), Some(1));
+    assert_eq!(counter.next(), Some(2));
+    assert_eq!(counter.next(), Some(3));
+    assert_eq!(counter.next(), Some(4));
+    assert_eq!(counter.next(), Some(5));
+    assert_eq!(counter.next(), None);
+}
 ```
 
 <span class="caption">Listing 13-22: Testing the functionality of the `next`
@@ -313,7 +433,41 @@ together, we could do so, as shown in the test in Listing 13-23:
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-23/src/lib.rs:here}}
+# struct Counter {
+#     count: u32,
+# }
+#
+# impl Counter {
+#     fn new() -> Counter {
+#         Counter { count: 0 }
+#     }
+# }
+#
+# impl Iterator for Counter {
+#     // Our iterator will produce u32s
+#     type Item = u32;
+#
+#     fn next(&mut self) -> Option<Self::Item> {
+#         // increment our count. This is why we started at zero.
+#         self.count += 1;
+#
+#         // check to see if we've finished counting or not.
+#         if self.count < 6 {
+#             Some(self.count)
+#         } else {
+#             None
+#         }
+#     }
+# }
+#
+#[test]
+fn using_other_iterator_trait_methods() {
+    let sum: u32 = Counter::new().zip(Counter::new().skip(1))
+                                 .map(|(a, b)| a * b)
+                                 .filter(|x| x % 3 == 0)
+                                 .sum();
+    assert_eq!(18, sum);
+}
 ```
 
 <span class="caption">Listing 13-23: Using a variety of `Iterator` trait

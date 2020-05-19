@@ -78,7 +78,18 @@ Listing 19-28 shows a slightly simplified definition of the `vec!` macro.
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-28/src/lib.rs}}
+#[macro_export]
+macro_rules! vec {
+    ( $( $x:expr ),* ) => {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            temp_vec
+        }
+    };
+}
 ```
 
 <span class="caption">Listing 19-28: A simplified version of the `vec!` macro
@@ -109,7 +120,7 @@ covered in Chapter 18 because macro patterns are matched against Rust code
 structure rather than values. Let’s walk through what the pattern pieces in
 Listing 19-28 mean; for the full macro pattern syntax, see [the reference].
 
-[the reference]: ../reference/macros-by-example.html
+[the reference]: ../reference/macros.html
 
 First, a set of parentheses encompasses the whole pattern. A dollar sign (`$`)
 is next, followed by a set of parentheses that captures values that match the
@@ -132,13 +143,11 @@ macro with `vec![1, 2, 3];`, the code generated that replaces this macro call
 will be the following:
 
 ```rust,ignore
-{
-    let mut temp_vec = Vec::new();
-    temp_vec.push(1);
-    temp_vec.push(2);
-    temp_vec.push(3);
-    temp_vec
-}
+let mut temp_vec = Vec::new();
+temp_vec.push(1);
+temp_vec.push(2);
+temp_vec.push(3);
+temp_vec
 ```
 
 We’ve defined a macro that can take any number of arguments of any type and can
@@ -212,8 +221,16 @@ programmer to write code like Listing 19-30 using our crate.
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-30/src/main.rs}}
+```rust,ignore
+use hello_macro::HelloMacro;
+use hello_macro_derive::HelloMacro;
+
+#[derive(HelloMacro)]
+struct Pancakes;
+
+fn main() {
+    Pancakes::hello_macro();
+}
 ```
 
 <span class="caption">Listing 19-30: The code a user of our crate will be able
@@ -231,14 +248,28 @@ Next, we’ll define the `HelloMacro` trait and its associated function:
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-20-impl-hellomacro-for-pancakes/hello_macro/src/lib.rs}}
+pub trait HelloMacro {
+    fn hello_macro();
+}
 ```
 
 We have a trait and its function. At this point, our crate user could implement
 the trait to achieve the desired functionality, like so:
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-20-impl-hellomacro-for-pancakes/pancakes/src/main.rs}}
+use hello_macro::HelloMacro;
+
+struct Pancakes;
+
+impl HelloMacro for Pancakes {
+    fn hello_macro() {
+        println!("Hello, Macro! My name is Pancakes!");
+    }
+}
+
+fn main() {
+    Pancakes::hello_macro();
+}
 ```
 
 However, they would need to write the implementation block for each type they
@@ -280,7 +311,12 @@ in a moment, so we need to add them as dependencies. Add the following to the
 <span class="filename">Filename: hello_macro_derive/Cargo.toml</span>
 
 ```toml
-{{#include ../listings/ch19-advanced-features/listing-19-31/hello_macro/hello_macro_derive/Cargo.toml:7:12}}
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "0.14.4"
+quote = "0.6.3"
 ```
 
 To start defining the procedural macro, place the code in Listing 19-31 into
@@ -289,8 +325,29 @@ won’t compile until we add a definition for the `impl_hello_macro` function.
 
 <span class="filename">Filename: hello_macro_derive/src/lib.rs</span>
 
-```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-31/hello_macro/hello_macro_derive/src/lib.rs}}
+<!--
+This usage of `extern crate` is required for the moment with 1.31.0, see:
+https://github.com/rust-lang/rust/issues/54418
+https://github.com/rust-lang/rust/pull/54658
+https://github.com/rust-lang/rust/issues/55599
+-->
+
+```rust,ignore
+extern crate proc_macro;
+
+use crate::proc_macro::TokenStream;
+use quote::quote;
+use syn;
+
+#[proc_macro_derive(HelloMacro)]
+pub fn hello_macro_derive(input: TokenStream) -> TokenStream {
+    // Construct a representation of Rust code as a syntax tree
+    // that we can manipulate
+    let ast = syn::parse(input).unwrap();
+
+    // Build the trait implementation
+    impl_hello_macro(&ast)
+}
 ```
 
 <span class="caption">Listing 19-31: Code that most procedural macro crates
@@ -360,7 +417,7 @@ with the `ident` (identifier, meaning the name) of `Pancakes`. There are more
 fields on this struct for describing all sorts of Rust code; check the [`syn`
 documentation for `DeriveInput`][syn-docs] for more information.
 
-[syn-docs]: https://docs.rs/syn/1.0/syn/struct.DeriveInput.html
+[syn-docs]: https://docs.rs/syn/0.14.4/syn/struct.DeriveInput.html
 
 Soon we’ll define the `impl_hello_macro` function, which is where we’ll build
 the new Rust code we want to include. But before we do, note that the output
@@ -384,7 +441,17 @@ into a `DeriveInput` instance, let’s generate the code that implements the
 <span class="filename">Filename: hello_macro_derive/src/lib.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-33/hello_macro/hello_macro_derive/src/lib.rs:here}}
+fn impl_hello_macro(ast: &syn::DeriveInput) -> TokenStream {
+    let name = &ast.ident;
+    let gen = quote! {
+        impl HelloMacro for #name {
+            fn hello_macro() {
+                println!("Hello, Macro! My name is {}", stringify!(#name));
+            }
+        }
+    };
+    gen.into()
+}
 ```
 
 <span class="caption">Listing 19-33: Implementing the `HelloMacro` trait using
@@ -435,7 +502,9 @@ crate’s *Cargo.toml*. If you’re publishing your versions of `hello_macro` an
 dependencies; if not, you can specify them as `path` dependencies as follows:
 
 ```toml
-{{#include ../listings/ch19-advanced-features/no-listing-21-pancakes/pancakes/Cargo.toml:7:9}}
+[dependencies]
+hello_macro = { path = "../hello_macro" }
+hello_macro_derive = { path = "../hello_macro/hello_macro_derive" }
 ```
 
 Put the code in Listing 19-30 into *src/main.rs*, and run `cargo run`: it

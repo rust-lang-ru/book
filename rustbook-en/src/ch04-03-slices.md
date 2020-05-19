@@ -23,7 +23,17 @@ end of the word. Let’s try that, as shown in Listing 4-7.
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:here}}
+fn first_word(s: &String) -> usize {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return i;
+        }
+    }
+
+    s.len()
+}
 ```
 
 <span class="caption">Listing 4-7: The `first_word` function that returns a
@@ -34,13 +44,13 @@ a value is a space, we’ll convert our `String` to an array of bytes using the
 `as_bytes` method:
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:as_bytes}}
+let bytes = s.as_bytes();
 ```
 
 Next, we create an iterator over the array of bytes using the `iter` method:
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:iter}}
+for (i, &item) in bytes.iter().enumerate() {
 ```
 
 We’ll discuss iterators in more detail in Chapter 13. For now, know that `iter`
@@ -61,7 +71,12 @@ using the byte literal syntax. If we find a space, we return the position.
 Otherwise, we return the length of the string by using `s.len()`:
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:inside_for}}
+    if item == b' ' {
+        return i;
+    }
+}
+
+s.len()
 ```
 
 We now have a way to find out the index of the end of the first word in the
@@ -74,7 +89,28 @@ uses the `first_word` function from Listing 4-7.
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-08/src/main.rs:here}}
+# fn first_word(s: &String) -> usize {
+#     let bytes = s.as_bytes();
+#
+#     for (i, &item) in bytes.iter().enumerate() {
+#         if item == b' ' {
+#             return i;
+#         }
+#     }
+#
+#     s.len()
+# }
+#
+fn main() {
+    let mut s = String::from("hello world");
+
+    let word = first_word(&s); // word will get the value 5
+
+    s.clear(); // this empties the String, making it equal to ""
+
+    // word still has the value 5 here, but there's no more string that
+    // we could meaningfully use the value 5 with. word is now totally invalid!
+}
 ```
 
 <span class="caption">Listing 4-8: Storing the result from calling the
@@ -106,7 +142,10 @@ Luckily, Rust has a solution to this problem: string slices.
 A *string slice* is a reference to part of a `String`, and it looks like this:
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-17-slice/src/main.rs:here}}
+let s = String::from("hello world");
+
+let hello = &s[0..5];
+let world = &s[6..11];
 ```
 
 This is similar to taking a reference to the whole `String` but with the extra
@@ -119,7 +158,7 @@ in the slice and `ending_index` is one more than the last position in the
 slice. Internally, the slice data structure stores the starting position and
 the length of the slice, which corresponds to `ending_index` minus
 `starting_index`. So in the case of `let world = &s[6..11];`, `world` would be
-a slice that contains a pointer to the 7th byte (counting from 1) of `s` with a length value of 5.
+a slice that contains a pointer to the 7th byte of `s` with a length value of 5.
 
 Figure 4-6 shows this in a diagram.
 
@@ -175,7 +214,17 @@ slice. The type that signifies “string slice” is written as `&str`:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-18-first-word-slice/src/main.rs:here}}
+fn first_word(s: &String) -> &str {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+
+    &s[..]
+}
 ```
 
 We get the index for the end of the word in the same way as we did in Listing
@@ -206,13 +255,31 @@ compile-time error:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-19-slice-error/src/main.rs:here}}
+fn main() {
+    let mut s = String::from("hello world");
+
+    let word = first_word(&s);
+
+    s.clear(); // error!
+
+    println!("the first word is: {}", word);
+}
 ```
 
 Here’s the compiler error:
 
 ```text
-{{#include ../listings/ch04-understanding-ownership/no-listing-19-slice-error/output.txt}}
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+  --> src/main.rs:18:5
+   |
+16 |     let word = first_word(&s);
+   |                           -- immutable borrow occurs here
+17 |
+18 |     s.clear(); // error!
+   |     ^^^^^^^^^ mutable borrow occurs here
+19 |
+20 |     println!("the first word is: {}", word);
+   |                                       ---- immutable borrow later used here
 ```
 
 Recall from the borrowing rules that if we have an immutable reference to
@@ -248,7 +315,7 @@ instead because it allows us to use the same function on both `&String` values
 and `&str` values.
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:here}}
+fn first_word(s: &str) -> &str {
 ```
 
 <span class="caption">Listing 4-9: Improving the `first_word` function by using
@@ -262,7 +329,32 @@ without losing any functionality:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:usage}}
+# fn first_word(s: &str) -> &str {
+#     let bytes = s.as_bytes();
+#
+#     for (i, &item) in bytes.iter().enumerate() {
+#         if item == b' ' {
+#             return &s[0..i];
+#         }
+#     }
+#
+#     &s[..]
+# }
+fn main() {
+    let my_string = String::from("hello world");
+
+    // first_word works on slices of `String`s
+    let word = first_word(&my_string[..]);
+
+    let my_string_literal = "hello world";
+
+    // first_word works on slices of string literals
+    let word = first_word(&my_string_literal[..]);
+
+    // Because string literals *are* string slices already,
+    // this works too, without the slice syntax!
+    let word = first_word(my_string_literal);
+}
 ```
 
 ### Other Slices

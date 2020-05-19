@@ -38,7 +38,13 @@ this chapter, Cargo generated this code for us:
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs:here}}
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn it_works() {
+        assert_eq!(2 + 2, 4);
+    }
+}
 ```
 
 This code is the automatically generated test module. The attribute `cfg`
@@ -61,7 +67,25 @@ Consider the code in Listing 11-12 with the private function `internal_adder`.
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-12/src/lib.rs:here}}
+# fn main() {}
+
+pub fn add_two(a: i32) -> i32 {
+    internal_adder(a, 2)
+}
+
+fn internal_adder(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn internal() {
+        assert_eq!(4, internal_adder(2, 2));
+    }
+}
 ```
 
 <span class="caption">Listing 11-12: Testing a private function</span>
@@ -96,7 +120,12 @@ Let’s create an integration test. With the code in Listing 11-12 still in the
 <span class="filename">Filename: tests/integration_test.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-13/tests/integration_test.rs}}
+use adder;
+
+#[test]
+fn it_adds_two() {
+    assert_eq!(4, adder::add_two(2));
+}
 ```
 
 <span class="caption">Listing 11-13: An integration test of a function in the
@@ -111,7 +140,28 @@ We don’t need to annotate any code in *tests/integration_test.rs* with
 in this directory only when we run `cargo test`. Run `cargo test` now:
 
 ```text
-{{#include ../listings/ch11-writing-automated-tests/listing-11-13/output.txt}}
+$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs
+     Running target/debug/deps/adder-abcabcabc
+
+running 1 test
+test tests::internal ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+     Running target/debug/deps/integration_test-ce99bcc2479f4607
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ```
 
 The three sections of output include the unit tests, the integration test, and
@@ -137,7 +187,14 @@ particular integration test file, use the `--test` argument of `cargo test`
 followed by the name of the file:
 
 ```text
-{{#include ../listings/ch11-writing-automated-tests/output-only-05-single-integration/output.txt}}
+$ cargo test --test integration_test
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+     Running target/debug/integration_test-952a27e0126bb565
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ```
 
 This command runs only the tests in the *tests/integration_test.rs* file.
@@ -167,7 +224,9 @@ multiple test files:
 <span class="filename">Filename: tests/common.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-12-shared-test-code-problem/tests/common.rs}}
+pub fn setup() {
+    // setup code specific to your library's tests would go here
+}
 ```
 
 When we run the tests again, we’ll see a new section in the test output for the
@@ -175,7 +234,29 @@ When we run the tests again, we’ll see a new section in the test output for th
 did we call the `setup` function from anywhere:
 
 ```text
-{{#include ../listings/ch11-writing-automated-tests/no-listing-12-shared-test-code-problem/output.txt}}
+running 1 test
+test tests::internal ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+     Running target/debug/deps/common-b8b07b6f1be2db70
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+     Running target/debug/deps/integration_test-d993c68b431d39df
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ```
 
 Having `common` appear in the test results with `running 0 tests` displayed for
@@ -198,7 +279,15 @@ function from the `it_adds_two` test in *tests/integration_test.rs*:
 <span class="filename">Filename: tests/integration_test.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-13-fix-shared-test-code-problem/tests/integration_test.rs}}
+use adder;
+
+mod common;
+
+#[test]
+fn it_adds_two() {
+    common::setup();
+    assert_eq!(4, adder::add_two(2));
+}
 ```
 
 Note that the `mod common;` declaration is the same as the module declaration

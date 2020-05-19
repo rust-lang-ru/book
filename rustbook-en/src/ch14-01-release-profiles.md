@@ -12,18 +12,11 @@ and the `release` profile has good defaults for release builds.
 
 These profile names might be familiar from the output of your builds:
 
-<!-- manual-regeneration
-anywhere, run:
-cargo build
-cargo build --release
-and ensure output below is accurate
--->
-
 ```text
 $ cargo build
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0s
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
 $ cargo build --release
-    Finished release [optimized] target(s) in 0.0s
+    Finished release [optimized] target(s) in 0.0 secs
 ```
 
 The `dev` and `release` shown in this build output indicate that the compiler
@@ -73,4 +66,4 @@ Cargo will use the defaults for the `dev` profile plus our customization to
 optimizations than the default, but not as many as in a release build.
 
 For the full list of configuration options and defaults for each profile, see
-[Cargo’s documentation](https://doc.rust-lang.org/cargo/reference/profiles.html).
+[Cargo’s documentation](https://doc.rust-lang.org/cargo/reference/manifest.html#the-profile-sections).

@@ -12,7 +12,17 @@ value:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-07-reference/src/main.rs:all}}
+fn main() {
+    let s1 = String::from("hello");
+
+    let len = calculate_length(&s1);
+
+    println!("The length of '{}' is {}.", s1, len);
+}
+
+fn calculate_length(s: &String) -> usize {
+    s.len()
+}
 ```
 
 First, notice that all the tuple code in the variable declaration and the
@@ -36,7 +46,12 @@ s1`</span>
 Let’s take a closer look at the function call here:
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-07-reference/src/main.rs:here}}
+# fn calculate_length(s: &String) -> usize {
+#     s.len()
+# }
+let s1 = String::from("hello");
+
+let len = calculate_length(&s1);
 ```
 
 The `&s1` syntax lets us create a reference that *refers* to the value of `s1`
@@ -47,7 +62,10 @@ Likewise, the signature of the function uses `&` to indicate that the type of
 the parameter `s` is a reference. Let’s add some explanatory annotations:
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-08-reference-with-annotations/src/main.rs:here}}
+fn calculate_length(s: &String) -> usize { // s is a reference to a String
+    s.len()
+} // Here, s goes out of scope. But because it does not have ownership of what
+  // it refers to, nothing happens.
 ```
 
 The scope in which the variable `s` is valid is the same as any function
@@ -66,7 +84,15 @@ Listing 4-6. Spoiler alert: it doesn’t work!
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-06/src/main.rs}}
+fn main() {
+    let s = String::from("hello");
+
+    change(&s);
+}
+
+fn change(some_string: &String) {
+    some_string.push_str(", world");
+}
 ```
 
 <span class="caption">Listing 4-6: Attempting to modify a borrowed value</span>
@@ -74,7 +100,13 @@ Listing 4-6. Spoiler alert: it doesn’t work!
 Here’s the error:
 
 ```text
-{{#include ../listings/ch04-understanding-ownership/listing-04-06/output.txt}}
+error[E0596]: cannot borrow immutable borrowed content `*some_string` as mutable
+ --> error.rs:8:5
+  |
+7 | fn change(some_string: &String) {
+  |                        ------- use `&mut String` here to make mutable
+8 |     some_string.push_str(", world");
+  |     ^^^^^^^^^^^ cannot borrow as mutable
 ```
 
 Just as variables are immutable by default, so are references. We’re not
@@ -87,7 +119,15 @@ We can fix the error in the code from Listing 4-6 with just a small tweak:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-09-fixes-listing-04-06/src/main.rs}}
+fn main() {
+    let mut s = String::from("hello");
+
+    change(&mut s);
+}
+
+fn change(some_string: &mut String) {
+    some_string.push_str(", world");
+}
 ```
 
 First, we had to change `s` to be `mut`. Then we had to create a mutable
@@ -101,13 +141,27 @@ fail:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-10-multiple-mut-not-allowed/src/main.rs:here}}
+let mut s = String::from("hello");
+
+let r1 = &mut s;
+let r2 = &mut s;
+
+println!("{}, {}", r1, r2);
 ```
 
 Here’s the error:
 
 ```text
-{{#include ../listings/ch04-understanding-ownership/no-listing-10-multiple-mut-not-allowed/output.txt}}
+error[E0499]: cannot borrow `s` as mutable more than once at a time
+ --> src/main.rs:5:14
+  |
+4 |     let r1 = &mut s;
+  |              ------ first mutable borrow occurs here
+5 |     let r2 = &mut s;
+  |              ^^^^^^ second mutable borrow occurs here
+6 |
+7 |     println!("{}, {}", r1, r2);
+  |                        -- first borrow later used here
 ```
 
 This restriction allows for mutation but in a very controlled fashion. It’s
@@ -130,20 +184,43 @@ As always, we can use curly brackets to create a new scope, allowing for
 multiple mutable references, just not *simultaneous* ones:
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-11-muts-in-separate-scopes/src/main.rs:here}}
+let mut s = String::from("hello");
+
+{
+    let r1 = &mut s;
+
+} // r1 goes out of scope here, so we can make a new reference with no problems.
+
+let r2 = &mut s;
 ```
 
 A similar rule exists for combining mutable and immutable references. This code
 results in an error:
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-12-immutable-and-mutable-not-allowed/src/main.rs:here}}
+let mut s = String::from("hello");
+
+let r1 = &s; // no problem
+let r2 = &s; // no problem
+let r3 = &mut s; // BIG PROBLEM
+
+println!("{}, {}, and {}", r1, r2, r3);
 ```
 
 Here’s the error:
 
 ```text
-{{#include ../listings/ch04-understanding-ownership/no-listing-12-immutable-and-mutable-not-allowed/output.txt}}
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+ --> src/main.rs:6:14
+  |
+4 |     let r1 = &s; // no problem
+  |              -- immutable borrow occurs here
+5 |     let r2 = &s; // no problem
+6 |     let r3 = &mut s; // BIG PROBLEM
+  |              ^^^^^^ mutable borrow occurs here
+7 |
+8 |     println!("{}, {}, and {}", r1, r2, r3);
+  |                                -- immutable borrow later used here
 ```
 
 Whew! We *also* cannot have a mutable reference while we have an immutable one.
@@ -157,8 +234,20 @@ through the last time that reference is used. For instance, this code will
 compile because the last usage of the immutable references occurs before the
 mutable reference is introduced:
 
-```rust,edition2018
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-13-reference-scope-ends/src/main.rs:here}}
+<!-- This example is being ignored because there's a bug in rustdoc making the
+edition2018 not work. The bug is currently fixed in nightly, so when we update
+the book to >= 1.35, `ignore` can be removed from this example. -->
+
+```rust,edition2018,ignore
+let mut s = String::from("hello");
+
+let r1 = &s; // no problem
+let r2 = &s; // no problem
+println!("{} and {}", r1, r2);
+// r1 and r2 are no longer used after this point
+
+let r3 = &mut s; // no problem
+println!("{}", r3);
 ```
 
 The scopes of the immutable references `r1` and `r2` end after the `println!`
@@ -186,13 +275,29 @@ compile-time error:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-14-dangling-reference/src/main.rs}}
+fn main() {
+    let reference_to_nothing = dangle();
+}
+
+fn dangle() -> &String {
+    let s = String::from("hello");
+
+    &s
+}
 ```
 
 Here’s the error:
 
 ```text
-{{#include ../listings/ch04-understanding-ownership/no-listing-14-dangling-reference/output.txt}}
+error[E0106]: missing lifetime specifier
+ --> main.rs:5:16
+  |
+5 | fn dangle() -> &String {
+  |                ^ expected lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but there is
+  no value for it to be borrowed from
+  = help: consider giving it a 'static lifetime
 ```
 
 This error message refers to a feature we haven’t covered yet: lifetimes. We’ll
@@ -210,7 +315,13 @@ Let’s take a closer look at exactly what’s happening at each stage of our
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-15-dangling-reference-annotated/src/main.rs:here}}
+fn dangle() -> &String { // dangle returns a reference to a String
+
+    let s = String::from("hello"); // s is a new String
+
+    &s // we return a reference to the String, s
+} // Here, s goes out of scope, and is dropped. Its memory goes away.
+  // Danger!
 ```
 
 Because `s` is created inside `dangle`, when the code of `dangle` is finished,
@@ -221,7 +332,11 @@ won’t let us do this.
 The solution here is to return the `String` directly:
 
 ```rust
-{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-16-no-dangle/src/main.rs:here}}
+fn no_dangle() -> String {
+    let s = String::from("hello");
+
+    s
+}
 ```
 
 This works without any problems. Ownership is moved out, and nothing is

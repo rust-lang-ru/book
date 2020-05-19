@@ -40,8 +40,29 @@ yet.
 
 <span class="filename">Filename: src/lib.rs</span>
 
-```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-15/src/lib.rs:here}}
+```rust
+# pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+#      vec![]
+# }
+#
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.";
+
+        assert_eq!(
+            vec!["safe, fast, productive."],
+            search(query, contents)
+        );
+    }
+}
 ```
 
 <span class="caption">Listing 12-15: Creating a failing test for the `search`
@@ -61,7 +82,9 @@ containing the line `"safe, fast, productive."`
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-16/src/lib.rs:here}}
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    vec![]
+}
 ```
 
 <span class="caption">Listing 12-16: Defining just enough of the `search`
@@ -86,7 +109,15 @@ If we forget the lifetime annotations and try to compile this function, we’ll
 get this error:
 
 ```text
-{{#include ../listings/ch12-an-io-project/output-only-02-missing-lifetimes/output.txt}}
+error[E0106]: missing lifetime specifier
+ --> src/lib.rs:5:51
+  |
+5 | pub fn search(query: &str, contents: &str) -> Vec<&str> {
+  |                                                   ^ expected lifetime
+parameter
+  |
+  = help: this function's return type contains a borrowed value, but the
+  signature does not say whether it is borrowed from `query` or `contents`
 ```
 
 Rust can’t possibly know which of the two arguments we need, so we need to tell
@@ -103,7 +134,31 @@ References with Lifetimes”][validating-references-with-lifetimes]<!-- ignore
 Now let’s run the test:
 
 ```text
-{{#include ../listings/ch12-an-io-project/listing-12-16/output.txt}}
+$ cargo test
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+--warnings--
+    Finished dev [unoptimized + debuginfo] target(s) in 0.43 secs
+     Running target/debug/deps/minigrep-abcabcabc
+
+running 1 test
+test tests::one_result ... FAILED
+
+failures:
+
+---- tests::one_result stdout ----
+        thread 'tests::one_result' panicked at 'assertion failed: `(left ==
+right)`
+left: `["safe, fast, productive."]`,
+right: `[]`)', src/lib.rs:48:8
+note: Run with `RUST_BACKTRACE=1` for a backtrace.
+
+
+failures:
+    tests::one_result
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+
+error: test failed, to rerun pass '--lib'
 ```
 
 Great, the test fails, exactly as we expected. Let’s get the test to pass!
@@ -130,7 +185,11 @@ won’t compile yet.
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-17/src/lib.rs:here}}
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    for line in contents.lines() {
+        // do something with line
+    }
+}
 ```
 
 <span class="caption">Listing 12-17: Iterating through each line in `contents`
@@ -151,7 +210,13 @@ Listing 12-18. Note this still won’t compile yet.
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-18/src/lib.rs:here}}
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    for line in contents.lines() {
+        if line.contains(query) {
+            // do something with line
+        }
+    }
+}
 ```
 
 <span class="caption">Listing 12-18: Adding functionality to see whether the
@@ -167,7 +232,17 @@ shown in Listing 12-19.
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-19/src/lib.rs:here}}
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+
+    results
+}
 ```
 
 <span class="caption">Listing 12-19: Storing the lines that match so we can
@@ -177,7 +252,12 @@ Now the `search` function should return only the lines that contain `query`,
 and our test should pass. Let’s run the test:
 
 ```text
-{{#include ../listings/ch12-an-io-project/listing-12-19/output.txt}}
+$ cargo test
+--snip--
+running 1 test
+test tests::one_result ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ```
 
 Our test passed, so we know it works!
@@ -199,7 +279,15 @@ will print each line returned from `search`:
 <span class="filename">Filename: src/lib.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch12-an-io-project/no-listing-02-using-search-in-run/src/lib.rs:here}}
+pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(config.filename)?;
+
+    for line in search(&config.query, &contents) {
+        println!("{}", line);
+    }
+
+    Ok(())
+}
 ```
 
 We’re still using a `for` loop to return each line from `search` and print it.
@@ -208,20 +296,31 @@ Now the entire program should work! Let’s try it out, first with a word that
 should return exactly one line from the Emily Dickinson poem, “frog”:
 
 ```text
-{{#include ../listings/ch12-an-io-project/no-listing-02-using-search-in-run/output.txt}}
+$ cargo run frog poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.38 secs
+     Running `target/debug/minigrep frog poem.txt`
+How public, like a frog
 ```
 
 Cool! Now let’s try a word that will match multiple lines, like “body”:
 
 ```text
-{{#include ../listings/ch12-an-io-project/output-only-03-multiple-matches/output.txt}}
+$ cargo run body poem.txt
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+     Running `target/debug/minigrep body poem.txt`
+I’m nobody! Who are you?
+Are you nobody, too?
+How dreary to be somebody!
 ```
 
 And finally, let’s make sure that we don’t get any lines when we search for a
 word that isn’t anywhere in the poem, such as “monomorphization”:
 
 ```text
-{{#include ../listings/ch12-an-io-project/output-only-04-no-matches/output.txt}}
+$ cargo run monomorphization poem.txt
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+     Running `target/debug/minigrep monomorphization poem.txt`
 ```
 
 Excellent! We’ve built our own mini version of a classic tool and learned a lot
