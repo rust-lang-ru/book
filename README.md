@@ -12,4 +12,4 @@
 
 ## GitLocalize
 
-Проект на GitLocalize: https://gitlocalize.com/repo/3025
+Проект на GitLocalize: https://gitlocalize.com/repo/4579
