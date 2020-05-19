@@ -24,7 +24,7 @@ overload that operator is listed.
 | `&` | `&type`, `&mut type`, `&'a type`, `&'a mut type` | Borrowed pointer type | |
 | `&` | `expr & expr` | Bitwise AND | `BitAnd` |
 | `&=` | `var &= expr` | Bitwise AND and assignment | `BitAndAssign` |
-| `&&` | `expr && expr` | Logical AND | |
+| `&&` | `expr && expr` | Short-circuiting logical AND | |
 | `*` | `expr * expr` | Arithmetic multiplication | `Mul` |
 | `*=` | `var *= expr` | Arithmetic multiplication and assignment | `MulAssign` |
 | `*` | `*expr` | Dereference | |
@@ -67,7 +67,7 @@ overload that operator is listed.
 | <code>&vert;</code> | <code>pat &vert; pat</code> | Pattern alternatives | |
 | <code>&vert;</code> | <code>expr &vert; expr</code> | Bitwise OR | `BitOr` |
 | <code>&vert;=</code> | <code>var &vert;= expr</code> | Bitwise OR and assignment | `BitOrAssign` |
-| <code>&vert;&vert;</code> | <code>expr &vert;&vert; expr</code> | Logical OR | |
+| <code>&vert;&vert;</code> | <code>expr &vert;&vert; expr</code> | Short-circuiting logical OR | |
 | `?` | `expr?` | Error propagation | |
 
 ### Non-operator Symbols
@@ -153,6 +153,7 @@ macros and specifying attributes on an item.
 | `$ident` | Macro substitution |
 | `$ident:kind` | Macro capture |
 | `$(…)…` | Macro repetition |
+| `ident!(...)`, `ident!{...}`, `ident![...]` | Macro invocation |
 
 Table B-7 shows symbols that create comments.
 
@@ -180,7 +181,6 @@ Table B-8 shows symbols that appear in the context of using tuples.
 | `(expr, ...)` | Tuple expression |
 | `(type, ...)` | Tuple type |
 | `expr(expr, ...)` | Function call expression; also used to initialize tuple `struct`s and tuple `enum` variants |
-| `ident!(...)`, `ident!{...}`, `ident![...]` | Macro invocation |
 | `expr.0`, `expr.1`, etc. | Tuple indexing |
 
 Table B-9 shows the contexts in which curly braces are used.
