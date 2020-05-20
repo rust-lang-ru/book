@@ -70,7 +70,7 @@ struct Draft {}
 impl State for Draft {}
 ```
 
-<span class="caption">Листинг 17-12: Определение структуры <code>Post</code> и функции <code>new</code>, которая создает новый экземпляр <code>Post</code>, типаж <code>State</code> и структуру <code>Draft</code></span>
+<span class="caption">Листинг 17-12: Определение структуры <code>Post</code> и функции <code>new</code>, которая создаёт новый экземпляр <code>Post</code>, типаж <code>State</code> и структуру <code>Draft</code></span>
 
 Типаж `State` определяет поведение совместно используемое различными состояниями в сообщениях, все типы состояний вроде `Draft`, `PendingReview` и `Published` будут реализовывать типаж `State`. Пока у этого типажа нет никаких методов и мы начнём с определения только `Draft` состояния, потому что это то состояние, в котором мы хотим сделать появление публикации.
 
