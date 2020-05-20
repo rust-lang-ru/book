@@ -1,6 +1,6 @@
 ## Реализация ООП шаблона проектирования
 
-*Шаблон состояние* (state pattern) является объектно-ориентированным шаблоном проектирования. Суть шаблона в том, что главный объект имеет некоторое внутреннее состояние, которое представлено набором *объектов состояния* (state objects) и поведение этого объекта изменяется в зависимости от внутреннего состояния. Объекты состояния имеют общую функциональность: конечно в Rust мы используем структуры и типажи, а не объекты и наследование. Каждый объект состояния отвечает за своё поведение и определяет, когда он должен перейти в другое состояние. Значение, которое содержит объект состояния, ничего не знает о различном поведении состояний или о моментах перехода между состояниями.
+Шаблон *состояние* является объектно-ориентированным шаблоном проектирования. Суть шаблона в том, что главный объект имеет некоторое внутреннее состояние, которое представлено набором *объектов состояния* и поведение этого объекта изменяется в зависимости от внутреннего состояния. Объекты состояния имеют общую функциональность: конечно в Rust мы используем структуры и типажи, а не объекты и наследование. Каждый объект состояния отвечает за своё поведение и определяет, когда он должен перейти в другое состояние. Значение, которое содержит объект состояния, ничего не знает о различном поведении состояний или о моментах перехода между состояниями.
 
 Использование шаблона состояние означает, что при изменении бизнес-требований программы не нужно изменять код объекта, содержащего состояние или код использующий такой объект. Нам нужно только обновить код внутри одного из значений состояния, чтобы изменить его правила или, возможно, добавить больше значений состояния. Давайте рассмотрим пример проектирования шаблона состояние и как его использовать в Rust.
 
@@ -18,20 +18,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-use blog::Post;
-
-fn main() {
-    let mut post = Post::new();
-
-    post.add_text("I ate a salad for lunch today");
-    assert_eq!("", post.content());
-
-    post.request_review();
-    assert_eq!("", post.content());
-
-    post.approve();
-    assert_eq!("I ate a salad for lunch today", post.content());
-}
+use blog::Post;  fn main() {     let mut post = Post::new();      post.add_text("I ate a salad for lunch today");     assert_eq!("", post.content());      post.request_review();     assert_eq!("", post.content());      post.approve();     assert_eq!("I ate a salad for lunch today", post.content()); }
 ```
 
 <span class="caption">Листинг 17-11: Код, демонстрирующий желаемое поведение, которое мы хотим получить в крейте <code>blog</code></span>
@@ -46,29 +33,13 @@ fn main() {
 
 Приступим к реализации библиотеки! Мы знаем, что нам нужна публичная структура `Post`, которая содержит некоторое содержимое, поэтому мы начнём с определения структуры и связанную с ней публичную функцию `new` для создания экземпляра `Post`, как показано в листинге 17-12. Мы также сделаем приватный типаж `State`. Затем `Post` будет содержать типаж-объект `Box<dyn State>` внутри `Option<T>` в приватном поле с названием `state`. Вскоре вы поймёте, почему `Option<T>` необходим. <span class="filename">Файл: src/lib.rs</span>
 
+<span class="filename">Листинг 17-12: Определение структуры <code>Post</code> и функции <code>new</code>, которая создаёт новый экземпляр <code>Post</code>, типаж <code>State</code> и структура <code>Draft</code></span>
+
 ```rust
-pub struct Post {
-    state: Option<Box<dyn State>>,
-    content: String,
-}
-
-impl Post {
-    pub fn new() -> Post {
-        Post {
-            state: Some(Box::new(Draft {})),
-            content: String::new(),
-        }
-    }
-}
-
-trait State {}
-
-struct Draft {}
-
-impl State for Draft {}
+pub struct Post {     state: Option<Box<dyn State>>,     content: String, }  impl Post {     pub fn new() -> Post {         Post {             state: Some(Box::new(Draft {})),             content: String::new(),         }     } }  trait State {}  struct Draft {}  impl State for Draft {}
 ```
 
-<span class="caption">Листинг 17-12: Определение структуры <code>Post</code> и функции <code>new</code>, которая создаёт новый экземпляр <code>Post</code>, типаж <code>State</code> и структура <code>Draft</code></span>
+<span class="caption">Listing 17-12: Definition of a <code>Post</code> struct and a <code>new</code> function that creates a new <code>Post</code> instance, a <code>State</code> trait, and a <code>Draft</code> struct</span>
 
 Типаж `State` определяет поведение совместно используемое различными состояниями в сообщениях, все типы состояний вроде `Draft`, `PendingReview` и `Published` будут реализовывать типаж `State`. Пока у этого типажа нет никаких методов и мы начнём с определения только `Draft` состояния, потому что это то состояние, в котором мы хотим сделать появление публикации.
 
@@ -81,16 +52,7 @@ impl State for Draft {}
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# pub struct Post {
-#     content: String,
-# }
-#
-impl Post {
-    // --snip--
-    pub fn add_text(&mut self, text: &str) {
-        self.content.push_str(text);
-    }
-}
+# pub struct Post { #     content: String, # } # impl Post {     // --snip--     pub fn add_text(&mut self, text: &str) {         self.content.push_str(text);     } }
 ```
 
 <span class="caption">Листинг 17-13: Реализация метода <code>add_text</code> для добавления текста в <code>content</code> публикации</span>
@@ -104,16 +66,7 @@ impl Post {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# pub struct Post {
-#     content: String,
-# }
-#
-impl Post {
-    // ...snip...
-    pub fn content(&self) -> &str {
-        ""
-    }
-}
+# pub struct Post { #     content: String, # } # impl Post {     // ...snip...     pub fn content(&self) -> &str {         ""     } }
 ```
 
 <span class="caption">Листинг 17-14: Добавление пустой реализации метода <code>content</code> у структуры <code>Post</code>, который всегда возвращает пустой фрагмент строки</span>
@@ -127,39 +80,7 @@ impl Post {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# pub struct Post {
-#     state: Option<Box<dyn State>>,
-#     content: String,
-# }
-#
-impl Post {
-    // --snip--
-    pub fn request_review(&mut self) {
-        if let Some(s) = self.state.take() {
-            self.state = Some(s.request_review())
-        }
-    }
-}
-
-trait State {
-    fn request_review(self: Box<Self>) -> Box<dyn State>;
-}
-
-struct Draft {}
-
-impl State for Draft {
-    fn request_review(self: Box<Self>) -> Box<dyn State> {
-        Box::new(PendingReview {})
-    }
-}
-
-struct PendingReview {}
-
-impl State for PendingReview {
-    fn request_review(self: Box<Self>) -> Box<dyn State> {
-        self
-    }
-}
+# pub struct Post { #     state: Option<Box<dyn State>>, #     content: String, # } # impl Post {     // --snip--     pub fn request_review(&mut self) {         if let Some(s) = self.state.take() {             self.state = Some(s.request_review())         }     } }  trait State {     fn request_review(self: Box<Self>) -> Box<dyn State>; }  struct Draft {}  impl State for Draft {     fn request_review(self: Box<Self>) -> Box<dyn State> {         Box::new(PendingReview {})     } }  struct PendingReview {}  impl State for PendingReview {     fn request_review(self: Box<Self>) -> Box<dyn State> {         self     } }
 ```
 
 <span class="caption">Листинг 17-15: Реализация методов <code>request_review</code> для <code>Post</code> и типажа <code>State</code></span>
@@ -185,62 +106,7 @@ impl State for PendingReview {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# pub struct Post {
-#     state: Option<Box<dyn State>>,
-#     content: String,
-# }
-#
-impl Post {
-    // --snip--
-    pub fn approve(&mut self) {
-        if let Some(s) = self.state.take() {
-            self.state = Some(s.approve())
-        }
-    }
-}
-
-trait State {
-    fn request_review(self: Box<Self>) -> Box<dyn State>;
-    fn approve(self: Box<Self>) -> Box<dyn State>;
-}
-
-struct Draft {}
-
-impl State for Draft {
-#     fn request_review(self: Box<Self>) -> Box<dyn State> {
-#         Box::new(PendingReview {})
-#     }
-#
-    // --snip--
-    fn approve(self: Box<Self>) -> Box<dyn State> {
-        self
-    }
-}
-
-struct PendingReview {}
-
-impl State for PendingReview {
-#     fn request_review(self: Box<Self>) -> Box<dyn State> {
-#         self
-#     }
-#
-    // --snip--
-    fn approve(self: Box<Self>) -> Box<dyn State> {
-        Box::new(Published {})
-    }
-}
-
-struct Published {}
-
-impl State for Published {
-    fn request_review(self: Box<Self>) -> Box<dyn State> {
-        self
-    }
-
-    fn approve(self: Box<Self>) -> Box<dyn State> {
-        self
-    }
-}
+# pub struct Post { #     state: Option<Box<dyn State>>, #     content: String, # } # impl Post {     // --snip--     pub fn approve(&mut self) {         if let Some(s) = self.state.take() {             self.state = Some(s.approve())         }     } }  trait State {     fn request_review(self: Box<Self>) -> Box<dyn State>;     fn approve(self: Box<Self>) -> Box<dyn State>; }  struct Draft {}  impl State for Draft { #     fn request_review(self: Box<Self>) -> Box<dyn State> { #         Box::new(PendingReview {}) #     } #     // --snip--     fn approve(self: Box<Self>) -> Box<dyn State> {         self     } }  struct PendingReview {}  impl State for PendingReview { #     fn request_review(self: Box<Self>) -> Box<dyn State> { #         self #     } #     // --snip--     fn approve(self: Box<Self>) -> Box<dyn State> {         Box::new(Published {})     } }  struct Published {}  impl State for Published {     fn request_review(self: Box<Self>) -> Box<dyn State> {         self     }      fn approve(self: Box<Self>) -> Box<dyn State> {         self     } }
 ```
 
 <span class="caption">Листинг 17-16: Реализация метода <code>approve</code> для <code>Post</code> и типажа <code>State</code></span>
@@ -254,21 +120,7 @@ impl State for Published {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# trait State {
-#     fn content<'a>(&self, post: &'a Post) -> &'a str;
-# }
-# pub struct Post {
-#     state: Option<Box<dyn State>>,
-#     content: String,
-# }
-#
-impl Post {
-    // --snip--
-    pub fn content(&self) -> &str {
-        self.state.as_ref().unwrap().content(self)
-    }
-    // --snip--
-}
+# trait State { #     fn content<'a>(&self, post: &'a Post) -> &'a str; # } # pub struct Post { #     state: Option<Box<dyn State>>, #     content: String, # } # impl Post {     // --snip--     pub fn content(&self) -> &str {         self.state.as_ref().unwrap().content(self)     }     // --snip-- }
 ```
 
 <span class="caption">Листинг 17-17: Обновление метода <code>content</code> в структуре <code>Post</code> для делегирования вызова методу <code>content</code> у структуры <code>State</code></span>
@@ -277,32 +129,14 @@ impl Post {
 
 Мы вызываем метод `as_ref` у `Option` потому что нам нужна ссылка на значение внутри `Option`, а не владение значением. Поскольку `state` является типом `Option<Box<dyn State>>`, то при вызове метода `as_ref`, возвращается `Option<&Box<dyn State>>`. Если бы мы не вызывали `as_ref`, мы бы получили ошибку, потому что мы не можем переместить `state` из заимствованного `&self` параметра функции.
 
-Затем мы вызываем метод `unwrap` , который как мы знаем в данном месте никогда не паникует, потому что мы знаем, что методы `Post` гарантируют что в `state` будет всегда содержаться значение `Some`, после выполнения методов. Это один из случаев, о которых мы говорили в разделе ["Случаи, когда у вас больше информации, чем у компилятора"]<comment></comment> главы 9, когда мы знаем, что значение `None` невозможно, даже если компилятор не может этого понять.
+Затем мы вызываем метод `unwrap` , который как мы знаем в данном месте никогда не паникует, потому что мы знаем, что методы `Post` гарантируют что в `state` будет всегда содержаться значение `Some`, после выполнения методов. Это один из случаев, о которых мы говорили в разделе ["Случаи, когда у вас больше информации, чем у компилятора"](ch09-03-to-panic-or-not-to-panic.html#cases-in-which-you-have-more-information-than-the-compiler)<comment></comment> главы 9, когда мы знаем, что значение `None` невозможно, даже если компилятор не может этого понять.
 
 В этот момент, когда мы вызываем `content` у типа `&Box<dyn State>`, в действие вступает принудительное приведение (deref coercion) для `&` и `Box`, поэтому в конечном итоге метод `content` будет вызываться для типа, который реализует типаж `State`. Это означает, что нам нужно добавить метод `content` в определение типажа `State` и именно там мы поместим логику для того, какое содержание возвращать в зависимости от состояния, которое мы имеем как показано в листинге 17-18:
 
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# pub struct Post {
-#     content: String
-# }
-trait State {
-    // --snip--
-    fn content<'a>(&self, post: &'a Post) -> &'a str {
-        ""
-    }
-}
-
-// --snip--
-struct Published {}
-
-impl State for Published {
-    // --snip--
-    fn content<'a>(&self, post: &'a Post) -> &'a str {
-        &post.content
-    }
-}
+# pub struct Post { #     content: String # } trait State {     // --snip--     fn content<'a>(&self, post: &'a Post) -> &'a str {         ""     } }  // --snip-- struct Published {}  impl State for Published {     // --snip--     fn content<'a>(&self, post: &'a Post) -> &'a str {         &post.content     } }
 ```
 
 <span class="caption">Листинг 17-18: Добавление метода <code>content</code> в типаж <code>State</code></span>
@@ -331,7 +165,7 @@ impl State for Published {
 
 Другим недостатком является то, что мы продублировали некоторую логику. Чтобы устранить некоторое дублирование, мы могли бы попытаться сделать реализации по умолчанию для методов `request_review` и `approve` типажа `State`, которые возвращают `self`; однако это нарушило бы безопасность объекта, потому что типаж не знает, какой конкретно будет `self`. Мы хотим иметь возможность использовать `State` в качестве типаж-объекта, поэтому нам нужно, чтобы его методы были безопасны для объекта.
 
-Другое дублирование включает в себя аналогичные реализации методов `request_review` и `approve` у  `Post`. Оба метода делегируют реализации одного и того же метода значению поля `state` типа `Option` и устанавливают результатом новое значение поля `state`. Если бы у `Post` было много методов, которые следовали этому шаблону, мы могли бы рассмотреть определение макроса для устранения повторения (смотри раздел ["Макросы"]<comment></comment> в главе 19).
+Другое дублирование включает в себя аналогичные реализации методов `request_review` и `approve` у  `Post`. Оба метода делегируют реализации одного и того же метода значению поля `state` типа `Option` и устанавливают результатом новое значение поля `state`. Если бы у `Post` было много методов, которые следовали этому шаблону, мы могли бы рассмотреть определение макроса для устранения повторения (смотри раздел ["Макросы"](ch19-06-macros.html#macros)<comment></comment> в главе 19).
 
 Реализуя шаблон состояния точно так, как он определён для объектно-ориентированных языков, мы не в полной мере используем преимущества Rust, как можно было бы. Давайте посмотрим на некоторые изменения, которые мы можем внести в крейт `blog`, которые могут превратить недопустимые состояния и переходы в ошибки времени компиляции.
 
@@ -344,14 +178,7 @@ impl State for Published {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-# use blog::Post;
-
-fn main() {
-    let mut post = Post::new();
-
-    post.add_text("I ate a salad for lunch today");
-    assert_eq!("", post.content());
-}
+# use blog::Post;  fn main() {     let mut post = Post::new();      post.add_text("I ate a salad for lunch today");     assert_eq!("", post.content()); }
 ```
 
 Мы по-прежнему разрешаем создание новых сообщений в состоянии черновик используя метод `Post::new` и возможность добавлять текст к содержимому публикации. Но вместо того, чтобы иметь метод `content` у чернового сообщении, которое возвращает пустую строку мы сделаем так, что у черновых сообщений вообще не было метода `content`. Таким образом, если мы попытаемся получить содержимое черновика, мы получим ошибку компилятора, сообщающую, что метод не существует. В результате мы не сможем случайно отобразить черновик содержимого публикации, потому что этот код даже не скомпилируется. В листинге 17-19 показано определение структур `Post` и `DraftPost`, а также методов для каждой из них:
@@ -359,31 +186,7 @@ fn main() {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-pub struct Post {
-    content: String,
-}
-
-pub struct DraftPost {
-    content: String,
-}
-
-impl Post {
-    pub fn new() -> DraftPost {
-        DraftPost {
-            content: String::new(),
-        }
-    }
-
-    pub fn content(&self) -> &str {
-        &self.content
-    }
-}
-
-impl DraftPost {
-    pub fn add_text(&mut self, text: &str) {
-        self.content.push_str(text);
-    }
-}
+pub struct Post {     content: String, }  pub struct DraftPost {     content: String, }  impl Post {     pub fn new() -> DraftPost {         DraftPost {             content: String::new(),         }     }      pub fn content(&self) -> &str {         &self.content     } }  impl DraftPost {     pub fn add_text(&mut self, text: &str) {         self.content.push_str(text);     } }
 ```
 
 <span class="caption">Листинг 17-19: Структура <code>Post</code> с методом <code>content</code> и структура <code>DraftPost</code> без метода <code>content</code></span>
@@ -401,35 +204,7 @@ impl DraftPost {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# pub struct Post {
-#     content: String,
-# }
-#
-# pub struct DraftPost {
-#     content: String,
-# }
-#
-impl DraftPost {
-    // --snip--
-
-    pub fn request_review(self) -> PendingReviewPost {
-        PendingReviewPost {
-            content: self.content,
-        }
-    }
-}
-
-pub struct PendingReviewPost {
-    content: String,
-}
-
-impl PendingReviewPost {
-    pub fn approve(self) -> Post {
-        Post {
-            content: self.content,
-        }
-    }
-}
+# pub struct Post { #     content: String, # } # # pub struct DraftPost { #     content: String, # } # impl DraftPost {     // --snip--      pub fn request_review(self) -> PendingReviewPost {         PendingReviewPost {             content: self.content,         }     } }  pub struct PendingReviewPost {     content: String, }  impl PendingReviewPost {     pub fn approve(self) -> Post {         Post {             content: self.content,         }     } }
 ```
 
 <span class="caption">Листинг 17-20: Тип <code>PendingReviewPost</code> который создаётся путём вызова <code>request_review</code> экземпляра <code>DraftPost</code> и метод <code>approve</code>, который превращает <code>PendingReviewPost</code> в опубликованный <code>Post</code>.</span>
@@ -441,19 +216,7 @@ impl PendingReviewPost {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-use blog::Post;
-
-fn main() {
-    let mut post = Post::new();
-
-    post.add_text("I ate a salad for lunch today");
-
-    let post = post.request_review();
-
-    let post = post.approve();
-
-    assert_eq!("I ate a salad for lunch today", post.content());
-}
+use blog::Post;  fn main() {     let mut post = Post::new();      post.add_text("I ate a salad for lunch today");      let post = post.request_review();      let post = post.approve();      assert_eq!("I ate a salad for lunch today", post.content()); }
 ```
 
 <span class="caption">Листинг 17-21: Изменения в <code>main</code> для использования новой реализации процесса публикации блога</span>
@@ -469,7 +232,3 @@ fn main() {
 Независимо от того, что вы думаете о принадлежности Rust к объектно-ориентированным языкам после прочтения этой главы, вы теперь знаете, что можете использовать типаж-объекты, чтобы получить некоторые объектно-ориентированные функции в Rust. Динамическая диспетчеризация может дать вашему коду некоторую гибкость в обмен на небольшое ухудшение производительности во время выполнения. Вы можете использовать эту гибкость для реализации объектно-ориентированных шаблонов, которые могут помочь в поддержке вашего кода. В Rust также есть другие функции, такие как владение, которых нет у объектно-ориентированных языков. Объектно-ориентированный шаблон не всегда является лучшим способом использовать преимущества Rust, но является доступной опцией.
 
 Далее мы рассмотрим шаблоны, которые являются ещё одной возможностью языка Rust, обеспечивающей больше гибкости. Мы кратко рассмотрели их на протяжении всей книги, но ещё не увидели всех этих возможностей. Приступим!
-
-
-["Случаи, когда у вас больше информации, чем у компилятора"]: ch09-03-to-panic-or-not-to-panic.html#cases-in-which-you-have-more-information-than-the-compiler
-["Макросы"]: ch19-06-macros.html#macros
