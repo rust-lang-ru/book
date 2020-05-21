@@ -277,7 +277,8 @@ fn makes_copy(some_integer: i32) { // параметр some_integer появля
 ```rust
 fn main() {
 
-      let s1 = gives_ownership();    // gives_ownership перемещает ее                                     // возвращаемое значение в s1
+      let s1 = gives_ownership();    // gives_ownership перемещает её
+                                     // возвращаемое значение в s1
 
       let s2 = String::from("hello");  // s2 появляется в обл.видим-ти
         let s3 = takes_and_gives_back(s2); // s2 перемещено в функ-ю
@@ -290,7 +291,7 @@ s3
 
 fn gives_ownership() -> String {      // gives_ownership переместит
                                         // возвращаемое значение в функцию
-                                         // которая ее вызывает
+                                         // которая её вызывает
        let some_string = String::from("hello"); // some_string появля-ся в обл.видим-сти
 
       some_string                          // some_string возвращена и
