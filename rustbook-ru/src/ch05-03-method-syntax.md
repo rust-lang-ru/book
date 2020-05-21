@@ -9,7 +9,26 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-#[derive(Debug)] struct Rectangle {     width: u32,     height: u32, }  impl Rectangle {     fn area(&self) -> u32 {         self.width * self.height     } }  fn main() {     let rect1 = Rectangle { width: 30, height: 50 };      println!(         "The area of the rectangle is {} square pixels.",         rect1.area()     ); }
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle { width: 30, height: 50 };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect1.area()
+    );
+}
 ```
 
 <span class="caption">Листинг 5-13: определение метода <code>area</code> в структуре <code>Rectangle</code></span>
@@ -23,13 +42,30 @@
 Основным преимуществом использования методов вместо функций, в дополнение к использованию синтаксиса метода, где не нужно повторять тип `self` в каждой сигнатуре метода, является организация кода. Мы собрали все, что мы можем сделать с экземпляром типа в одном блоке `impl`, не заставляя будущих пользователей нашего кода искать предоставленные возможности `Rectangle` в разных местах библиотеки.
 
 > ### Где используется оператор `->`?
-> В языках C++, используются два различных оператора для вызова методов: используется `.`, если вызывается метод непосредственно у экземпляра структуры и используется `->`, если вызывается метод из ссылки на объект. Другими словами, если `object` является ссылкой, то вызовы метода `object->something()` и ` (*object).something()` являются аналогичными. Rust не имеет эквивалента оператора `->`, наоборот, в Rust есть функциональность, которая называется *автоматическое разыменование ссылки*. Вызов методов является одним из немногих мест в Rust, в котором есть такое поведение. Вот как это работает: когда вы вызываете метод `object.something()`, Rust автоматически добавляет `&`, `&mut` или  `*`, таким образом, чтобы `object` соответствовал сигнатуре метода. Другими словами, следующий код является одинаковым:
-> Первый пример выглядит намного яснее. Это автоматическое поведение ссылок работает потому, что методы имеют ясный приёмник - тип `self` . Учитывая получателя и имя метода, Rust может точно определить, является ли метод для чтения (`&self`), для изменения (`&mut self`) или поглощает (`self`). Факт в том, что Rust делает заимствование неявным для принимающего метода, большой частью предназначено для того чтобы сделать владение эргономичным на практике.
-> Here’s how it works: when you call a method with `object.something()`, Rust automatically adds in `&`, `&mut`, or `*` so `object` matches the signature of the method. In other words, the following are the same:
+> В языках C++, используются два различных оператора для вызова методов: используется `.`, если вызывается метод непосредственно у экземпляра структуры и используется `->`, если вызывается метод у ссылки на объект. Другими словами, если `object` является ссылкой, то вызовы метода `object->something()` и ` (*object).something()` являются аналогичными.
+> Rust не имеет эквивалента оператора `->`, наоборот, в Rust есть функциональность называемая *автоматическое нахождение по ссылке и разыменование*. Вызов методов является одним из немногих мест в Rust, в котором есть такое поведение.
+> Вот как это работает: когда вы вызываете метод `object.something()`, Rust автоматически добавляет `&`, `&mut` или  `*`, таким образом, чтобы `object` соответствовал сигнатуре метода. Другими словами, следующий код является одинаковым:
 > ```rust
-> #[derive(Debug,Copy,Clone)] struct Point {    x: f64,    y: f64, }  impl Point {    fn distance(&self, other: &Point) -> f64 {       let x_squared = f64::powi(other.x - self.x, 2);       let y_squared = f64::powi(other.y - self.y, 2);        f64::sqrt(x_squared + y_squared)    } }  fn main() {    let p1 = Point { x: 0.0, y: 0.0 };    let p2 = Point { x: 5.0, y: 6.5 };    p1.distance(&p2);    (&p1).distance(&p2); }
+> # #[derive(Debug,Copy,Clone)]
+> # struct Point {
+> #     x: f64,
+> #     y: f64,
+> # }
+> #
+> # impl Point {
+> #    fn distance(&self, other: &Point) -> f64 {
+> #        let x_squared = f64::powi(other.x - self.x, 2);
+> #        let y_squared = f64::powi(other.y - self.y, 2);
+> #
+> #        f64::sqrt(x_squared + y_squared)
+> #    }
+> # }
+> # let p1 = Point { x: 0.0, y: 0.0 };
+> # let p2 = Point { x: 5.0, y: 6.5 };
+> p1.distance(&p2);
+> (&p1).distance(&p2);
 > ```
-> The first one looks much cleaner. This automatic referencing behavior works because methods have a clear receiver—the type of `self`. Given the receiver and name of a method, Rust can figure out definitively whether the method is reading (`&self`), mutating (`&mut self`), or consuming (`self`). The fact that Rust makes borrowing implicit for method receivers is a big part of making ownership ergonomic in practice.
+> Первый пример выглядит намного понятнее. Это  поведение автоматической ссылки работает потому, что методы имеют понятного получателя - тип `self`. Учитывая получателя и имя метода, Rust может точно определить, читает ли метод (`&self`), делается ли изменение (`&mut self`) или поглощает (`self`). Факт в том, что Rust делает заимствование неявным для принимающего метода, в большей степени предназначено, чтобы сделать владение эргономичным на практике.
 
 ### Методы с несколькими параметрами
 
@@ -38,7 +74,14 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-fn main() {     let rect1 = Rectangle { width: 30, height: 50 };     let rect2 = Rectangle { width: 10, height: 40 };     let rect3 = Rectangle { width: 60, height: 45 };      println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));     println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3)); }
+fn main() {
+    let rect1 = Rectangle { width: 30, height: 50 };
+    let rect2 = Rectangle { width: 10, height: 40 };
+    let rect3 = Rectangle { width: 60, height: 45 };
+
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
+}
 ```
 
 <span class="caption">Листинг 5-14: использование ещё не написанного метода <code>can_hold</code></span>
@@ -46,7 +89,8 @@ fn main() {     let rect1 = Rectangle { width: 30, height: 50 };     let rect2 =
 И ожидаемый результат будет выглядеть следующим образом, потому что оба значения в экземпляре `rect2` меньше, чем размеры в экземпляре `rect1`, то `rect3` шире, чем `rect1` :
 
 ```text
-Can rect1 hold rect2? true Can rect1 hold rect3? false
+Can rect1 hold rect2? true
+Can rect1 hold rect3? false
 ```
 
 Мы знаем, что хотим определить метод, поэтому он будет находится в `impl Rectangle` блоке. Имя метода будет `can_hold` , и оно будет принимать неизменяемое заимствование на другой `Rectangle` в качестве параметра. Мы можем сказать, какой это будет тип параметра, посмотрев на код вызывающего метода: метод `rect1.can_hold(&rect2)` передаёт в него  `&rect2` , который является неизменяемым заимствованием экземпляра `rect2` типа `Rectangle`. В этом есть смысл, потому что нам нужно только читать `rect2` (а не писать, что означало бы, что нужно изменяемое заимствование), и мы хотим, чтобы `main` сохранил право собственности на экземпляр `rect2`, чтобы мы могли использовать его снова после вызов метода `can_hold` . Возвращаемое значение `can_hold` имеет двоичный тип, а реализация проверит, являются ли ширина и высота `self` больше, чем ширина и высота другого `Rectangle` , соответственно. Давайте добавим новый метод `can_hold` в `impl` блок из листинга 5-13, как показано в листинге 5-15.
@@ -54,7 +98,21 @@ Can rect1 hold rect2? true Can rect1 hold rect3? false
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# #[derive(Debug)] # struct Rectangle { #     width: u32, #     height: u32, # } # impl Rectangle {     fn area(&self) -> u32 {         self.width * self.height     }      fn can_hold(&self, other: &Rectangle) -> bool {         self.width > other.width && self.height > other.height     } }
+# #[derive(Debug)]
+# struct Rectangle {
+#     width: u32,
+#     height: u32,
+# }
+#
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+}
 ```
 
 <span class="caption">Листинг 5-15: реализация метода <code>can_hold</code> для структуры <code>Rectangle</code>, который принимает другой экземпляр <code>Rectangle</code> в качестве параметра</span>
@@ -70,7 +128,17 @@ Can rect1 hold rect2? true Can rect1 hold rect3? false
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# #[derive(Debug)] # struct Rectangle { #     width: u32, #     height: u32, # } # impl Rectangle {     fn square(size: u32) -> Rectangle {         Rectangle { width: size, height: size }     } }
+# #[derive(Debug)]
+# struct Rectangle {
+#     width: u32,
+#     height: u32,
+# }
+#
+impl Rectangle {
+    fn square(size: u32) -> Rectangle {
+        Rectangle { width: size, height: size }
+    }
+}
 ```
 
 Чтобы вызвать эту ассоциированную функцию, используется синтаксис `::` с именем структуры; пример `let sq = Rectangle::square(3);`. Эта функция относится к структуре: синтаксис `::` используется как для ассоциированных функций, так и для пространства имён, созданные модулями. Мы обсудим модули в главе 7.
@@ -80,7 +148,23 @@ Can rect1 hold rect2? true Can rect1 hold rect3? false
 Для каждой структуры разрешено иметь множество `impl` блоков. Например, листинг 5-15 является эквивалентным коду из листинга 5-16, который описывает метод в своём отдельном блоке `impl`.
 
 ```rust
-# #[derive(Debug)] # struct Rectangle { #     width: u32, #     height: u32, # } # impl Rectangle {     fn area(&self) -> u32 {         self.width * self.height     } }  impl Rectangle {     fn can_hold(&self, other: &Rectangle) -> bool {         self.width > other.width && self.height > other.height     } }
+# #[derive(Debug)]
+# struct Rectangle {
+#     width: u32,
+#     height: u32,
+# }
+#
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+impl Rectangle {
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+}
 ```
 
 <span class="caption">Листинг 5-16: переписанный листинг 5-15 с использованием нескольких блоков <code>impl</code></span>
