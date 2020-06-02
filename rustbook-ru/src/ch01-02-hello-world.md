@@ -13,13 +13,20 @@
 Для Linux, macOS и PowerShell на Windows, введите:
 
 ```text
-$ mkdir ~/projects $ cd ~/projects $ mkdir hello_world $ cd hello_world
+$ mkdir
+~/projects
+$ cd ~/projects
+$ mkdir hello_world
+$ cd hello_world
 ```
 
 Для Windows в CMD, введите:
 
 ```cmd
-> mkdir %USERPROFILE%\projects > cd %USERPROFILE%\projects > mkdir hello_world > cd hello_world
+> mkdir %USERPROFILE%\projects
+> cd %USERPROFILE%\projects
+> mkdir hello_world
+> cd hello_world
 ```
 
 ### Написание и запуск первой Rust программы
@@ -31,7 +38,10 @@ $ mkdir ~/projects $ cd ~/projects $ mkdir hello_world $ cd hello_world
 <span class="filename">Название файла: main.rs</span>
 
 ```rust
-fn main() {     println!("Hello, world! Привет, Мир!"); }
+fn main()
+{
+println!("Hello, world! Привет, Мир!");
+}
 ```
 
 <span class="caption">Листинг 1-1: Программа печатает <code>Hello, world!</code></span>
@@ -39,13 +49,15 @@ fn main() {     println!("Hello, world! Привет, Мир!"); }
 Сохраните файл и вернитесь в окно терминала. На Linux или macOS, введите следующие команды, чтобы скомпилировать и запустить файл:
 
 ```text
-$ rustc main.rs # нажмите клавишу Enter $ ./main # нажмите клавишу Enter Hello, Rust world! Привет, Мир!
+$ rustc main.rs # нажмите клавишу Enter
+$ ./main # нажмите клавишу Enter Hello, Rust world! Привет, Мир!
 ```
 
 В Windows, введите команду `.\main.exe` вместо `./main`:
 
 ```powershell
-> rustc main.rs # нажмите клавишу Enter > main Hello, Rust world! Привет, Мир!
+> rustc main.rs # нажмите клавишу Enter
+> main Hello, Rust world! Привет, Мир!
 ```
 
 Независимо от операционной системы, строка `Hello, world! Привет, Мир!` должна напечататься в терминальном окне. Если вы не увидели вывода, вернитесь в часть "решение проблем" (["Troubleshooting"]<comment>) раздела инсталляции для вариантов получения помощи.</comment>
@@ -57,7 +69,9 @@ $ rustc main.rs # нажмите клавишу Enter $ ./main # нажмите 
 Давайте рассмотрим в деталях, что происходит в программе “Hello, world!”. Вот первый кусок пазла:
 
 ```rust
-fn main() {  }
+fn main()
+{
+}
 ```
 
 Эти строки определяют функцию в Rust. Функция `main` специальная: она всегда является первым кодом, который запускается в исполняемой программе на Rust. Первая строка объявляет функцию с именем `main` у которой нет параметров и она ничего не возвращает. Если бы тут были параметры, они были бы записаны внутри круглых скобок, `()`.
