@@ -13,8 +13,7 @@
 Для Linux, macOS и PowerShell на Windows, введите:
 
 ```text
-$ mkdir
-~/projects
+$ mkdir ~/projects
 $ cd ~/projects
 $ mkdir hello_world
 $ cd hello_world
@@ -38,8 +37,7 @@ $ cd hello_world
 <span class="filename">Название файла: main.rs</span>
 
 ```rust
-fn main()
-{
+fn main() {
 println!("Hello, world! Привет, Мир!");
 }
 ```
@@ -50,7 +48,8 @@ println!("Hello, world! Привет, Мир!");
 
 ```text
 $ rustc main.rs # нажмите клавишу Enter
-$ ./main # нажмите клавишу Enter Hello, Rust world! Привет, Мир!
+$ ./main # нажмите клавишу Enter
+Hello, Rust world! Привет, Мир!
 ```
 
 В Windows, введите команду `.\main.exe` вместо `./main`:
@@ -69,8 +68,7 @@ $ ./main # нажмите клавишу Enter Hello, Rust world! Привет, 
 Давайте рассмотрим в деталях, что происходит в программе “Hello, world!”. Вот первый кусок пазла:
 
 ```rust
-fn main()
-{
+fn main() {
 }
 ```
 
