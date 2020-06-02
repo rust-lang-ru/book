@@ -108,7 +108,8 @@ $ rustc main.rs
 На Linux, macOS и в PowerShell на Windows, можно увидеть исполняемый файл командой `ls` в командной оболочке. На Linux или macOS будет два файла. В PowerShell на Windows будет три файла, которые вы увидите в CMD.
 
 ```text
-$ ls main  main.rs
+$ ls
+main  main.rs
 ```
 
 В CMD на Windows следует ввести следующие команды:
