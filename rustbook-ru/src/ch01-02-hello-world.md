@@ -38,7 +38,7 @@ $ cd hello_world
 
 ```rust
 fn main() {
-println!("Hello, world! Привет, Мир!");
+    println!("Hello, world! Привет, Мир!");
 }
 ```
 
@@ -56,7 +56,8 @@ Hello, Rust world! Привет, Мир!
 
 ```powershell
 > rustc main.rs # нажмите клавишу Enter
-> main Hello, Rust world! Привет, Мир!
+> main
+Hello, Rust world! Привет, Мир!
 ```
 
 Независимо от операционной системы, строка `Hello, world! Привет, Мир!` должна напечататься в терминальном окне. Если вы не увидели вывода, вернитесь в часть "решение проблем" (["Troubleshooting"]<comment>) раздела инсталляции для вариантов получения помощи.</comment>
@@ -113,7 +114,10 @@ $ ls main  main.rs
 В CMD на Windows следует ввести следующие команды:
 
 ```cmd
-> dir /B %= the /B option says to only show the file names =% main.exe main.pdb main.rs
+> dir /B %= the /B option says to only show the file names =%
+main.exe
+main.pdb
+main.rs
 ```
 
 Здесь видно файл исходного кода с расширением *.rs*, исполняемый двоичный файл (*main.exe* в Windows, но *main* на всех других платформах), а при использовании  Windows, ещё файл включающий отладочную информацию с расширением *.pdb*. Отсюда запускаете файл *main* или *main.exe* командой:
