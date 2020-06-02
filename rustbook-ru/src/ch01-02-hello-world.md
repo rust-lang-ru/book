@@ -1,4 +1,4 @@
-## Hello, World!
+## Привет, мир!
 
 Итак, когда Rust уже установлен можно приступать к написанию вашей первой программы. По традиции для обучения мы напишем небольшую программу, которая напечатает "Привет, Мир!" в строке вывода.
 
@@ -13,19 +13,13 @@
 Для Linux, macOS и PowerShell на Windows, введите:
 
 ```text
-$ mkdir ~/projects
-$ cd ~/projects
-$ mkdir hello_world
-$ cd hello_world
+$ mkdir ~/projects $ cd ~/projects $ mkdir hello_world $ cd hello_world
 ```
 
 Для Windows в CMD, введите:
 
 ```cmd
-> mkdir %USERPROFILE%\projects
-> cd %USERPROFILE%\projects
-> mkdir hello_world
-> cd hello_world
+> mkdir %USERPROFILE%\projects > cd %USERPROFILE%\projects > mkdir hello_world > cd hello_world
 ```
 
 ### Написание и запуск первой Rust программы
@@ -37,9 +31,7 @@ $ cd hello_world
 <span class="filename">Название файла: main.rs</span>
 
 ```rust
-fn main() {
-    println!("Hello, world! Привет, Мир!");
-}
+fn main() {     println!("Hello, world! Привет, Мир!"); }
 ```
 
 <span class="caption">Листинг 1-1: Программа печатает <code>Hello, world!</code></span>
@@ -47,17 +39,13 @@ fn main() {
 Сохраните файл и вернитесь в окно терминала. На Linux или macOS, введите следующие команды, чтобы скомпилировать и запустить файл:
 
 ```text
-$ rustc main.rs # нажмите клавишу Enter
-$ ./main # нажмите клавишу Enter
-Hello, Rust world! Привет, Мир!
+$ rustc main.rs # нажмите клавишу Enter $ ./main # нажмите клавишу Enter Hello, Rust world! Привет, Мир!
 ```
 
 В Windows, введите команду `.\main.exe` вместо `./main`:
 
 ```powershell
-> rustc main.rs # нажмите клавишу Enter
-> main
-Hello, Rust world! Привет, Мир!
+> rustc main.rs # нажмите клавишу Enter > main Hello, Rust world! Привет, Мир!
 ```
 
 Независимо от операционной системы, строка `Hello, world! Привет, Мир!` должна напечататься в терминальном окне. Если вы не увидели вывода, вернитесь в часть "решение проблем" (["Troubleshooting"]<comment>) раздела инсталляции для вариантов получения помощи.</comment>
@@ -69,9 +57,7 @@ Hello, Rust world! Привет, Мир!
 Давайте рассмотрим в деталях, что происходит в программе “Hello, world!”. Вот первый кусок пазла:
 
 ```rust
-fn main() {
-
-}
+fn main() {  }
 ```
 
 Эти строки определяют функцию в Rust. Функция `main` специальная: она всегда является первым кодом, который запускается в исполняемой программе на Rust. Первая строка объявляет функцию с именем `main` у которой нет параметров и она ничего не возвращает. Если бы тут были параметры, они были бы записаны внутри круглых скобок, `()`.
@@ -109,17 +95,13 @@ $ rustc main.rs
 На Linux, macOS и в PowerShell на Windows, можно увидеть исполняемый файл командой `ls` в командной оболочке. На Linux или macOS будет два файла. В PowerShell на Windows будет три файла, которые вы увидите в CMD.
 
 ```text
-$ ls
-main  main.rs
+$ ls main  main.rs
 ```
 
 В CMD на Windows следует ввести следующие команды:
 
 ```cmd
-> dir /B %= the /B option says to only show the file names =%
-main.exe
-main.pdb
-main.rs
+> dir /B %= the /B option says to only show the file names =% main.exe main.pdb main.rs
 ```
 
 Здесь видно файл исходного кода с расширением *.rs*, исполняемый двоичный файл (*main.exe* в Windows, но *main* на всех других платформах), а при использовании  Windows, ещё файл включающий отладочную информацию с расширением *.pdb*. Отсюда запускаете файл *main* или *main.exe* командой:
