@@ -7,7 +7,21 @@
 Поскольку мы только что упомянули монеты, давайте использовать их в качестве примера, используя `match`! Можно написать функцию, которая возьмёт неизвестную монету Соединённых Штатов и по аналогии со счётной машиной определит, какая это монета и вернёт её значение в центах, как показано в листинге 6-3.
 
 ```rust
-enum Coin {     Penny,     Nickel,     Dime,     Quarter, }  fn value_in_cents(coin: Coin) -> u32 {     match coin {         Coin::Penny => 1,         Coin::Nickel => 5,         Coin::Dime => 10,         Coin::Quarter => 25,     } }
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => 25,
+    }
+}
 ```
 
 <span class="caption">Листинг 6-3: Перечисление и выражение <code>match</code>, которое использует варианты перечисления в качестве шаблонов</span>
@@ -23,7 +37,24 @@ enum Coin {     Penny,     Nickel,     Dime,     Quarter, }  fn value_in_cents(c
 Фигурные скобки обычно не используются, если код рукава короткий, как в листинге 6-3, где каждая рука только возвращает значение. Если необходимо выполнить несколько строк кода в рукаве, можно использовать фигурные скобки. Например, следующий код будет выводить «Lucky penny!» каждый раз, когда метод вызывается со значением `Coin::Penny`, но все равно возвращает последнее значение блока со значением `1`:
 
 ```rust
-# enum Coin { #    Penny, #    Nickel, #    Dime, #    Quarter, # } # fn value_in_cents(coin: Coin) -> u32 {     match coin {         Coin::Penny => {             println!("Lucky penny!");             1         },         Coin::Nickel => 5,         Coin::Dime => 10,         Coin::Quarter => 25,     } }
+# enum Coin {
+#    Penny,
+#    Nickel,
+#    Dime,
+#    Quarter,
+# }
+#
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => {
+            println!("Lucky penny!");
+            1
+        },
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => 25,
+    }
+}
 ```
 
 ### Шаблоны привязывающие значения
@@ -33,7 +64,19 @@ enum Coin {     Penny,     Nickel,     Dime,     Quarter, }  fn value_in_cents(c
 В качестве примера, давайте изменим один из вариантов перечисления для хранения данных внутри него. С 1999 по 2008 год Соединённые Штаты чеканили 25 центов с различным дизайном на одной стороне для каждого из 50 штатов. Ни одна другая монета не получила дизайна штата, только четверть доллара имела эту дополнительную особенность. Мы можем добавить эту информацию в наш `enum` путём изменения варианта `Quarter` для включения внутрь значения `UsState`, как сделано в листинге 6-4.
 
 ```rust
-#[derive(Debug)] // Можно проверить значение штата в списке enum UsState {     Alabama,     Alaska,     // ... etc }  enum Coin {     Penny,     Nickel,     Dime,     Quarter(UsState), }
+#[derive(Debug)] // Можно проверить значение штата в списке
+ enum UsState {
+     Alabama,
+     Alaska,
+     // ... etc
+ }
+
+ enum Coin {
+     Penny,
+     Nickel,
+     Dime,
+     Quarter(UsState),
+ }
 ```
 
 <span class="caption">Пример 6-4: Перечисление <code>Coin</code>, где вариант <code>Quarter</code> содержит также значение <code>UsState</code></span>
@@ -43,7 +86,30 @@ enum Coin {     Penny,     Nickel,     Dime,     Quarter, }  fn value_in_cents(c
 В выражении match для этого кода, мы добавляем переменную с именем `state` в шаблон, который соответствует значениям варианта `Coin::Quarter`. Когда `Coin::Quarter` совпадает, то переменная `state` будет привязана к значению штата четвертной. Затем мы можем использовать `state` в коде для этого рукава, вот так:
 
 ```rust
-#[derive(Debug)] enum UsState {     Alabama,     Alaska, }  enum Coin {     Penny,     Nickel,     Dime,     Quarter(UsState), }  fn value_in_cents(coin: Coin) -> u32 {     match coin {         Coin::Penny => 1,         Coin::Nickel => 5,         Coin::Dime => 10,         Coin::Quarter(state) => {             println!("State quarter from {:?}!", state);             25         }     } }  fn main() {     value_in_cents(Coin::Quarter(UsState::Alaska)); }
+# #[derive(Debug)]
+# enum UsState {
+#    Alabama,
+#    Alaska,
+# }
+#
+# enum Coin {
+#    Penny,
+#    Nickel,
+#    Dime,
+#    Quarter(UsState),
+# }
+#
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter(state) => {
+            println!("State quarter from {:?}!", state);
+            25
+        },
+    }
+}
 ```
 
 Если бы мы сделаем вызов как `value_in_cents(Coin::Quarter(UsState::Alaska))`, то `coin` будет иметь значение `Coin::Quarter(UsState::Alaska)`. Когда мы сравниваем это значение с каждым из рукавов, ни одно из них не совпадёт пока мы не достигнем варианта `Coin::Quarter(state)`. В этой точке привязка для переменной `state` будет иметь значение из перечисления равное `UsState::Alaska`. Можно затем использовать эту привязку в выражении `println!`, получая внутреннее значение состояния из типа `Coin` варианта перечисления `Quarter`.
@@ -57,7 +123,16 @@ enum Coin {     Penny,     Nickel,     Dime,     Quarter, }  fn value_in_cents(c
 Такую функцию довольно легко написать благодаря выражению `match`, что будет выглядеть как в листинге 6-5.
 
 ```rust
-fn plus_one(x: Option<i32>) -> Option<i32> {     match x {         None => None,         Some(i) => Some(i + 1),     } }  fn main() {     let five = Some(5);     let six = plus_one(five);     let none = plus_one(None);      println!("{:?}", five);     println!("{:?}", six);     println!("{:?}", none); }
+fn plus_one(x: Option<i32>) -> Option<i32> {
+    match x {
+        None => None,
+        Some(i) => Some(i + 1),
+    }
+}
+
+let five = Some(5);
+let six = plus_one(five);
+let none = plus_one(None);
 ```
 
 <span class="caption">Листинг 6-5: Функция, которая использует выражение <code>match</code> с типом <code>Option<i32></i32></code></span>
@@ -91,13 +166,21 @@ None => None,
 Есть ещё один аспект выражения `match`, который необходимо обсудить. Рассмотрим версию нашей функции `plus_one`, которая имеет ошибку и не будет компилироваться:
 
 ```rust,ignore,does_not_compile
-fn plus_one(x: Option<i32>) -> Option<i32> {     match x {         Some(i) => Some(i + 1),     } }
+fn plus_one(x: Option<i32>) -> Option<i32> {
+    match x {
+        Some(i) => Some(i + 1),
+    }
+}
 ```
 
 Мы не обработали вариант `None`, поэтому этот код вызовет дефект в программе. К счастью, Rust знает и умеет ловить такой случай. Если мы попытаемся скомпилировать такой код, мы получим ошибку компиляции:
 
 ```text
-error[E0004]: non-exhaustive patterns: `None` not covered  -->   | 6 |         match x {   |               ^ pattern `None` not covered
+error[E0004]: non-exhaustive patterns: `None` not covered
+ -->
+  |
+6 |         match x {
+  |               ^ pattern `None` not covered
 ```
 
 Rust знает, что мы не обработали все возможные случаи, и даже знает какие образцы мы забыли! Сравнение по шаблону в Rust является *полными и исчерпывающими*: мы должны обработать до конца все возможности, чтобы код был корректным. Особенно в случае `Option<T>`, когда Rust не позволит нам забыть явно обработать случай `None` и защитит нас от предположения, что у нас есть значение, хотя мы могли бы иметь null, таким образом допуская ошибку на миллиард долларов, рассмотренную ранее.
@@ -107,7 +190,14 @@ Rust знает, что мы не обработали все возможные
 В Rust также есть шаблон, который можно использовать, когда не хочется перечислять все возможные значения. Например, `u8` может иметь допустимые значения от 0 до 255. Если мы только заботимся о значениях 1, 3, 5 и 7 и не хотим перечислять 0, 2, 4, 6, 8, 9 вплоть до 255, то к счастью нам это не нужно. Вместо этого можно использовать специальный шаблон `_`:
 
 ```rust
-let some_u8_value = 0u8; match some_u8_value {     1 => println!("one"),     3 => println!("three"),     5 => println!("five"),     7 => println!("seven"),     _ => (), }
+let some_u8_value = 0u8;
+match some_u8_value {
+    1 => println!("one"),
+    3 => println!("three"),
+    5 => println!("five"),
+    7 => println!("seven"),
+    _ => (),
+}
 ```
 
 Шаблон с заполнителем `_` будет соответствовать любому значению. Поместив его после наших других рукавов, рукав с заполнителем `_` будет соответствовать всем возможным случаям, которые не были указаны ранее. Так как `()` это просто значение единичного типа, то в случае `_` ничего не произойдёт. В результате можно сказать, что мы хотим ничего не делать для всех возможных значений, которые мы не обработали в  списке перед `_` заполнителем.
