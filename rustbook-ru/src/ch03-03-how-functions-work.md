@@ -25,7 +25,12 @@ fn another_function() {
 Создадим новый проект с названием *functions* для дальнейшего изучения функций. Поместите пример `another_function` в файл *src/main.rs* и запустите его. Вы должны увидеть следующий вывод:
 
 ```text
-$ cargo run    Compiling functions v0.1.0 (file:///projects/functions)     Finished dev [unoptimized + debuginfo] target(s) in 0.28 secs      Running `target/debug/functions` Hello, world! Another function.
+$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.28 secs
+     Running `target/debug/functions`
+Hello, world!
+Another function.
 ```
 
 Строчки кода выполняются в том порядке, в котором они появляются в функции `main`. Сначала печатается сообщение “Hello, world!”, а затем вызывается `another_function` и она также печатает сообщение.
