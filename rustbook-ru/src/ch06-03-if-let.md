@@ -3,24 +3,17 @@
 Синтаксис `if let` позволяет комбинировать `if` и `let` в менее многословный способ обработки значений, соответствующих одному шаблону, одновременно игнорируя все остальные. Рассмотрим программу в листинге 6-6, которая делает поиск по шаблону значения `Option<u8>`, но хочет выполнить код только когда значение равно 3.
 
 ```rust
-let some_u8_value = Some(0u8);
-match some_u8_value {
-    Some(3) => println!("three"),
-    _ => (),
-}
+let some_u8_value = Some(0u8); match some_u8_value {     Some(3) => println!("three"),     _ => (), }
 ```
 
-<span class="caption">Листинг 6-6. Выражение <code>match</code> заботится только о выполнении кода при значении равном `Some(3)`</span>
+<span class="caption">Листинг 6-6. Выражение <code>match</code> заботится только о выполнении кода при значении равном <code>Some(3)</code></span>
 
 Мы хотим выполнить что-нибудь при совпадении `Some(3)` и ничего не делать с любым другим `Some<u8>` или значением `None` . Для удовлетворения `match` выражения необходимо добавить `_ => ()` после обработки только одного варианта, который экономит добавление массы стандартного кода.
 
 Вместо этого мы могли бы написать это более коротким способом, используя `if let`. Следующий код ведёт себя так же, как выражение `match` в листинге 6-6:
 
 ```rust
-# let some_u8_value = Some(0u8);
-if let Some(3) = some_u8_value {
-    println!("three");
-}
+# let some_u8_value = Some(0u8); if let Some(3) = some_u8_value {     println!("three"); }
 ```
 
 Синтаксис `if let` принимает шаблон и выражение, разделённые знаком равенства. Он работает так же, как `match`, где выражение сравнивается с образцом в `match` и шаблоном является первый рукав.
@@ -32,51 +25,16 @@ if let Some(3) = some_u8_value {
 Можно включить `else` вместе с `if let`. Блок кода, который идёт с `else` является таким же как блок кода, который будет идти с `_` в случае выражения `match`, которое эквивалентно `if let` и `else`. Вспомним объявление перечисления `Coin` в листинге 6-4, где вариант `Quarter` также содержит внутри значение штата типа `UsState`. Если мы хотели бы посчитать все монеты не являющиеся четвертями одновременно печатая название штата из четвертины, то мы могли бы сделать это с помощью выражения `match` таким образом:
 
 ```rust
-# #[derive(Debug)]
-# enum UsState {
-#    Alabama,
-#    Alaska,
-# }
-#
-# enum Coin {
-#    Penny,
-#    Nickel,
-#    Dime,
-#    Quarter(UsState),
-# }
-# let coin = Coin::Penny;
-let mut count = 0;
-match coin {
-    Coin::Quarter(state) => println!("State quarter from {:?}!", state),
-    _ => count += 1,
-}
+# #[derive(Debug)] # enum UsState { #    Alabama, #    Alaska, # } # # enum Coin { #    Penny, #    Nickel, #    Dime, #    Quarter(UsState), # } # let coin = Coin::Penny; let mut count = 0; match coin {     Coin::Quarter(state) => println!("State quarter from {:?}!", state),     _ => count += 1, }
 ```
 
 Или мы могли бы использовать выражение `if let` и `else` так:
 
 ```rust
-# #[derive(Debug)]
-# enum UsState {
-#    Alabama,
-#    Alaska,
-# }
-#
-# enum Coin {
-#    Penny,
-#    Nickel,
-#    Dime,
-#    Quarter(UsState),
-# }
-# let coin = Coin::Penny;
-let mut count = 0;
-if let Coin::Quarter(state) = coin {
-    println!("State quarter from {:?}!", state);
-} else {
-    count += 1;
-}
+# #[derive(Debug)] # enum UsState { #    Alabama, #    Alaska, # } # # enum Coin { #    Penny, #    Nickel, #    Dime, #    Quarter(UsState), # } # let coin = Coin::Penny; let mut count = 0; if let Coin::Quarter(state) = coin {     println!("State quarter from {:?}!", state); } else {     count += 1; }
 ```
 
-Если у вас есть ситуация в которой ваша программа имеет слишком многословную логику, можно выразить её используя  `match`, то помните, что `if let` также есть в вашем наборе инструментов Rust.
+Если у вас есть ситуация в которой ваша программа имеет слишком многословную логику, можно выразить её используя  `match`, помните, что `if let` также есть в вашем наборе инструментов Rust.
 
 ## Итоги
 
