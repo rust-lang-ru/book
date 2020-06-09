@@ -2,8 +2,7 @@
 
 *Типаж* сообщает компилятору Rust о функциональности, которой обладает определённый тип и которой он может поделиться с другими типами. Можно использовать типажи, чтобы определять общее поведение абстрактным способом. Можно использовать ограничения типажей для указания, что обобщение может быть любого типа с определённым поведением.
 
-> Примечание: Типажи похожи на функциональность часто называемую *интерфейсами* в других
-> языках, хотя и с некоторыми отличиями.
+> Примечание: Типажи похожи на функциональность часто называемую *интерфейсами* в других языках, хотя и с некоторыми отличиями.
 
 ### Определение типажа
 
@@ -16,8 +15,8 @@
 <span class="filename">Файл: lib.rs</span>
 
 ```rust
-pub trait Summarizable {
-    fn summary(&self) -> String;
+pub trait Summary {
+    fn summarize(&self) -> String;
 }
 ```
 
@@ -36,10 +35,10 @@ pub trait Summarizable {
 <span class="filename">Файл: lib.rs</span>
 
 ```rust
- pub trait Summarizable {
-     fn summary(&self) -> String;
- }
-
+# pub trait Summary {
+#     fn summarize(&self) -> String;
+# }
+#
 pub struct NewsArticle {
     pub headline: String,
     pub location: String,
@@ -47,8 +46,8 @@ pub struct NewsArticle {
     pub content: String,
 }
 
-impl Summarizable for NewsArticle {
-    fn summary(&self) -> String {
+impl Summary for NewsArticle {
+    fn summarize(&self) -> String {
         format!("{}, by {} ({})", self.headline, self.author, self.location)
     }
 }
@@ -60,8 +59,8 @@ pub struct Tweet {
     pub retweet: bool,
 }
 
-impl Summarizable for Tweet {
-    fn summary(&self) -> String {
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
         format!("{}: {}", self.username, self.content)
     }
 }
@@ -81,7 +80,7 @@ let tweet = Tweet {
     retweet: false,
 };
 
-println!("1 new tweet: {}", tweet.summary());
+println!("1 new tweet: {}", tweet.summarize());
 ```
 
 Данный код напечатает: `1 new tweet: horse_ebooks: of course, as you probably already know, people`.
@@ -311,18 +310,19 @@ fn largest<T: PartialOrd>(list: &[T]) -> T {
 На этот раз при компиляции кода мы получаем другой набор ошибок:
 
 ```text
-error[E0508]: cannot move out of type `[T]`, a non-copy array
- --> src/main.rs:4:23
+error[E0508]: cannot move out of type `[T]`, a non-copy slice
+ --> src/main.rs:2:23
   |
-4 |     let mut largest = list[0];
-  |         -----------   ^^^^^^^ cannot move out of here
-  |         |
-  |         hint: to prevent move, use `ref largest` or `ref mut largest`
+2 |     let mut largest = list[0];
+  |                       ^^^^^^^
+  |                       |
+  |                       cannot move out of here
+  |                       help: consider using a reference instead: `&list[0]`
 
 error[E0507]: cannot move out of borrowed content
- --> src/main.rs:6:9
+ --> src/main.rs:4:9
   |
-6 |     for &item in list.iter() {
+4 |     for &item in list.iter() {
   |         ^----
   |         ||
   |         |hint: to prevent move, use `ref item` or `ref mut item`
@@ -336,8 +336,6 @@ error[E0507]: cannot move out of borrowed content
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::cmp::PartialOrd;
-
 fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
     let mut largest = list[0];
 
@@ -407,7 +405,7 @@ impl<T: Display + PartialOrd> Pair<T> {
 
 ```rust,ignore
 impl<T: Display> ToString for T {
-    // ...snip...
+    // --snip--
 }
 ```
 
