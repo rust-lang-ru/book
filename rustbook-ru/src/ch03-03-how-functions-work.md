@@ -60,7 +60,7 @@ $ cargo run
    Compiling functions v0.1.0 (file:///projects/functions)
     Finished dev [unoptimized + debuginfo] target(s) in 1.21 secs
      Running `target/debug/functions`
-The value of x is:
+The value of x is: 5
 ```
 
 Объявление функции `another_function` имеет один параметр с именем `x`. Тип параметра `x` определён как `i32`. Когда значение `5` передаётся в функцию `another_function`, то макрос  `println!` помещает число `5` туда где пара фигурных скобок используется для форматирования строк.
