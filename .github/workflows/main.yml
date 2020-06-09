@@ -10,14 +10,18 @@ jobs:
     name: Spellchecking
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2.2.0
       with:
         submodules: recursive
+        fetch-depth: 200
     - run: npm install yaspeller
     - run: git show -m --name-only -1 --format="format:" | grep --color=never -i '.md' | xargs node_modules/.bin/yaspeller -c common-configs/.yaspellerrc
   gitlocalize-bug-checking:
     name: Checking Gitlocalize bugs
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2.2.0
+      with:
+        fetch-depth: 200
     - uses: rust-lang-ru/simpleinfra/gitocalize-bug-checker@master
+    - uses: funkill/bug-check-action@master
