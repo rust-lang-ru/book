@@ -14,7 +14,7 @@ enum Coin {
     Quarter,
 }
 
-fn value_in_cents(coin: Coin) -> u32 {
+fn value_in_cents(coin: Coin) -> u8 {
     match coin {
         Coin::Penny => 1,
         Coin::Nickel => 5,
@@ -44,7 +44,7 @@ fn value_in_cents(coin: Coin) -> u32 {
 #    Quarter,
 # }
 #
-fn value_in_cents(coin: Coin) -> u32 {
+fn value_in_cents(coin: Coin) -> u8 {
     match coin {
         Coin::Penny => {
             println!("Lucky penny!");
@@ -65,41 +65,41 @@ fn value_in_cents(coin: Coin) -> u32 {
 
 ```rust
 #[derive(Debug)] // Можно проверить значение штата в списке
-enum UsState {
-    Alabama,
-    Alaska,
-    // ... etc
-}
+ enum UsState {
+     Alabama,
+     Alaska,
+     // ... etc
+ }
 
-enum Coin {
-    Penny,
-    Nickel,
-    Dime,
-    Quarter(UsState),
-}
+ enum Coin {
+     Penny,
+     Nickel,
+     Dime,
+     Quarter(UsState),
+ }
 ```
 
 <span class="caption">Пример 6-4: Перечисление <code>Coin</code>, где вариант <code>Quarter</code> содержит также значение <code>UsState</code></span>
 
-Давайте представим, что наш друг пытается собрать все 50 четвертных для всех штатов. В то время как мы сортируем мелочь по типу монеты, мы также будем печатать имя штата, связанное с каждой четвертной. Таким образом, если её нет у нашего друга, то её можно добавить его в его коллекцию.
+Давайте представим, что наш друг пытается собрать все 50 четвертных для всех штатов. В то время как мы сортируем мелочь по типу монеты, мы также будем печатать имя штата, связанное с каждой четвертной. Таким образом, если её нет у нашего друга, то её можно добавить его в коллекцию.
 
 В выражении match для этого кода, мы добавляем переменную с именем `state` в шаблон, который соответствует значениям варианта `Coin::Quarter`. Когда `Coin::Quarter` совпадает, то переменная `state` будет привязана к значению штата четвертной. Затем мы можем использовать `state` в коде для этого рукава, вот так:
 
 ```rust
-#[derive(Debug)]
-enum UsState {
-    Alabama,
-    Alaska,
-}
-
-enum Coin {
-    Penny,
-    Nickel,
-    Dime,
-    Quarter(UsState),
-}
-
-fn value_in_cents(coin: Coin) -> u32 {
+# #[derive(Debug)]
+# enum UsState {
+#    Alabama,
+#    Alaska,
+# }
+#
+# enum Coin {
+#    Penny,
+#    Nickel,
+#    Dime,
+#    Quarter(UsState),
+# }
+#
+fn value_in_cents(coin: Coin) -> u8 {
     match coin {
         Coin::Penny => 1,
         Coin::Nickel => 5,
@@ -107,12 +107,8 @@ fn value_in_cents(coin: Coin) -> u32 {
         Coin::Quarter(state) => {
             println!("State quarter from {:?}!", state);
             25
-        }
+        },
     }
-}
-
-fn main() {
-    value_in_cents(Coin::Quarter(UsState::Alaska));
 }
 ```
 
@@ -134,18 +130,12 @@ fn plus_one(x: Option<i32>) -> Option<i32> {
     }
 }
 
-fn main() {
-    let five = Some(5);
-    let six = plus_one(five);
-    let none = plus_one(None);
-
-    println!("{:?}", five);
-    println!("{:?}", six);
-    println!("{:?}", none);
-}
+let five = Some(5);
+let six = plus_one(five);
+let none = plus_one(None);
 ```
 
-<span class="caption">Листинг 6-5: Функция, которая использует выражение <code>match</code> с типом <code>Option<i32></code></span>
+<span class="caption">Листинг 6-5: Функция, которая использует выражение <code>match</code> с типом <code>Option<i32></i32></code></span>
 
 Давайте рассмотрим первое выполнение `plus_one` более подробно. Когда мы вызываем `plus_one(five)`, то переменная `x` в теле `plus_one` будет иметь значение `Some(5)`. Затем мы сравниваем её с каждым рукавом match выражения.
 
