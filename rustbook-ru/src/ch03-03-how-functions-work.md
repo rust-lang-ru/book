@@ -1,4 +1,4 @@
-## Как работают функции
+## Функции
 
 Функция - это ключевые части Rust кода. Вы, конечно, знакомы с самой важной функцией. Это функция `main`, которая является точкой входа в программу. Также вы уже познакомились с ключевым словом `fn` - обозначающим начало объявления функции.
 
@@ -25,12 +25,7 @@ fn another_function() {
 Создадим новый проект с названием *functions* для дальнейшего изучения функций. Поместите пример `another_function` в файл *src/main.rs* и запустите его. Вы должны увидеть следующий вывод:
 
 ```text
-$ cargo run
-   Compiling functions v0.1.0 (file:///projects/functions)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.28 secs
-     Running `target/debug/functions`
-Hello, world!
-Another function.
+$ cargo run    Compiling functions v0.1.0 (file:///projects/functions)     Finished dev [unoptimized + debuginfo] target(s) in 0.28 secs      Running `target/debug/functions` Hello, world! Another function.
 ```
 
 Строчки кода выполняются в том порядке, в котором они появляются в функции `main`. Сначала печатается сообщение “Hello, world!”, а затем вызывается `another_function` и она также печатает сообщение.
@@ -60,10 +55,10 @@ $ cargo run
    Compiling functions v0.1.0 (file:///projects/functions)
     Finished dev [unoptimized + debuginfo] target(s) in 1.21 secs
      Running `target/debug/functions`
-The value of x is: 5
+The value of x is:
 ```
 
-Объявление функции `another_function` имеет один параметр с именем`x`. Тип параметра `x` определён как `i32`. Когда значение `5` передаётся в функцию `another_function`, то макрос  `println!` помещает число `5` туда где пара фигурных скобок используется для форматирования строк.
+Объявление функции `another_function` имеет один параметр с именем `x`. Тип параметра `x` определён как `i32`. Когда значение `5` передаётся в функцию `another_function`, то макрос  `println!` помещает число `5` туда где пара фигурных скобок используется для форматирования строк.
 
 В сигнатуре функции вы *должны* указать тип каждого параметра. Это осознанное решение в дизайне языка Rust: требование аннотации типов в определении функции означает, что компилятору почти никогда не нужно ничего использовать ещё откуда-то из кода для понимания, что вы имеете ввиду.
 
