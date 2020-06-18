@@ -27,8 +27,8 @@ using these steps should work as expected with the content of this book.
 
 If you’re using Linux or macOS, open a terminal and enter the following command:
 
-```text
-$ curl https://sh.rustup.rs -sSf | sh
+```console
+$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
 ```
 
 The command downloads a script and starts the installation of the `rustup`
@@ -37,24 +37,6 @@ for your password. If the install is successful, the following line will appear:
 
 ```text
 Rust is installed now. Great!
-```
-
-If you prefer, feel free to download the script and inspect it before running
-it.
-
-The installation script automatically adds Rust to your system PATH after your
-next login. If you want to start using Rust right away instead of restarting
-your terminal, run the following command in your shell to add Rust to your
-system PATH manually:
-
-```text
-$ source $HOME/.cargo/env
-```
-
-Alternatively, you can add the following line to your *~/.bash_profile*:
-
-```text
-$ export PATH="$HOME/.cargo/bin:$PATH"
 ```
 
 Additionally, you’ll need a linker of some kind. It’s likely one is already
@@ -85,14 +67,14 @@ If there are specific differences, we’ll explain which to use.
 After you’ve installed Rust via `rustup`, updating to the latest version is
 easy. From your shell, run the following update script:
 
-```text
+```console
 $ rustup update
 ```
 
 To uninstall Rust and `rustup`, run the following uninstall script from your
 shell:
 
-```text
+```console
 $ rustup self uninstall
 ```
 
@@ -101,7 +83,7 @@ $ rustup self uninstall
 To check whether you have Rust installed correctly, open a shell and enter this
 line:
 
-```text
+```console
 $ rustc --version
 ```
 
@@ -122,7 +104,7 @@ resources include [the Users forum][users] and [Stack Overflow][stackoverflow].
 
 [discord]: https://discord.gg/rust-lang
 [users]: https://users.rust-lang.org/
-[stackoverflow]: http://stackoverflow.com/questions/tagged/rust
+[stackoverflow]: https://stackoverflow.com/questions/tagged/rust
 
 ### Local Documentation
 

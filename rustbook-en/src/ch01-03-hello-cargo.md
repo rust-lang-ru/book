@@ -18,7 +18,7 @@ used the official installers discussed in the
 through some other means, check whether Cargo is installed by entering the
 following into your terminal:
 
-```text
+```console
 $ cargo --version
 ```
 
@@ -33,7 +33,7 @@ original “Hello, world!” project. Navigate back to your *projects* directory
 wherever you decided to store your code). Then, on any operating system, run
 the following:
 
-```text
+```console
 $ cargo new hello_cargo
 $ cd hello_cargo
 ```
@@ -44,8 +44,11 @@ same name.
 
 Go into the *hello_cargo* directory and list the files. You’ll see that Cargo
 has generated two files and one directory for us: a *Cargo.toml* file and a
-*src* directory with a *main.rs* file inside. It has also initialized a new Git
-repository along with a *.gitignore* file.
+*src* directory with a *main.rs* file inside.
+
+It has also initialized a new Git repository along with a *.gitignore* file.
+Git files won’t be generated if you run `cargo new` within an existing Git
+repository; you can override this behavior by using `cargo new --vcs=git`.
 
 > Note: Git is a common version control system. You can change `cargo new` to
 > use a different version control system or no version control system by using
@@ -121,7 +124,7 @@ Now let’s look at what’s different when we build and run the “Hello, world
 program with Cargo! From your *hello_cargo* directory, build your project by
 entering the following command:
 
-```text
+```console
 $ cargo build
    Compiling hello_cargo v0.1.0 (file:///projects/hello_cargo)
     Finished dev [unoptimized + debuginfo] target(s) in 2.85 secs
@@ -131,7 +134,7 @@ This command creates an executable file in *target/debug/hello_cargo* (or
 *target\debug\hello_cargo.exe* on Windows) rather than in your current
 directory. You can run the executable with this command:
 
-```text
+```console
 $ ./target/debug/hello_cargo # or .\target\debug\hello_cargo.exe on Windows
 Hello, world!
 ```
@@ -147,7 +150,7 @@ We just built a project with `cargo build` and ran it with
 `./target/debug/hello_cargo`, but we can also use `cargo run` to compile the
 code and then run the resulting executable all in one command:
 
-```text
+```console
 $ cargo run
     Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
      Running `target/debug/hello_cargo`
@@ -159,7 +162,7 @@ Notice that this time we didn’t see output indicating that Cargo was compiling
 the binary. If you had modified your source code, Cargo would have rebuilt the
 project before running it, and you would have seen this output:
 
-```text
+```console
 $ cargo run
    Compiling hello_cargo v0.1.0 (file:///projects/hello_cargo)
     Finished dev [unoptimized + debuginfo] target(s) in 0.33 secs
@@ -170,7 +173,7 @@ Hello, world!
 Cargo also provides a command called `cargo check`. This command quickly checks
 your code to make sure it compiles but doesn’t produce an executable:
 
-```text
+```console
 $ cargo check
    Checking hello_cargo v0.1.0 (file:///projects/hello_cargo)
     Finished dev [unoptimized + debuginfo] target(s) in 0.32 secs
@@ -185,8 +188,9 @@ build` when they’re ready to use the executable.
 
 Let’s recap what we’ve learned so far about Cargo:
 
-* We can build a project using `cargo build` or `cargo check`.
+* We can build a project using `cargo build`.
 * We can build and run a project in one step using `cargo run`.
+* We can build a project without producing a binary to check for errors using `cargo check`.
 * Instead of saving the result of the build in the same directory as our code,
   Cargo stores it in the *target/debug* directory.
 
@@ -219,7 +223,7 @@ tooling you’ll use in the rest of your Rust career. In fact, to work on any
 existing projects, you can use the following commands to check out the code
 using Git, change to that project’s directory, and build:
 
-```text
+```console
 $ git clone someurl.com/someproject
 $ cd someproject
 $ cargo build
