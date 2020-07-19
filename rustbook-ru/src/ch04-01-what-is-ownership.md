@@ -289,13 +289,14 @@ fn main() {
 } // Здесь s3 уходит из обл.видимости и освобождена. s2 тоже уходит из обл.видимости но была перемещена
      // поэтому ничего не происходит. s1 уходит из обл.вид-сти и освобождена.
 
-fn gives_ownership() -> String {      // gives_ownership переместит
+fn gives_ownership() -> String {      	// gives_ownership переместит
                                          // возвращаемое значение в функцию
-                                          // которая её вызывает        let some_string = String::from("hello"); // some_string появля-ся в обл.видим-сти
-
-        some_string                          // some_string возвращена и
-                                           // перемещается в вызывавшую
-                                           // функцию
+																					// которая её вызывает        
+				let some_string = String::from("hello"); // some_string появля-ся в обл.видим-сти
+				
+				some_string                       // some_string возвращена и
+                                          // перемещается в вызывавшую
+                                          // функцию
 }
 
 // takes_and_gives_back принимает String и возвращает строку
