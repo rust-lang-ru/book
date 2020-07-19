@@ -291,7 +291,7 @@ fn main() {
 
 fn gives_ownership() -> String {      	// gives_ownership переместит
                                          // возвращаемое значение в функцию
-																					// которая её вызывает        
+                                        // которая её вызывает        
 				let some_string = String::from("hello"); // some_string появля-ся в обл.видим-сти
 				
 				some_string                       // some_string возвращена и
