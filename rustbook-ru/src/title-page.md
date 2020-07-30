@@ -17,7 +17,7 @@
 
 Обратите внимание, что любой код из более ранних версий *книги*, продолжит компилироваться без указания `edition="2018"` в *Cargo.toml* проекта, даже если вы обновите используемую версию компилятора Rust. Это гарантия обратной совместимости Rust!
 
-HTML-версия книги доступна онлайн по адресам [https://doc.rust-lang.org/stable/book/](https://doc.rust-lang.org/stable/book/)(англ.) и {a1 href="https://doc.rust-lang.ru/book"}https://doc.rust-lang.ru/book{/a1}(рус.) и оффлайн, при установке Rust с помощью `rustup`: просто запустите `rustup docs --book` чтобы открыть её.
+HTML-версия книги доступна онлайн по адресам [https://doc.rust-lang.org/stable/book/](https://doc.rust-lang.org/stable/book/)(англ.) и https://doc.rust-lang.ru/book (рус.) и оффлайн, при установке Rust с помощью `rustup`: просто запустите `rustup docs --book` чтобы открыть её.
 
 Английский вариант книги доступен [в печатном виде и в ebook формате от No Starch Press].
 
