@@ -4,18 +4,17 @@
 
 ### Автоматическое форматирование с `rustfmt`
 
-Инструмент `rustfmt` отформатирует Ваш код в соответствии с принятым в сообществе стилем.
-Многие совместные проекты используют `rustfmt` для предотвращения споров об используемом стиле для написания кода на Rust: каждый форматирует свой код с помощью этой утилиты.
+Инструмент `rustfmt` отформатирует Ваш код в соответствии с принятым в сообществе стилем. Многие совместные проекты используют `rustfmt` для предотвращения споров об используемом стиле для написания кода на Rust: каждый форматирует свой код с помощью этой утилиты.
 
 Для установки `rustfmt`, введите следующее:
 
-```text
+```console
 $ rustup component add rustfmt
 ```
 
 Эта команда установит `rustfmt` и `cargo-fmt`, также как Rust даёт Вам одновременно `rustc` и `cargo`. Для форматирования проекта, использующего Cargo, введите следующее:
 
-```text
+```console
 $ cargo fmt
 ```
 
@@ -39,7 +38,7 @@ fn main() {
 
 Мы вызываем функцию `do_something` 100 раз, но никогда не используем переменную `i` в теле цикла `for`. Rust предупреждает нас об этом:
 
-```text
+```console
 $ cargo build
    Compiling myprogram v0.1.0 (file:///projects/myprogram)
 warning: unused variable: `i`
@@ -55,7 +54,7 @@ warning: unused variable: `i`
 
 Предупреждение предлагает нам использовать `_i` как имя переменной: нижнее подчёркивание в начале идентификатора предполагает, что мы его не используем. Мы можем автоматически применить это предположение с помощью `rustfix`, запустив команду `cargo fix`:
 
-```text
+```console
 $ cargo fix
     Checking myprogram v0.1.0 (file:///projects/myprogram)
       Fixing src/main.rs (1 fix)
@@ -82,17 +81,17 @@ fn main() {
 
 ### Больше проверок с Clippy
 
-Инструмент Clippy является набором проверок (lints) для анализа Вашего кода, поэтому Вы можете найти простые ошибки и улучшить ваш Rust код.
+Инструмент Clippy является коллекцией проверок (lints) для анализа Вашего кода, поэтому Вы можете найти простые ошибки и улучшить ваш Rust код.
 
 Для установки Clippy, введите следующее:
 
-```text
+```console
 $ rustup component add clippy
 ```
 
 Для запуска проверок Clippy’s для проекта Cargo, введите следующее:
 
-```text
+```console
 $ cargo clippy
 ```
 
@@ -133,7 +132,7 @@ fn main() {
 }
 ```
 
-Для большей информации о Clippy смотрите [документацию].
+Для большей информации о Clippy смотрите [документацию](https://github.com/rust-lang/rustfmt).
 
 ### Интеграция с IDE используя Rust Language Server
 
@@ -141,16 +140,14 @@ fn main() {
 
 Для установки `rls`, введите следующее:
 
-```text
+```console
 $ rustup component add rls
 ```
 
 Затем установите поддержу языкового сервера в Вашей IDE. Вы получите такие вещи, как автодополнение, просмотр определения и подсветку ошибок.
 
-Для большей информации про `rls`, смотрите [документацию].
+Для большей информации про `rls`, смотрите [документацию](https://github.com/rust-lang/rustfmt).
 
 
 [документацию]: https://github.com/rust-lang/rustfmt
-[документацию]: https://github.com/rust-lang/rust-clippy
-[Language Server Protocol]: http://langserver.org/
-[документацию]: https://marketplace.visualstudio.com/items?itemName=rust-lang.rust
+[Language Server Protocol]: https://github.com/rust-lang/rust-clippy
