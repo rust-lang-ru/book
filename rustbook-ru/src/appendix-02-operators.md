@@ -59,10 +59,10 @@
 `@` | `ident @ pat` | Pattern binding |
 `^` | `expr ^ expr` | Побитовое исключающее ИЛИ | `BitXor`
 `^=` | `var ^= expr` | Побитовое исключающее ИЛИ и присваивание | `BitXorAssign`
-<code>|</code> | <code>pat | pat</code> | Pattern alternatives |
-<code>|</code> | <code>expr | expr</code> | Bitwise OR | `BitOr`
-<code>|=</code> | <code>var |= expr</code> | Bitwise OR and assignment | `BitOrAssign`
-<code>||</code> | <code>expr || expr</code> | Logical OR |
+<code>|</code> | <code>pat | pat</code> | Альтернативные шаблоны |
+<code>|</code> | <code>expr | expr</code> | Побитовое ИЛИ | `BitOr`
+<code>|=</code> | <code>var |= expr</code> | Побитовое ИЛИ и присваивание | `BitOrAssign`
+<code>||</code> | <code>expr || expr</code> | Короткое логическое ИЛИ |
 `?` | `expr?` | Возврат ошибки |
 
 ### Обозначения не-операторы
@@ -141,7 +141,8 @@
 `#![meta]` | Внутренний атрибут
 `$ident` | Подстановка в макросе
 `$ident:kind` | Захват макроса
-`$(…)…` | Повторение макросов
+`$(…)…` | Повторение макроса
+`ident!(...)`, `ident!{...}`, `ident![...]` | Вызов макроса
 
 Таблица Б-7 показывает обозначения, которые создают комментарии.
 
@@ -169,7 +170,6 @@
 `(expr, ...)` | Выражение кортежа
 `(type, ...)` | Тип кортежа
 `(type, ...)` | Выражение вызова функции; также используется для инициализации структур-кортежей и вариантов-кортежей перечисления
-`ident!(...)`, `ident!{...}`, `ident![...]` | Вызов макроса
 `expr.0`, `expr.1`, etc. | Взятие элемента по индексу в кортеже
 
 Таблица Б-9 показывает контексты, в которых используются фигурные скобки.
