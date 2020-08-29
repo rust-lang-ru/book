@@ -8,33 +8,8 @@
 
 <span class="filename">Файл: src/main.rs</span>
 
-```rust
-use std::thread;
-use std::time::Duration;
-# use std::io::prelude::*;
-# use std::net::TcpStream;
-# use std::fs::File;
-// --snip--
-
-fn handle_connection(mut stream: TcpStream) {
-#     let mut buffer = [0; 512];
-#     stream.read(&mut buffer).unwrap();
-    // --snip--
-
-    let get = b"GET / HTTP/1.1\r\n";
-    let sleep = b"GET /sleep HTTP/1.1\r\n";
-
-    let (status_line, filename) = if buffer.starts_with(get) {
-        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
-    } else if buffer.starts_with(sleep) {
-        thread::sleep(Duration::from_secs(5));
-        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
-    } else {
-        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
-    };
-
-    // --snip--
-}
+```rust,no_run
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-10/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-10: Имитация медленного запроса путём распознавания обращения к <em>/sleep</em> и засыпанию на 5 секунд</span>
@@ -68,23 +43,7 @@ fn handle_connection(mut stream: TcpStream) {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-# use std::thread;
-# use std::io::prelude::*;
-# use std::net::TcpListener;
-# use std::net::TcpStream;
-#
-fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
-
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
-
-        thread::spawn(|| {
-            handle_connection(stream);
-        });
-    }
-}
-# fn handle_connection(mut stream: TcpStream) {}
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-11/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-11: Порождение нового потока для каждого потока соединения</span>
@@ -97,31 +56,8 @@ fn main() {
 
 <span class="filename">Файл: src/main.rs</span>
 
-```rust,no_run
-# use std::thread;
-# use std::io::prelude::*;
-# use std::net::TcpListener;
-# use std::net::TcpStream;
-# struct ThreadPool;
-# impl ThreadPool {
-#    fn new(size: u32) -> ThreadPool { ThreadPool }
-#    fn execute<F>(&self, f: F)
-#        where F: FnOnce() + Send + 'static {}
-# }
-#
-fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
-    let pool = ThreadPool::new(4);
-
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
-
-        pool.execute(|| {
-            handle_connection(stream);
-        });
-    }
-}
-# fn handle_connection(mut stream: TcpStream) {}
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-12/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-12: Наш идеальный интерфейс <code>ThreadPool</code></span>
@@ -132,17 +68,8 @@ fn main() {
 
 Внесите изменения листинга 20-12 в файл *src/main.rs*, а затем давайте воспользуемся ошибками компилятора из команды `cargo check` для управления нашей разработкой. Вот первая ошибка, которую мы получаем:
 
-```text
-$ cargo check
-   Compiling hello v0.1.0 (file:///projects/hello)
-error[E0433]: failed to resolve. Use of undeclared type or module `ThreadPool`
-  --> src\main.rs:10:16
-   |
-10 |     let pool = ThreadPool::new(4);
-   |                ^^^^^^^^^^^^^^^ Use of undeclared type or module
-   `ThreadPool`
-
-error: aborting due to previous error
+```console
+{{#include ../listings/ch20-web-server/listing-20-12/output.txt}}
 ```
 
 Замечательно! Ошибка говорит о том, что нам нужен тип или модуль `ThreadPool`, поэтому мы создадим его сейчас. Наша реализация `ThreadPool` будет зависеть от того, какую работу выполняет наш веб-сервер. Итак, давайте переделаем крейт `hello` из бинарного в библиотечный для хранения реализации `ThreadPool`. После того, как поменяем в библиотечный крейт, мы также сможем использовать отдельную библиотеку пула потоков для любой работы, которую мы хотим выполнить с его использованием, а не только для обслуживания веб-запросов.
@@ -152,7 +79,7 @@ error: aborting due to previous error
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-pub struct ThreadPool;
+{{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/lib.rs}}
 ```
 
 Затем создайте новый каталог *src/bin* и переместите двоичный крейт с корнем в *src/main.rs* в *src/bin/main.rs*. Это сделает библиотечный крейт основным крейтом в каталоге *hello*; мы все ещё можем запустить двоичный файл из *src/bin/main.rs*, используя `cargo run`. Переместив файл *main.rs*, отредактируйте его, чтобы подключить крейт библиотеки и добавить тип `ThreadPool` в область видимости, добавив следующий код в начало *src/bin/main.rs*:
@@ -160,21 +87,13 @@ pub struct ThreadPool;
 <span class="filename">Файл: src/bin/main.rs</span>
 
 ```rust,ignore
-use hello::ThreadPool;
+{{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/bin/main.rs:here}}
 ```
 
 Этот код по-прежнему не будет работать, но давайте проверим его ещё раз, чтобы получить следующую ошибку, которую нам нужно устранить:
 
-```text
-$ cargo check
-   Compiling hello v0.1.0 (file:///projects/hello)
-error[E0599]: no function or associated item named `new` found for type
-`hello::ThreadPool` in the current scope
- --> src/bin/main.rs:13:16
-   |
-13 |     let pool = ThreadPool::new(4);
-   |                ^^^^^^^^^^^^^^^ function or associated item not found in
-   `hello::ThreadPool`
+```console
+{{#include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/output.txt}}
 ```
 
 Эта ошибка указывает, что далее нам нужно создать ассоциированную функцию с именем `new` для `ThreadPool`. Мы также знаем, что `new` должен иметь один параметр, который может принимать `4` в качестве аргумента и должен возвращать экземпляр `ThreadPool`. Давайте реализуем простейшую функцию `new`, которая будет иметь эти характеристики:
@@ -182,41 +101,20 @@ error[E0599]: no function or associated item named `new` found for type
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-pub struct ThreadPool;
-
-impl ThreadPool {
-    pub fn new(size: usize) -> ThreadPool {
-        ThreadPool
-    }
-}
+{{#rustdoc_include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/src/lib.rs:here}}
 ```
 
-Мы выбираем `usize` в качестве типа параметра `size`, потому что мы знаем, что отрицательное число потоков не имеет никакого смысла. Мы также знаем, что мы будем использовать число 4 в качестве количества элементов в коллекции потоков, для чего предназначен тип `usize`, как обсуждалось в разделе ["Целочисленные типы"](ch03-02-data%20-types.html#integer-types)<comment></comment> главы 3.
+Мы выбираем `usize` в качестве типа параметра `size`, потому что мы знаем, что отрицательное число потоков не имеет никакого смысла. Мы также знаем, что мы будем использовать число 4 в качестве количества элементов в коллекции потоков, для чего предназначен тип `usize`, как обсуждалось в разделе ["Целочисленные типы"]<!--  --> главы 3.
 
 Давайте проверим код ещё раз:
 
-```text
-$ cargo check
-   Compiling hello v0.1.0 (file:///projects/hello)
-warning: unused variable: `size`
- --> src/lib.rs:4:16
-  |
-4 |     pub fn new(size: usize) -> ThreadPool {
-  |                ^^^^
-  |
-  = note: #[warn(unused_variables)] on by default
-  = note: to avoid this warning, consider using `_size` instead
-
-error[E0599]: no method named `execute` found for type `hello::ThreadPool` in the current scope
-  --> src/bin/main.rs:18:14
-   |
-18 |         pool.execute(|| {
-   |              ^^^^^^^
+```console
+{{#include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/output.txt}}
 ```
 
-Теперь мы получаем предупреждение и ошибку. Игнорируем предупреждение не надолго, ошибка происходит потому что у нас нет метода `execute` в структуре `ThreadPool`. Вспомните раздел ["Создание подобного интерфейса для конечного числа потоков"](#creating-a-similar-interface-for-a-finite-number-of-threads)<comment></comment>, в котором мы решили, что наш пул потоков должен иметь интерфейс, похожий на `thread::spawn`. Кроме того, мы реализуем функцию `execute`, чтобы она принимала замыкание и передавала его свободному потоку из пула для запуска.
+Теперь мы получаем предупреждение и ошибку. Игнорируем предупреждение не надолго, ошибка происходит потому что у нас нет метода `execute` в структуре `ThreadPool`. Вспомните раздел ["Создание подобного интерфейса для конечного числа потоков"](#creating-a-similar-interface-for-a-finite-number-of-threads) <!--  -->, в котором мы решили, что наш пул потоков должен иметь интерфейс, похожий на `thread::spawn`. Кроме того, мы реализуем функцию `execute`, чтобы она принимала замыкание и передавала его свободному потоку из пула для запуска.
 
-Мы определим метод `execute` у `ThreadPool` для приёма замыкания в качестве параметра. Вспомните раздел ["Хранение замыканий с использованием общих параметров и типажей `Fn`"](ch13-01-closures.html#storing-closures-using-generic-parameters-and-the-fn-traits) <comment></comment> главы 13 и о том, что мы можем принимать замыкания в качестве параметров с тремя различными типажами: `Fn` , `FnMut` и `FnOnce`. Нам нужно решить, какой тип замыкания использовать здесь. Мы знаем, что в конечном счёте мы сделаем что-то похожее на реализацию стандартной библиотеки `thread::spawn`, поэтому мы можем посмотреть, какие ограничения накладывает на его параметр в сигнатуре `thread::spawn`. Документация показывает следующее:
+Мы определим метод `execute` у `ThreadPool` для приёма замыкания в качестве параметра. Вспомните раздел ["Хранение замыканий с использованием общих параметров и типажей `Fn`"](ch13-01-closures.html#storing-closures-using-generic-parameters-and-the-fn-traits) <!--  --> главы 13 и о том, что мы можем принимать замыкания в качестве параметров с тремя различными типажами: `Fn` , `FnMut` и `FnOnce`. Нам нужно решить, какой тип замыкания использовать здесь. Мы знаем, что в конечном счёте мы сделаем что-то похожее на реализацию стандартной библиотеки `thread::spawn`, поэтому мы можем посмотреть, какие ограничения накладывает на его параметр в сигнатуре `thread::spawn`. Документация показывает следующее:
 
 ```rust,ignore
 pub fn spawn<F, T>(f: F) -> JoinHandle<T>
@@ -232,42 +130,15 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# pub struct ThreadPool;
-impl ThreadPool {
-    // --snip--
-
-    pub fn execute<F>(&self, f: F)
-        where
-            F: FnOnce() + Send + 'static
-    {
-
-    }
-}
+{{#rustdoc_include ../listings/ch20-web-server/no-listing-03-define-execute/src/lib.rs:here}}
 ```
 
 Мы по-прежнему используем `()` после `FnOnce` потому что типаж `FnOnce` представляет замыкание, которое не принимает параметров и возвращает единичный тип `()`. Также как при определении функций, тип возвращаемого значения может быть опущен в сигнатуре, но даже если у нас нет параметров, нам все равно нужны скобки.
 
 Опять же, это самая простая реализация метода `execute`: она ничего не делает, мы только пытаемся сделать код компилируемым. Давайте проверим снова:
 
-```text
-$ cargo check
-   Compiling hello v0.1.0 (file:///projects/hello)
-warning: unused variable: `size`
- --> src/lib.rs:4:16
-  |
-4 |     pub fn new(size: usize) -> ThreadPool {
-  |                ^^^^
-  |
-  = note: #[warn(unused_variables)] on by default
-  = note: to avoid this warning, consider using `_size` instead
-
-warning: unused variable: `f`
- --> src/lib.rs:8:30
-  |
-8 |     pub fn execute<F>(&self, f: F)
-  |                              ^
-  |
-  = note: to avoid this warning, consider using `_f` instead
+```console
+{{#include ../listings/ch20-web-server/no-listing-03-define-execute/output.txt}}
 ```
 
 Сейчас мы получаем только предупреждения, что означает, что код компилируется! Но обратите внимание, если вы попробуете `cargo run` и сделаете запрос в браузере, вы увидите ошибки в браузере, которые мы видели в начале главы. Наша библиотека на самом деле ещё не вызывает замыкание, переданное в `execute`!
@@ -281,23 +152,7 @@ warning: unused variable: `f`
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# pub struct ThreadPool;
-impl ThreadPool {
-    /// Create a new ThreadPool.
-    ///
-    /// The size is the number of threads in the pool.
-    ///
-    /// # Panics
-    ///
-    /// The `new` function will panic if the size is zero.
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
-
-        ThreadPool
-    }
-
-    // --snip--
-}
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-13/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-13: Реализация <code>ThreadPool::new</code> с паникой, если <code>size</code> равен нулю</span>
@@ -328,30 +183,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,not_desired_behavior
-use std::thread;
-
-pub struct ThreadPool {
-    threads: Vec<thread::JoinHandle<()>>,
-}
-
-impl ThreadPool {
-    // --snip--
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
-
-        let mut threads = Vec::with_capacity(size);
-
-        for _ in 0..size {
-            // create some threads and store them in the vector
-        }
-
-        ThreadPool {
-            threads
-        }
-    }
-
-    // --snip--
-}
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-14/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-14: Создание вектора в <code>ThreadPool</code> для сохранения потоков</span>
@@ -384,45 +216,7 @@ impl ThreadPool {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-use std::thread;
-
-pub struct ThreadPool {
-    workers: Vec<Worker>,
-}
-
-impl ThreadPool {
-    // --snip--
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
-
-        let mut workers = Vec::with_capacity(size);
-
-        for id in 0..size {
-            workers.push(Worker::new(id));
-        }
-
-        ThreadPool {
-            workers
-        }
-    }
-    // --snip--
-}
-
-struct Worker {
-    id: usize,
-    thread: thread::JoinHandle<()>,
-}
-
-impl Worker {
-    fn new(id: usize) -> Worker {
-        let thread = thread::spawn(|| {});
-
-        Worker {
-            id,
-            thread,
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-15/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-15: Изменение <code>ThreadPool</code> для хранения экземпляров <code>Worker</code> вместо непосредственного хранения потоков</span>
@@ -452,53 +246,7 @@ impl Worker {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# use std::thread;
-// --snip--
-use std::sync::mpsc;
-
-pub struct ThreadPool {
-    workers: Vec<Worker>,
-    sender: mpsc::Sender<Job>,
-}
-
-struct Job;
-
-impl ThreadPool {
-    // --snip--
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
-
-        let (sender, receiver) = mpsc::channel();
-
-        let mut workers = Vec::with_capacity(size);
-
-        for id in 0..size {
-            workers.push(Worker::new(id));
-        }
-
-        ThreadPool {
-            workers,
-            sender,
-        }
-    }
-    // --snip--
-}
-#
-# struct Worker {
-#     id: usize,
-#     thread: thread::JoinHandle<()>,
-# }
-#
-# impl Worker {
-#     fn new(id: usize) -> Worker {
-#         let thread = thread::spawn(|| {});
-#
-#         Worker {
-#             id,
-#             thread,
-#         }
-#     }
-# }
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-16/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-16: Модификация <code>ThreadPool</code> для хранения отправляющей части канала, который отправляет экземпляры <code>Job</code></span>
@@ -510,41 +258,7 @@ impl ThreadPool {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
-impl ThreadPool {
-    // --snip--
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
-
-        let (sender, receiver) = mpsc::channel();
-
-        let mut workers = Vec::with_capacity(size);
-
-        for id in 0..size {
-            workers.push(Worker::new(id, receiver));
-        }
-
-        ThreadPool {
-            workers,
-            sender,
-        }
-    }
-    // --snip--
-}
-
-// --snip--
-
-impl Worker {
-    fn new(id: usize, receiver: mpsc::Receiver<Job>) -> Worker {
-        let thread = thread::spawn(|| {
-            receiver;
-        });
-
-        Worker {
-            id,
-            thread,
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-17/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-17: Передача принимающей части канала "работнику"</span>
@@ -553,18 +267,8 @@ impl Worker {
 
 При попытке проверить код, мы получаем ошибку:
 
-```text
-$ cargo check
-   Compiling hello v0.1.0 (file:///projects/hello)
-error[E0382]: use of moved value: `receiver`
-  --> src/lib.rs:27:42
-   |
-27 |             workers.push(Worker::new(id, receiver));
-   |                                          ^^^^^^^^ value moved here in
-   previous iteration of loop
-   |
-   = note: move occurs because `receiver` has type
-   `std::sync::mpsc::Receiver<Job>`, which does not implement the `Copy` trait
+```console
+{{#include ../listings/ch20-web-server/listing-20-17/output.txt}}
 ```
 
 Код пытается передать `receiver` в несколько экземпляров `Worker`. Это не будет работать, как вы помните из главы 16: реализация канала предоставляемая Rust, является моделью несколько *производителей* (multiple producer), один *потребитель* (single consumer). Это означает, что мы не можем просто клонировать принимающую часть канала для исправления этого кода. Даже если бы мы это могли, это не техника которую мы хотели бы использовать; вместо этого мы хотим распределить задачи среди потоков, разделяя один `receiver` среди всех "работников".
@@ -576,60 +280,7 @@ error[E0382]: use of moved value: `receiver`
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# use std::thread;
-# use std::sync::mpsc;
-use std::sync::Arc;
-use std::sync::Mutex;
-// --snip--
-
-# pub struct ThreadPool {
-#     workers: Vec<Worker>,
-#     sender: mpsc::Sender<Job>,
-# }
-# struct Job;
-#
-impl ThreadPool {
-    // --snip--
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
-
-        let (sender, receiver) = mpsc::channel();
-
-        let receiver = Arc::new(Mutex::new(receiver));
-
-        let mut workers = Vec::with_capacity(size);
-
-        for id in 0..size {
-            workers.push(Worker::new(id, Arc::clone(&receiver)));
-        }
-
-        ThreadPool {
-            workers,
-            sender,
-        }
-    }
-
-    // --snip--
-}
-
-# struct Worker {
-#     id: usize,
-#     thread: thread::JoinHandle<()>,
-# }
-#
-impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
-        // --snip--
-#         let thread = thread::spawn(|| {
-#            receiver;
-#         });
-#
-#         Worker {
-#             id,
-#             thread,
-#         }
-    }
-}
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-18/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-18: Совместное использование принимающей стороны канала среди "работников" используя <code>Arc</code> и <code>Mutex</code></span>
@@ -640,35 +291,12 @@ impl Worker {
 
 #### Реализация метода `execute`
 
-Давайте реализуем метод `execute` у структуры `ThreadPool`. Мы также изменим тип `Job` со структуры на псевдоним типа для типаж-объекта, который содержит тип замыкания принимаемый методом `execute`. Как описано в разделе ["Создание синонимов типа с помощью псевдонимов типа"](ch19-04-advanced-types.html#creating-type-synonyms-with-type-aliases)<comment></comment> главы 19, псевдонимы типов позволяют делать длинные типы короче. Посмотрите в листинг 20-19.
+Давайте реализуем метод `execute` у структуры `ThreadPool`. Мы также изменим тип `Job` со структуры на псевдоним типа для типаж-объекта, который содержит тип замыкания принимаемый методом `execute`. Как описано в разделе ["Создание синонимов типа с помощью псевдонимов типа"](ch19-04-advanced-types.html#creating-type-synonyms-with-type-aliases)<!--  --> главы 19, псевдонимы типов позволяют делать длинные типы короче. Посмотрите в листинг 20-19.
 
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-// --snip--
-# pub struct ThreadPool {
-#     workers: Vec<Worker>,
-#     sender: mpsc::Sender<Job>,
-# }
-# use std::sync::mpsc;
-# struct Worker {}
-
-type Job = Box<dyn FnOnce() + Send + 'static>;
-
-impl ThreadPool {
-    // --snip--
-
-    pub fn execute<F>(&self, f: F)
-        where
-            F: FnOnce() + Send + 'static
-    {
-        let job = Box::new(f);
-
-        self.sender.send(job).unwrap();
-    }
-}
-
-// --snip--
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-19/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-19: Создание псевдонима типа <code>Job</code> для <code>Box</code>, содержащего каждое замыкание и затем отправляющее задание (job) в канал</span>
@@ -679,27 +307,8 @@ impl ThreadPool {
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust,ignore,does_not_compile
-// --snip--
-
-impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
-        let thread = thread::spawn(move || {
-            loop {
-                let job = receiver.lock().unwrap().recv().unwrap();
-
-                println!("Worker {} got a job; executing.", id);
-
-                (*job)();
-            }
-        });
-
-        Worker {
-            id,
-            thread,
-        }
-    }
-}
+```rust
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-20/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-20: Получение и выполнение заданий в потоке "работника"</span>
@@ -710,104 +319,40 @@ impl Worker {
 
 Вызов `recv` блокирующий, поэтому если ещё нет задач (job), то текущий поток будет ждать, пока задача не станет доступной. `Mutex<T>` гарантирует, что только один поток `Worker` пытается запросить задачу за раз.
 
-Теоретически этот код должен компилироваться. К сожалению, компилятор Rust ещё не совершенен и мы получаем ошибку:
+После реализации этого трюка наш пул потоков находится в рабочем состоянии! Выполните команду `cargo run` и сделайте несколько запросов:
 
-```text
-error[E0161]: cannot move a value of type std::ops::FnOnce() +
-std::marker::Send: the size of std::ops::FnOnce() + std::marker::Send cannot be
-statically determined
-  --> src/lib.rs:63:17
-   |
-63 |                 (*job)();
-   |                 ^^^^^^
-```
+<!-- manual-regeneration
+cd listings/ch20-web-server/listing-20-20
+cargo run
+make some requests to 127.0.0.1:7878
+Can't automate because the output depends on making requests
+-->
 
-Эта ошибка довольно скрытая, потому что проблема тоже довольно скрытая. Чтобы вызвать замыкание `FnOnce` сохранённое в `Box<T>` (то есть псевдоним типа `Job`), замыкание должно переместить себя *наружу* из `Box<T>`, потому что замыкание получает владение над `self`, когда мы его вызываем. В общем, Rust не позволяет нам перемещать значение из `Box<T>`, потому что Rust не знает, насколько большим будет значение внутри `Box<T>`. Вспомните в главе 15, что мы использовали `Box<T>` именно потому, что у нас было что-то неизвестного размера, которое мы хотели сохранить в `Box<T>`, чтобы получить значение известного размера.
-
-Как вы видели в коде 17-15, мы можем написать методы, использующие синтаксис `self: Box<Self>`, который позволяет методу владеть значением `Self` хранящимся в `Box<T>`. Это именно то, что мы хотим сделать здесь, но к сожалению, Rust не позволит нам: та часть Rust, которая реализует поведение при вызове замыкания, не реализована с помощью `self: Box<Self>`. Таким образом, Rust ещё не понимает, что он может использовать `self: Box<Self>` в такой ситуации, чтобы забрать замыкание во владение и переместить замыкание из `Box<T>`.
-
-Команда Rust все ещё находится в процессе разработки мест, где компилятор может быть улучшен, но в будущем листинг 20-20 должен работать отлично. Люди, подобные вам, работают над решением этой и других проблем! После того, как вы закончите эту книгу, мы будем рады, если вы присоединитесь.
-
-Но сейчас давайте обойдём эту проблему, используя удобный приём. Мы можем явно сказать Rust, что в этом случае мы можем забрать владение значением внутри типа `Box<T>`, используя `self: Box<Self>`. Затем, как только замыкание в нашем владении, его можно вызвать. Приём включает в себя объявление нового типажа `FnBox` у метода `call_box`, который будет использовать `self: Box<Self>` в сигнатуре, определяя `FnBox` для любого типа, реализующего `FnOnce()`. Также он включает изменение псевдонима нашего типа для использования нового типажа и изменение `Worker` для использования метода `call_box`. Эти изменения показаны в листинге 20-21.
-
-<span class="filename">Файл: src/lib.rs</span>
-
-```rust,ignore
-trait FnBox {
-    fn call_box(self: Box<Self>);
-}
-
-impl<F: FnOnce()> FnBox for F {
-    fn call_box(self: Box<F>) {
-        (*self)()
-    }
-}
-
-type Job = Box<dyn FnBox + Send + 'static>;
-
-// --snip--
-
-impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
-        let thread = thread::spawn(move || {
-            loop {
-                let job = receiver.lock().unwrap().recv().unwrap();
-
-                println!("Worker {} got a job; executing.", id);
-
-                job.call_box();
-            }
-        });
-
-        Worker {
-            id,
-            thread,
-        }
-    }
-}
-```
-
-<span class="caption">Листинг 20-21: Добавление нового типажа <code>FnBox</code> для обхода текущих ограничений <code>Box<FnOnce()></code></span>
-
-Сначала мы создаём новый типаж с именем `FnBox`. Этот типаж имеет один метод `call_box`, который аналогичен методам `call` для других типажей `Fn*` за исключением того, где требуется `self: Box<Self>` чтобы стать владельцем `self` и переместить значение наружу из `Box<T>`.
-
-Затем мы реализуем типаж `FnBox` для любого типа `F`, который реализует типаж `FnOnce()`. Фактически это означает, что любые замыкания `FnOnce()` могут использовать наш метод `call_box`. Реализация `call_box` использует `(*self)()` для перемещения замыкания наружу из `Box<T>` и вызова этого замыкания.
-
-Теперь нам нужно, чтобы псевдоним типа `Job` был бы `Box` для всего, что реализует наш новый типаж `FnBox`. Это позволит нам использовать `call_box` в `Worker`, когда мы получим значение `Job` вместо прямого вызова замыкания. Реализация типажа `FnBox` для любого замыкания `FnOnce()` означает, что нам не нужно ничего менять в фактических значениях, которые мы отправляем в канал. Теперь Rust может признать  корректным все что мы хотим сделать.
-
-Этот трюк довольно хитрый и сложный. Не волнуйтесь, если это не имеет смысла; когда-нибудь это будет совершенно ненужным.
-
-После реализации этого трюка наш пул потоков находится в рабочем состоянии! Выполните `cargo run` и сделайте несколько запросов:
-
-```text
+```console
 $ cargo run
    Compiling hello v0.1.0 (file:///projects/hello)
-warning: field is never used: `workers`
+warning: field is never read: `workers`
  --> src/lib.rs:7:5
   |
 7 |     workers: Vec<Worker>,
   |     ^^^^^^^^^^^^^^^^^^^^
   |
-  = note: #[warn(dead_code)] on by default
+  = note: `#[warn(dead_code)]` on by default
 
-warning: field is never used: `id`
-  --> src/lib.rs:61:5
+warning: field is never read: `id`
+  --> src/lib.rs:48:5
    |
-61 |     id: usize,
+48 |     id: usize,
    |     ^^^^^^^^^
-   |
-   = note: #[warn(dead_code)] on by default
 
-warning: field is never used: `thread`
-  --> src/lib.rs:62:5
+warning: field is never read: `thread`
+  --> src/lib.rs:49:5
    |
-62 |     thread: thread::JoinHandle<()>,
+49 |     thread: thread::JoinHandle<()>,
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |
-   = note: #[warn(dead_code)] on by default
 
-    Finished dev [unoptimized + debuginfo] target(s) in 0.99 secs
-     Running `target/debug/hello`
+    Finished dev [unoptimized + debuginfo] target(s) in 1.40s
+     Running `target/debug/main`
 Worker 0 got a job; executing.
 Worker 2 got a job; executing.
 Worker 1 got a job; executing.
@@ -829,24 +374,7 @@ Worker 2 got a job; executing.
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,not_desired_behavior
-// --snip--
-
-impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
-        let thread = thread::spawn(move || {
-            while let Ok(job) = receiver.lock().unwrap().recv() {
-                println!("Worker {} got a job; executing.", id);
-
-                job.call_box();
-            }
-        });
-
-        Worker {
-            id,
-            thread,
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-21/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-22: Альтернативная реализация <code>Worker::new</code> с использованием <code>while let</code></span>
@@ -856,3 +384,4 @@ impl Worker {
 Вместо использования `loop` и получения блокировки и задания внутри блока, а не за его пределами, удаляется экземпляр `MutexGuard` возвращённый методом `lock`, как только завершится оператор `let job`. Это гарантирует, что блокировка удерживается во время вызова `recv`, но она освобождается до вызова `job.call_box()`, что позволяет одновременно обслуживать несколько запросов.
 
 
+["Целочисленные типы"]: ch03-02-data-types.html#integer-types
