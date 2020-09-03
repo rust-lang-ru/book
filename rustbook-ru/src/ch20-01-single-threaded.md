@@ -99,7 +99,9 @@ Upgrade-Insecure-Requests: 1
 HTTP - это текстовый протокол и запрос имеет следующий формат:
 
 ```text
-Method Request-URI HTTP-Version CRLF headers CRLF message-body
+Method Request-URI HTTP-Version CRLF
+headers CRLF
+message-body
 ```
 
 Первая строка - это *строка запроса*, содержащая информацию о том, что запрашивает клиент. Первая часть строки запроса указывает используемый *метод*, например `GET` или `POST`, который описывает, как клиент выполняет этот запрос. Наш клиент использовал запрос `GET`.
@@ -121,7 +123,9 @@ Method Request-URI HTTP-Version CRLF headers CRLF message-body
 Теперь реализуем отправку данных в ответ на запрос клиента. Ответы имеют следующий формат:
 
 ```text
-HTTP-Version Status-Code Reason-Phrase CRLF headers CRLF message-body
+HTTP-Version Status-Code Reason-Phrase CRLF
+headers CRLF
+message-body
 ```
 
 Первая строка - это *строка состояния,* которая содержит версию HTTP, используемую в ответе, числовой код состояния, который суммирует результат запроса, и фразу причины, которая предоставляет текстовое описание кода состояния. После последовательности CRLF идут любые заголовки, другая последовательность CRLF и тело ответа.
