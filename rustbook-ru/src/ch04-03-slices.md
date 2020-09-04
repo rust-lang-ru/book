@@ -1,6 +1,6 @@
 ## Срезы
 
-Другим типом данных, который не забирает во владение является *срез*. Срез позволяет ссылаться на смежную последовательность элементов из коллекции, вместо полной коллекции.
+Другим типом данных, который не забирает во владение является *срез* (slice). Срез позволяет ссылаться на смежную последовательность элементов из коллекции, вместо полной коллекции.
 
 Рассмотрим небольшую программную проблему: необходимо написать функцию, входным параметром которой является строка. Выходным значением функции является первое слово, которое будет найдено в этой строке. Если функция не находит пробелы, она возвращает полную строку.
 
@@ -15,31 +15,21 @@ fn first_word(s: &String) -> ?
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn first_word(s: &String) -> usize {
-    let bytes = s.as_bytes();
-
-    for (i, &item) in bytes.iter().enumerate() {
-        if item == b' ' {
-            return i;
-        }
-    }
-
-    s.len()
-}
+{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 4-7: пример функции <code>first_word</code>, которая возвращает значение байтового индекса пробела внутри строкового параметра <code>String</code></span>
+<span class="caption">Листинг 4-7: Пример функции <code>first_word</code>, которая возвращает значение байтового индекса пробела внутри строкового параметра <code>String</code></span>
 
 Для того, чтобы найти пробел в строке, мы превратим `String` в массив байт, используя метод `as_bytes` и пройдём по `String` элемент за элементом, проверяя является ли значение пробелом.
 
 ```rust,ignore
-let bytes = s.as_bytes();
+{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:as_bytes}}
 ```
 
 Далее, создаём итератор по массиву байт используя метод  `iter`:
 
 ```rust,ignore
-for (i, &item) in bytes.iter().enumerate() {
+{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:iter}}
 ```
 
 Мы изучим итераторы более детально в главе 13. Сейчас, достаточно понять, что метод `iter` возвращает каждый элемент коллекции, а метод `enumerate` оборачивает результаты работы метода `iter` и возвращает каждый элемент как кортеж. Первый элемент этого кортежа возвращённый из  `enumerate` является индексом, а второй элемент - ссылкой на элемент. Такой способ перебора элементов массива является более удобным, чем считать индекс самостоятельно.
@@ -49,46 +39,20 @@ for (i, &item) in bytes.iter().enumerate() {
 Внутри цикла `for`, ищем байт представляющий пробел используя синтаксис байт литерала. Если пробел найден, возвращается его позиция. Иначе, возвращается длина строки используя `s.len()`:
 
 ```rust,ignore
-    if item == b' ' {
-        return i;
-    }
-}
-
-s.len()
+{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:inside_for}}
 ```
 
-Теперь у нас есть способ узнать индекс конца первого слова в строке, но есть проблема. Мы возвращаем сам `usize`, но это число имеет значение только в контексте `&String`. Другими словами, поскольку это значение отдельное от `String`, то нет гарантии, что оно всё ещё будет действительным в будущем. Рассмотрим программу из листинга 4-8, которая использует функцию `first_word` листинга 4-7.
+Теперь у нас есть способ узнать индекс конца первого слова в строке, но есть проблема. Мы возвращаем сам `usize`, но это число имеет значение только в контексте `&String`. Другими словами, поскольку это значение отдельное от `String`, то нет гарантии, что оно все ещё будет действительным в будущем. Рассмотрим программу из листинга 4-8, которая использует функцию `first_word` листинга 4-7.
 
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# fn first_word(s: &String) -> usize {
-#     let bytes = s.as_bytes();
-#
-#     for (i, &item) in bytes.iter().enumerate() {
-#         if item == b' ' {
-#             return i;
-#         }
-#     }
-#
-#     s.len()
-# }
-#
-fn main() {
-    let mut s = String::from("hello world");
-
-    let word = first_word(&s); // word will get the value 5
-
-    s.clear(); // this empties the String, making it equal to ""
-
-    // word still has the value 5 here, but there's no more string that
-    // we could meaningfully use the value 5 with. word is now totally invalid!
-}
+{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-08/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 4-8: сохранение результата вызова функции <code>first_word</code>, а затем изменение содержимого <code>String</code></span>
+<span class="caption">Listing 4-8: Сохранение результата вызова функции <code>first_word</code>, а затем изменение содержимого <code>String</code></span>
 
-Данная программа компилируется без ошибок и возможно продолжит это делать, если мы воспользуемся `word` после вызова `s.clear()`. Так как значение `word` совсем не связано с состоянием переменной `s`, то `word` всё ещё имеет значение  `5`. Мы могли бы использовать `5` вместе с переменной `s` и попытаться извлечь первое слово, но это будет ошибкой, потому что содержимое `s` изменилось после того как мы сохранили `5` в переменной `word`.
+Данная программа компилируется без ошибок и возможно продолжит это делать, если мы воспользуемся `word` после вызова `s.clear()`. Так как значение `word` совсем не связано с состоянием переменной `s`, то `word` всё ещё имеет значение `5`. Мы могли бы использовать `5` вместе с переменной `s` и попытаться извлечь первое слово, но это будет ошибкой, потому что содержимое `s` изменилось после того как мы сохранили `5` в переменной `word`.
 
 Необходимость беспокоиться о том, что индекс в переменной `word` не синхронизируется с данными в переменной  `s` является утомительной и подверженной ошибкам! Управление этими индексами становится ещё более хрупким, если мы напишем функцию `second_word`. Её сигнатура могла бы выглядеть так:
 
@@ -105,24 +69,21 @@ fn second_word(s: &String) -> (usize, usize) {
 Строковый срез - это ссылка на часть строки `String` и он выглядит следующим образом:
 
 ```rust
-let s = String::from("hello world");
-
-let hello = &s[0..5];
-let world = &s[6..11];
+{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-17-slice/src/main.rs:here}}
 ```
 
 Эта инициализация похожа на создание ссылки на переменную `String`, но с дополнительным условием - указанием отрезка `[0..5]`. Вместо ссылки на всю `String`, срез ссылается на её часть.
 
-Мы можем создавать срезы, используя определение отрезка `[starting_index..ending_index]`, где `starting_index` означает первую позицию в срезе, а `ending_index` на единицу больше, чем последняя позиция. Во внутреннем представлении, структура данный срез хранит начальную позицию и длину среза, которая соответствует числу `ending_index` минус `starting_index`. Таким образом, в примере `let world = &s[6..11];`, переменная `world` будет срезом, которая содержит ссылку на 7-ой байт в `s` со значением длины равным 5.
+Мы можем создавать срезы, используя диапазон в квадратных скобках указывая `[starting_index..ending_index]`, где `starting_index` означает первую позицию в срезе, а `ending_index` на единицу больше, чем последняя позиция. Во внутреннем представлении, структура данных срез хранит начальную позицию и длину среза, которая соответствует числу `ending_index` минус `starting_index`. Таким образом, в примере `let world = &s[6..11];`, переменная `world` будет срезом, который содержит ссылку на 7-ой байт в `s` со значением длины равным 5.
 
 Рисунок 4-12 отображает это на диаграмме.
 
 
 <img alt="world containing a pointer to the 6th byte of String s and a length 5" src="https://github.com/ruRust/book/blob/master/rustbook-en/src/img/trpl04-06.svg?raw=true" class="center" style="width: 50%;">
 
-<span class="caption">Рисунок 4-12: строковый срез ссылается на часть <code>String</code></span>
+<span class="caption">Рисунок 4-6: Строковый срез ссылается на часть <code>String</code></span>
 
-Если хочется начать с начального индекса (ноль), то с помощью Rust синтаксиса для диапазонов `..`, можно убрать число перед двоеточием. Другими словами, это эквивалентно:
+С помощью Rust синтаксиса диапазона `..`, если хочется начать с начального индекса (ноль), то можно убрать число перед двоеточием. Другими словами, это эквивалентно:
 
 ```rust
 let s = String::from("hello");
@@ -153,24 +114,14 @@ let slice = &s[0..len];
 let slice = &s[..];
 ```
 
-> Внимание: Индексы среза строк должны соответствовать границам UTF-8 символов. Если вы попытаетесь получить срез нарушая границы символа в котором больше одного байта, то вы получите ошибку времени исполнения. В рамках этой главы мы будем предполагать только ASCII кодировку. Более детальное обсуждение UTF-8 находится в секции ["Сохранение текста с кодировкой UTF-8 в строках"]<!--  --> главы 8.
+> Внимание: Индексы среза строк должны соответствовать границам UTF-8 символов. Если вы попытаетесь получить срез нарушая границы символа в котором больше одного байта, то вы получите ошибку времени исполнения. В рамках этой главы мы будем предполагать только ASCII кодировку. Более детальное обсуждение UTF-8 находится в секции [“Сохранение текста с кодировкой UTF-8 в строках”]<!-- ignore --> главы 8.
 
 Имея всю данную информацию, давайте перепишем метод `first_word` для возврата среза. Для обозначения типа "срез строки" существует запись `&str`:
 
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn first_word(s: &String) -> &str {
-    let bytes = s.as_bytes();
-
-    for (i, &item) in bytes.iter().enumerate() {
-        if item == b' ' {
-            return &s[0..i];
-        }
-    }
-
-    &s[..]
-}
+{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-18-first-word-slice/src/main.rs:here}}
 ```
 
 Мы получаем индекс конца слова способом аналогичным тому, как мы это делали в листинге 4-7, поиском первого вхождения пробела. Когда пробел найден, возвращается строковый срез, используя начало строки и индекс пробела в качестве начального и конечного индексов.
@@ -188,31 +139,13 @@ fn second_word(s: &String) -> &str {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let mut s = String::from("hello world");
-
-    let word = first_word(&s);
-
-    s.clear(); // error!
-
-    println!("the first word is: {}", word);
-}
+{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-19-slice-error/src/main.rs:here}}
 ```
 
 Ошибка компиляции:
 
-```text
-error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
-  --> src/main.rs:18:5
-   |
-16 |     let word = first_word(&s);
-   |                           -- immutable borrow occurs here
-17 |
-18 |     s.clear(); // error!
-   |     ^^^^^^^^^ mutable borrow occurs here
-19 |
-20 |     println!("the first word is: {}", word);
-   |                                       ---- immutable borrow later used here
+```console
+{{#include ../listings/ch04-understanding-ownership/no-listing-19-slice-error/output.txt}}
 ```
 
 Напомним из правил заимствования, что если у нас есть неизменяемая ссылка на что-либо, то нельзя взять ещё изменяемую ссылку. Так как методу `clear` требуется обрезать `String`, ему нужно получить изменяемую ссылку. Rust не позволяет это сделать и компиляции не проходит. Rust не только упростил использование нашего API, но и исключил целый класс ошибок во время компиляции!
@@ -238,42 +171,17 @@ fn first_word(s: &String) -> &str {
 Более опытные разработчики Rust написали бы сигнатуру из листинга  4-9, потому что она позволяет использовать одну функцию для значений обоих типов `&String` и `&str`.
 
 ```rust,ignore
-fn first_word(s: &str) -> &str {
+{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:here}}
 ```
 
 <span class="caption">Пример 4-9: Улучшение функции <code>first_word</code> используя тип строкового среза для параметра <code>s</code></span>
 
-Если есть строковый срез, то можно его передавать напрямую. Если есть `String`, можно передавать срез всей строки `String`. Определение функции принимающей строковый срез вместо ссылки на `String` делает API более общим и полезным без потери функциональности:
+Если есть строковый срез, то можно его передавать напрямую. Если есть `String`, можно передавать срез полностью всей строки `String`. Определение функции принимающей строковый срез вместо ссылки на `String` делает API более общим и полезным без потери функциональности:
 
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# fn first_word(s: &str) -> &str {
-#     let bytes = s.as_bytes();
-#
-#     for (i, &item) in bytes.iter().enumerate() {
-#         if item == b' ' {
-#             return &s[0..i];
-#         }
-#     }
-#
-#     &s[..]
-# }
-fn main() {
-    let my_string = String::from("hello world");
-
-    // first_word works on slices of `String`s
-    let word = first_word(&my_string[..]);
-
-    let my_string_literal = "hello world";
-
-    // first_word works on slices of string literals
-    let word = first_word(&my_string_literal[..]);
-
-    // Because string literals *are* string slices already,
-    // this works too, without the slice syntax!
-    let word = first_word(my_string_literal);
-}
+{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:usage}}
 ```
 
 ### Другие срезы
@@ -301,4 +209,4 @@ let slice = &a[1..3];
 Владение влияет на множество других частей и концепций языка Rust. Мы будем говорить об этих концепциях на протяжении оставшихся частей книги. Давайте перейдём к главе 5 и рассмотрим группировку частей данных в структуры `struct`.
 
 
-["Сохранение текста с кодировкой UTF-8 в строках"]: ch08-02-strings.html#storing-utf-8-encoded-text-with-strings
+[“Сохранение текста с кодировкой UTF-8 в строках”]: ch08-02-strings.html#storing-utf-8-encoded-text-with-strings
