@@ -1,226 +1,129 @@
 ## Определение и инициализация структур
 
-Внешне структуры похожи на кортежи рассмотренные в главе 3. Также как кортежи, структуры могут содержать разные типы данных. Но в отличии от кортежей, вы именуете части данных так, чтобы было ясно что эти имена означают. Поэтому структуры более удобны для создания новых типов данных, так как нет необходимости запоминать порядковый номер какого-либо значения внутри экземпляра структуры.
+Structs are similar to tuples, which were discussed in Chapter 3. Like tuples, the pieces of a struct can be different types. Unlike with tuples, you’ll name each piece of data so it’s clear what the values mean. As a result of these names, structs are more flexible than tuples: you don’t have to rely on the order of the data to specify or access the values of an instance.
 
 Для определения структуры, указывается ключевое слово `struct` и её название. Название должно описывать значение частей данных сгруппированных месте. Далее, в фигурных скобках через запятую определяются имена и типы частей данных. Каждый элемент называется *поле*. Листинг 5-1, описывает структуру для хранения информации о учётной записи пользователя:
 
 ```rust
-struct User {
-    username: String,
-    email: String,
-    sign_in_count: u64,
-    active: bool,
-}
+{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-01/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 5-1: определение структуры <code>User</code></span>
 
-После определения структуры можно создавать её *экземпляр*, назначая определённое значение каждому полю с соответствующим типом данных. Экземпляр создаётся, указывая имя структуры, затем добавляем фигурные скобки включающие пары ключ/значение (`key: value`), где ключами являются имена полей и значениями являются данные, которые мы хотим сохранить в поля. Нет необходимости чётко следовать порядку объявления полей в описании структуры (но всё-таки желательно, для удобства чтения). Другими словами, объявление структуры - это вроде общего шаблона для нашего типа, а экземпляр структуры заполняет данный шаблон определёнными данными для создания значений нашего типа. Например, можно объявить пользователя как в листинге 5-2:
+To use a struct after we’ve defined it, we create an *instance* of that struct by specifying concrete values for each of the fields. We create an instance by stating the name of the struct and then add curly brackets containing `key: value` pairs, where the keys are the names of the fields and the values are the data we want to store in those fields. We don’t have to specify the fields in the same order in which we declared them in the struct. In other words, the struct definition is like a general template for the type, and instances fill in that template with particular data to create values of the type. For example, we can declare a particular user as shown in Listing 5-2.
 
 ```rust
-# struct User {
-#     username: String,
-#     email: String,
-#     sign_in_count: u64,
-#     active: bool,
-# }
-#
-let user1 = User {
-    email: String::from("someone@example.com"),
-    username: String::from("someusername123"),
-    active: true,
-    sign_in_count: 1,
-};
+{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-02/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 5-2: создание экземпляра структуры <code>User</code></span>
+<span class="caption">Listing 5-2: Creating an instance of the <code>User</code> struct</span>
 
-Чтобы получить определённое значение поля структуры, мы можем использовать точечную нотацию (как в кортеже). Если нужен только электронный адрес, можно использовать `user1.email` везде где нужно его значение. Если экземпляр структуры изменяемый, то для изменения значения данных одного поля структуры, мы присваиваем ему новое значение используя точечную нотацию. Листинг 5-3 показывает как изменить значение в поле `email` изменяемого экземпляра `User`:
+To get a specific value from a struct, we can use dot notation. If we wanted just this user’s email address, we could use `user1.email` wherever we wanted to use this value. If the instance is mutable, we can change a value by using the dot notation and assigning into a particular field. Listing 5-3 shows how to change the value in the `email` field of a mutable `User` instance.
 
 ```rust
-# struct User {
-#     username: String,
-#     email: String,
-#     sign_in_count: u64,
-#     active: bool,
-# }
-#
-let mut user1 = User {
-    email: String::from("someone@example.com"),
-    username: String::from("someusername123"),
-    active: true,
-    sign_in_count: 1,
-};
-
-user1.email = String::from("anotheremail@example.com");
+{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-03/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 5-3: изменение значения поля <code>email</code> экземпляра структуры <code>User</code></span>
+<span class="caption">Listing 5-3: Changing the value in the <code>email</code> field of a <code>User</code> instance</span>
 
-Заметим, что весь экземпляр структуры должен быть изменяемым; Rust не позволяет помечать изменяемыми отдельные поля. Как в любом выражением, можно создавать новый экземпляр структуры в качестве последнего выражения тела функции для явного возврата нового экземпляра.
+Note that the entire instance must be mutable; Rust doesn’t allow us to mark only certain fields as mutable. As with any expression, we can construct a new instance of the struct as the last expression in the function body to implicitly return that new instance.
 
-На листинге 5-4 функция `build_user` возвращает экземпляр `User` с указанным адресом и именем. Поле `active` получает значение `true`, а поле `sign_in_count` получает значение `1`.
+Listing 5-4 shows a `build_user` function that returns a `User` instance with the given email and username. The `active` field gets the value of `true`, and the `sign_in_count` gets a value of `1`.
 
 ```rust
-# struct User {
-#     username: String,
-#     email: String,
-#     sign_in_count: u64,
-#     active: bool,
-# }
-#
-fn build_user(email: String, username: String) -> User {
-    User {
-        email: email,
-        username: username,
-        active: true,
-        sign_in_count: 1,
-    }
-}
+{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-04/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 5-4: функция <code>build_user</code> принимает электронный адрес, имя и возвращает экземпляр <code>User</code></span>
+<span class="caption">Listing 5-4: A <code>build_user</code> function that takes an email and username and returns a <code>User</code> instance</span>
 
-Имеет смысл называть имена параметров функции также как названия полей структуры, но повторение полей `email` и `username` переменных не удобно. Если структура имеет много полей, то повторение станет более раздражающим. К счастью есть удобное сокращение!
+It makes sense to name the function parameters with the same name as the struct fields, but having to repeat the `email` and `username` field names and variables is a bit tedious. If the struct had more fields, repeating each name would get even more annoying. Luckily, there’s a convenient shorthand!
 
 ### Использование сокращения инициализации полей, когда переменные и имена  совпадают
 
-Так как имена параметров и полей структуры являются полностью идентичными в листинге 5-4, можно использовать синтаксис *сокращения инициализации поля*, чтобы переписать `build_user` так, чтобы он работал точно также, но не содержал повторений для `email` и `username`, как в листинге 5-5.
+Because the parameter names and the struct field names are exactly the same in Listing 5-4, we can use the *field init shorthand* syntax to rewrite `build_user` so that it behaves exactly the same but doesn’t have the repetition of `email` and `username`, as shown in Listing 5-5.
 
 ```rust
-# struct User {
-#     username: String,
-#     email: String,
-#     sign_in_count: u64,
-#     active: bool,
-# }
-#
-fn build_user(email: String, username: String) -> User {
-    User {
-        email,
-        username,
-        active: true,
-        sign_in_count: 1,
-    }
-}
+{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-05/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 5-5: функция <code>build_user</code> использует сокращение инициализации полей, потому что параметры <code>email</code> и <code>username</code> имеют имена как поля структуры</span>
+<span class="caption">Listing 5-5: A <code>build_user</code> function that uses field init shorthand because the <code>email</code> and <code>username</code> parameters have the same name as struct fields</span>
 
-Здесь происходит создание нового экземпляра структуры  `User`, которая имеет поле с именем `email`. Мы хотим установить  поле `email` в значение параметра `email` функции `build_user`. Так как поле `email` и параметр `email` имеют одинаковое название, нужно только писать `email` вместо кода `email: email`.
+Here, we’re creating a new instance of the `User` struct, which has a field named `email`. We want to set the `email` field’s value to the value in the `email` parameter of the `build_user` function. Because the `email` field and the `email` parameter have the same name, we only need to write `email` rather than `email: email`.
 
 ### Создание экземпляра структуры из экземпляра другой структуры с помощью синтаксиса обновления структуры
 
-Часто является полезным создание нового экземпляра структуры, который использует значения старого экземпляра, но что-то меняет в нем. Это делается с помощью *синтаксиса обновления структур*.
+It’s often useful to create a new instance of a struct that uses most of an old instance’s values but changes some. You’ll do this using *struct update syntax*.
 
-Сначала листинг 5-6 показывает как создать новый экземпляр  `User` для переменной `user2` без синтаксиса обновления. Устанавливаются значения `email` и `username`, но используются те же значения из переменной `user1`, как сделано в листинге 5-2.
-
-```rust
-# struct User {
-#     username: String,
-#     email: String,
-#     sign_in_count: u64,
-#     active: bool,
-# }
-#
-# let user1 = User {
-#     email: String::from("someone@example.com"),
-#     username: String::from("someusername123"),
-#     active: true,
-#     sign_in_count: 1,
-# };
-#
-let user2 = User {
-    email: String::from("another@example.com"),
-    username: String::from("anotherusername567"),
-    active: user1.active,
-    sign_in_count: user1.sign_in_count,
-};
-```
-
-<span class="caption">Листинг 5-6: создание экземпляра <code>User</code> присвоением  полям значений из <code>user1</code></span>
-
-Используя синтаксис обновления структуры, можно получить тот же эффект, используя меньше кода как показано в листинге 5-7. Синтаксис `..` указывает, что оставшиеся поля устанавливаются не явно и должны иметь значения из указанного экземпляра.
+First, Listing 5-6 shows how we create a new `User` instance in `user2` without the update syntax. We set new values for `email` and `username` but otherwise use the same values from `user1` that we created in Listing 5-2.
 
 ```rust
-# struct User {
-#     username: String,
-#     email: String,
-#     sign_in_count: u64,
-#     active: bool,
-# }
-#
-# let user1 = User {
-#     email: String::from("someone@example.com"),
-#     username: String::from("someusername123"),
-#     active: true,
-#     sign_in_count: 1,
-# };
-#
-let user2 = User {
-    email: String::from("another@example.com"),
-    username: String::from("anotherusername567"),
-    ..user1
-};
+{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-06/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 5-7: использование синтаксиса обновления структур для установки значений <code>email</code> и <code>username</code> экземпляра <code>User</code>, но использование остальных значений из полей экземпляра переменной <code>user1</code></span>
+<span class="caption">Listing 5-6: Creating a new <code>User</code> instance using some of the values from <code>user1</code></span>
 
-Код в листинге Listing 5-7 также создаёт экземпляр переменной  `user2`, который имеет другое значение поля `email` и `username`, но те же значение для полей `active` и `sign_in_count` что у переменной `user1`.
+Using struct update syntax, we can achieve the same effect with less code, as shown in Listing 5-7. The syntax `..` specifies that the remaining fields not explicitly set should have the same value as the fields in the given instance.
+
+```rust
+{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-07/src/main.rs:here}}
+```
+
+<span class="caption">Listing 5-7: Using struct update syntax to set new <code>email</code> and <code>username</code> values for a <code>User</code> instance but use the rest of the values from the fields of the instance in the <code>user1</code> variable</span>
+
+The code in Listing 5-7 also creates an instance in `user2` that has a different value for `email` and `username` but has the same values for the `active` and `sign_in_count` fields from `user1`.
 
 ### Использование кортеж структур без именованных полей для создания разных типов
 
-Можно определять структуры с помощью сокращённой записи, очень напоминающей кортежи (такое определение называют *кортежными структурами*).  Кортежная структура имеет дополнительное значение из-за имени в объявлении, но не имеет имён ассоциированных с её полями, у них есть только типы. Кортежные  структуры удобны, когда нужно дать всему кортежу имя и сделать его отличным от других кортежей, при этом именование полей как у обычной структуры будет подробным или избыточным.
+You can also define structs that look similar to tuples, called *tuple structs*. Tuple structs have the added meaning the struct name provides but don’t have names associated with their fields; rather, they just have the types of the fields. Tuple structs are useful when you want to give the whole tuple a name and make the tuple be a different type from other tuples, and naming each field as in a regular struct would be verbose or redundant.
 
-Определение кортежной структуры начинается ключевым словом `struct`, названием структуры за которым следуют типы в кортеже. Например, вот определение и использование двух кортежных структур с именами `Color` и `Point`:
+To define a tuple struct, start with the `struct` keyword and the struct name followed by the types in the tuple. For example, here are definitions and usages of two tuple structs named `Color` and `Point`:
 
 ```rust
-struct Color(i32, i32, i32);
-struct Point(i32, i32, i32);
-
-let black = Color(0, 0, 0);
-let origin = Point(0, 0, 0);
+{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-01-tuple-structs/src/main.rs:here}}
 ```
 
-Обратите внимание, что переменные `black` и `origin` разного типа, потому что они являются экземплярами разных кортежных структур.  Каждая определяемая структура является собственным типом, не смотря на то, что поля внутри структуры имеют одинаковые типы. Например, функция принимающая параметром тип `Color` не может принять аргумент типа `Point`, не смотря на то, что оба типа состоят из трёх значений `i32`. Тем не менее, экземпляры кортежных структур ведут себя как кортежи: их можно разделять на отдельные части, использовать `.` за которой идёт индекс для доступа к отдельному значению и т.д.
+Note that the `black` and `origin` values are different types, because they’re instances of different tuple structs. Each struct you define is its own type, even though the fields within the struct have the same types. For example, a function that takes a parameter of type `Color` cannot take a `Point` as an argument, even though both types are made up of three `i32` values. Otherwise, tuple struct instances behave like tuples: you can destructure them into their individual pieces, you can use a `.` followed by the index to access an individual value, and so on.
 
 ### Единичные структуры без полей
 
-Можно также определять структуры без полей! Они называются  *unit-like, единично-подобные структуры* потому что ведут себя подобно единичному типу `()`. Единично-подобные структуры могут быть полезны в ситуации, в которой нужно реализовать типаж некоторого типа, но нет никаких данных для сохранения в самом типе. Мы обсудим типажи в главе 10.
+You can also define structs that don’t have any fields! These are called *unit-like structs* because they behave similarly to `()`, the unit type. Unit-like structs can be useful in situations in which you need to implement a trait on some type but don’t have any data that you want to store in the type itself. We’ll discuss traits in Chapter 10.
 
 > ### Владение данными структуры
-> При определении структуры `User` листинга 5-1 мы использовали тип `String` владеющий данными вместо `&str`. Это было осознанное решение, т.к. мы хотели, чтобы экземпляры структур владели всеми своими данными и чтобы данные были действительными во время всего существования структуры.
-> Возможно сделать так, чтобы структуры сохраняли ссылки на данные которыми владеет кто-то другой, но это требует использования *времён жизни*, функциональности Rust о которой мы поговорим в главе 10. Времена жизни гарантируют, что данные на которые ссылается структура, действительны столько же времени, сколько действительна сама структура. Допустим, вы пробуете сохранить ссылку в структуре без указания времени жизни, вот так, но это не будет работать:
+> In the `User` struct definition in Listing 5-1, we used the owned `String` type rather than the `&str` string slice type. This is a deliberate choice because we want instances of this struct to own all of its data and for that data to be valid for as long as the entire struct is valid.
+> It’s possible for structs to store references to data owned by something else, but to do so requires the use of *lifetimes*, a Rust feature that we’ll discuss in Chapter 10. Lifetimes ensure that the data referenced by a struct is valid for as long as the struct is. Let’s say you try to store a reference in a struct without specifying lifetimes, like this, which won’t work:
 > <span class="filename">Файл: src/main.rs</span>
+> <!-- CAN'T EXTRACT SEE https://github.com/rust-lang/mdBook/issues/1127 -->
 > ```rust,ignore,does_not_compile
-> struct User {
->     username: &str,
->     email: &str,
->     sign_in_count: u64,
->     active: bool,
-> }
->
-> fn main() {
->     let user1 = User {
->         email: "someone@example.com",
->         username: "someusername123",
->         active: true,
->         sign_in_count: 1,
->     };
-> }
+> struct User {     username: &str,     email: &str,     sign_in_count: u64,     active: bool, }  fn main() {     let user1 = User {         email: "someone@example.com",         username: "someusername123",         active: true,         sign_in_count: 1,     }; }
 > ```
 > Компилятор будет жаловаться на необходимость определения времени жизни:
-> ```text
+> ```console
+> $ cargo run
+>    Compiling structs v0.1.0 (file:///projects/structs)
 > error[E0106]: missing lifetime specifier
->  -->
+>  --> src/main.rs:2:15
 >   |
 > 2 |     username: &str,
 >   |               ^ expected lifetime parameter
 >
 > error[E0106]: missing lifetime specifier
->  -->
+>  --> src/main.rs:3:12
 >   |
 > 3 |     email: &str,
 >   |            ^ expected lifetime parameter
+>
+> error: aborting due to 2 previous errors
+>
+> For more information about this error, try `rustc --explain E0106`.
+> error: could not compile `structs`.
+>
+> To learn more, run the command again with --verbose.
 > ```
-> В главе 10 мы обсудим, как исправить такие ошибки сохранения ссылок в структурах, но сейчас мы исправим подобные ошибки, используя типы со владение данными, такими как `String` вместо типа ссылок, таких как `&str`.
+> In Chapter 10, we’ll discuss how to fix these errors so you can store references in structs, but for now, we’ll fix errors like these using owned types like `String` instead of references like `&str`.
+
+<!-- manual-regeneration
+for the error above
+after running update-rustc.sh:
+pbcopy < listings/ch05-using-structs-to-structure-related-data/no-listing-02-reference-in-struct/output.txt
+paste above
+add `> ` before every line -->
