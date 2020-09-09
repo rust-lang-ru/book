@@ -18,7 +18,7 @@
 
 <span class="caption">Листинг 5-2: создание экземпляра структуры <code>User</code></span>
 
-To get a specific value from a struct, we can use dot notation. If we wanted just this user’s email address, we could use `user1.email` wherever we wanted to use this value. If the instance is mutable, we can change a value by using the dot notation and assigning into a particular field. Listing 5-3 shows how to change the value in the `email` field of a mutable `User` instance.
+Чтобы получить определённое значение поля структуры, мы можем использовать точечную нотацию (как в кортеже). Если нужен только электронный адрес, можно использовать `user1.email` везде, где нужно его значение. Если экземпляр структуры изменяемый, то для изменения значения данных одного поля структуры, мы присваиваем ему новое значение используя точечную нотацию. Листинг 5-3 показывает как изменить значение в поле `email` изменяемого экземпляра `User`:
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-03/src/main.rs:here}}
@@ -26,7 +26,7 @@ To get a specific value from a struct, we can use dot notation. If we wanted jus
 
 <span class="caption">Листинг 5-3: изменение значения поля <code>email</code> экземпляра структуры <code>User</code></span>
 
-Note that the entire instance must be mutable; Rust doesn’t allow us to mark only certain fields as mutable. As with any expression, we can construct a new instance of the struct as the last expression in the function body to implicitly return that new instance.
+Заметим, что весь экземпляр структуры должен быть изменяемым. Rust не позволяет помечать изменяемыми отдельные поля. Как в любом выражением, можно создавать новый экземпляр структуры в качестве последнего выражения тела функции для явного возврата нового экземпляра.
 
 На листинге 5-4 функция `build_user` возвращает экземпляр `User` с указанным адресом и именем. Поле `active` получает значение `true`, а поле `sign_in_count` получает значение `1`.
 
@@ -91,7 +91,7 @@ Note that the entire instance must be mutable; Rust doesn’t allow us to mark o
 > ### Владение данными структуры
 > При определении структуры `User` листинга 5-1 мы использовали тип `String` владеющий данными вместо `&str`. Это было осознанное решение, т.к. мы хотели, чтобы экземпляры структур владели всеми своими данными и чтобы данные были действительными во время всего существования структуры.
 > Возможно сделать так, чтобы структуры сохраняли ссылки на данные которыми владеет кто-то другой, но это требует использования *времён жизни*, функциональности Rust о которой мы поговорим в главе 10. Времена жизни гарантируют, что данные на которые ссылается структура, действительны столько же времени, сколько действительна сама структура. Допустим, вы пробуете сохранить ссылку в структуре без указания времени жизни, вот так, но это не будет работать:
-> <span class="filename">Filename: src/main.rs</span>
+> <span class="filename">Файл: src/main.rs</span>
 > <!-- CAN'T EXTRACT SEE https://github.com/rust-lang/mdBook/issues/1127 -->
 > ```rust,ignore,does_not_compile
 >  struct User {
@@ -110,7 +110,7 @@ Note that the entire instance must be mutable; Rust doesn’t allow us to mark o
 >      };
 >  }
 > ```
-> The compiler will complain that it needs lifetime specifiers:
+> Компилятор будет жаловаться на необходимость определения времени жизни:
 > ```console
 > $ cargo run
 >    Compiling structs v0.1.0 (file:///projects/structs)
