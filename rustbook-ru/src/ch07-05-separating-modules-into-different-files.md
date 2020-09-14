@@ -7,15 +7,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-mod front_of_house;
-
-pub use crate::front_of_house::hosting;
-
-pub fn eat_at_restaurant() {
-    hosting::add_to_waitlist();
-    hosting::add_to_waitlist();
-    hosting::add_to_waitlist();
-}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-21-and-22/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 7-21. Объявление модуля <code>front_of_house</code> тело которого будет в <em>src/front_of_house.rs</em></span>
@@ -24,10 +16,8 @@ pub fn eat_at_restaurant() {
 
 <span class="filename">Файл: src/front_of_house.rs</span>
 
-```rust
-pub mod hosting {
-    pub fn add_to_waitlist() {}
-}
+```rust,ignore
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-21-and-22/src/front_of_house.rs}}
 ```
 
 <span class="caption">Листинг 7-22. Определения внутри модуля <code>front_of_house</code> в файле <em>src/front_of_house.rs</em></span>
@@ -36,26 +26,24 @@ pub mod hosting {
 
 <span class="filename">Файл: src/front_of_house.rs</span>
 
-```
-pub mod hosting;
+```rust,ignore
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/no-listing-02-extracting-hosting/src/front_of_house.rs}}
 ```
 
 Затем мы создаём каталог *src/front_of_house* и файл *src/front_of_house/hosting.rs*, чтобы он содержал определения, сделанные в модуле `hosting`:
 
 <span class="filename">Файл: src/front_of_house/hosting.rs</span>
 
-```
-pub fn add_to_waitlist() {}
+```rust
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/no-listing-02-extracting-hosting/src/front_of_house/hosting.rs}}
 ```
 
 Дерево модулей остаётся прежним, а вызовы функций в `eat_at_restaurant` будет работать без каких-либо изменений, даже если определения будут в разных файлах. Этот метод позволяет перемещать модули в новые файлы по мере роста их размера.
 
-Обратите внимание, что в выражение 
-`pub use crate::front_of_house::hosting` в файле *src/lib.rs* также не изменилось и использование `use` не влияет на то, какие файлы компилируются как часть крейта. Ключевое слово `mod` объявляет модули, а Rust заглядывает в файл с тем же именем, что и модуль для кода, который входит в этот модуль.
+Обратите внимание, что в выражение `pub use crate::front_of_house::hosting` в файле *src/lib.rs* также не изменилось и использование `use` не влияет на то, какие файлы компилируются как часть крейта. Ключевое слово `mod` объявляет модули, а Rust заглядывает в файл с тем же именем, что и модуль для кода, который входит в этот модуль.
 
 ## Итог
 
-Rust позволяет разбить пакет на несколько крейтов и крейт на модули так, что вы можете ссылаться на элементы определённые в одном модуле из другого модуля. Это можно делать путём указания абсолютных или относительных путей. Пути можно подключить в область видимости оператором `use` так, что можно использовать более короткий путь для многократного использования
-элементов в области видимости. Код модуля по умолчанию является приватным, но можно сделать определения публичными, добавив ключевое слово `pub`.
+Rust позволяет разбить пакет на несколько крейтов и крейт на модули так, что вы можете ссылаться на элементы определённые в одном модуле из другого модуля. Это можно делать путём указания абсолютных или относительных путей. Пути можно подключить в область видимости оператором `use` так, что можно использовать более короткий путь для многократного использования элементов в области видимости. Код модуля по умолчанию является приватным, но можно сделать определения публичными, добавив ключевое слово `pub`.
 
 В следующей главе мы рассмотрим некоторые структуры данных коллекций из стандартной библиотеки, которые можно использовать в своём аккуратно организованном коде.
