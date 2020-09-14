@@ -7,20 +7,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-mod front_of_house {
-    pub mod hosting {
-        pub fn add_to_waitlist() {}
-    }
-}
-
-use crate::front_of_house::hosting;
-
-pub fn eat_at_restaurant() {
-    hosting::add_to_waitlist();
-    hosting::add_to_waitlist();
-    hosting::add_to_waitlist();
-}
-# fn main() {}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-11/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 7-11. Подключение модуля в область видимости с помощью <code>use</code></span>
@@ -32,20 +19,7 @@ pub fn eat_at_restaurant() {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-mod front_of_house {
-    pub mod hosting {
-        pub fn add_to_waitlist() {}
-    }
-}
-
-use front_of_house::hosting;
-
-pub fn eat_at_restaurant() {
-    hosting::add_to_waitlist();
-    hosting::add_to_waitlist();
-    hosting::add_to_waitlist();
-}
-# fn main() {}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-12/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 7-12. Подключение модуля в область видимости с помощью <code>use</code> и относительного пути</span>
@@ -57,20 +31,7 @@ pub fn eat_at_restaurant() {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-mod front_of_house {
-    pub mod hosting {
-        pub fn add_to_waitlist() {}
-    }
-}
-
-use crate::front_of_house::hosting::add_to_waitlist;
-
-pub fn eat_at_restaurant() {
-    add_to_waitlist();
-    add_to_waitlist();
-    add_to_waitlist();
-}
-# fn main() {}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-13/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 7-13. Подключение функции <code>add_to_waitlist</code>  в область видимости с помощью<code> us</code>e, что является идиоматическим способом</span>
@@ -82,15 +43,10 @@ pub fn eat_at_restaurant() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::collections::HashMap;
-
-fn main() {
-    let mut map = HashMap::new();
-    map.insert(1, 2);
-}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-14/src/main.rs}}
 ```
 
-<span class="caption">Листинг 7-14. Идиоматический способ подключения <code>HashMap</code> в область видимости</span>
+<span class="caption">Листинг 7-14. Подключение <code>HashMap</code> в область видимости идиоматическим способом</span>
 
 За этой идиомой нет веской причины: это просто соглашение, которое появилось и люди привыкли читать и писать код Rust таким образом.
 
@@ -99,18 +55,7 @@ fn main() {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-use std::fmt;
-use std::io;
-
-fn function1() -> fmt::Result {
-    // --snip--
-#     Ok(())
-}
-
-fn function2() -> io::Result<()> {
-    // --snip--
-#     Ok(())
-}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-15/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 7-15. Подключение двух типов с одинаковыми именами в одну область видимости требует использования их родительских модулей.</span>
@@ -124,18 +69,7 @@ fn function2() -> io::Result<()> {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-use std::fmt::Result;
-use std::io::Result as IoResult;
-
-fn function1() -> Result {
-    // --snip--
-#     Ok(())
-}
-
-fn function2() -> IoResult<()> {
-    // --snip--
-#     Ok(())
-}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-16/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 7-16. Переименование типа с помощью ключевого слова <code>as</code> при его подключении в область видимости</span>
@@ -144,27 +78,14 @@ fn function2() -> IoResult<()> {
 
 ### Реэкспорт имён используя `pub use`
 
-Когда мы подключаем имя в область видимости используя ключевое слово `use`, то имя доступное в новой области видимости является приватным. Чтобы позволить коду, который вызывает наш код, ссылаться на это имя как если бы оно было определено в области видимости данного кода, можно объединить `pub` и `use`. Этот метод называется *реэкспортом*, потому что мы подключаем элемент в область видимости, но также делаем этот элемент доступным для подключения в других областях видимости.
+Когда мы подключаем имя в область видимости используя ключевое слово `use`, то имя доступное в новой области видимости является приватным. Чтобы позволить коду, который вызывает наш код, ссылаться на это имя как если бы оно было определено в области видимости данного кода, можно объединить `pub` и `use`. Этот метод называется *реэкспортом* (re-exporting), потому что мы подключаем элемент в область видимости, но также делаем этот элемент доступным для подключения в других областях видимости.
 
 Листинг 7-17 показывает код из листинга 7-11 используя `use` в корневом модуле исправленное на `pub use`.
 
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-mod front_of_house {
-    pub mod hosting {
-        pub fn add_to_waitlist() {}
-    }
-}
-
-pub use crate::front_of_house::hosting;
-
-pub fn eat_at_restaurant() {
-    hosting::add_to_waitlist();
-    hosting::add_to_waitlist();
-    hosting::add_to_waitlist();
-}
-# fn main() {}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-17/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 7-17. Указание сделать имя доступным для любого кода из новой области используя <code>pub use</code></span>
@@ -186,19 +107,15 @@ pub fn eat_at_restaurant() {
 <span class="filename">Файл: Cargo.toml</span>
 
 ```toml
-[dependencies]
-rand = "0.5.5"
+{{#include ../listings/ch02-guessing-game-tutorial/listing-02-02/Cargo.toml:9:}}
 ```
 
 Добавление `rand` в качестве зависимости в *Cargo.toml* указывает Cargo загрузить пакет `rand` и любые зависимости из [crates.io](https://crates.io/) и сделать `rand` доступным для нашего проекта.
 
-Затем, чтобы подключить определения `rand` в область видимости нашего пакета, мы добавили строку `use` начинающуюся с названия пакета `rand` и списка элементов, которые мы хотим подключить в область видимости. Напомним, что в разделе [«Генерация случайного числа"]<comment> главы 2, мы подключили типаж <code>Rng</code> в область видимости и вызвали функцию <code>rand::thread_rng</code></comment>
+Затем, чтобы подключить определения `rand` в область видимости нашего пакета, мы добавили строку `use` начинающуюся с названия пакета `rand` и списка элементов, которые мы хотим подключить в область видимости. Напомним, что в разделе [«Генерация случайного числа"]<!-- ignore --> главы 2, мы подключили типаж `Rng` в область видимости и вызвали функцию `rand::thread_rng`:
 
 ```rust,ignore
-use rand::Rng;
-fn main() {
-    let secret_number = rand::thread_rng().gen_range(1, 101);
-}
+{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-03/src/main.rs:ch07-04}}
 ```
 
 Члены сообщества Rust сделали много пакетов доступными на ресурсе [crates.io](https://crates.io/), и затягивание любого из них в свой пакет включает в себя эти же шаги: перечисление их в файле *Cargo.toml* вашего пакета и использование `use` для подключения элементов в область видимости.
@@ -217,19 +134,16 @@ use std::collections::HashMap;
 
 <span class="filename">Файл: src/main.rs</span>
 
-```rust
-use std::io;
-use std::cmp::Ordering;
-// ---snip---
+```rust,ignore
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/no-listing-01-use-std-unnested/src/main.rs:here}}
 ```
 
 Вместо этого можно использовать вложенные пути, чтобы подключить в область видимости те же элементы одной строкой. Мы делаем это, указывая общую часть пути, за которой следуют два двоеточия, а затем фигурные скобки вокруг списка частей путей, которые отличаются, как показано в листинге 7-18.
 
 <span class="filename">Файл: src/main.rs</span>
 
-```rust
-use std::{cmp::Ordering, io};
-// ---snip---
+```rust,ignore
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-18/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 7-18. Указание вложенного пути для подключения нескольких элементов с одинаковым префиксом в область видимости</span>
@@ -241,8 +155,7 @@ use std::{cmp::Ordering, io};
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-use std::io;
-use std::io::Write;
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-19/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 7-19. Два оператора <code>use</code> где один содержит под путь другого</span>
@@ -252,7 +165,7 @@ use std::io::Write;
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-use std::io::{self, Write};
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-20/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 7-20. Объединение путей из листинга 7-19 в один оператор <code>use</code></span>
@@ -267,9 +180,9 @@ use std::io::{self, Write};
 use std::collections::*;
 ```
 
-Этот оператор `use` подключает все открытые элементы из модуля `std::collections` в текущую область видимости. Будьте осторожны при использовании оператора `glob`! Он может усложнить понимание, какие имена находятся в области видимости и где были определены имена, используемые в вашей программе.
+Этот оператор `use` подключает все открытые элементы из модуля `std::collections` в текущую область видимости. Будьте осторожны при использовании оператора <code>glob</code>! Он может усложнить понимание, какие имена находятся в области видимости и где были определены имена, используемые в вашей программе.
 
-Оператор glob часто используется при тестировании для подключения всего что есть в модуль `tests`; мы поговорим об этом в разделе [«Как писать тесты»]<comment></comment> главы 11. Оператор `glob` также иногда используется как часть шаблона автоматического импорта прелюдии: смотрите [стандартная библиотечная документация](../std/prelude/index.html#other-preludes)<comment></comment> для получения дополнительной информации об этом шаблоне.
+Оператор glob часто используется при тестировании для подключения всего что есть в модуль `tests`; мы поговорим об этом в разделе [«Как писать тесты»]<!-- ignore --> главы 11. Оператор <code>glob</code> также иногда используется как часть шаблона автоматического импорта прелюдии: смотрите <a>стандартная библиотечная документация</a><!-- ignore --> для получения дополнительной информации об этом шаблоне.
 
 
 [«Генерация случайного числа"]: ch02-00-guessing-game-tutorial.html#generating-a-random-number
