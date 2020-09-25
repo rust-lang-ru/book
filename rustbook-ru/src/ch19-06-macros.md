@@ -1,6 +1,6 @@
 ## Макросы
 
-We’ve used macros like `println!` throughout this book, but we haven’t fully explored what a macro is and how it works. The term *macro* refers to a family of features in Rust: *declarative* macros with `macro_rules!` and three kinds of *procedural* macros:
+Мы использовали макросы, такие как `println!` на протяжении всей этой книги, но мы не изучили полностью, что такое макрос и как он работает. Термин *макрос* относится к семейству возможностей в Rust. Это *декларативные* (declarative) макросы с помощью `macro_rules!` и три вида *процедурных* (procedural) макросов:
 
 - Пользовательские (выводимые) `#[derive]` макросы, которые указывают код добавленный с помощью `derive` атрибута, используемые для структур и перечислений
 - Макросы подобные атрибутам (attribute-like), которые определяют настраиваемые атрибуты, используемые для любого элемента языка
