@@ -1,9 +1,9 @@
 ## Неустранимые ошибки с макросом `panic!`
 
-Иногда в коде происходят плохие вещи, и вы ничего не можете с этим поделать . В этих случаях у Rust есть макрос `panic!`. Когда выполняется макрос `panic!`, ваша программа напечатает сообщение об ошибке, раскрутит и очистит стек вызовов, а затем завершится. Это чаще всего происходит, когда был обнаружен какой-то дефект и программисту не ясно, как его обработать.
+Иногда в коде происходят плохие вещи, и вы ничего не можете с этим поделать. В этих случаях у Rust есть макрос `panic!`. Когда выполняется макрос `panic!`, ваша программа напечатает сообщение об ошибке, раскрутит и очистит стек вызовов, а затем завершится. Это чаще всего происходит, когда был обнаружен какой-то дефект и программисту не ясно, как его обработать.
 
 > ### Раскрутка стека или прерывание в ответ на панику
-> По умолчанию, когда происходит паника, программа начинает процесс *раскрутки стека*, в Rust означающий проход обратно по стеку вызовов и очистку данных для каждой обнаруженной функции. Но данный проход в обратном порядке и очистки является большой работой. Альтернативой является немедленное *прерывание* выполнения, которое завершает программу без очистки. Память, которую использовала программа, должна быть очищена операционной системой. Если в вашем проекте нужно сделать маленьким исполняемый файл, насколько это возможно, вы можете переключиться с варианта раскрутки стека на вариант прерывания, добавьте `panic ='abort'` в соответствующие разделы `[profile]` вашего файла *Cargo.toml* . Например, если вы хотите прервать панику в режим финальной сборки, добавьте это:
+> По умолчанию, когда происходит паника, программа начинает процесс *раскрутки стека*, в Rust означающий проход обратно по стеку вызовов и очистку данных для каждой обнаруженной функции. Но данный проход в обратном порядке и очистки является большой работой. Альтернативой является немедленное *прерывание* выполнения, которое завершает программу без очистки. Память, которую использовала программа, должна быть очищена операционной системой. Если в вашем проекте нужно сделать маленьким исполняемый файл, насколько это возможно, вы можете переключиться с варианта раскрутки стека на вариант прерывания, добавьте `panic =`
 > ```toml
 > [profile.release]
 > panic = 'abort'
@@ -14,23 +14,16 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,should_panic,panics
-fn main() {
-    panic!("crash and burn");
-}
+{{#rustdoc_include ../listings/ch09-error-handling/no-listing-01-panic/src/main.rs}}
 ```
 
 При запуске программы, вы увидите что-то вроде этого:
 
-```text
-$ cargo run
-   Compiling panic v0.1.0 (file:///projects/panic)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.25s
-     Running `target/debug/panic`
-thread 'main' panicked at 'crash and burn', src/main.rs:2:5
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
+```console
+{{#include ../listings/ch09-error-handling/no-listing-01-panic/output.txt}}
 ```
 
-Выполнение макроса `panic!` вызывает сообщение об ошибке, содержащееся в двух последних строках. Первая строка показывает сообщение паники и место в исходном коде, где возникла паника: *src/main.rs: 2: 5* указывает, что это вторая строка, пятый символ внутри нашего файла *src/main.rs*
+Выполнение макроса `panic!` вызывает сообщение об ошибке, содержащееся в двух последних строках. Первая строка показывает сообщение паники и место в исходном коде, где возникла паника: *src/main.rs: 2:5* указывает, что это вторая строка, пятый символ внутри нашего файла *src/main.rs*
 
 В этом случае указанная строка является частью нашего кода, и если мы перейдём к этой строке, мы увидим  вызов макроса `panic!`. В других случаях `panic!` вызов мог бы быть в коде, который вызывает наш код, тогда имя файла и номер строки для сообщения об ошибке будет из чужого кода, где макрос `panic!` выполнен, а не из строк нашего кода, которые в конечном итоге привели к выполнению `panic!`. Мы можем использовать обратную трассировку вызовов функций из части нашего кода, которые вызвали проблему и откуда появился `panic!`. Мы обсудим обратную трассировку более подробно далее.
 
@@ -41,81 +34,88 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,should_panic,panics
-fn main() {
-    let v = vec![1, 2, 3];
-
-    v[99];
-}
+{{#rustdoc_include ../listings/ch09-error-handling/listing-09-01/src/main.rs}}
 ```
 
 <span class="caption">Листинг 9-1. Попытка доступа к элементу за пределами вектора, который вызовет <code>panic!</code></span>
 
-Здесь мы пытаемся получить доступ к сотому элементу вектора (который находится по индексу 99, потому что индексирование начинается с нуля), но вектор имеет только 3 элемента. В этой ситуации, Rust будет вызывать панику. Использование `[]` должно бы вернуть элемент, но вы передаёте неверный индекс и нет правильного элемента, который Rust мог бы вернуть.
+Здесь мы пытаемся получить доступ к 100-му элементу вектора (который находится по индексу 99, потому что индексирование начинается с нуля), но вектор имеет только 3 элемента. В этой ситуации, Rust будет вызывать панику. Использование `[]` должно бы вернуть элемент, но вы передаёте неверный индекс и нет правильного элемента, который Rust мог бы вернуть.
 
 Другие языки типа C, будут пытаться вернуть вам именно то, что вы попросили в этой ситуация, даже если это не то, что вы хотите: вы все равно получите то, что находится в данном месте памяти, которое соответствовало бы этому элементу в векторе, не смотря на то, что та память не принадлежит вектору. Это называется *переполнение буфера* и может привести к уязвимостям безопасности, если злоумышленник может манипулировать индексом таким образом, что будет читать данные, которые он не должен иметь возможности читать, потому что они хранятся за пределами массива.
 
 Чтобы защитить вашу программу от такого рода уязвимостей при попытке прочитать элемент с индексом, которого не существует, Rust остановит выполнение и откажется продолжить работу программы. Давайте попробуем это и посмотрим:
 
-```text
-$ cargo run
-   Compiling panic v0.1.0 (file:///projects/panic)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.27s
-     Running `target/debug/panic`
-thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 99', libcore/slice/mod.rs:2448:10
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
+```console
+{{#include ../listings/ch09-error-handling/listing-09-01/output.txt}}
 ```
 
-Данная ошибка указывает на файл, который мы не написали, *libcore/slice/mod.rs*. Это реализация находится в `slice` исходного кода Rust. Код, который запускается при использовании `[]` для вектора `v` находящийся в *libcore/slice/mod.rs* и это является местом, где на самом деле происходит вызов `panic!`.
+Данная ошибка указывает на файл, который не является нашим, *libcore/slice/mod.rs*. Это реализация находится в `slice` исходного кода Rust. Код, который запускается при использовании `[]` для вектора `v` находящийся в *libcore/slice/mod.rs* и это является тем местом, где на самом деле происходит вызов `panic!`.
 
 Следующая строка говорит, что мы можем установить переменную среды `RUST_BACKTRACE`, чтобы получить обратную трассировку того, что именно стало причиной ошибки. *Обратная трассировка* создаёт список всех функций, которые были вызваны в этой точке. Обратная трассировка в Rust работает так же, как и в других языках: ключом для чтения данных обратной трассировки - это начинать читать сверху и читать, пока не увидим файлы написанные нами. Это место, где возникла проблема. Строки над строками с упоминанием наших файлов - это код, который называется нашим кодом; строки ниже являются кодом, который вызывает наш код. Эти строки могут включать основной код Rust, код стандартной библиотеки или используемые крейты. Давайте попробуем получить обратную трассировку с помощью установки переменной среды `RUST_BACKTRACE` в любое значение, кроме 0. Листинг 9-2 показывает вывод, подобный тому, что вы увидите.
 
-```text
+<!-- manual-regeneration
+cd listings/ch09-error-handling/listing-09-01
+RUST_BACKTRACE=1 cargo run
+copy the backtrace output below
+check the backtrace number mentioned in the text below the listing
+-->
+
+```console
 $ RUST_BACKTRACE=1 cargo run
-    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
-     Running `target/debug/panic`
-thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 99', libcore/slice/mod.rs:2448:10
+thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 99', /rustc/5e1a799842ba6ed4a57e91f7ab9435947482f7d8/src/libcore/slice/mod.rs:2806:10
 stack backtrace:
-   0: std::sys::unix::backtrace::tracing::imp::unwind_backtrace
-             at libstd/sys/unix/backtrace/tracing/gcc_s.rs:49
-   1: std::sys_common::backtrace::print
-             at libstd/sys_common/backtrace.rs:71
-             at libstd/sys_common/backtrace.rs:59
-   2: std::panicking::default_hook::{{closure}}
-             at libstd/panicking.rs:211
-   3: std::panicking::default_hook
-             at libstd/panicking.rs:227
-   4: <std::panicking::begin_panic::PanicPayload<A> as core::panic::BoxMeUp>::get
-             at libstd/panicking.rs:476
-   5: std::panicking::continue_panic_fmt
-             at libstd/panicking.rs:390
-   6: std::panicking::try::do_call
-             at libstd/panicking.rs:325
-   7: core::ptr::drop_in_place
-             at libcore/panicking.rs:77
-   8: core::ptr::drop_in_place
-             at libcore/panicking.rs:59
-   9: <usize as core::slice::SliceIndex<[T]>>::index
-             at libcore/slice/mod.rs:2448
-  10: core::slice::<impl core::ops::index::Index<I> for [T]>::index
-             at libcore/slice/mod.rs:2316
-  11: <alloc::vec::Vec<T> as core::ops::index::Index<I>>::index
-             at liballoc/vec.rs:1653
-  12: panic::main
+   0: backtrace::backtrace::libunwind::trace
+             at /Users/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.40/src/backtrace/libunwind.rs:88
+   1: backtrace::backtrace::trace_unsynchronized
+             at /Users/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/backtrace-0.3.40/src/backtrace/mod.rs:66
+   2: std::sys_common::backtrace::_print_fmt
+             at src/libstd/sys_common/backtrace.rs:84
+   3: <std::sys_common::backtrace::_print::DisplayBacktrace as core::fmt::Display>::fmt
+             at src/libstd/sys_common/backtrace.rs:61
+   4: core::fmt::ArgumentV1::show_usize
+   5: std::io::Write::write_fmt
+             at src/libstd/io/mod.rs:1426
+   6: std::sys_common::backtrace::_print
+             at src/libstd/sys_common/backtrace.rs:65
+   7: std::sys_common::backtrace::print
+             at src/libstd/sys_common/backtrace.rs:50
+   8: std::panicking::default_hook::{{closure}}
+             at src/libstd/panicking.rs:193
+   9: std::panicking::default_hook
+             at src/libstd/panicking.rs:210
+  10: std::panicking::rust_panic_with_hook
+             at src/libstd/panicking.rs:471
+  11: rust_begin_unwind
+             at src/libstd/panicking.rs:375
+  12: core::panicking::panic_fmt
+             at src/libcore/panicking.rs:84
+  13: core::panicking::panic_bounds_check
+             at src/libcore/panicking.rs:62
+  14: <usize as core::slice::SliceIndex<[T]>>::index
+             at /rustc/5e1a799842ba6ed4a57e91f7ab9435947482f7d8/src/libcore/slice/mod.rs:2806
+  15: core::slice::<impl core::ops::index::Index<I> for [T]>::index
+             at /rustc/5e1a799842ba6ed4a57e91f7ab9435947482f7d8/src/libcore/slice/mod.rs:2657
+  16: <alloc::vec::Vec<T> as core::ops::index::Index<I>>::index
+             at /rustc/5e1a799842ba6ed4a57e91f7ab9435947482f7d8/src/liballoc/vec.rs:1871
+  17: panic::main
              at src/main.rs:4
-  13: std::rt::lang_start::{{closure}}
-             at libstd/rt.rs:74
-  14: std::panicking::try::do_call
-             at libstd/rt.rs:59
-             at libstd/panicking.rs:310
-  15: macho_symbol_search
-             at libpanic_unwind/lib.rs:102
-  16: std::alloc::default_alloc_error_hook
-             at libstd/panicking.rs:289
-             at libstd/panic.rs:392
-             at libstd/rt.rs:58
-  17: std::rt::lang_start
-             at libstd/rt.rs:74
-  18: panic::main
+  18: std::rt::lang_start::{{closure}}
+             at /rustc/5e1a799842ba6ed4a57e91f7ab9435947482f7d8/src/libstd/rt.rs:67
+  19: std::rt::lang_start_internal::{{closure}}
+             at src/libstd/rt.rs:52
+  20: std::panicking::try::do_call
+             at src/libstd/panicking.rs:292
+  21: __rust_maybe_catch_panic
+             at src/libpanic_unwind/lib.rs:78
+  22: std::panicking::try
+             at src/libstd/panicking.rs:270
+  23: std::panic::catch_unwind
+             at src/libstd/panic.rs:394
+  24: std::rt::lang_start_internal
+             at src/libstd/rt.rs:51
+  25: std::rt::lang_start
+             at /rustc/5e1a799842ba6ed4a57e91f7ab9435947482f7d8/src/libstd/rt.rs:67
+  26: panic::main
 ```
 
 <span class="caption">Листинг 9-2. Отображается обратная трассировка, сгенерированная вызовом <code>panic!</code>, когда установлена переменная окружения <code>RUST_BACKTRACE</code></span>
@@ -124,4 +124,4 @@ stack backtrace:
 
 В выводе листинга 9-2, строка 12 обратной трассировки указывает на строку в нашем проекте, который вызывал проблему: строка 4 из файла *src/main.rs.* Если мы не хотим возникновения паники в программе, место на которое указывает первая строка нашего файла - это то место, где мы должны начать расследование. В листинге 9-1, где мы для демонстрации использования обратной трассировки сознательно написали код, который паникует, способ исправления паники состоит в том, чтобы не запрашивать элемент с индексом 99 из вектора, который содержит только 3 элемента. Когда ваш код запаникует в будущем, вам нужно выяснить, какое выполняющееся кодом действие, с какими значениями вызывает панику и что этот код должен делать вместо этого.
 
-Мы вернёмся к макросу `panic!`, когда мы должны и не должны для обработки ошибки использовать `panic!` в разделе <a data-md-type="raw_html" href="ch09-03-to-panic-or-not-to-panic.html#to-panic-or-not-to-panic">“Паниковать `panic!` или НЕ <code data-md-type="raw_html">паниковать!</code>”</a> позже в этой главе. Далее мы рассмотрим, как исправить ошибку, используя тип `Result`.
+Мы вернёмся к макросу `panic!`, когда мы должны и не должны для обработки ошибки использовать `panic!` в разделе <a href="ch09-03-to-panic-or-not-to-panic.html#to-panic-or-not-to-panic" data-md-type="link">“Паниковать `panic!` или НЕ <code data-md-type="codespan">паниковать!</code>”</a><!-- ignore --> позже в этой главе. Далее мы рассмотрим, как исправить ошибку, используя тип <code>Result</code>.
