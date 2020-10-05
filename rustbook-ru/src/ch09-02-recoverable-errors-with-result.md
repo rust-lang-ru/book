@@ -1,11 +1,14 @@
 ## Исправимые ошибки с `Result`
 
-Множество ошибок не являются настолько критичными, чтобы полностью останавливать выполнение программы. Весьма часто необходима просто правильная их обработка. К примеру, при попытке открытия файла может произойти ошибка из-за отсутствия файла. Решением может быть создание нового файла вместо прерывания процесса.
+Множество ошибок являются не настолько критичными, чтобы останавливать выполнение программы. Иногда, когда в функции происходит сбой, то необходима просто правильная интерпретация и обработка такой ошибки. К примеру, при попытке открыть файл может произойти ошибка этой операции из-за отсутствия файла. Вы возможно хотите создать новый файл вместо остановки программы.
 
-Напомним из ["Обработка потенциального сбоя с помощью типа `Result` "](ch02-00-guessing-game-tutorial.html#handling-potential-failure-with-the-result-type)<comment> главы 2,  перечисление <code>Result</code> определено следующим образом как имеющее два варианта <code>Ok</code> и <code>Err</code> :</comment>
+Напомним из ["Обработка потенциального сбоя с помощью типа `Result`"]<comment> <!----> </comment> главы 2, перечисление `Result`, имеющее два варианта, `Ok` и `Err`, определено следующим образом:
 
 ```rust
-enum Result<T, E> {     Ok(T),     Err(E), }
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
 ```
 
 Типы `T` и `E` являются параметрами обобщённого типа: мы обсудим обобщённые типы более подробно в главе 10. Все что вам нужно знать прямо сейчас - это то, что `T` представляет тип значения, которое будет возвращено в случае успеха внутри варианта `Ok`, а `E` представляет тип ошибки, которая будет возвращена при сбое внутри варианта `Err`. Так как тип `Result` имеет эти тИповые параметры, мы можем использовать тип `Result` и его методы, которые определены в стандартной библиотеке, в ситуациях, когда тип успешного значение и значения ошибки, которые мы хотим вернуть, отличаются.
@@ -15,7 +18,7 @@ enum Result<T, E> {     Ok(T),     Err(E), }
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::fs::File;  fn main() {     let f = File::open("hello.txt"); }
+{{#rustdoc_include ../listings/ch09-error-handling/listing-09-03/src/main.rs}}
 ```
 
 <span class="caption">Листинг 9-3: Открытие файла</span>
@@ -23,13 +26,13 @@ use std::fs::File;  fn main() {     let f = File::open("hello.txt"); }
 Откуда мы знаем, что `File::open` возвращает `Result` ? Мы могли бы посмотреть в [документацию стандартной библиотеки по API ](../std/index.html)<!-- <!----> --> или мы могли бы спросить компилятор! Если мы припишем переменной `f` тип, *отличный* от возвращаемого типа функции, а затем попытаемся скомпилировать код, компилятор скажет нам, что типы не совпадают. Сообщение об ошибке подскажет нам, каким *должен быть* тип `f`. Давайте попробуем! Мы знаем, что возвращаемый тип `File::open` не является типом `u32`, поэтому давайте изменим выражение `let f` на следующее:
 
 ```rust,ignore,does_not_compile
-let f: u32 = File::open("hello.txt");
+{{#rustdoc_include ../listings/ch09-error-handling/no-listing-02-ask-compiler-for-type/src/main.rs:here}}
 ```
 
 Попытка компиляции выводит сообщение:
 
 ```console
-error[E0308]: mismatched types  --> src/main.rs:4:18   | 4 |     let f: u32 = File::open("hello.txt");   |                  ^^^^^^^^^^^^^^^^^^^^^^^ expected u32, found enum `std::result::Result`   |   = note: expected type `u32`   = note:    found type `std::result::Result<std::fs::File, std::io::Error>`
+{{#include ../listings/ch09-error-handling/no-listing-02-ask-compiler-for-type/output.txt}}
 ```
 
 Ошибка говорит нам о том, что возвращаемым типом функции `File::open` является `Result<T, E>`. Типовый параметр `T` здесь равен типу успешного выполнения,`std::fs::File`, то есть дескриптору файла. Тип `E`, используемый в значении ошибки, равен `std::io::Error`.
@@ -43,7 +46,7 @@ error[E0308]: mismatched types  --> src/main.rs:4:18   | 4 |     let f: u32 = Fi
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,should_panic
-use std::fs::File;  fn main() {     let f = File::open("hello.txt");      let f = match f {         Ok(file) => file,         Err(error) => {             panic!("There was a problem opening the file: {:?}", error)         },     }; }
+{{#rustdoc_include ../listings/ch09-error-handling/listing-09-04/src/main.rs}}
 ```
 
 <span class="caption">Листинг 9-4: Использование выражения <code>match</code> для обработки <code>Result</code></span>
@@ -55,7 +58,7 @@ use std::fs::File;  fn main() {     let f = File::open("hello.txt");      let f 
 Другая ветвь `match` обрабатывает случай, где мы получаем значение `Err` после вызова `File::open`. В этом примере мы решили вызвать макрос `panic!`. Если в нашей текущей директории нет файла с именем *hello.txt* и мы выполним этот код, то мы увидим следующее сообщение от макроса `panic!` :
 
 ```text
-thread 'main' panicked at 'There was a problem opening the file: Error { repr: Os { code: 2, message: "No such file or directory" } }', src/main.rs:8
+{{#include ../listings/ch09-error-handling/listing-09-04/output.txt}}
 ```
 
 Как обычно, данное сообщение точно говорит, что пошло не так.
@@ -70,7 +73,7 @@ thread 'main' panicked at 'There was a problem opening the file: Error { repr: O
 tests to fail lol -->
 
 ```rust,ignore
-use std::fs::File; use std::io::ErrorKind;  fn main() {     let f = File::open("hello.txt");      let f = match f {         Ok(file) => file,         Err(ref error) if error.kind() == ErrorKind::NotFound => match File::create("hello.txt") {             Ok(fc) => fc,             Err(e) => panic!("Tried to create file but there was a problem: {:?}", e),         },         Err(error) => panic!("There was a problem opening the file: {:?}", error),     };     print!("{:#?}",f); }
+{{#rustdoc_include ../listings/ch09-error-handling/listing-09-05/src/main.rs}}
 ```
 
 <span class="caption">Листинг 9-5: Обработка различных ошибок различными способами</span>
@@ -82,25 +85,27 @@ use std::fs::File; use std::io::ErrorKind;  fn main() {     let f = File::open("
 Достаточно про `match`! Код с `match` является очень удобным, но также достаточно примитивным. В главе 13 вы узнаете про замыкания (closures) ; тип  `Result<T, E>` имеет много методов, принимающих замыкание, и реализованных с помощью выражения`match`. Использование данных методов сделает ваш код более лаконичным. Более опытные разработчики могут написать такой код, вместо того, что показан в листинге 9-5:
 
 ```rust,ignore
-use std::fs::File; use std::io::ErrorKind;  fn main() {     let f = File::open("hello.txt").unwrap_or_else(|error| {         if error.kind() == ErrorKind::NotFound {             File::create("hello.txt").unwrap_or_else(|error| {                 panic!("Problem creating the file: {:?}", error);             })         } else {             panic!("Problem opening the file: {:?}", error);         }     }); }
+{{#rustdoc_include ../listings/ch09-error-handling/no-listing-03-closures/src/main.rs}}
 ```
 
 Несмотря на то, что данный код имеет такое же поведение как в листинге 9-5, он не содержит ни одного выражения `match` и проще для чтения. Вернёмся к этому примеру после главы 13 и рассмотрим метод `unwrap_or_else` из стандартной библиотеки. Многие из этих методов могут очистить код от больших, вложенных выражений `match` при обработке ошибок.
 
 ### Сокращённые способы обработки ошибок `unwrap` и `expect`
 
-Использование `match` работает достаточно хорошо, но может быть многословным и не всегда хорошо передаёт намерение. Тип `Result<T, E>` имеет много вспомогательных методов определённых в нем, чтобы выполнять различные задачи. Одним из таких методов, который называется `unwrap`, является метод, который реализован так же , как выражение `match` описанный в листинге 9-4. Если значением `Result` является вариант `Ok`, то `unwrap` вернёт значение внутри `Ok`. Если `Result` является вариантом `Err`, `unwrap` вызовет макрос `panic!`. Вот пример `unwrap` в действии:
+Использование `match` работает неплохо, однако может выглядеть несколько многословно и не всегда хорошо передает намерения. У тип `Result<T, E>` есть много методов для различных задач. Один из них, `unwrap`, является сокращенным методом, который реализован прямо как выражение `match` из листинга 9-4. Если значение `Result` это `Ok`, `unwrap` вернет значение внутри `Ok`. Если же `Result` это `Err`, `unwrap` вызовет макрос `panic!`. Вот пример `unwrap` в действии:
 
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,should_panic
-use std::fs::File;  fn main() {     let f = File::open("hello.txt").unwrap();     print!("{:#?}", f); }
+{{#rustdoc_include ../listings/ch09-error-handling/no-listing-04-unwrap/src/main.rs}}
 ```
 
 Если мы запустим этот код при отсутствии файла *hello.txt* , то увидим сообщение об ошибке из вызова `panic!` метода `unwrap` :
 
 ```text
-thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Error { repr: Os { code: 2, message: "No such file or directory" } }', /stable-dist-rustc/build/src/libcore/result.rs:868
+thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Error {
+repr: Os { code: 2, message: "No such file or directory" } }',
+src/libcore/result.rs:906:4
 ```
 
 Другой метод, похожий на `unwrap`, это `expect`, позволяющий выбрать сообщение об ошибке для макроса `panic!`. Использование `expect` вместо `unwrap` с предоставлением хорошего сообщения об ошибке выражает ваше намерение и делает более простым отслеживание источника паники. Синтаксис метода `expect` выглядит так:
@@ -108,13 +113,14 @@ thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Error { 
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,should_panic
-use std::fs::File;  fn main() {     let f = File::open("hello.txt").expect("Failed to open hello.txt");     print!("{:?}", f); }
+{{#rustdoc_include ../listings/ch09-error-handling/no-listing-05-expect/src/main.rs}}
 ```
 
 Мы используем `expect` таким же образом, как и `unwrap`: чтобы вернуть дескриптор файла или вызвать макрос `panic!`. Сообщением об ошибке, которое `expect` передаст в `panic!`, будет параметр функции `expect`, а не значение по-умолчанию, используемое `unwrap`. Вот как оно выглядит:
 
 ```text
-thread 'main' panicked at 'Failed to open hello.txt: Error { repr: Os { code: 2, message: "No such file or directory" } }', src/libcore/result.rs:906:4
+thread 'main' panicked at 'Failed to open hello.txt: Error { repr: Os { code:
+2, message: "No such file or directory" } }', src/libcore/result.rs:906:4
 ```
 
 Так как сообщение об ошибке начинается с нашего пользовательского текста: `Failed to open hello.txt`, то потом будет проще найти из какого места в коде данное сообщение приходит. Если использовать `unwrap` во множестве мест, то придётся потратить время для выяснения какой именно вызов `unwrap` вызывает "панику", так как все вызовы  <code>unwrap</code> генерируют одинаковое сообщение.
@@ -123,7 +129,7 @@ thread 'main' panicked at 'Failed to open hello.txt: Error { repr: Os { code: 2,
 
 Когда вы пишете функцию, реализация которой вызывает что-то, что может завершиться ошибкой, вместо обработки ошибки в этой функции, вы можете вернуть ошибку в вызывающий код, чтобы он мог решить, что с ней делать. Это известно как *распространение* ошибки и оно даёт больший контроль вызывающему коду, где может быть больше информации или логики, которая диктует, как ошибка должна обрабатываться, чем место в контексте текущего кода.
 
-Например, код программы 9-5 читает имя пользователя из файла. Если файл не существует или не может быть прочтён, то функция возвращает ошибку в код, который вызвал данную функцию:
+Например, код программы 9-6 читает имя пользователя из файла. Если файл не существует или не может быть прочтён, то функция возвращает ошибку в код, который вызвал данную функцию:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -135,7 +141,7 @@ don't want to include it for rustdoc testing purposes. -->
 {{#include ../listings/ch09-error-handling/listing-09-06/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 9-5: Функция, которая возвращает ошибки в вызывающий код, используя выражение<code>match</code></span>
+<span class="caption">Листинг 9-6: Функция, которая возвращает ошибки в вызывающий код, используя оператор <code>match</code></span>
 
 Данную функцию можно записать гораздо короче, но, чтобы изучить обработку ошибок, мы собираемся сделать многое вручную, а в конце покажем более короткий способ. Давайте сначала рассмотрим тип возвращаемого значения: Result<String, io::Error>. <br>Здесь есть возвращаемое значение функции типа Result<T, E> где шаблонный параметр T был заполнен конкретным типом String и шаблонный параметр E был заполнен конкретным типом io::Error. Если эта функция выполнится успешно, будет возвращено Ok, содержащее значение<br>типа String - имя пользователя прочитанное функцией из файла. Если же при чтении файла будут какие-либо проблемы, то вызываемый код получит значение Err с экземпляром io::Error, в котором содержится больше информации об ошибке. Мы выбрали <code>io::Error</code> в качестве возвращаемого значения функции, потому что обе операции, которые мы вызываем внутри этой функции, возвращают этот тип ошибки: функция <code>File::open</code> и метод <code>read_to_string</code>.
 
@@ -147,7 +153,7 @@ don't want to include it for rustdoc testing purposes. -->
 
 Такая схема распространения ошибок настолько распространена в Rust, что Rust предоставляет оператор вопросительный знак `?` для простоты.
 
-#### Сокращённое описание для оператора распространения ошибки `?`
+#### Сокращение для проброса ошибок: оператор `?`
 
 Код программы 9-6 показывает реализацию функции `read_username_from_file`, функционал которой аналогичен коду программы 9-5, но реализация использует оператор `?` :
 
@@ -225,6 +231,10 @@ don't want to include it for rustdoc testing purposes. -->
 {{#rustdoc_include ../listings/ch09-error-handling/no-listing-07-main-returning-result/src/main.rs}}
 ```
 
-Тип `Box<dyn Error>` называется типаж объектом, о котором мы поговорим в разделе [«Использование типаж объектов, которые допускают значения различных типов»](ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types)<comment data-md-type="raw_html"> главы 17. А пока вы можете читать обозначение `Box<dyn Error>` как «любая ошибка». Использование <code data-md-type="raw_html">?</code> в <code data-md-type="raw_html">main</code> функции разрешена с этим  возвращаемым типом.</comment>
+Тип `Box<dyn Error>` называется типаж объектом, о котором мы поговорим в разделе ["Использование типаж объектов, которые допускают значения различных типов"]<comment> <!----> </comment> главы 17. А пока вы можете читать обозначение `Box<dyn Error>` как "любая ошибка". Использование `?` в `main` функции с этим  возвращаемым типом также разрешено.
 
 Теперь, когда мы обсудили детали вызова `panic!` или возврата `Result`, давайте вернёмся к тому, как решить, какой из случаев подходит для какой ситуации.
+
+
+["Обработка потенциального сбоя с помощью типа `Result`"]: ch02-00-guessing-game-tutorial.html#handling-potential-failure-with-the-result-type
+["Использование типаж объектов, которые допускают значения различных типов"]: ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types
