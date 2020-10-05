@@ -116,7 +116,7 @@ src/libcore/result.rs:906:4
 {{#rustdoc_include ../listings/ch09-error-handling/no-listing-05-expect/src/main.rs}}
 ```
 
-Мы используем `expect` таким же образом, как и `unwrap`: чтобы вернуть дескриптор файла или вызвать макрос `panic!`. Сообщением об ошибке, которое `expect` передаст в `panic!`, будет параметр функции `expect`, а не значение поумолчанию, используемое `unwrap`. Вот как оно выглядит:
+Мы используем `expect` таким же образом, как и `unwrap`: чтобы вернуть дескриптор файла или вызвать макрос `panic!`. Сообщением об ошибке, которое `expect` передаст в `panic!`, будет параметр функции `expect`, а не значение по умолчанию, используемое `unwrap`. Вот как оно выглядит:
 
 ```text
 thread 'main' panicked at 'Failed to open hello.txt: Error { repr: Os { code:
