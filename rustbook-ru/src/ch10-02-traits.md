@@ -1,6 +1,6 @@
 ## Типажи: определение общего поведения
 
-*Типаж* сообщает компилятору Rust о функциональности, которой обладает определённый тип и которой он может поделиться с другими типами. Можно использовать типажи, чтобы определять общее поведение абстрактным способом. Можно использовать ограничения типажей для указания, что обобщение может быть любого типа с определённым поведением.
+*Типаж* сообщает компилятору Rust о функциональности, которой обладает определённый тип и которой он может поделиться с другими типами. Можно использовать типажи, чтобы определять общее поведение абстрактным способом. Можно использовать ограничения типажей для указания, что обобщение может быть любого типа с определенным поведением.
 
 > Примечание: Типажи похожи на функциональность часто называемую *интерфейсами* в других языках, хотя и с некоторыми отличиями.
 
@@ -10,23 +10,21 @@
 
 Например, скажем есть несколько структур, которые имеют различный тип и различное количество текста: структура `NewsArticle` содержит новости, которые печатаются в различных местах в мире. Структура `Tweet` имеет 280 символов с мета-данными, обозначающими является ли он новым твитом, ответом на другой твит.
 
-Мы хотим создать библиотеку медиа-агрегатора, которая может отображать сводку данных сохранённых в экземплярах структур `NewsArticle` или `Tweet`. Чтобы этого достичь, необходимо каждой структуре иметь возможность делать короткую сводку на основе имеющихся данных. Это должно происходить при вызове метода `summary` у экземпляра объекта. Пример (10-12) иллюстрирует определение типажа `Summarizable`, который выражает данное поведение:
+Мы хотим создать библиотеку медиа-агрегатора, которая может отображать сводку данных сохранённых в экземплярах структур `NewsArticle` или `Tweet`. Чтобы этого достичь, необходимо каждой структуре иметь возможность делать короткую сводку на основе имеющихся данных. Это должно происходить при вызове метода `summarize` у экземпляра объекта. Пример (10-12) иллюстрирует определение типажа `Summary`, который выражает данное поведение:
 
 <span class="filename">Файл: lib.rs</span>
 
 ```rust
-pub trait Summary {
-    fn summarize(&self) -> String;
-}
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-12/src/lib.rs}}
 ```
 
-<span class="caption">Код 10-12: Определение типажа <code>Summarizable</code>, который содержит поведение предоставленное методом <code>summarize</code></span>
+<span class="caption">Код 10-12: Определение типажа <code>Summary</code>, который содержит поведение предоставленное методом <code>summarize</code></span>
 
 Здесь мы объявляем типаж с использованием ключевого слова `trait`, а затем его название, которым является `Summary` в данном случае. Внутри фигурных скобок объявляются сигнатуры методов, которые описывают поведения типов, реализующих данных типаж, что в данном случае является `fn summarize(&self) -> String`.
 
 После сигнатуры метода, вместо предоставления реализации в фигурных в скобках, мы используем точку с запятой. Каждый тип, реализующий данный типаж, должен предоставить своё собственное поведение в теле метода. Компилятор обеспечит, что любой тип содержащий типаж `Summary`, будет также иметь и метод `summarize` объявленный с точно такой же сигнатурой.
 
-Типаж может иметь несколько методов в описании его тела: сигнатуры методов перечислены на каждой строке и должны закачиваться символом ";".
+Типаж может иметь несколько методов в описании его тела: сигнатуры методов перечисляются по одной на каждой строке и должны закачиваться символом ";".
 
 ### Реализация типажа у типа
 
@@ -35,35 +33,7 @@ pub trait Summary {
 <span class="filename">Файл: lib.rs</span>
 
 ```rust
-# pub trait Summary {
-#     fn summarize(&self) -> String;
-# }
-#
-pub struct NewsArticle {
-    pub headline: String,
-    pub location: String,
-    pub author: String,
-    pub content: String,
-}
-
-impl Summary for NewsArticle {
-    fn summarize(&self) -> String {
-        format!("{}, by {} ({})", self.headline, self.author, self.location)
-    }
-}
-
-pub struct Tweet {
-    pub username: String,
-    pub content: String,
-    pub reply: bool,
-    pub retweet: bool,
-}
-
-impl Summary for Tweet {
-    fn summarize(&self) -> String {
-        format!("{}: {}", self.username, self.content)
-    }
-}
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-13/src/lib.rs:here}}
 ```
 
 <span class="caption">Код программы 10-13: Реализация типажа <code>Summarizable</code> для структур <code>NewsArticle</code> и <code>Tweet</code></span>
@@ -73,19 +43,12 @@ impl Summary for Tweet {
 После того, как мы реализовали типаж, можно вызвать его методы у экземпляров `NewsArticle` и `Tweet` тем же способом, что и вызов обычных методов, например так:
 
 ```rust,ignore
-let tweet = Tweet {
-    username: String::from("horse_ebooks"),
-    content: String::from("of course, as you probably already know, people"),
-    reply: false,
-    retweet: false,
-};
-
-println!("1 new tweet: {}", tweet.summarize());
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-01-calling-trait-method/src/main.rs:here}}
 ```
 
 Данный код напечатает: `1 new tweet: horse_ebooks: of course, as you probably already know, people`.
 
-Обратите внимание, что, поскольку мы определили типаж `Summary` и `NewsArticle` и `Tweet` типы находятся в том же файле *lib.rs* примера 10-13, они все находятся в одной области видимости. Допустим, этот *lib.rs* предназначен для крейта, который мы назвали `aggregator` и кто-то ещё хочет использовать функциональность нашего крейта для реализации типажа `Summary` у структуры, определённой в области видимости внутри их библиотеки. Им нужно будет сначала подключить типаж в их область видимости. Они сделали бы это, указав `use aggregator::Summary;`, что позволит реализовать `Summary` для их типа. Типажу `Summary` также необходимо быть публичным для реализации в других крейтах, потому мы поставили ключевое слово `pub` перед `trait` в листинге 10-12.
+Обратите внимание, что, поскольку мы определили типаж `Summary` и типы `NewsArticle{]code1} и <code data-md-type="codespan" data-parent-segment-tag-id="4886053">Tweet` в том же файле *lib.rs* примера 10-13, все они находятся в одной области видимости. Допустим, этот *lib.rs* предназначен для крейта, который мы назвали `aggregator` и кто-то ещё хочет использовать функциональность нашего крейта для реализации типажа `Summary` у структуры, определённой в области видимости внутри их библиотеки. Им нужно будет сначала подключить типаж в их область видимости. Они сделали бы это, указав `use aggregator::Summary;`, что позволит реализовать `Summary` для их типа. Типажу `Summary` также необходимо быть публичным для реализации в других крейтах, потому мы поставили ключевое слово `pub` перед `trait` в листинге 10-12.
 
 Одно ограничение, на которое следует обратить внимание при реализации типажей это то, что мы можем реализовать типаж для типа, только если либо типаж, либо тип являются локальным для нашего крейта. Например, можно реализовать типажи из стандартной библиотеки, такие как `Display` для пользовательского типа `Tweet` являющимся частью функциональности крейта `aggregator`, потому что тип `Tweet` является локальным в крейте `aggregator`. Мы также можем реализовать типаж `Summary` для `Vec<T>` в нашем крейте `aggregator`, потому что типаж `Summary`  является локальным для крейта `aggregator`.
 
@@ -100,11 +63,7 @@ println!("1 new tweet: {}", tweet.summarize());
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-pub trait Summary {
-    fn summarize(&self) -> String {
-        String::from("(Read more...)")
-    }
-}
+pub trait Summary {     fn summarize(&self) -> String {         String::from("(Read more...)")     } }
 ```
 
 <span class="caption">Листинг 10-14. Определение типажа <code>Summary</code> с реализацией метода <code>summarize</code> по умолчанию</span>
@@ -114,15 +73,7 @@ pub trait Summary {
 Хотя мы больше не определяем метод `summarize` непосредственно в `NewsArticle`, мы предоставили реализацию по умолчанию и указали, что `NewsArticle` реализует типаж `Summary`. В результате мы всё ещё можем вызвать метод `summarize` у экземпляра `NewsArticle`, например так:
 
 ```rust,ignore
-let article = NewsArticle {
-    headline: String::from("Penguins win the Stanley Cup Championship!"),
-    location: String::from("Pittsburgh, PA, USA"),
-    author: String::from("Iceburgh"),
-    content: String::from("The Pittsburgh Penguins once again are the best
-    hockey team in the NHL."),
-};
-
-println!("New article available! {}", article.summarize());
+let article = NewsArticle {     headline: String::from("Penguins win the Stanley Cup Championship!"),     location: String::from("Pittsburgh, PA, USA"),     author: String::from("Iceburgh"),     content: String::from("The Pittsburgh Penguins once again are the best     hockey team in the NHL."), };  println!("New article available! {}", article.summarize());
 ```
 
 Этот код печатает `New article available! (Read more...)` .
@@ -132,36 +83,19 @@ println!("New article available! {}", article.summarize());
 Реализации по умолчанию могут вызывать другие методы с том же типаже, даже если эти другие методы не имеют реализации по умолчанию. Таким образом, типаж может предоставить много полезной функциональности и только требует от разработчиков  указывать небольшую его часть. Например, мы могли бы определить типаж `Summary` имеющий метод `summarize_author`, реализация которого требуется, а затем определить метод `summarize` который имеет реализацию по умолчанию, которая внутри вызывает метод `summarize_author` :
 
 ```rust
-pub trait Summary {
-    fn summarize_author(&self) -> String;
-
-    fn summarize(&self) -> String {
-        format!("(Read more from {}...)", self.summarize_author())
-    }
-}
+pub trait Summary {     fn summarize_author(&self) -> String;      fn summarize(&self) -> String {         format!("(Read more from {}...)", self.summarize_author())     } }
 ```
 
 Чтобы использовать такую версию типажа `Summary`, нужно только определить метод `summarize_author`, при реализации типажа для типа:
 
 ```rust,ignore
-impl Summary for Tweet {
-    fn summarize_author(&self) -> String {
-        format!("@{}", self.username)
-    }
-}
+impl Summary for Tweet {     fn summarize_author(&self) -> String {         format!("@{}", self.username)     } }
 ```
 
 После того, как мы определим `summarize_author`, можно вызвать `summarize` для экземпляров структуры `Tweet` и реализация по умолчанию метода `summarize` будет вызывать определение `summarize_author` которое мы уже предоставили. Так как мы реализовали метод `summarize_author` типажа `Summary`, то типаж даёт нам поведение метода `summarize` без необходимости писать код.
 
 ```rust,ignore
-let tweet = Tweet {
-    username: String::from("horse_ebooks"),
-    content: String::from("of course, as you probably already know, people"),
-    reply: false,
-    retweet: false,
-};
-
-println!("1 new tweet: {}", tweet.summarize());
+let tweet = Tweet {     username: String::from("horse_ebooks"),     content: String::from("of course, as you probably already know, people"),     reply: false,     retweet: false, };  println!("1 new tweet: {}", tweet.summarize());
 ```
 
 Этот код печатает `1 new tweet: (Read more from @horse_ebooks...)` .
@@ -175,9 +109,7 @@ println!("1 new tweet: {}", tweet.summarize());
 Например, в листинге 10-13 мы реализовали типаж `Summary` для типов структур `NewsArticle` и `Tweet` . Можно определить функцию `notify` которая вызывает метод `summarize` с параметром `item`, который имеет тип реализующий типаж `Summary` . Для этого можно использовать синтаксис `impl Trait`, например так:
 
 ```rust,ignore
-pub fn notify(item: impl Summary) {
-    println!("Breaking news! {}", item.summarize());
-}
+pub fn notify(item: impl Summary) {     println!("Breaking news! {}", item.summarize()); }
 ```
 
 Вместо конкретного типа у параметра `item` указывается ключевое слово `impl`  и имя типажа. Этот параметр принимает любой тип, который реализует указанный типаж. В теле `notify` мы можем вызывать любые методы у экземпляра `item`, которые приходят из типажа `Summary`, такие как `summarize` . Мы можем вызвать `notify` и передать в него любой экземпляр `NewsArticle` или `Tweet` . Код, который вызывает данную функцию с любым другим типом, таким как `String` или `i32`, не будет компилироваться, потому что эти типы не реализуют типаж `Summary`.
@@ -187,9 +119,7 @@ pub fn notify(item: impl Summary) {
 Синтаксис `impl Trait` работает для простых случаев, но на самом деле является синтаксическим сахаром для более длинной формы, которая называется *ограничением типажа*; это выглядит так:
 
 ```rust,ignore
-pub fn notify<T: Summary>(item: T) {
-    println!("Breaking news! {}", item.summarize());
-}
+pub fn notify<T: Summary>(item: T) {     println!("Breaking news! {}", item.summarize()); }
 ```
 
 Эта более длинная форма эквивалентна примеру в предыдущем разделе, но он более многословный. Мы помещаем границы типажа с объявлением параметра обобщённого типа после двоеточия и внутри угловых скобок.
@@ -219,7 +149,7 @@ pub fn notify(item: impl Summary + Display) {
 Синтаксис `+` также допустим с ограничениями типажа для обобщённых типов:
 
 ```rust,ignore
-pub fn notify<T: Summary + Display>(item: T) {
+pub fn notify<T: Summary + Display>(item: &T) {
 ```
 
 При наличии двух ограничений типажа, тело метода `notify` может вызывать `summarize` и использовать `{}` для форматирования `item` .
@@ -235,10 +165,7 @@ fn some_function<T: Display + Clone, U: Clone + Debug>(t: T, u: U) -> i32 {
 можно использовать предложение `where` , например так:
 
 ```rust,ignore
-fn some_function<T, U>(t: T, u: U) -> i32
-    where T: Display + Clone,
-          U: Clone + Debug
-{
+fn some_function<T, U>(t: T, u: U) -> i32     where T: Display + Clone,           U: Clone + Debug {
 ```
 
 Сигнатура этой функции менее загромождена: название функции, список параметров, и возвращаемый тип близки друг к другу, похожи на функцию без множества ограничений типажа.
@@ -248,14 +175,7 @@ fn some_function<T, U>(t: T, u: U) -> i32
 Также можно использовать синтаксис `impl Trait` в возвращаемой позиции, чтобы вернуть значение некоторого типа реализующего типаж, как показано здесь:
 
 ```rust,ignore
-fn returns_summarizable() -> impl Summary {
-    Tweet {
-        username: String::from("horse_ebooks"),
-        content: String::from("of course, as you probably already know, people"),
-        reply: false,
-        retweet: false,
-    }
-}
+fn returns_summarizable() -> impl Summary {     Tweet {         username: String::from("horse_ebooks"),         content: String::from("of course, as you probably already know, people"),         reply: false,         retweet: false,     } }
 ```
 
 Используя `impl Summary` для возвращаемого типа, мы указываем, что функция `returns_summarizable` возвращает некоторый тип, который реализует типаж `Summary` без обозначения конкретного типа. В этом случае `returns_summarizable` возвращает `Tweet`, но код, вызывающий эту функцию, этого не знает.
@@ -265,24 +185,7 @@ fn returns_summarizable() -> impl Summary {
 Однако можно использовать только `impl Trait`, если возвращаете только один тип. Например, данный код, который возвращает или `NewsArticle` или `Tweet`, а в качестве возвращаемого типа объявляет `impl Summary`, не будет работать:
 
 ```rust,ignore,does_not_compile
-fn returns_summarizable(switch: bool) -> impl Summary {
-    if switch {
-        NewsArticle {
-            headline: String::from("Penguins win the Stanley Cup Championship!"),
-            location: String::from("Pittsburgh, PA, USA"),
-            author: String::from("Iceburgh"),
-            content: String::from("The Pittsburgh Penguins once again are the best
-            hockey team in the NHL."),
-        }
-    } else {
-        Tweet {
-            username: String::from("horse_ebooks"),
-            content: String::from("of course, as you probably already know, people"),
-            reply: false,
-            retweet: false,
-        }
-    }
-}
+fn returns_summarizable(switch: bool) -> impl Summary {     if switch {         NewsArticle {             headline: String::from("Penguins win the Stanley Cup Championship!"),             location: String::from("Pittsburgh, PA, USA"),             author: String::from("Iceburgh"),             content: String::from("The Pittsburgh Penguins once again are the best             hockey team in the NHL."),         }     } else {         Tweet {             username: String::from("horse_ebooks"),             content: String::from("of course, as you probably already know, people"),             reply: false,             retweet: false,         }     } }
 ```
 
 Возврат `NewsArticle` или `Tweet` не допускается из-за ограничений того, как реализован синтаксис `impl Trait` в компиляторе. Мы рассмотрим, как написать функцию с таким поведением в разделе [«Использование объектов типажей, которые разрешены для значений или разных типов».](ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types)<comment> главы 17.</comment>
@@ -292,13 +195,7 @@ fn returns_summarizable(switch: bool) -> impl Summary {
 Теперь, когда вы знаете, как указать поведение, которое вы хотите использовать с помощью параметра обобщённого типа с ограничениями, давайте вернёмся к листингу 10-5, чтобы исправить определение функции `largest`, которая использует параметр общего типа! В прошлый раз мы пытались запустить этот код, но получили ошибку:
 
 ```text
-error[E0369]: binary operation `>` cannot be applied to type `T`
- --> src/main.rs:5:12
-  |
-5 |         if item > largest {
-  |            ^^^^^^^^^^^^^^
-  |
-  = note: an implementation of `std::cmp::PartialOrd` might be missing for `T`
+error[E0369]: binary operation `>` cannot be applied to type `T`  --> src/main.rs:5:12   | 5 |         if item > largest {   |            ^^^^^^^^^^^^^^   |   = note: an implementation of `std::cmp::PartialOrd` might be missing for `T`
 ```
 
 В теле функции `largest` мы хотели сравнить два значения типа `T` используя оператор больше чем ( `>` ). Так как этот оператор определён у типажа `std::cmp::PartialOrd` из стандартной библиотеки как метод по умолчанию, то нам нужно указать `PartialOrd` в качестве ограничения для типа `T`, так что функция `largest` сможет работать со срезами любого типа, которые мы можем сравнить. Нам не нужно подключать `PartialOrd` в область видимости, потому что он есть в авто-импорте. Изменим сигнатуру `largest`, чтобы она выглядела так:
@@ -309,24 +206,8 @@ fn largest<T: PartialOrd>(list: &[T]) -> T {
 
 На этот раз при компиляции кода мы получаем другой набор ошибок:
 
-```text
-error[E0508]: cannot move out of type `[T]`, a non-copy slice
- --> src/main.rs:2:23
-  |
-2 |     let mut largest = list[0];
-  |                       ^^^^^^^
-  |                       |
-  |                       cannot move out of here
-  |                       help: consider using a reference instead: `&list[0]`
-
-error[E0507]: cannot move out of borrowed content
- --> src/main.rs:4:9
-  |
-4 |     for &item in list.iter() {
-  |         ^----
-  |         ||
-  |         |hint: to prevent move, use `ref item` or `ref mut item`
-  |         cannot move out of borrowed content
+```console
+error[E0508]: cannot move out of type `[T]`, a non-copy slice  --> src/main.rs:2:23   | 2 |     let mut largest = list[0];   |                       ^^^^^^^   |                       |   |                       cannot move out of here   |                       help: consider using a reference instead: `&list[0]`  error[E0507]: cannot move out of borrowed content  --> src/main.rs:4:9   | 4 |     for &item in list.iter() {   |         ^----   |         ||   |         |hint: to prevent move, use `ref item` or `ref mut item`   |         cannot move out of borrowed content
 ```
 
 Ключевая строка в этой ошибке `cannot move out of type [T], a non-copy slice`. С нашими не обобщёнными версиями функции `largest` мы пытались найти самый большой элемент только для типа `i32` или `char`. Как обсуждалось в разделе [«Данные только для стека: Копирование»](ch04-01-what-is-ownership.html#stack-only-data-copy) главы 4, типы подобные `i32` и `char`, имеющие известный размер, могут храниться в стеке, поэтому они реализуют типаж `Copy`. Но когда мы сделали функцию `largest` обобщённой, для параметра `list` стало возможным иметь типы, которые не реализуют типаж `Copy`. Следовательно, мы не сможем переместить значение из переменной `list[0] ` в переменную `largest`, в результате чего появляется это ошибка.
@@ -336,29 +217,7 @@ error[E0507]: cannot move out of borrowed content
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
-    let mut largest = list[0];
-
-    for &item in list.iter() {
-        if item > largest {
-            largest = item;
-        }
-    }
-
-    largest
-}
-
-fn main() {
-    let number_list = vec![34, 50, 25, 100, 65];
-
-    let result = largest(&number_list);
-    println!("The largest number is {}", result);
-
-    let char_list = vec!['y', 'm', 'a', 'q'];
-
-    let result = largest(&char_list);
-    println!("The largest char is {}", result);
-}
+fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {     let mut largest = list[0];      for &item in list.iter() {         if item > largest {             largest = item;         }     }      largest }  fn main() {     let number_list = vec![34, 50, 25, 100, 65];      let result = largest(&number_list);     println!("The largest number is {}", result);      let char_list = vec!['y', 'm', 'a', 'q'];      let result = largest(&char_list);     println!("The largest char is {}", result); }
 ```
 
 <span class="caption">Листинг 10-16: Объявление функции <code>largest</code> работающей с любыми обобщёнными типами, которые реализуют типажи <code>PartialOrd</code> и <code>Copy</code></span>
@@ -371,32 +230,10 @@ fn main() {
 
 Используя ограничение типажа с блоком `impl`, который использует параметры обобщённого типа, можно реализовать методы условно, для тех типов, которые реализуют указанный типаж. Например, тип `Pair<T>` в листинге 10-16 всегда реализует функцию `new`. Но `Pair<T>` реализует только метод `cmp_display`, если его внутренний тип `T` реализует типаж `PartialOrd` позволяющий сравнивать в том числе *и* типаж `Display` позволяющий печать.
 
+<span class="filename">Filename: src/lib.rs</span>
+
 ```rust
-use std::fmt::Display;
-
-struct Pair<T> {
-    x: T,
-    y: T,
-}
-
-impl<T> Pair<T> {
-    fn new(x: T, y: T) -> Self {
-        Self {
-            x,
-            y,
-        }
-    }
-}
-
-impl<T: Display + PartialOrd> Pair<T> {
-    fn cmp_display(&self) {
-        if self.x >= self.y {
-            println!("The largest member is x = {}", self.x);
-        } else {
-            println!("The largest member is y = {}", self.y);
-        }
-    }
-}
+use std::fmt::Display;  struct Pair<T> {     x: T,     y: T, }  impl<T> Pair<T> {     fn new(x: T, y: T) -> Self {         Self {             x,             y,         }     } }  impl<T: Display + PartialOrd> Pair<T> {     fn cmp_display(&self) {         if self.x >= self.y {             println!("The largest member is x = {}", self.x);         } else {             println!("The largest member is y = {}", self.y);         }     } }
 ```
 
 <span class="caption">Листинг 10-17: Условная реализация методов у обобщённых типов в зависимости от ограничений типажа</span>
