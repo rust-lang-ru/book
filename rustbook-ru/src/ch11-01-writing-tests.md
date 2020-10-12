@@ -18,7 +18,7 @@
 
 Давайте создадим новый проект библиотеки под названием `adder` :
 
-```text
+```console
 $ cargo new adder --lib
      Created library `adder` project
 $ cd adder
@@ -29,40 +29,19 @@ $ cd adder
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 11-1: Тестовый модуль и функция автоматически генерируемая при создании проекта библиотеки кода с помощью команды <code>cargo new</code></span>
+<span class="caption">Листинг 11-1: Тестовый модуль и функция автоматически генерируемая с помощью команды <code>cargo new</code></span>
 
-Сейчас проигнорируем первые две строчки кода и сфокусируемся на функции для того, чтобы увидеть как она работает. Обратите внимание на синтаксис аннотации `#[test]` перед ключевым словом `fn`. Этот атрибут сообщает компилятору, что это является заголовком тест функции, так что функционал запускающий тесты на выполнение теперь знает, что это тест функция. Также в составе модуля тестов `tests` могут быть вспомогательные функции, помогающие настроить и выполнить общие подготовительные операции, поэтому специальная аннотация важна для указания объявления функций тестами с использованием атрибута `#[test]`.
+Сейчас проигнорируем первые две строчки кода и сосредоточимся на функции, чтобы увидеть как она работает. Обратите внимание на синтаксис аннотации `#[test]` перед ключевым словом `fn`. Этот атрибут сообщает компилятору, что это является заголовком тест функции, так что функционал запускающий тесты на выполнение теперь знает, что это тестовая функция. Также в составе модуля тестов `tests` могут быть вспомогательные функции, помогающие настроить и выполнить общие подготовительные операции, поэтому специальная аннотация важна для указания объявления функций тестами с использованием атрибута `#[test]`.
 
 Тело функции использует макрос `assert_eq!`, чтобы утверждать, что 2 + 2 равно 4. Это утверждение служит примером формата для типичного теста. Давайте запустим, чтобы увидеть, что этот тест проходит.
 
 Команда `cargo test` выполнит все тесты в выбранном проекте и сообщит о результатах как в листинге 11-2:
 
-```text
-$ cargo test
-   Compiling adder v0.1.0 (file:///projects/adder)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.22 secs
-     Running target/debug/deps/adder-ce99bcc2479f4607
-
-running 1 test
-test tests::it_works ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-   Doc-tests adder
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/listing-11-01/output.txt}}
 ```
 
 <span class="caption">Листинг 11-2: Вывод информации о работе автоматически сгенерированных тестов</span>
@@ -71,32 +50,22 @@ Cargo скомпилировал и выполнил тест. После стр
 
 Поскольку у нас нет тестов, которые мы пометили как игнорируемые, в сводке отображается `0 ignored`. Мы также не отфильтровывали тесты для выполнения, поэтому конец сводки пишет `0 filtered out`. Мы поговорим про игнорирование и фильтрацию тестов в следующем разделе [“Controlling How Tests Are Run.”](ch11-02-running-tests.html#controlling-how-tests-are-run)<comment></comment>
 
-Статистика `0 measured` предназначена для тестов производительности. На момент написания этой статьи такие тесты доступны только в ночной сборке Rust. Посмотрите [документацию о тестах производительности](../unstable-book/library-features/test.html), чтобы узнать больше.
+Статистика `0 measured` предназначена для тестов производительности. На момент написания этой статьи такие тесты доступны только в ночной сборке Rust. Посмотрите [документацию о тестах производительности], чтобы узнать больше.
 
-Следующая часть вывода тестов начинается с `Doc-tests adder` - это информация о тестах в документации. У нас пока нет тестов документации, но Rust может компилировать любые примеры кода, которые находятся в API документации. Такая возможность помогает поддерживать документацию и код в синхронизированном состоянии. Мы поговорим о написании тестов документации в секции [“Комментарии документации как тесты”](ch14-02-publishing-to-crates-io.html#documentation-comments-as-tests)<comment> главы 14. Пока просто проигнорируем часть <code data-md-type="codespan">Doc-tests</code> вывода.</comment>
+Следующая часть вывода тестов начинается с `Doc-tests adder` - это информация о тестах в документации. У нас пока нет тестов документации, но Rust может компилировать любые примеры кода, которые находятся в API документации. Такая возможность помогает поддерживать документацию и код в синхронизированном состоянии. Мы поговорим о написании тестов документации в секции [“Комментарии документации как тесты”]<!-- <!----> --> главы 14. Пока просто проигнорируем часть `Doc-tests` вывода.
 
 Давайте поменяем название нашего теста и посмотрим что же измениться в строке вывода. Назовём нашу функцию `it_works` другим именем - `exploration`:
 
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn exploration() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/src/lib.rs:here}}
 ```
 
 Снова выполним команду `cargo test`. Вывод показывает наименование нашей тест функции - `exploration` вместо `it_works`:
 
-```text
-running 1 test
-test tests::exploration ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/output.txt}}
 ```
 
 Добавим ещё один тест, но в этот раз специально сделаем так, чтобы этот новый тест не отработал. Тест терпит неудачу, когда что-то паникует в тестируемой функции. Каждый тест запускается в новом потоке и когда главный поток видит, что тестовый поток упал, то помечает тест как завершившийся аварийно. Мы говорили о простейшем способе вызвать панику в главе 9, используя для этого известный макрос `panic!`. Введём код тест функции `another`, как в файле *src/lib.rs* из листинга 11-3.
@@ -104,19 +73,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,panics
-# fn main() {}
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn exploration() {
-        assert_eq!(2 + 2, 4);
-    }
-
-    #[test]
-    fn another() {
-        panic!("Make this test fail");
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-03/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 11-3: Добавление второго теста. Второй тест вызывает макрос <code>panic!</code></span>
@@ -124,27 +81,12 @@ mod tests {
 Запустим команду `cargo test`. Вывод результатов показан в листинге 11-4, который сообщает, что тест `exploration` пройден, а `another` нет:
 
 ```text
-running 2 tests
-test tests::exploration ... ok
-test tests::another ... FAILED
-
-failures:
-
----- tests::another stdout ----
-thread 'tests::another' panicked at 'Make this test fail', src/lib.rs:10:9
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
-
-failures:
-    tests::another
-
-test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
-
-error: test failed
+{{#include ../listings/ch11-writing-automated-tests/listing-11-03/output.txt}}
 ```
 
 <span class="caption">Листинг 11-4: Результаты выполнения тестов, когда один пройден, а второй нет</span>
 
-Вместо `ok`, строка `test tests::another` сообщает `FAILED`. У нас есть два новых раздела между результатами и итогами. Первый раздел показывает детальную причину ошибки каждого теста. В данном случае тест `another` не сработал, потому что  `panicked at 'Make this test fail'`, произошло в строке 10 файла *src/lib.rs*. В следующем разделе перечисляют имена всех не пройденных тестов, что удобно, когда тестов очень много и есть много деталей про аварийное завершение. Мы можем использовать имя не пройденного теста для его дальнейшей отладки; мы больше поговорим о способах запуска тестов в разделе [“Управление как запускать тесты”](ch11-02-running-tests.html#controlling-how-tests-are-run)<comment>.</comment>
+Вместо `ok`, строка `test tests::another` сообщает `FAILED`. У нас есть два новых раздела между результатами и итогами. Первый раздел показывает детальную причину ошибки каждого теста. В данном случае тест `another` не сработал, потому что `panicked at 'Make this test fail'`, произошло в строке 10 файла *src/lib.rs*. В следующем разделе перечисляют имена всех не пройденных тестов, что удобно, когда тестов очень много и есть много деталей про аварийное завершение. Мы можем использовать имя не пройденного теста для его дальнейшей отладки; мы больше поговорим о способах запуска тестов в разделе [“Управление запуска тестов”](ch11-02-running-tests.html#controlling-how-tests-are-run)<!-- <!----> -->.
 
 Итоговая строка отображается в конце: общий результат нашего тестирования `FAILED`. У нас один тест пройден и один тест завершён аварийно.
 
@@ -159,53 +101,27 @@ error: test failed
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-#[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
-}
-
-impl Rectangle {
-    fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.height > other.height
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-05/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 11-5: Использование структуры <code>Rectangle</code> и её метода <code>can_hold</code> из главы 5</span>
+<span class="caption">Листинг 11-5. Использование структуры <code>Rectangle</code> и ее метода <code>can_hold</code> из главы 5</span>
 
 Метод `can_hold` возвращает логическое значение, что означает, что она является идеальным вариантом использования в макросе `assert!`. В листинге 11-6 мы пишем тест, который выполняет метод `can_hold` путём создания экземпляра `Rectangle` шириной 8 и высотой 7 и убеждаемся, что он может содержать другой экземпляр `Rectangle` имеющий ширину 5 и высоту 1.
 
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn larger_can_hold_smaller() {
-        let larger = Rectangle { width: 8, height: 7 };
-        let smaller = Rectangle { width: 5, height: 1 };
-
-        assert!(larger.can_hold(&smaller));
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-06/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 11-6: Теста для метода <code>can_hold</code>, который проверяет что больший прямоугольник действительно может содержать меньший</span>
 
-Также, в модуле `tests` обратите внимание на новую добавленную строку `use super::*;`. Модуль `tests` является обычным и подчиняется тем же правилам видимости, которые мы обсуждали в главе 7 [“Пути для ссылки на элементы внутри дерева модуля”](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html)<comment>. Так как этот модуль `tests` является внутренним, нужно подключить тестируемый код из внешнего модуля в область видимости внутреннего модуля с тестами. Для этого используется глобальное подключения, так что все что определено во внешнем модуле становится доступным внутри `tests` модуле.</comment>
+Также, в модуле `tests` обратите внимание на новую добавленную строку `use super::*;`. Модуль `tests` является обычным и подчиняется тем же правилам видимости, которые мы обсуждали в главе 7 [“Пути для ссылки на элементы внутри дерева модуля”]<!-- <!----> -->. Так как этот модуль `tests` является внутренним, нужно подключить тестируемый код из внешнего модуля в область видимости внутреннего модуля с тестами. Для этого используется глобальное подключения, так что все что определено во внешнем модуле становится доступным внутри `tests` модуле.
 
 Мы назвали наш тест `larger_can_hold_smaller` и создали два нужных экземпляра `Rectangle`. Затем вызвали макрос `assert!` и передали результат вызова `larger.can_hold(&smaller)` в него. Это выражение должно возвращать `true`, поэтому наш тест должен пройти. Давайте выясним!
 
-```text
-running 1 test
-test tests::larger_can_hold_smaller ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/listing-11-06/output.txt}}
 ```
 
 Тест проходит. Теперь добавим другой тест, в этот раз мы попытаемся убедиться, что меньший прямоугольник не может содержать больший прямоугольник:
@@ -213,72 +129,25 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn larger_can_hold_smaller() {
-        // --snip--
-    }
-
-    #[test]
-    fn smaller_cannot_hold_larger() {
-        let larger = Rectangle { width: 8, height: 7 };
-        let smaller = Rectangle { width: 5, height: 1 };
-
-        assert!(!smaller.can_hold(&larger));
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-02-adding-another-rectangle-test/src/lib.rs:here}}
 ```
 
 Поскольку правильный результат функции `can_hold` в этом случае `false`, то мы должны инвертировать этот результат, прежде чем передадим его в `assert!` макро. Как результат, наш тест пройдёт, если `can_hold` вернёт `false` :
 
-```text
-running 2 tests
-test tests::smaller_cannot_hold_larger ... ok
-test tests::larger_can_hold_smaller ... ok
-
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/no-listing-02-adding-another-rectangle-test/output.txt}}
 ```
 
 Два теста работают. Теперь проверим, как отреагируют тесты, если мы добавим ошибку в код. Давайте изменим реализацию метода `can_hold` заменив одно из логических выражений знак сравнения с "больше чем" на противоположный "меньше чем" при сравнении ширины:
 
 ```rust,not_desired_behavior
-# fn main() {}
-# #[derive(Debug)]
-# struct Rectangle {
-#     width: u32,
-#     height: u32,
-# }
-// --snip--
-
-impl Rectangle {
-    fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width < other.width && self.height > other.height
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/src/lib.rs:here}}
 ```
 
 Запуск тестов теперь производит следующее:
 
-```text
-running 2 tests
-test tests::smaller_cannot_hold_larger ... ok
-test tests::larger_can_hold_smaller ... FAILED
-
-failures:
-
----- tests::larger_can_hold_smaller stdout ----
-thread 'tests::larger_can_hold_smaller' panicked at 'assertion failed:
-larger.can_hold(&smaller)', src/lib.rs:22:9
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
-
-failures:
-    tests::larger_can_hold_smaller
-
-test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/output.txt}}
 ```
 
 Наши тесты нашли ошибку! Так как в тесте `larger.width` равно 8 и `smaller.width` равно 5 сравнение ширины в методе `can_hold` возвращает результат `false`, то число 8 не меньше чем 5.
@@ -292,31 +161,15 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-pub fn add_two(a: i32) -> i32 {
-    a + 2
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_adds_two() {
-        assert_eq!(4, add_two(2));
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-07/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 11-7: Тестирование функции <code>add_two</code>, используя макрос <code>assert_eq!</code></span>
 
 Проверим, что тесты проходят!
 
-```text
-running 1 test
-test tests::it_adds_two ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/listing-11-07/output.txt}}
 ```
 
 Первый аргумент, который мы передаём в макрос `assert_eq!` число `4` чей результат вызова равен `add_two(2)` . Строка для этого теста - `test tests::it_adds_two ... ok` , а текст `ok` означает, что наш тест пройден!
@@ -324,64 +177,33 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 Давайте введём ошибку в код, чтобы увидеть, как она выглядит, когда тест, который использует `assert_eq!` завершается ошибкой. Измените реализацию функции `add_two`, чтобы добавлять `3` :
 
 ```rust,not_desired_behavior
-# fn main() {}
-pub fn add_two(a: i32) -> i32 {
-    a + 3
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-04-bug-in-add-two/src/lib.rs:here}}
 ```
 
 Попробуем выполнить данный тест ещё раз:
 
-```text
-running 1 test
-test tests::it_adds_two ... FAILED
-
-failures:
-
----- tests::it_adds_two stdout ----
-thread 'tests::it_adds_two' panicked at 'assertion failed: `(left == right)`
-  left: `4`,
- right: `5`', src/lib.rs:11:9
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
-
-failures:
-    tests::it_adds_two
-
-test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/no-listing-04-bug-in-add-two/output.txt}}
 ```
 
-Наш тест нашёл ошибку! Тест `it_adds_two` не выполнен, отображается сообщение `assertion failed: `(left == right)`` и показывает, что `left` было `4`, а `right` было `5` . Это сообщение полезно и помогает нам начать отладку: это означает `left` аргумент `assert_eq!` имел значение `4`, но `right` аргумент для вызова `add_two(2)` получил значение `5` .
+Наш тест нашёл ошибку! Тест `it_adds_two` не выполнился, отображается сообщение `assertion failed: `(left == right)`` и показывает, что `left` было `4`, а `right` было `5`. Это сообщение полезно и помогает начать отладку: это означает `left` аргумент `assert_eq!` имел значение `4`, но `right` аргумент для вызова `add_two(2)` был со значением `5`.
 
 Обратите внимание, что в некоторых языках (таких как Java) в библиотеках кода для тестирования принято именовать входные параметры проверочных функций как "ожидаемое" (`expected`) и "фактическое" (`actual`). В Rust приняты следующие обозначения `left` и `right` соответственно, а порядок в котором определяются ожидаемое значение и производимое тестируемым кодом значение не имеют значения. Мы могли бы написать выражение в тесте как `assert_eq!(add_two(2), 4)`, что приведёт к отображаемому сообщению об ошибке `assertion failed: `(left == right)``, слева `left` было бы `5`, а справа `right` было бы `4`.
 
-Макрос `assert_ne!` сработает успешно, если входные параметры не равны друг другу и завершится с ошибкой, если значения равны. Этот макрос наиболее полезен в тех случаях, когда мы не знаем заранее, какое точно может быть значение, но знаем точно, каким оно быть не может. К примеру, если тестируется функция, которая гарантировано изменяет входные данные определённым образом, но способ изменения входного параметра зависит от дня недели, в который запускаются тесты, что лучший способ проверить правильность работы такой функции - это сравнить и убедиться, что выходное значение функции не должно быть равным входному значению.
+Макрос `assert_ne!` сработает успешно, если входные параметры не равны друг другу и завершится с ошибкой, если значения равны. Этот макрос наиболее полезен в тех случаях, когда мы не знаем заранее, каким значение *будет*, но знаем точно, каким оно *не может* быть. К примеру, если тестируется функция, которая гарантировано изменяет входные данные определённым образом, но способ изменения входного параметра зависит от дня недели, в который запускаются тесты, что лучший способ проверить правильность работы такой функции - это сравнить и убедиться, что выходное значение функции не должно быть равным входному значению.
 
-С своей работе макросы `assert_eq!` и `assert_ne!` неявным образом используют операторы `==` и `!=` соответственно. Когда проверка не срабатывает, макросы печатают значения аргументов с помощью отладочного форматирования и это означает, что значения сравниваемых аргументов должны реализовать типажи `PartialEq` и `Debug`. Все примитивные и большая часть типов стандартной библиотеки Rust реализуют эти типажи. Для структур и перечислений, которые вы реализуете сами будет необходимо реализовать типаж `PartialEq` для сравнения значений на равенство или не равенство. Для печати отладочной информации в виде сообщений в строку вывода консоли необходимо реализовать типаж `Debug`. Так как оба типажа являются выводимыми типажами, как упоминалось в листинге 5-12 главы 5, то эти типажи можно реализовать добавив аннотацию `#[derive(PartialEq, Debug)]` к определению структуры или перечисления. Смотрите больше деталей в Appendix C [“Выводимые типажи” ](appendix-03-derivable-traits.html)<comment> про эти и другие выводимые типажи.</comment>
+С своей работе макросы `assert_eq!` и `assert_ne!` неявным образом используют операторы `==` и `!=` соответственно. Когда проверка не срабатывает, макросы печатают значения аргументов с помощью отладочного форматирования и это означает, что значения сравниваемых аргументов должны реализовать типажи `PartialEq` и `Debug`. Все примитивные и большая часть типов стандартной библиотеки Rust реализуют эти типажи. Для структур и перечислений, которые вы реализуете сами будет необходимо реализовать типаж `PartialEq` для сравнения значений на равенство или не равенство. Для печати отладочной информации в виде сообщений в строку вывода консоли необходимо реализовать типаж `Debug`. Так как оба типажа являются выводимыми типажами, как упоминалось в листинге 5-12 главы 5, то эти типажи можно реализовать добавив аннотацию `#[derive(PartialEq, Debug)]` к определению структуры или перечисления. Смотрите больше деталей в Appendix C [“Выводимые типажи” ]<comment> про эти и другие выводимые типажи.</comment>
 
 ### Создание сообщений об ошибках
 
-Также можно добавить пользовательское сообщение для печати в сообщении об ошибке теста как дополнительный аргумент макросов `assert!`, `assert_eq!`, and `assert_ne!`. Любые аргументы, указанные после одного обязательного аргумента в `assert!` или после двух обязательных аргументов в `assert_eq!` и `assert_ne!` передаются в макрос `format!` (он обсуждается в разделе <a href="ch08-02-strings.html#concatenation-with-the--operator-or-the-format-macro" data-md-type="link">«Конкатенация с помощью оператора <code data-md-type="codespan">+</code> или макроса `format!`»</a><comment> главы 8), так что вы можете передать форматированную строку, которая содержит символы <code data-md-type="codespan">{}</code> для заполнителей и значения, заменяющие эти заполнители. Пользовательские сообщения полезны для пояснения, что означает утверждение, когда тест не пройден. У вас будет лучшее представление о том, какая проблема в коде.</comment>
+Также можно добавить пользовательское сообщение для печати в сообщении об ошибке теста как дополнительный аргумент макросов `assert!`, `assert_eq!`, and `assert_ne!`. Любые аргументы, указанные после одного обязательного аргумента в `assert!` или после двух обязательных аргументов в `assert_eq!` и `assert_ne!` передаются в макрос `format!` (он обсуждается в разделе <a href="ch08-02-strings.html#concatenation-with-the--operator-or-the-format-macro" data-md-type="link">«Конкатенация с помощью оператора <code data-md-type="codespan">+</code> или макроса `format!`»</a><!-- <!----> --> главы 8), так что вы можете передать форматированную строку, которая содержит символы `{}` для заполнителей и значения, заменяющие эти заполнители. Пользовательские сообщения полезны для пояснения, что означает утверждение, когда тест не пройден. У вас будет лучшее представление о том, какая проблема в коде.
 
 Например, есть функция, которая приветствует человека по имени и мы хотим протестировать эту функцию. Мы хотим чтобы передаваемое ей имя выводилось в консоль:
 
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-pub fn greeting(name: &str) -> String {
-    format!("Hello {}!", name)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn greeting_contains_name() {
-        let result = greeting("Carol");
-        assert!(result.contains("Carol"));
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-05-greeter/src/lib.rs:here}}
 ```
 
 Требования к этой программе ещё не были согласованы и мы вполне уверены, что текст `Hello` в начале приветствия ещё изменится. Мы решили, что не хотим обновлять тест при изменении требований, поэтому вместо проверки на точное равенство со значением возвращённым из `greeting`, мы просто будем проверять, что вывод содержит текст из входного параметра.
@@ -389,45 +211,24 @@ mod tests {
 Давайте внесём ошибку в этот код, изменив `greeting` так, чтобы оно не включало `name` и увидим, как выглядит сбой этого теста:
 
 ```rust,not_desired_behavior
-# fn main() {}
-pub fn greeting(name: &str) -> String {
-    String::from("Hello!")
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-06-greeter-with-bug/src/lib.rs:here}}
 ```
 
 Запуск этого теста выводит следующее:
 
-```text
-running 1 test
-test tests::greeting_contains_name ... FAILED
-
-failures:
-
----- tests::greeting_contains_name stdout ----
-thread 'tests::greeting_contains_name' panicked at 'assertion failed:
-result.contains("Carol")', src/lib.rs:12:9
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
-
-failures:
-    tests::greeting_contains_name
+```console
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-05-greeter/src/lib.rs:here}}
 ```
 
 Сообщение содержит лишь информацию о том что сравнение не было успешным и в какой строке это произошло. В данном случае, более полезный текст сообщения был бы, если бы также выводилось значение из функции `greeting`. Изменим тестовую функцию так, чтобы выводились пользовательское сообщение форматированное строкой с заменителем и фактическими данными из кода `greeting` :
 
 ```rust,ignore
-#[test]
-fn greeting_contains_name() {
-    let result = greeting("Carol");
-    assert!(
-        result.contains("Carol"),
-        "Greeting did not contain name, value was `{}`", result
-    );
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-07-custom-failure-message/src/lib.rs:here}}
 ```
 
 После того, как выполним тест ещё раз мы получим подробное сообщение об ошибке:
 
-```text
+```console
 ---- tests::greeting_contains_name stdout ----
 thread 'tests::greeting_contains_name' panicked at 'Greeting did not
 contain name, value was `Hello!`', src/lib.rs:12:9
@@ -447,81 +248,27 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-pub struct Guess {
-    value: i32,
-}
-
-impl Guess {
-    pub fn new(value: i32) -> Guess {
-        if value < 1 || value > 100 {
-            panic!("Guess value must be between 1 and 100, got {}.", value);
-        }
-
-        Guess {
-            value
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    #[should_panic]
-    fn greater_than_100() {
-        Guess::new(200);
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-08/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 11-8: Тестирование того, что условия вызовут <code>panic!</code></span>
 
 Атрибут `#[should_panic]` следует после `#[test]` и до объявления текстовой функции. Посмотрим на вывод результата, когда тест проходит:
 
-```text
-running 1 test
-test tests::greater_than_100 ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/listing-11-08/output.txt}}
 ```
 
 Выглядит хорошо! Теперь давайте внесём ошибку в наш код, убрав условие о том, что функция `new` будет паниковать если значение больше 100:
 
 ```rust,not_desired_behavior
-# fn main() {}
-# pub struct Guess {
-#     value: i32,
-# }
-#
-// --snip--
-
-impl Guess {
-    pub fn new(value: i32) -> Guess {
-        if value < 1  {
-            panic!("Guess value must be between 1 and 100, got {}.", value);
-        }
-
-        Guess {
-            value
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-08-guess-with-bug/src/lib.rs:here}}
 ```
 
 Когда мы запустим тест в листинге 11-8, он потерпит неудачу:
 
-```text
-running 1 test
-test tests::greater_than_100 ... FAILED
-
-failures:
-
-failures:
-    tests::greater_than_100
-
-test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/no-listing-08-guess-with-bug/output.txt}}
 ```
 
 Мы получаем не очень полезное сообщение в этом случае, но когда мы смотрим на тест функцию, мы видим, что она `#[should_panic]`. Аварийное выполнение, которое мы получили означает, что код в тестовой функции не вызвал паники.
@@ -531,39 +278,7 @@ test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-# pub struct Guess {
-#     value: i32,
-# }
-#
-// --snip--
-
-impl Guess {
-    pub fn new(value: i32) -> Guess {
-        if value < 1 {
-            panic!("Guess value must be greater than or equal to 1, got {}.",
-                   value);
-        } else if value > 100 {
-            panic!("Guess value must be less than or equal to 100, got {}.",
-                   value);
-        }
-
-        Guess {
-            value
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    #[should_panic(expected = "Guess value must be less than or equal to 100")]
-    fn greater_than_100() {
-        Guess::new(200);
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-09/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 11-9: Тестирования случая, когда условие вызовет выполнение макроса <code>panic!</code> содержащего определённое сообщение об ошибке</span>
@@ -573,51 +288,23 @@ mod tests {
 Чтобы увидеть, что происходит, когда тест `should_panic` не успешно завершается с сообщением `expected`, давайте снова внесём ошибку в наш код, поменяв местами `if value < 1` и `else if value > 100` блоки:
 
 ```rust,ignore,not_desired_behavior
-if value < 1 {
-    panic!("Guess value must be less than or equal to 100, got {}.", value);
-} else if value > 100 {
-    panic!("Guess value must be greater than or equal to 1, got {}.", value);
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-09-guess-with-panic-msg-bug/src/lib.rs:here}}
 ```
 
 На этот раз, когда мы выполним `should_panic` тест, он потерпит неудачу:
 
-```text
-running 1 test
-test tests::greater_than_100 ... FAILED
-
-failures:
-
----- tests::greater_than_100 stdout ----
-thread 'tests::greater_than_100' panicked at 'Guess value must be
-greater than or equal to 1, got 200.', src/lib.rs:11:13
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
-note: Panic did not include expected string 'Guess value must be less than or equal to 100'
-
-failures:
-    tests::greater_than_100
-
-test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/no-listing-09-guess-with-panic-msg-bug/output.txt}}
 ```
 
-Сообщение об ошибке указывает, что этот тест действительно вызвал панику, как мы и ожидали, но сообщение о панике не включено ожидаемую строку `'Guess value must be less than or equal to 100'` . Сообщение о панике, которое мы получили в этом случае, было `Guess value must be greater than or equal to 1, got 200.` Теперь мы можем начать выяснение, где ошибка!
+Сообщение об ошибке указывает, что этот тест действительно вызвал панику, как мы и ожидали, но сообщение о панике не включено ожидаемую строку `'Guess value must be less than or equal to 100'`. Сообщение о панике, которое мы получили в этом случае, было `Guess value must be greater than or equal to 1, got 200.` Теперь мы можем начать выяснение, где ошибка!
 
 ### Использование `Result<T, E>` в тестах
 
 Пока что мы написали тесты, которые паникуют, когда терпят неудачу. Мы также можем написать тесты которые используют `Result<T, E>`! Вот тест из листинга 11-1, переписанный для с использованием `Result<T, E>` и возвращающий `Err` вместо паники:
 
 ```rust
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() -> Result<(), String> {
-        if 2 + 2 == 4 {
-            Ok(())
-        } else {
-            Err(String::from("two plus two does not equal four"))
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-10-result-in-tests/src/lib.rs:here}}
 ```
 
 Функция `it_works` теперь имеет возвращаемый тип `Result<(),String>`. В теле функции, вместо вызова `assert_eq!` макроса, мы возвращаем `Ok(())` когда тест успешно выполнен и `Err` с `String` внутри, когда тест не проходит.
@@ -627,3 +314,9 @@ mod tests {
 Можно использовать аннотацию `#[should_panic]` в тестах, которые используют `Result<T, E>`. Вместо этого вы должны вернуть непосредственно значение `Err`, когда тест должен быть не успешен.
 
 Теперь, когда вы знаете несколько способов написания тестов, давайте взглянем на то, что происходит при запуске тестов и исследуем разные опции используемые с командой `cargo test`.
+
+
+[документацию о тестах производительности]: ../unstable-book/library-features/test.html
+[“Выводимые типажи” ]: appendix-03-derivable-traits.html
+[“Комментарии документации как тесты”]: ch14-02-publishing-to-crates-io.html#documentation-comments-as-tests
+[“Пути для ссылки на элементы внутри дерева модуля”]: ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html
