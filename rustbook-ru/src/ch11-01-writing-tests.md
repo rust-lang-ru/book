@@ -104,7 +104,7 @@ Cargo скомпилировал и выполнил тест. После стр
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-05/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 11-5. Использование структуры <code>Rectangle</code> и ее метода <code>can_hold</code> из главы 5</span>
+<span class="caption">Листинг 11-5. Использование структуры <code>Rectangle</code> и её метода <code>can_hold</code> из главы 5</span>
 
 Метод `can_hold` возвращает логическое значение, что означает, что она является идеальным вариантом использования в макросе `assert!`. В листинге 11-6 мы пишем тест, который выполняет метод `can_hold` путём создания экземпляра `Rectangle` шириной 8 и высотой 7 и убеждаемся, что он может содержать другой экземпляр `Rectangle` имеющий ширину 5 и высоту 1.
 
