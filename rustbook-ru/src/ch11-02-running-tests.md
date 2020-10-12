@@ -27,27 +27,7 @@ $ cargo test -- --test-threads=1
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,panics
-fn prints_and_returns_10(a: i32) -> i32 {
-    println!("I got the value {}", a);
-    10
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn this_test_will_pass() {
-        let value = prints_and_returns_10(4);
-        assert_eq!(10, value);
-    }
-
-    #[test]
-    fn this_test_will_fail() {
-        let value = prints_and_returns_10(8);
-        assert_eq!(5, value);
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-10/src/lib.rs:here}}
 ```
 
 <span class="caption">Listing 11-10: Тест функции, которая использует макрос <code>println!</code></span>
@@ -55,50 +35,21 @@ mod tests {
 Результат вывода на консоль команды `cargo test`:
 
 ```console
-running 2 tests
-test tests::this_test_will_pass ... ok
-test tests::this_test_will_fail ... FAILED
-
-failures:
-
----- tests::this_test_will_fail stdout ----
-	I got the value 8
-thread 'tests::this_test_will_fail' panicked at 'assertion failed: `(left ==
-right)` (left: `5`, right: `10`)', src/lib.rs:19
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
-
-failures:
-    tests::this_test_will_fail
-
-test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured
+{{#include ../listings/ch11-writing-automated-tests/listing-11-10/output.txt}}
 ```
 
 Обратите внимание, что мы не увидели вывода на консоль работы корректно сработавшего теста `I got the value 4`. Этот вывод был проигнорирован. А вот результат работы программы, при неработающем тесте был показан (для лучшего понимания ошибки).
 
-Для того, чтобы всегда видеть вывод на консоль корректно работающих программ, используйте флаг `--nocapture`:
+Для того, чтобы всегда видеть вывод на консоль корректно работающих программ, используйте флаг `--show-output`:
 
 ```console
-$ cargo test -- --nocapture
+$ cargo test -- --show-output
 ```
 
 Выполним тесты ещё раз с этим флагом:
 
 ```console
-running 2 tests
-I got the value 4
-I got the value 8
-test tests::this_test_will_pass ... ok
-thread 'tests::this_test_will_fail' panicked at 'assertion failed: `(left ==
-right)` (left: `5`, right: `10`)', src/lib.rs:19
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
-test tests::this_test_will_fail ... FAILED
-
-failures:
-
-failures:
-    tests::this_test_will_fail
-
-test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured
+{{#include ../listings/ch11-writing-automated-tests/output-only-01-show-output/output.txt}}
 ```
 
 ### Запуск подмножества тестов по имени
@@ -110,29 +61,7 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-pub fn add_two(a: i32) -> i32 {
-    a + 2
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn add_two_and_two() {
-        assert_eq!(4, add_two(2));
-    }
-
-    #[test]
-    fn add_three_and_two() {
-        assert_eq!(5, add_two(3));
-    }
-
-    #[test]
-    fn one_hundred() {
-        assert_eq!(102, add_two(100));
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-11/src/lib.rs}}
 ```
 
 <span class="caption">Код программы 11-11: Три теста с различными именами</span>
@@ -140,12 +69,7 @@ mod tests {
 Если вы выполните команду `cargo test` без уточняющих аргументов, все тесты выполнятся параллельно:
 
 ```console
-running 3 tests
-test tests::add_two_and_two ... ok
-test tests::add_three_and_two ... ok
-test tests::one_hundred ... ok
-
-test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured
+{{#include ../listings/ch11-writing-automated-tests/listing-11-11/output.txt}}
 ```
 
 #### Запуск одного теста
@@ -153,14 +77,7 @@ test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured
 Мы можем запустить один тест с помощью указания его имени в команде `cargo test`:
 
 ```console
-$ cargo test one_hundred
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
-     Running target/debug/deps/adder-06a75b4a1f2515e9
-
-running 1 test
-test tests::one_hundred ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
+{{#include ../listings/ch11-writing-automated-tests/output-only-02-single-test/output.txt}}
 ```
 
 Only the test with the name `one_hundred` ran; the other two tests didn’t match that name. The test output lets us know we had more tests than what this command ran by displaying `2 filtered out` at the end of the summary line.
@@ -172,15 +89,7 @@ Only the test with the name `one_hundred` ran; the other two tests didn’t matc
 Обратите внимание, что у нас получилось выполнили тесты с именем `add`. Также обратите внимание, что имя модуля включено в имя теста. Таким образом мы можем запустить тесты используя имя модуля, в котором он находятся.
 
 ```console
-$ cargo test add
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
-     Running target/debug/deps/adder-06a75b4a1f2515e9
-
-running 2 tests
-test tests::add_two_and_two ... ok
-test tests::add_three_and_two ... ok
-
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured
+{{#include ../listings/ch11-writing-automated-tests/output-only-03-multiple-tests/output.txt}}
 ```
 
 Бывают случаи, когда выполнение тестов может занимать продолжительное время и нет необходимости в их постоянном запуске. Для этих случаев существует атрибут `ignore`:
@@ -192,44 +101,19 @@ Sometimes a few specific tests can be very time-consuming to execute, so you mig
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-#[test]
-fn it_works() {
-    assert!(true);
-}
-
-#[test]
-#[ignore]
-fn expensive_test() {
-    // code that takes an hour to run
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-11-ignore-a-test/src/lib.rs:here}}
 ```
 
 Выполнение теста `expensive_test` было проигнорировано. Если же вы хотите выполнить только проигнорированные тесты, вы можете сообщить это с помощью команды `cargo test -- --ignored`:
 
 ```console
-$ cargo test
-   Compiling adder v0.1.0 (file:///projects/adder)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.24 secs
-     Running target/debug/deps/adder-ce99bcc2479f4607
-
-running 2 tests
-test expensive_test ... ignored
-test it_works ... ok
-
-test result: ok. 1 passed; 0 failed; 1 ignored; 0 measured
+{{#include ../listings/ch11-writing-automated-tests/no-listing-11-ignore-a-test/output.txt}}
 ```
 
 The `expensive_test` function is listed as `ignored`. If we want to run only the ignored tests, we can use `cargo test -- --ignored`:
 
 ```console
-$ cargo test -- --ignored
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
-     Running target/debug/deps/adder-ce99bcc2479f4607
-
-running 1 test
-test expensive_test ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
+{{#include ../listings/ch11-writing-automated-tests/output-only-04-running-ignored/output.txt}}
 ```
 
 Подведём итоги. Вы можете фильтровать тесты по имени при запуске. Вы также можете указать какие тесты должны быть проигнорированы, а также отдельно запускать проигнорированные тесты.
