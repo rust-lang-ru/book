@@ -80,7 +80,7 @@ $ cargo test -- --show-output
 {{#include ../listings/ch11-writing-automated-tests/output-only-02-single-test/output.txt}}
 ```
 
-Only the test with the name `one_hundred` ran; the other two tests didn’t match that name. The test output lets us know we had more tests than what this command ran by displaying `2 filtered out` at the end of the summary line.
+Был запущен только тест с названием `one_hundred`; имена остальных тестов отличались. Строка `2 filtered out` в конце тестового вывода позволяет нам понять, что были еще и другие тесты.
 
 К сожалению, таким простым образом (списком тестов) мы не можем запустить несколько тестов. Только первый тест из списка будет запущен. Пожалуйста, проверьте как это работает (точнее, убедитесь, что это не работает).
 
@@ -96,7 +96,7 @@ Only the test with the name `one_hundred` ran; the other two tests didn’t matc
 
 ### Игнорирование тестов
 
-Sometimes a few specific tests can be very time-consuming to execute, so you might want to exclude them during most runs of `cargo test`. Rather than listing as arguments all tests you do want to run, you can instead annotate the time-consuming tests using the `ignore` attribute to exclude them, as shown here:
+Бывает, что некоторые тесты требуют продолжительного времени для своего исполнения, и вы хотите исключить их из исполнения при запуске `cargo test`. Вместо перечисления в командной строке всех тестов, которые вы хотите запускать, вы можете аннотировать тесты, требующие много времени для прогона, атрибутом `ignore`, чтобы исключить их, как показано здесь:
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -110,7 +110,7 @@ Sometimes a few specific tests can be very time-consuming to execute, so you mig
 {{#include ../listings/ch11-writing-automated-tests/no-listing-11-ignore-a-test/output.txt}}
 ```
 
-The `expensive_test` function is listed as `ignored`. If we want to run only the ignored tests, we can use `cargo test -- --ignored`:
+Функция `expensive_test` помечена как `ignored`. Если вы хотите выполнить только проигнорированные тесты, вы можете воспользоваться командой `cargo test -- --ignored`:
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/output-only-04-running-ignored/output.txt}}
