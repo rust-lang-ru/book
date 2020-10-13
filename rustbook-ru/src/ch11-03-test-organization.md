@@ -8,7 +8,7 @@
 
 Целью модульных тестов является тестирование каждого блока кода, изолированное от остального функционала, чтобы можно было быстро понять, что работает не корректно или не так как ожидается. Мы разместим модульные тесты в папке *src*, в каждый тестируемый файл. Но в Rust принято создавать тестирующий модуль `tests` и код теста сохранять в файлы с таким же именем, как компоненты которые предстоит тестировать. Также необходимо добавить аннотацию `cfg(test)` к этому модулю.
 
-####  Модуль тестов и аннотация `#[cfg(test)]`
+#### Модуль тестов и аннотация `#[cfg(test)]`
 
 Аннотация `#[cfg(test)]` у модуля с тестами указывает Rust компилировать и запускать только код тестов, когда выполняется команда `cargo test`, а не когда запускается `cargo build`. Это экономит время компиляции, если вы только хотите собрать библиотеку и сэкономить место для результирующих скомпилированных артефактов, потому что тесты не будут включены. Вы увидите что, по причине того, что интеграционные тесты помещаются в другой каталог им не нужна аннотация `#[cfg(test)]`. Тем не менее, так как модульные тесты идут в тех же файлах что и основной код, вы будете использовать `#[cfg(test)]` чтобы указать, что они не должны быть включены в скомпилированный результат.
 
@@ -17,13 +17,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs:here}}
 ```
 
 Этот код является автоматически сгенерированным тестовым модулем. Атрибут `cfg` предназначен для *конфигурации* и говорит Rust, что следующий элемент должен быть включены только, учитывая определённую опцию конфигурации. В этом случае опцией конфигурации является `test`, который предоставлен в Rust для компиляции и запуска текущих тестов. Используя атрибут `cfg`, Cargo компилирует только тестовый код при активном запуске тестов командой `cargo test`. Это включает в себя любые вспомогательные функции, которые могут быть в этом модуле в дополнение к функциям помеченным `#[test]`.
@@ -35,30 +29,12 @@ mod tests {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-
-pub fn add_two(a: i32) -> i32 {
-    internal_adder(a, 2)
-}
-
-fn internal_adder(a: i32, b: i32) -> i32 {
-    a + b
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn internal() {
-        assert_eq!(4, internal_adder(2, 2));
-    }
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-12/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 11-12: Тестирование приватных функций</span>
 
-Обратите внимание, что функция `internal_adder` не объявлена публичной (`pub`), но так как тесты являются обычным Rust кодом и модуль `tests` является просто другим модулей, у вас есть возможность подключить код `use super::*;` в область видимости тестов и вызвать его. Если же вы считает, что приватные функции не должны быть тестируемыми, то  Rust не будет вас в этом ограничивать, сопровождая предупреждениями компиляцию кода.
+Обратите внимание, что функция `internal_adder` не объявлена публичной (`pub`), но так как тесты являются обычным Rust кодом и модуль `tests` является просто другим модулей, у вас есть возможность подключить код `use super::*;` в область видимости тестов и вызвать его. Если же вы считает, что приватные функции не должны быть тестируемыми, то Rust не будет вас в этом ограничивать, сопровождая предупреждениями компиляцию кода.
 
 ### Интеграционные тесты
 
@@ -73,12 +49,7 @@ mod tests {
 <span class="filename">Файл: tests/integration_test.rs</span>
 
 ```rust,ignore
-use adder;
-
-#[test]
-fn it_adds_two() {
-    assert_eq!(4, adder::add_two(2));
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-13/tests/integration_test.rs}}
 ```
 
 <span class="caption">Листинг 11-13: Интеграционная тест функция из крейта <code>adder</code></span>
@@ -87,29 +58,8 @@ fn it_adds_two() {
 
 Нам не нужно комментировать код в *tests/integration_test.rs* с помощью `#[cfg(test)]`. Cargo специальным образом обрабатывает каталог `tests` и компилирует файлы в этом каталоге только тогда, когда мы запускаем команду `cargo test`. Запустите `cargo test` сейчас:
 
-```text
-$ cargo test
-   Compiling adder v0.1.0 (file:///projects/adder)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.31 secs
-     Running target/debug/deps/adder-abcabcabc
-
-running 1 test
-test tests::internal ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-     Running target/debug/deps/integration_test-ce99bcc2479f4607
-
-running 1 test
-test it_adds_two ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-   Doc-tests adder
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/listing-11-13/output.txt}}
 ```
 
 Три раздела вывода включают в себя модульные тесты, интеграционные тесты и док тесты. Первый раздел для модульных тестов такой же, как мы уже видели: одна строка для каждого модульного теста (одна с именем `internal` которой мы добавили в листинге 11-12) и затем итоговая строка для модульных тестов.
@@ -120,15 +70,8 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 Мы всё ещё можем запустить определённую функцию в интеграционных тестах, указав имя тест функции в качестве аргумента в `cargo test`. Чтобы запустить все тесты в конкретном файле интеграционных тестов, используйте аргумент `--test` `cargo test` сопровождаемый именем файла:
 
-```text
-$ cargo test --test integration_test
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
-     Running target/debug/integration_test-952a27e0126bb565
-
-running 1 test
-test it_adds_two ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/output-only-05-single-integration/output.txt}}
 ```
 
 Эта команда запускает только тесты в файле *tests/integration_test.rs*.
@@ -139,42 +82,18 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 Рассматривая каждый файл интеграционных тестов как отдельный крейт, полезно создать отдельные области видимости, которые больше похожи на то, как конечные пользователи будут использовать ваш крейт. Тем не менее, это означает, что файлы в каталоге *tests* не разделяют поведение как это делают файлы в *src*, что вы изучили в главе 7 о том, как разделить код на модули и файлы.
 
-Различное поведение файлов в каталоге *tests* наиболее заметно, когда у вас есть набор вспомогательных функций, которые будут полезны в нескольких интеграционных тест файлах и вы пытаетесь выполнить действия, описанные в разделе [«Разделение модулей в разные файлы»](ch07-05-separating-modules-into-different-files.html)<comment> главы 7, чтобы извлечь их в общий модуль. Например, если мы создаём <em data-md-type="emphasis">tests/common.rs</em> и поместим в него функцию с именем <code data-md-type="codespan">setup</code>, то можно добавить некоторый код в <code data-md-type="codespan">setup</code>, который мы хотим вызвать из нескольких тестовых функций в нескольких тестовых файлах:</comment>
+Различное поведение файлов в каталоге *tests* наиболее заметно, когда у вас есть набор вспомогательных функций, которые будут полезны в нескольких интеграционных тест файлах и вы пытаетесь выполнить действия, описанные в разделе [«Разделение модулей в разные файлы»](ch07-05-separating-modules-into-different-files.html)<!-- <!----> --> главы 7, чтобы извлечь их в общий модуль. Например, если мы создаём *tests/common.rs* и поместим в него функцию с именем `setup`, то можно добавить некоторый код в `setup`, который мы хотим вызвать из нескольких тестовых функций в нескольких тестовых файлах
 
 <span class="filename">Файл: tests/common.rs</span>
 
 ```rust
-pub fn setup() {
-    // здесь идет код настройки специфичный для вашей библ-ки тестов
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-12-shared-test-code-problem/tests/common.rs}}
 ```
 
 Когда мы снова запустим тесты, мы увидим новый раздел в результатах тестов для файла *common.rs*, хотя этот файл не содержит ни тестовых функций, ни того, что мы явно вызывали функцию `setup` откуда либо:
 
-```text
-running 1 test
-test tests::internal ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-     Running target/debug/deps/common-b8b07b6f1be2db70
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-     Running target/debug/deps/integration_test-d993c68b431d39df
-
-running 1 test
-test it_adds_two ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
-
-   Doc-tests adder
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch11-writing-automated-tests/no-listing-12-shared-test-code-problem/output.txt}}
 ```
 
 Появление файла `common` и появление сообщения в результатах выполнения тестов типа `running 0 tests` это не то, чтобы мы хотели. Мы только хотели использовать некоторый общий код с другими интеграционными файлами тестов.
@@ -186,15 +105,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 <span class="filename">Файл: tests/integration_test.rs</span>
 
 ```rust,ignore
-use adder;
-
-mod common;
-
-#[test]
-fn it_adds_two() {
-    common::setup();
-    assert_eq!(4, adder::add_two(2));
-}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-13-fix-shared-test-code-problem/tests/integration_test.rs}}
 ```
 
 Обратите внимание, что  объявление `mod common;` совпадает с объявлением модуля, которое продемонстрировано в листинге 7-21. Затем в тестовой функции мы можем вызвать функцию `common::setup()` .
