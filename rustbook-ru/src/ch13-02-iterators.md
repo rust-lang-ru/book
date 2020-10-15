@@ -34,10 +34,10 @@ let v1_iter = v1.iter();
 pub trait Iterator {
     type Item;
 
-    fn next(&amp;mut self) -&gt; Option<:item>;
+    fn next(&mut self) -> Option<Self::Item>;
 
     // methods with default implementations elided
-}</:item>
+}
 ```
 
 Обратите внимание данное объявление использует новый синтаксис: `type Item` и `Self::Item`, которые определяют *ассоциированный тип* (associated type) с этим типажом. Мы подробнее поговорим о ассоциированных типах в главе 19. Сейчас вам нужно знать, что этот код требует от реализаций типажа `Iterator` определить требуемый им тип `Item` и данный тип `Item` используется в методе `next`. Другими словами, тип `Item` будет являться типом элемента, который возвращает итератор.
