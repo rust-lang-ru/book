@@ -19,7 +19,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {     let b = Box::new(5);     println!("b = {}", b); }
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-01/src/main.rs}}
 ```
 
 <span class="caption">Листинг 15-1: Сохранение значения <code>i32</code> в куче с использованием box</span>
@@ -49,7 +49,7 @@ fn main() {     let b = Box::new(5);     println!("b = {}", b); }
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-enum List {     Cons(i32, List),     Nil, }
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-02/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 15-2: Первая попытка определить перечисление для представления структуры данных cons списка из значений <code>i32</code></span>
@@ -61,7 +61,7 @@ enum List {     Cons(i32, List),     Nil, }
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-use crate::List::{Cons, Nil};  fn main() {     let list = Cons(1, Cons(2, Cons(3, Nil))); }
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-03/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 15-3: Использование перечисления <code>List</code> для хранения списка <code>1, 2, 3</code></span>
@@ -71,7 +71,7 @@ use crate::List::{Cons, Nil};  fn main() {     let list = Cons(1, Cons(2, Cons(3
 Если мы попытаемся скомпилировать код в листинге 15-3, мы получим ошибку, показанную в листинге 15-4:
 
 ```console
-error[E0072]: recursive type `List` has infinite size  --> src/main.rs:1:1   | 1 | enum List {   | ^^^^^^^^^ recursive type has infinite size 2 |     Cons(i32, List),   |               ----- recursive without indirection   |   = help: insert indirection (e.g., a `Box`, `Rc`, or `&`) at some point to   make `List` representable
+{{#include ../listings/ch15-smart-pointers/listing-15-03/output.txt}}
 ```
 
 <span class="caption">Листинг 15-3: Ошибка, получаемая  при попытке определить бесконечное рекурсивное перечисление</span>
@@ -83,7 +83,7 @@ error[E0072]: recursive type `List` has infinite size  --> src/main.rs:1:1   | 1
 Вспомните перечисление `Message` определённое в листинге 6-2, когда обсуждали объявление enum  в главе 6:
 
 ```rust
-enum Message {     Quit,     Move { x: i32, y: i32 },     Write(String),     ChangeColor(i32, i32, i32), }
+{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-02/src/main.rs:here}}
 ```
 
 Чтобы определить, сколько памяти выделять под значение `Message`, Rust проходит каждый из вариантов, чтобы увидеть, какой вариант требует наибольшее количество памяти. Rust видит, что для `Message::Quit` не требуется места, `Message::Move` хватает места для хранения двух значений `i32` и т.д. Так как будет использоваться только один вариант, то наибольшее пространство, которое потребуется для значения `Message`, это пространство, которое потребуется для хранения самого большой из вариантов перечисления.
@@ -104,7 +104,7 @@ after doing automatic regeneration, look at listings/ch15-smart-pointers/listing
 -->
 
 ```text
-  = help: insert indirection (e.g., a `Box`, `Rc`, or `&`) at some point to   make `List` representable
+  = help: insert indirection (e.g., a `Box`, `Rc`, or `&`) at some point to make `List` representable
 ```
 
 В этом предложении "косвенность" означает, что вместо сохранения значения напрямую, мы изменим структуру данных для хранения косвенного значения, с помощью хранения указателя на значение.
@@ -116,7 +116,7 @@ after doing automatic regeneration, look at listings/ch15-smart-pointers/listing
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-enum List {     Cons(i32, Box<List>),     Nil, }  use List::{Cons, Nil};  fn main() {     let list = Cons(1,         Box::new(Cons(2,             Box::new(Cons(3,                 Box::new(Nil)))))); }
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-05/src/main.rs}}
 ```
 
 <span class="caption">Листинг 15-5: Определение <code>List</code>, который использует <code>Box<T></code>, чтобы иметь известный размер</span>
@@ -131,3 +131,5 @@ enum List {     Cons(i32, Box<List>),     Nil, }  use List::{Cons, Nil};  fn mai
 Box-ы обеспечивают только косвенность и выделение в куче; у них нет других специальных возможностей, таких как те, которые мы увидим у других типов умных указателей. Они также не имеют накладных расходов из-за этих специальных возможностей, поэтому могут быть полезны в случаях, похожих на cons список, где косвенность - единственная нужная функциональность. Мы рассмотрим ещё больше вариантов использования типа Box в главе 17.
 
 Тип `Box<T>` является умным указателем, потому что он реализует типаж `Deref`, что позволяет значениям `Box<T>` обрабатываться как ссылки. Когда значение `Box<T>` выходит из области видимости, то данные кучи, на которые указывает Box, очищаются благодаря реализации типажа `Drop`. Давайте рассмотрим эти два типажа более подробно. Эти два типажа будут ещё более важными для функциональности, предоставляемой другими типами умных указателей, которые мы обсудим в оставшихся частях этой главы.
+
+
