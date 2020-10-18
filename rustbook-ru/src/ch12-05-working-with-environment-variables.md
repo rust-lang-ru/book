@@ -9,40 +9,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn case_sensitive() {
-        let query = "duct";
-        let contents = "\
-Rust:
-safe, fast, productive.
-Pick three.
-Duct tape.";
-
-        assert_eq!(
-            vec!["safe, fast, productive."],
-            search(query, contents)
-        );
-    }
-
-    #[test]
-    fn case_insensitive() {
-        let query = "rUsT";
-        let contents = "\
-Rust:
-safe, fast, productive.
-Pick three.
-Trust me.";
-
-        assert_eq!(
-            vec!["Rust:", "Trust me."],
-            search_case_insensitive(query, contents)
-        );
-    }
-}
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-20/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 12-20. Добавление нового не проходящего теста для функции поиска нечувствительной к регистру, которую мы собираемся добавить</span>
@@ -58,23 +25,12 @@ Trust me.";
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let query = query.to_lowercase();
-    let mut results = Vec::new();
-
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
-            results.push(line);
-        }
-    }
-
-    results
-}
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-21/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 12-21. Определение функции <code>search_case_insensitive</code> с уменьшением регистра строки запроса и строки содержимого перед их сравнением</span>
 
-Сначала преобразуем в нижний регистр строку `query` и сохраняем её в затенённой переменной с тем же именем. Вызов `to_lowercase` для строки запроса необходим, так что независимо от того, будет ли пользовательский запрос `"rust"` , `"RUST"`, `"Rust"` или `"rUsT"`, мы будем преобразовывать запрос к `"rust"` и делать значение нечувствительным к регистру.
+Сначала преобразуем в нижний регистр строку `query` и сохраняем её в затенённой переменной с тем же именем. Вызов `to_lowercase` для строки запроса необходим, так что независимо от того, будет ли пользовательский запрос `"rust"` , `"RUST"`, `"Rust"` или `"rUsT"`, мы будем преобразовывать запрос к `"rust"` и делать значение нечувствительным к регистру. Хотя `to_lowercase` будет обрабатывать Unicode, он не будет точным на 100%. Если бы мы писали реальное приложение, мы бы хотели проделать здесь немного больше работы, но этот раздел посвящён переменным среды, а не Unicode, поэтому мы оставим это здесь.
 
 Обратите внимание, что `query` теперь имеет тип `String`, а не срез строки, потому что вызов `to_lowercase` создаёт новые данные, а не ссылается на существующие.  К примеру, запрос: `"rUsT"` это срез строки не содержащий строчных букв `u` или `t`, которые мы можем использовать, поэтому мы должны выделить новую `String`, содержащую `«rust»`. Когда мы передаём запрос `query` в качестве аргумента метода `contains`, нам нужно добавить амперсанд, поскольку сигнатура `contains`, определена для приёмы среза строки.
 
@@ -82,64 +38,24 @@ pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a st
 
 Давайте посмотрим, проходит ли эта реализация тесты:
 
-```text
-running 2 tests
-test tests::case_insensitive ... ok
-test tests::case_sensitive ... ok
-
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+```console
+{{#include ../listings/ch12-an-io-project/listing-12-21/output.txt}}
 ```
 
 Отлично! Тесты прошли. Теперь давайте вызовем новую функцию `search_case_insensitive` из функции `run`. Во-первых, мы добавим параметр конфигурации в структуру `Config` для переключения между поиском с учётом регистра и без учёта регистра. Добавление этого поля приведёт к ошибкам компилятора, потому что мы ещё нигде не инициализируем это поле:
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
-pub struct Config {
-    pub query: String,
-    pub filename: String,
-    pub case_sensitive: bool,
-}
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-22/src/lib.rs:here}}
 ```
 
-Обратите внимание, что мы добавили поле `case_sensitive`, которое содержит логическое значение. Далее нам нужна функция `run`, чтобы проверить значение поля `case_sensitive` и использовать его, чтобы решить, вызывать ли функцию `search` или функцию `search_case_insensitive`, как показано в листинге 12-22. Обратите внимание, что код все ещё не скомпилируется.
+Обратите внимание, что мы добавили поле `case_sensitive`, которое содержит логическое значение. Далее нам нужна функция `run`, чтобы проверить значение поля `case_sensitive` и использовать его, чтобы решить, вызывать ли функцию `search` или функцию `search_case_insensitive`, как показано в листинге 12-22. Обратите внимание, что код все ещё не компилируется.
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
-# use std::error::Error;
-# use std::fs::{self, File};
-# use std::io::prelude::*;
-#
-# pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-#      vec![]
-# }
-#
-# pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-#      vec![]
-# }
-#
-# pub struct Config {
-#     query: String,
-#     filename: String,
-#     case_sensitive: bool,
-# }
-#
-pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let contents = fs::read_to_string(config.filename)?;
-
-    let results = if config.case_sensitive {
-        search(&config.query, &contents)
-    } else {
-        search_case_insensitive(&config.query, &contents)
-    };
-
-    for line in results {
-        println!("{}", line);
-    }
-
-    Ok(())
-}
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-22/src/lib.rs:there}}
 ```
 
 <span class="caption">Листинг 12-22. Вызов либо <code>search</code>, либо <code>search_case_insensitive</code> на основе значения в <code>config.case_sensitive</code></span>
@@ -149,29 +65,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-use std::env;
-# struct Config {
-#     query: String,
-#     filename: String,
-#     case_sensitive: bool,
-# }
-
-// --snip--
-
-impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
-
-        let query = args[1].clone();
-        let filename = args[2].clone();
-
-        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
-
-        Ok(Config { query, filename, case_sensitive })
-    }
-}
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-23/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 12-23. Проверка переменной среды с именем <code>CASE_INSENSITIVE</code></span>
@@ -184,29 +78,35 @@ impl Config {
 
 Давайте попробуем! Во-первых, мы запустим нашу программу без установленной переменной среды и с помощью значения запроса `to`, который должен соответствовать любой строке, содержащей слово «to» в нижнем регистре:
 
-```text
-$ cargo run to poem.txt
-   Compiling minigrep v0.1.0 (file:///projects/minigrep)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
-     Running `target/debug/minigrep to poem.txt`
-Are you nobody, too?
-How dreary to be somebody!
+```console
+{{#include ../listings/ch12-an-io-project/listing-12-23/output.txt}}
 ```
 
 Похоже, все ещё работает! Теперь давайте запустим программу с `CASE_INSENSITIVE`, установленным в `1`, но с тем же значением запроса `to`.
 
 Если вы используете PowerShell, вам нужно установить переменную среды и запустить программу двумя командами, а не одной:
 
-```text
-$ $env:CASE_INSENSITIVE=1
-$ cargo run to poem.txt
+```console
+PS> $Env:CASE_INSENSITIVE=1; cargo run to poem.txt
+```
+
+Это заставит переменную окружения `CASE_INSENSITIVE` сохраниться до конца сеанса работы консоли. Переменную можно отключить с помощью команды `Remove-Item`:
+
+```console
+PS> Remove-Item Env:CASE_INSENSITIVE
 ```
 
 Мы должны получить строки, содержащие «to», которые могут иметь заглавные буквы:
 
-```text
+<!-- manual-regeneration
+cd listings/ch12-an-io-project/listing-12-23
+CASE_INSENSITIVE=1 cargo run to poem.txt
+can't extract because of the environment variable
+-->
+
+```console
 $ CASE_INSENSITIVE=1 cargo run to poem.txt
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0s
      Running `target/debug/minigrep to poem.txt`
 Are you nobody, too?
 How dreary to be somebody!
