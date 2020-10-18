@@ -8,7 +8,7 @@
 
 В отличие от `Rc<T>` тип `RefCell<T>` предоставляет единоличное владение данными, которые он содержит. В чем же отличие типа `RefCell<T>` от `Box<T>`? Давайте вспомним правила заимствования из Главы 4:
 
-- В любой момент времени можно иметь или *одну* (но не обе) изменяемую ссылку или любое количество неизменяемых ссылок.
+- В любой момент времени у вас может быть *одна* (но не обе) одна изменяемая ссылка или любое количество неизменяемых ссылок.
 - Ссылки всегда должны быть действительными.
 
 С помощью ссылок и типа `Box<T>` инварианты правил заимствования применяются на этапе компиляции. С помощью `RefCell<T>` они применяются *во время работы программы*. Если вы нарушите эти правила, работая с ссылками, то будет ошибка компиляции. Если вы работаете с `RefCell<T>` и нарушите эти правила, то программа вызовет панику и завершится.
@@ -34,22 +34,13 @@
 Следствием правил заимствования является то, что когда у вас есть неизменяемое значение, вы не можете заимствовать его с изменением. Например, этот код не будет компилироваться:
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let x = 5;
-    let y = &mut x;
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/no-listing-01-cant-borrow-immutable-as-mutable/src/main.rs}}
 ```
 
 Если вы попытаетесь скомпилировать этот код, вы получите следующую ошибку:
 
-```text
-error[E0596]: cannot borrow immutable local variable `x` as mutable
- --> src/main.rs:3:18
-  |
-2 |     let x = 5;
-  |         - consider changing this to `mut x`
-3 |     let y = &mut x;
-  |                  ^ cannot borrow mutably
+```console
+{{#include ../listings/ch15-smart-pointers/no-listing-01-cant-borrow-immutable-as-mutable/output.txt}}
 ```
 
 Однако существуют ситуации в которых было бы полезно, чтобы значение изменяло само себя в своих методах, но казалось неизменным для другого кода. Код за пределами таких методов над значениями не мог бы изменить сами значения. Использование `RefCell<T>` является одним из способов получить внутреннюю изменяемость. Но `RefCell<T>` не обходит правила заимствования полностью: анализатор заимствования компилятора допускает эту внутреннюю изменяемость и вместо этого правила заимствования проверяются во время выполнения. Если вы нарушаете правила, вы получите `panic!` вместо ошибки компилятора.
@@ -69,40 +60,7 @@ error[E0596]: cannot borrow immutable local variable `x` as mutable
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-pub trait Messenger {
-    fn send(&self, msg: &str);
-}
-
-pub struct LimitTracker<'a, T: Messenger> {
-    messenger: &'a T,
-    value: usize,
-    max: usize,
-}
-
-impl<'a, T> LimitTracker<'a, T>
-    where T: Messenger {
-    pub fn new(messenger: &T, max: usize) -> LimitTracker<T> {
-        LimitTracker {
-            messenger,
-            value: 0,
-            max,
-        }
-    }
-
-    pub fn set_value(&mut self, value: usize) {
-        self.value = value;
-
-        let percentage_of_max = self.value as f64 / self.max as f64;
-
-        if percentage_of_max >= 1.0 {
-            self.messenger.send("Error: You are over your quota!");
-        } else if percentage_of_max >= 0.9 {
-             self.messenger.send("Urgent warning: You've used up over 90% of your quota!");
-        } else if percentage_of_max >= 0.75 {
-            self.messenger.send("Warning: You've used up over 75% of your quota!");
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-20/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 15-20: Библиотека, которая отслеживает, насколько близко текущее значение находится по величине к максимальному значению и предупреждает, когда текущее значение находится на определённых уровнях своей величины.</span>
@@ -114,36 +72,7 @@ impl<'a, T> LimitTracker<'a, T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    struct MockMessenger {
-        sent_messages: Vec<String>,
-    }
-
-    impl MockMessenger {
-        fn new() -> MockMessenger {
-            MockMessenger { sent_messages: vec![] }
-        }
-    }
-
-    impl Messenger for MockMessenger {
-        fn send(&self, message: &str) {
-            self.sent_messages.push(String::from(message));
-        }
-    }
-
-    #[test]
-    fn it_sends_an_over_75_percent_warning_message() {
-        let mock_messenger = MockMessenger::new();
-        let mut limit_tracker = LimitTracker::new(&mock_messenger, 100);
-
-        limit_tracker.set_value(80);
-
-        assert_eq!(mock_messenger.sent_messages.len(), 1);
-    }
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-21/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 15-21: Попытка реализовать <code>MockMessenger</code>, код которого не разрешён анализатором заимствований</span>
@@ -155,13 +84,7 @@ mod tests {
 Однако с этим тестом есть одна проблема, показанная ниже:
 
 ```text
-error[E0596]: cannot borrow immutable field `self.sent_messages` as mutable
-  --> src/lib.rs:52:13
-   |
-51 |         fn send(&self, message: &str) {
-   |                 ----- use `&mut self` here to make mutable
-52 |             self.sent_messages.push(String::from(message));
-   |             ^^^^^^^^^^^^^^^^^^ cannot mutably borrow immutable field
+{{#include ../listings/ch15-smart-pointers/listing-15-21/output.txt}}
 ```
 
 Мы не можем изменять `MockMessenger` для отслеживания сообщений, потому что метод `send` принимает неизменяемую ссылку на `self`. Мы также не можем принять предложение из текста ошибки, чтобы использовать `&mut self`, потому что тогда сигнатура `send` не будет соответствовать сигнатуре в определении типажа `Messenger` (не стесняйтесь попробовать и посмотреть, какое сообщение об ошибке получите вы).
@@ -171,73 +94,7 @@ error[E0596]: cannot borrow immutable field `self.sent_messages` as mutable
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# pub trait Messenger {
-#     fn send(&self, msg: &str);
-# }
-#
-# pub struct LimitTracker<'a, T: Messenger> {
-#     messenger: &'a T,
-#     value: usize,
-#     max: usize,
-# }
-#
-# impl<'a, T> LimitTracker<'a, T>
-#     where T: Messenger {
-#     pub fn new(messenger: &T, max: usize) -> LimitTracker<T> {
-#         LimitTracker {
-#             messenger,
-#             value: 0,
-#             max,
-#         }
-#     }
-#
-#     pub fn set_value(&mut self, value: usize) {
-#         self.value = value;
-#
-#         let percentage_of_max = self.value as f64 / self.max as f64;
-#
-#         if percentage_of_max >= 1.0 {
-#             self.messenger.send("Error: You are over your quota!");
-#         } else if percentage_of_max >= 0.9 {
-#              self.messenger.send("Urgent warning: You've used up over 90% of your quota!");
-#         } else if percentage_of_max >= 0.75 {
-#             self.messenger.send("Warning: You've used up over 75% of your quota!");
-#         }
-#     }
-# }
-#
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::cell::RefCell;
-
-    struct MockMessenger {
-        sent_messages: RefCell<Vec<String>>,
-    }
-
-    impl MockMessenger {
-        fn new() -> MockMessenger {
-            MockMessenger { sent_messages: RefCell::new(vec![]) }
-        }
-    }
-
-    impl Messenger for MockMessenger {
-        fn send(&self, message: &str) {
-            self.sent_messages.borrow_mut().push(String::from(message));
-        }
-    }
-
-    #[test]
-    fn it_sends_an_over_75_percent_warning_message() {
-        // --snip--
-#         let mock_messenger = MockMessenger::new();
-#         let mut limit_tracker = LimitTracker::new(&mock_messenger, 100);
-#         limit_tracker.set_value(75);
-
-        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
-    }
-}
-# fn main() {}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-22/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 15-22: Использование <code>RefCell</code> для изменения внутреннего значения, в то время как внешнее значение считается неизменным.</span>
@@ -261,26 +118,15 @@ mod tests {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,panics
-impl Messenger for MockMessenger {
-    fn send(&self, message: &str) {
-        let mut one_borrow = self.sent_messages.borrow_mut();
-        let mut two_borrow = self.sent_messages.borrow_mut();
-
-        one_borrow.push(String::from(message));
-        two_borrow.push(String::from(message));
-    }
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-23/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 15-23: Создание двух изменяемых ссылок в одной и той же области видимости, чтобы увидеть как <code>RefCell</code> будет паниковать.</span>
 
 Мы создаём переменную `one_borrow` для умного указателя `RefMut<T>` возвращаемого из метода `borrow_mut`. Затем мы создаём другое изменяемое заимствование таким же образом в переменной `two_borrow`. Это создаёт две изменяемые ссылки в одной области видимости, что недопустимо. Когда мы запускаем тесты для нашей библиотеки, код в листинге 15-23 компилируется без ошибок, но тест завершится неудачно:
 
-```text
----- tests::it_sends_an_over_75_percent_warning_message stdout ----
-	thread 'tests::it_sends_an_over_75_percent_warning_message' panicked at
-'already borrowed: BorrowMutError', src/libcore/result.rs:906:4
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
+```console
+{{#include ../listings/ch15-smart-pointers/listing-15-23/output.txt}}
 ```
 
 Обратите внимание, что код вызвал панику с сообщением `already borrowed: BorrowMutError`. Вот так тип `RefCell<T>` обрабатывает нарушения правил заимствования во время выполнения.
@@ -296,51 +142,23 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-#[derive(Debug)]
-enum List {
-    Cons(Rc<RefCell<i32>>, Rc<List>),
-    Nil,
-}
-
-use crate::List::{Cons, Nil};
-use std::rc::Rc;
-use std::cell::RefCell;
-
-fn main() {
-    let value = Rc::new(RefCell::new(5));
-
-    let a = Rc::new(Cons(Rc::clone(&value), Rc::new(Nil)));
-
-    let b = Cons(Rc::new(RefCell::new(6)), Rc::clone(&a));
-    let c = Cons(Rc::new(RefCell::new(10)), Rc::clone(&a));
-
-    *value.borrow_mut() += 10;
-
-    println!("a after = {:?}", a);
-    println!("b after = {:?}", b);
-    println!("c after = {:?}", c);
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-24/src/main.rs}}
 ```
 
-<span class="caption">Листинг 15-24: Использование <code>Rc<RefCell></code> для создания <code>List</code>, который можно изменять.</span>
+<span class="caption">Listing 15-24: Using <code>Rc<RefCell<i32>></code> to create a <code>List</code> that we can mutate</span>
 
-Мы создаём значение, которое является экземпляром `Rc<RefCell<i32>>` и сохраняем его в переменной с именем `value`, чтобы получить к ней прямой доступ позже. Затем мы создаём `List` в переменной `a` с вариантом `Cons`, который содержит `value`. Нам нужно вызвать клонирование `value`, так как обе переменные `a` и `value` владеют внутренним значением `5`, а не передают владение из `value` в переменную `a` или не выполняют заимствование  `a` у переменной `value`.
+Мы создаём значение, которое является экземпляром `Rc<RefCell<i32>>` и сохраняем его в переменной с именем `value`, чтобы получить к ней прямой доступ позже. Затем мы создаём `List` в переменной `a` с вариантом `Cons`, который содержит `value`. Нам нужно вызвать клонирование `value`, так как обе переменные `a` и `value` владеют внутренним значением `5`, а не передают владение из `value` в переменную `a` или не выполняют заимствование с помощью `a` переменной `value`.
 
 Мы оборачиваем список у переменной `a` в тип `Rc<T>`, поэтому при создании списков в переменные `b` и `c` они оба могут ссылаться на `a`, что мы и сделали в листинге 15-18.
 
-После того, как мы создали списки в переменных `a`, `b` и `c`, мы добавляем число 10 к значению внутри `value`. Мы делаем это, вызывая метод `borrow_mut` у `value`, которое использует функцию автоматической разыменования, обсуждавшуюся в главе 5 (см. раздел ["Где находится оператор `->` ?"]<comment></comment> ) для разыменования `Rc<T>` до внутреннего значения `RefCell<T>`. Метод `borrow_mut` возвращает умный указатель типа `RefMut<T>` и мы используем для него оператор разыменования и меняем внутреннее значение.
+После того, как мы создали списки в переменных `a`, `b` и `c`, мы добавляем число 10 к значению внутри `value`. Мы делаем это, вызывая метод `borrow_mut` у `value`, которое использует функцию автоматической разыменования, обсуждавшуюся в главе 5 (см. раздел ["Где находится оператор `->` ?"](ch05-03-method-syntax.html#wheres-the---operator)<!--  --> ) для разыменования `Rc<T>` до внутреннего значения `RefCell<T>`. Метод `borrow_mut` возвращает умный указатель типа `RefMut<T>` и мы используем для него оператор разыменования и меняем внутреннее значение.
 
 Когда мы печатаем `a`, `b` и `c` то видим, что все они имеют изменённое значение равное 15, а не 5:
 
-```text
-a after = Cons(RefCell { value: 15 }, Nil)
-b after = Cons(RefCell { value: 6 }, Cons(RefCell { value: 15 }, Nil))
-c after = Cons(RefCell { value: 10 }, Cons(RefCell { value: 15 }, Nil))
+```console
+{{#include ../listings/ch15-smart-pointers/listing-15-24/output.txt}}
 ```
 
 Эта техника довольно изящна! Используя `RefCell<T>`, мы получаем внешне неизменяемое значение `List`. Но мы можем использовать методы типа `RefCell<T>`, которые обеспечивают доступ к его внутренней изменяемости так, что мы можем менять данные при необходимости. Проверки правил заимствования во время выполнения защищают нас от гонки данных и иногда стоит поступиться некоторой скоростью в пользу гибкости структурах данных.
 
 Стандартная библиотека имеет другие типы, которые обеспечивают внутреннюю изменяемость, например тип `Cell<T>` аналогичен, за исключением того, что вместо предоставления ссылки на внутреннее значение, значение копируется внутрь `Cell<T>` и изнутри наружу. Есть также тип `Mutex<T>`, который предлагает внутреннюю изменяемость, которую можно безопасно использовать в разных потоках; мы обсудим его использование в главе 16. Посмотрите документацию стандартной библиотеки для получения более подробной информации о различиях между этими типами.
-
-
-["Где находится оператор `->` ?"]: ch05-03-method-syntax.html#wheres-the---operator
