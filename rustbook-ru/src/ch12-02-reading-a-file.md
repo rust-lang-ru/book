@@ -5,15 +5,7 @@
 <span class="filename">Файл: poem.txt</span>
 
 ```text
-I'm nobody! Who are you?
-Are you nobody, too?
-Then there's a pair of us - don't tell!
-They'd banish us, you know.
-
-How dreary to be somebody!
-How public, like a frog
-To tell your name the livelong day
-To an admiring bog!
+{{#include ../listings/ch12-an-io-project/listing-12-03/poem.txt}}
 ```
 
 <span class="caption">Листинг 12-3: Стихотворение Эмили Дикинсон "I’m nobody! Who are you?"</span>
@@ -23,24 +15,7 @@ To an admiring bog!
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,should_panic
-use std::env;
-use std::fs;
-
-fn main() {
-#     let args: Vec<String> = env::args().collect();
-#
-#     let query = &args[1];
-#     let filename = &args[2];
-#
-#     println!("Searching for {}", query);
-    // --snip--
-    println!("In file {}", filename);
-
-    let contents = fs::read_to_string(filename)
-        .expect("Something went wrong reading the file");
-
-    println!("With text:\n{}", contents);
-}
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-04/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 12-4: Чтение содержимого файла указанного во втором аргументе</span>
@@ -53,23 +28,8 @@ fn main() {
 
 Давайте запустим этот код с любой строкой в качестве первого аргумента командной строки (потому что мы ещё не реализовали поисковую часть) и файл *poem.txt* как второй аргумент:
 
-```text
-$ cargo run the poem.txt
-   Compiling minigrep v0.1.0 (file:///projects/minigrep)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
-     Running `target/debug/minigrep the poem.txt`
-Searching for the
-In file poem.txt
-With text:
-I'm nobody! Who are you?
-Are you nobody, too?
-Then there's a pair of us — don't tell!
-They'd banish us, you know.
-
-How dreary to be somebody!
-How public, like a frog
-To tell your name the livelong day
-To an admiring bog!
+```console
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-04/output.txt}}
 ```
 
 Отлично! Этот код прочитал и затем печатал содержимое файла. Хотя наша программа решает поставленную задачу, она не лишена недостатков. Прежде всего, функция `main` решает множество задач. Такую функцию неудобно тестировать. Далее, не отслеживаются возможные ошибки ввода данных. Пока наша программа небольшая, то данными недочётами можно пренебречь. При увеличении размеров программы, такую программу будет всё сложнее и сложнее поддерживать. Хорошей практикой программирования является ранний рефакторинг кода по мере усложнения. Поэтому, далее мы улучшим наш код с помощью улучшения его структуры.

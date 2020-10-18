@@ -9,19 +9,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn add_one(x: i32) -> i32 {
-    x + 1
-}
-
-fn do_twice(f: fn(i32) -> i32, arg: i32) -> i32 {
-    f(arg) + f(arg)
-}
-
-fn main() {
-    let answer = do_twice(add_one, 5);
-
-    println!("The answer is: {}", answer);
-}
+{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-27/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-27: Использование типа <code>fn</code> для принятия указателя функции в качестве аргумента</span>
@@ -37,37 +25,21 @@ fn main() {
 Для примера того, где вы могли бы использовать либо замыкание, определённое как встроенное, либо именованную функцию, давайте посмотрим на использование `map`. Для использования функции `map`, чтобы превратить вектор чисел в вектор строк, мы могли бы использовать замыкание, как здесь:
 
 ```rust
-let list_of_numbers = vec![1, 2, 3];
-let list_of_strings: Vec<String> = list_of_numbers
-    .iter()
-    .map(|i| i.to_string())
-    .collect();
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-15-map-closure/src/main.rs:here}}
 ```
 
 Или мы могли бы назвать функцию вместо замыкания в качестве аргумента при вызове `map`, как здесь:
 
 ```rust
-let list_of_numbers = vec![1, 2, 3];
-let list_of_strings: Vec<String> = list_of_numbers
-    .iter()
-    .map(ToString::to_string)
-    .collect();
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-16-map-function/src/main.rs:here}}
 ```
 
-Обратите внимание, что мы должны использовать полный синтаксис, о котором мы говорили ранее в разделе ["Расширенные типажи"](ch19-03-advanced-traits.html#advanced-traits)<comment></comment>, потому что доступно несколько функций с именем `to_string`. Здесь мы используем функцию `to_string` определённую в типаже `ToString`, который реализован в стандартной библиотеке для любого типа реализующего типаж `Display`.
+Обратите внимание, что мы должны использовать полный синтаксис, о котором мы говорили ранее в разделе ["Расширенные типажи"](ch19-03-advanced-traits.html#advanced-traits)<!--  -->, потому что доступно несколько функций с именем `to_string`. Здесь мы используем функцию `to_string` определённую в типаже `ToString`, который реализован в стандартной библиотеке для любого типа реализующего типаж `Display`.
 
 У нас есть ещё один полезный шаблон, который использует детали реализации структур кортежей (tuple structs) и вариантов перечислений структур кортежей (tuple-struct enum). Эти типы используют `()` в качестве синтаксиса инициализатора, который выглядит как вызов функции. Инициализаторы на самом деле реализованы как функции, возвращающие экземпляр, который построен из их аргументов. Мы можем использовать эти функции инициализаторы как указатели на функции, которые реализуют типажи замыканий, что означает мы можем указать инициализирующие функции в качестве аргументов для методов, которые принимают замыкания, например:
 
 ```rust
-enum Status {
-    Value(u32),
-    Stop,
-}
-
-let list_of_statuses: Vec<Status> =
-    (0u32..20)
-    .map(Status::Value)
-    .collect();
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-17-map-initializer/src/main.rs:here}}
 ```
 
 Здесь мы создаём экземпляры `Status::Value`, используя каждое значение `u32` в диапазоне (0..20), с которым вызывается `map` с помощью функции инициализатора `Status::Value`. Некоторые люди предпочитают этот стиль, а некоторые предпочитают использовать замыкания. Оба варианта компилируется в один и тот же код, поэтому используйте любой стиль, который вам понятнее.
@@ -79,35 +51,21 @@ let list_of_statuses: Vec<Status> =
 Следующий код пытается напрямую вернуть замыкание, но он не компилируется:
 
 ```rust,ignore,does_not_compile
-fn returns_closure() -> Fn(i32) -> i32 {
-    |x| x + 1
-}
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-18-returns-closure/src/lib.rs}}
 ```
 
 Ошибка компилятора выглядит следующим образом:
 
-```text
-error[E0277]: the trait bound `std::ops::Fn(i32) -> i32 + 'static:
-std::marker::Sized` is not satisfied
- -->
-  |
-1 | fn returns_closure() -> Fn(i32) -> i32 {
-  |                         ^^^^^^^^^^^^^^ `std::ops::Fn(i32) -> i32 + 'static`
-  does not have a constant size known at compile-time
-  |
-  = help: the trait `std::marker::Sized` is not implemented for
-  `std::ops::Fn(i32) -> i32 + 'static`
-  = note: the return type of a function must have a statically known size
+```console
+{{#include ../listings/ch19-advanced-features/no-listing-18-returns-closure/output.txt}}
 ```
 
 Ошибка снова ссылается на типаж `Sized` ! Rust не знает, сколько памяти нужно будет выделить для замыкания. Мы видели решение этой проблемы ранее. Мы можем использовать типаж-объект:
 
 ```rust
-fn returns_closure() -> Box<dyn Fn(i32) -> i32> {
-    Box::new(|x| x + 1)
-}
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-19-returns-closure-trait-object/src/lib.rs}}
 ```
 
-Этот код просто отлично компилируется. Для получения дополнительной информации об типаж-объектах обратитесь к разделу ["Использование типаж-объектов которые допускают значения разных типов"](ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types)<comment></comment> главы 17.
+Этот код просто отлично компилируется. Для получения дополнительной информации об типаж-объектах обратитесь к разделу ["Использование типаж-объектов которые допускают значения разных типов"](ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types)<!--  --> главы 17.
 
 Далее давайте посмотрим на макросы!
