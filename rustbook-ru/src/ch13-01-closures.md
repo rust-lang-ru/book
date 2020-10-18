@@ -13,14 +13,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::thread;
-use std::time::Duration;
-
-fn simulated_expensive_calculation(intensity: i32) -> i32 {
-    println!("calculating slowly...");
-    thread::sleep(Duration::from_secs(2));
-    intensity
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-01/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-1: Функция, используемая для гипотетического расчёта, которой требуется около 2 секунд на работу</span>
@@ -37,16 +30,7 @@ fn simulated_expensive_calculation(intensity: i32) -> i32 {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let simulated_user_specified_value = 10;
-    let simulated_random_number = 7;
-
-    generate_workout(
-        simulated_user_specified_value,
-        simulated_random_number
-    );
-}
-# fn generate_workout(intensity: u32, random_number: u32) {}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-02/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-2: Функция <code>main</code> содержащая симуляцию пользовательского ввода данных и генерацию случайного числа</span>
@@ -58,36 +42,7 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::thread;
-# use std::time::Duration;
-#
-# fn simulated_expensive_calculation(num: i32) -> i32 {
-#     println!("calculating slowly...");
-#     thread::sleep(Duration::from_secs(2));
-#     num
-# }
-#
-fn generate_workout(intensity: i32, random_number: i32) {
-    if intensity < 25 {
-        println!(
-            "Today, do {} pushups!",
-            simulated_expensive_calculation(intensity)
-        );
-        println!(
-            "Next, do {} situps!",
-            simulated_expensive_calculation(intensity)
-        );
-    } else {
-        if random_number == 3 {
-            println!("Take a break today! Remember to stay hydrated!");
-        } else {
-            println!(
-                "Today, run for {} minutes!",
-                simulated_expensive_calculation(intensity)
-            )
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-03/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-3: Логика программы печатающей план тренировки на основании введённых данных и вызова функции <code>simulated_expensive_calculation</code></span>
@@ -109,39 +64,7 @@ fn generate_workout(intensity: i32, random_number: i32) {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::thread;
-# use std::time::Duration;
-#
-# fn simulated_expensive_calculation(num: i32) -> i32 {
-#     println!("calculating slowly...");
-#     thread::sleep(Duration::from_secs(2));
-#     num
-# }
-#
-fn generate_workout(intensity: i32, random_number: i32) {
-    let expensive_result =
-        simulated_expensive_calculation(intensity);
-
-    if intensity < 25 {
-        println!(
-            "Today, do {} pushups!",
-            expensive_result
-        );
-        println!(
-            "Next, do {} situps!",
-            expensive_result
-        );
-    } else {
-        if random_number == 3 {
-            println!("Take a break today! Remember to stay hydrated!");
-        } else {
-            println!(
-                "Today, run for {} minutes!",
-                expensive_result
-            )
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-04/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-4: Извлечение вызова функции <code>simulated_expensive_calculation</code> в одно место и сохранение результата в переменной <code>expensive_result</code></span>
@@ -157,61 +80,23 @@ fn generate_workout(intensity: i32, random_number: i32) {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::thread;
-# use std::time::Duration;
-#
-let expensive_closure = |num| {
-    println!("calculating slowly...");
-    thread::sleep(Duration::from_secs(2));
-    num
-};
-# expensive_closure(5);
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-05/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-5: Определение замыкания и сохранение его в переменной <code>expensive_closure</code></span>
 
-Определение замыкания начинается после символа `=`, которое мы присваиваем переменной `expensive_closure`. Замыкание мы начинаем с пары палочек (vertical pipes (`|`)). Внутри этой конструкции мы определяем входные параметры замыкания. Такой синтаксис был
-выбран под влиянием языков Ruby и Smalltalk. Данное замыкание имеет параметр `num`. Если нужно несколько параметров, то они разделяются запятыми `|param1, param2|`.
+Определение замыкания начинается после символа `=`, которое мы присваиваем переменной `expensive_closure`. Замыкание мы начинаем с пары палочек (vertical pipes (`|`)). Внутри этой конструкции мы определяем входные параметры замыкания. Такой синтаксис был выбран под влиянием языков Ruby и Smalltalk. Данное замыкание имеет параметр `num`. Если нужно несколько параметров, то они разделяются запятыми `|param1, param2|`.
 
-После параметров замыкания, в фигурных скобках идёт тело функции замыкания. Фигурные скобки могут не использоваться, если код функции состоит только из одной строчки кода. После закрытия фигурных скобок необходим символ `;` для завершения выражения. Значение возвращаемое последней строчкой тела замыкания (`num`) будет являться значением, которое будет возвращено из замыкания, когда оно будет вызвано, поэтому данная строка не содержит точку с запятой ( ; ) как и в теле любой функции.
+После параметров замыкания, в фигурных скобках идёт тело функции замыкания. Фигурные скобки могут не использоваться, если код функции состоит только из одной строчки кода. После закрытия фигурных скобок необходим символ `;` для завершения выражения. Значение возвращаемое последней строчкой тела замыкания (`num`) будет являться значением, которое будет возвращено из замыкания, когда оно будет вызвано, поэтому данная строка не содержит точку с запятой (;) как и в теле любой функции.
 
 Обратите внимание, что выражение `let` означает, что  `expensive_closure` содержит *определение* анонимной функции, а не *значение результата* выполнения анонимной функции. Напоминаю, что мы используем замыкание, потому что хотим определить код для вызова в одной точке, сохранить этот код и фактически вызвать его на более позднем этапе. Код, который мы хотим вызвать, теперь хранится в переменной `expensive_closure`.
 
-Теперь, после определения замыкания можно изменить код в блоках `if`, вызвать код замыкания чтобы его выполнить и получить результирующее значение. Вызов замыкания очень похож на вызов функции. Мы определяем имя переменной, которая содержит определение замыкания и в скобках указываем аргументы, которые мы хотим использовать для вызова, как показано в листинге 13-6:
+Теперь, после определения замыкания можно изменить код в блоках `if`, вызвать код замыкания чтобы его выполнить и получить результирующее значение. Вызов замыкания очень похож на вызов функции. Мы определяем имя переменной, которая содержит определение замыкания и в скобках указываем аргументы, которые мы хотим использовать для вызова, как показано в листинге 13-6.
 
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::thread;
-# use std::time::Duration;
-#
-fn generate_workout(intensity: i32, random_number: i32) {
-    let expensive_closure = |num| {
-        println!("calculating slowly...");
-        thread::sleep(Duration::from_secs(2));
-        num
-    };
-
-    if intensity < 25 {
-        println!(
-            "Today, do {} pushups!",
-            expensive_closure(intensity)
-        );
-        println!(
-            "Next, do {} situps!",
-            expensive_closure(intensity)
-        );
-    } else {
-        if random_number == 3 {
-            println!("Take a break today! Remember to stay hydrated!");
-        } else {
-            println!(
-                "Today, run for {} minutes!",
-                expensive_closure(intensity)
-            )
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-06/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-6: Вызов объявленного замыкания <code>expensive_closure</code></span>
@@ -233,14 +118,7 @@ fn generate_workout(intensity: i32, random_number: i32) {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::thread;
-# use std::time::Duration;
-#
-let expensive_closure = |num: i32| -> i32 {
-    println!("calculating slowly...");
-    thread::sleep(Duration::from_secs(2));
-    num
-};
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-07/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-7: Добавление необязательных аннотаций типов для параметров и типов возвращаемых значений у замыкания</span>
@@ -254,33 +132,22 @@ let add_one_v3 = |x|             { x + 1 };
 let add_one_v4 = |x|               x + 1  ;
 ```
 
-Первая строка показывает определение функции, а вторая строка показывает полностью аннотированное определение замыкания. В третьей строке удаляются аннотации типов из определения замыкания, а в четвёртой строке удаляются скобки, которые являются необязательными, поскольку тело замыкания имеет только одно выражение. Все это допустимые определения, которые будут вызывать одинаковое поведение при вызове.
+Первая строка показывает определение функции, а вторая строка показывает полностью аннотированное определение замыкания. В третьей строке удаляются аннотации типов из определения замыкания, а в четвёртой строке удаляются скобки, которые являются необязательными, поскольку тело замыкания имеет только одно выражение. Все это допустимые определения, которые будут вызывать одинаковое поведение при вызове. Вызов замыканий необходим для компиляции `add_one_v3` и `add_one_v4`, поскольку типы будут выводиться на основе их использования.
 
 Определения замыканий будут иметь один конкретный тип выведенный для каждого из её параметров и для возвращаемого значения. Например, в листинге 13-8 показано определение короткого замыкания, которое просто возвращает значение, которое оно получает в качестве параметра. Это замыкание не очень полезно, за исключением целей этого примера. Обратите внимание, что мы не добавили никаких аннотаций типов в определение: если мы затем попытаемся дважды вызвать замыкание, используя тип `String` в качестве аргумента в первый раз и тип `u32` во второй раз, то мы получим ошибку.
 
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-let example_closure = |x| x;
-
-let s = example_closure(String::from("hello"));
-let n = example_closure(5);
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-08/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-8: Попытка вызвать замыкание, типы у которого выводятся двумя разными типами</span>
 
 Компилятор вернёт нам вот такую ошибку:
 
-```text
-error[E0308]: mismatched types
- --> src/main.rs
-  |
-  | let n = example_closure(5);
-  |                         ^ expected struct `std::string::String`, found
-  integer
-  |
-  = note: expected type `std::string::String`
-             found type `{integer}`
+```console
+{{#include ../listings/ch13-functional-features/listing-13-08/output.txt}}
 ```
 
 Когда мы в первый раз вызываем `example_closure` со значением типа `String`, компилятор выводит тип  `x` и возвращаемый тип замыкания как `String`. Эти типы затем привязываются к замыканию в `example_closure` и мы получаем ошибку типа, если пытаемся использовать другой тип с тем же замыканием.
@@ -293,7 +160,7 @@ error[E0308]: mismatched types
 
 Чтобы создать структуру, которая содержит замыкание, нам нужно указать тип замыкания, потому что определение структуры должно описывать типы каждого из его полей. Каждый экземпляр замыкания имеет свой уникальный анонимный тип: то есть, даже если два замыкания имеют одну и ту же сигнатуру, их типы по-прежнему считаются разными. Для определения структур, перечислений или параметров функций, которые используют замыкания, мы используем обобщённые типы и ограничения типажей, как мы обсуждали в главе 10.
 
-Типажи `Fn` входят в состав стандартной библиотеки. Все замыкания реализуют один из типажей: `Fn`, `FnMut` или `FnOnce`. Мы поговорим о различиях между ними в разделе [“Захват переменных окружения замыканиями”](#capturing-the-environment-with-closures)<comment></comment>; в данном примере мы можем использовать типаж `Fn`.
+Типажи `Fn` входят в состав стандартной библиотеки. Все замыкания реализуют один из типажей: `Fn`, `FnMut` или `FnOnce`. Мы поговорим о различиях между ними в разделе [“Захват переменных окружения замыканиями”](#capturing-the-environment-with-closures)<!-- <!----> -->; в данном примере мы можем использовать типаж `Fn`.
 
 Мы добавляем типы в описание ограничений типажа `Fn` для описания типов параметров и возвращаемого значения, которое замыкания должны иметь для того, чтобы соответствовать данному ограничению типажа. В данном случае, наше замыкание имеет тип параметра `u32` и возвращает тип `u32`, поэтому сигнатуру ограничения типажа мы описываем как `Fn(u32) -> u32`.
 
@@ -302,12 +169,7 @@ error[E0308]: mismatched types
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-struct Cacher<T>
-    where T: Fn(u32) -> u32
-{
-    calculation: T,
-    value: Option<u32>,
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-09/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-9: Определение структуры <code>Cacher</code> содержащей замыкание в поле <code>calculation</code> и дополнительный результат в поле <code>value</code></span>
@@ -323,34 +185,7 @@ struct Cacher<T>
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# struct Cacher<T>
-#     where T: Fn(u32) -> u32
-# {
-#     calculation: T,
-#     value: Option<u32>,
-# }
-#
-impl<T> Cacher<T>
-    where T: Fn(u32) -> u32
-{
-    fn new(calculation: T) -> Cacher<T> {
-        Cacher {
-            calculation,
-            value: None,
-        }
-    }
-
-    fn value(&mut self, arg: u32) -> u32 {
-        match self.value {
-            Some(v) => v,
-            None => {
-                let v = (self.calculation)(arg);
-                self.value = Some(v);
-                v
-            },
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-10/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-10: Логика кэширования в <code>Cacher</code></span>
@@ -368,65 +203,7 @@ impl<T> Cacher<T>
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::thread;
-# use std::time::Duration;
-#
-# struct Cacher<T>
-#     where T: Fn(u32) -> u32
-# {
-#     calculation: T,
-#     value: Option<u32>,
-# }
-#
-# impl<T> Cacher<T>
-#     where T: Fn(u32) -> u32
-# {
-#     fn new(calculation: T) -> Cacher<T> {
-#         Cacher {
-#             calculation,
-#             value: None,
-#         }
-#     }
-#
-#     fn value(&mut self, arg: u32) -> u32 {
-#         match self.value {
-#             Some(v) => v,
-#             None => {
-#                 let v = (self.calculation)(arg);
-#                 self.value = Some(v);
-#                 v
-#             },
-#         }
-#     }
-# }
-#
-fn generate_workout(intensity: u32, random_number: u32) {
-    let mut expensive_result = Cacher::new(|num| {
-        println!("calculating slowly...");
-        thread::sleep(Duration::from_secs(2));
-        num
-    });
-
-    if intensity < 25 {
-        println!(
-            "Today, do {} pushups!",
-            expensive_result.value(intensity)
-        );
-        println!(
-            "Next, do {} situps!",
-            expensive_result.value(intensity)
-        );
-    } else {
-        if random_number == 3 {
-            println!("Take a break today! Remember to stay hydrated!");
-        } else {
-            println!(
-                "Today, run for {} minutes!",
-                expensive_result.value(intensity)
-            );
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-11/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-11: Использование <code>Cacher</code> в функции <code>generate_workout</code> для абстрагирования логики кэширования</span>
@@ -442,28 +219,18 @@ fn generate_workout(intensity: u32, random_number: u32) {
 Первая проблема заключается в том, что экземпляр `Cacher` предполагает, что он всегда получит одно и то же значение параметра `arg` для метода `value`. То есть этот тест `Cacher` не пройдёт:
 
 ```rust,ignore,panics
-#[test]
-fn call_with_different_values() {
-    let mut c = Cacher::new(|a| a);
-
-    let v1 = c.value(1);
-    let v2 = c.value(2);
-
-    assert_eq!(v2, 2);
-}
+{{#rustdoc_include ../listings/ch13-functional-features/no-listing-01-failing-cacher-test/src/lib.rs:here}}
 ```
 
 Этот тест создаёт новый экземпляр `Cacher` с замыканием, которое возвращает переданное в него значение. Мы вызываем метод `value` для этого экземпляра `Cacher` со значением `arg` 1 и затем значением `arg` 2 и мы ожидаем, что вызов `value` со значением `arg` 2 вернёт 2.
 
-Запустите этот тест с реализацией `Cacher` в листинге 13-9 и листинге 13-10, тест `assert_eq!` завершится неудачно с этим сообщением:
+Запустите этот тест с реализацией `Cacher` в листинге 13-9 и листинге 13-10, тест `assert_eq!` завершится неудачно с данным сообщением:
 
-```text
-thread 'call_with_different_values' panicked at 'assertion failed: `(left == right)`
-  left: `1`,
- right: `2`', src/main.rs
+```console
+{{#include ../listings/ch13-functional-features/no-listing-01-failing-cacher-test/output.txt}}
 ```
 
-Проблема в том, что при первом вызове `c.value` с аргументом 1, экземпляр `Cacher` сохранит значение `Some(1)` в `self.value`. После этого, неважно какие будут входные параметры метода  `value`, он всегда будет возвращать 1.
+The problem is that the first time we called `c.value` with 1, the `Cacher` instance saved `Some(1)` in `self.value`. Thereafter, no matter what we pass in to the `value` method, it will always return 1.
 
 Попробуйте изменить `Cacher` для хранения HashMap, а не единственного значения. Ключами хеш-карты будут значения `arg`, которые передаются, а значения хеш-карты будут результатом вызова замыкания для этого ключа. Вместо того, чтобы проверять имеет ли `self.value` значение `Some` или `None`, функция `value` будет делать поиск `arg` в HashMap и возвращать значение, если оно присутствует. Если оно отсутствует, то `Cacher` вызовет замыкание и сохранит полученное значение в HashMap связанное со значением из `arg`.
 
@@ -478,15 +245,7 @@ thread 'call_with_different_values' panicked at 'assertion failed: `(left == rig
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let x = 4;
-
-    let equal_to_x = |z| z == x;
-
-    let y = 4;
-
-    assert!(equal_to_x(y));
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-12/src/main.rs}}
 ```
 
 <span class="caption">Листинг 13-12: Пример замыкания, которое ссылается на переменную в области видимости</span>
@@ -498,26 +257,13 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let x = 4;
-
-    fn equal_to_x(z: i32) -> bool { z == x }
-
-    let y = 4;
-
-    assert!(equal_to_x(y));
-}
+{{#rustdoc_include ../listings/ch13-functional-features/no-listing-02-functions-cant-capture/src/main.rs}}
 ```
 
 Описание ошибки:
 
-```text
-error[E0434]: can't capture dynamic environment in a fn item; use the || { ...
-} closure form instead
- --> src/main.rs
-  |
-4 |     fn equal_to_x(z: i32) -> bool { z == x }
-  |
+```console
+{{#include ../listings/ch13-functional-features/no-listing-02-functions-cant-capture/output.txt}}
 ```
 
 Компилятор даже напоминает нам, что это работает только с замыканиями!
@@ -534,42 +280,22 @@ error[E0434]: can't capture dynamic environment in a fn item; use the || { ...
 
 Если вы хотите, чтобы замыкание стало владельцем значений, которые оно использует в окружении, то вы можете использовать ключевое слово `move` перед списком параметров. Этот метод в основном полезен при передаче замыкания в новый поток для перемещения данных, чтобы они принадлежали новому потоку.
 
-У нас будет больше примеров замыканий с `move` в главе 16, когда мы поговорим про одновременное выполнение множества задач (concurrency). А пока код из листинга 13-12 с ключевым словом `move`, добавленным в определение замыкания и использующим векторы вместо целых чисел, поскольку целые числа можно копировать, а не перемещать; обратите внимание, что этот код ещё не компилируется.
+У нас будет больше примеров замыканий с `move` в главе 16, когда мы поговорим про одновременное выполнение множества задач (concurrency). А пока код из листинга 13-12 с ключевым словом `move`, добавленным в определение замыкания и использующим векторы вместо целых чисел, поскольку целые числа можно копировать, а не перемещать. Обратите внимание, что этот код ещё не компилируется.
 
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let x = vec![1, 2, 3];
-
-    let equal_to_x = move |z| z == x;
-
-    println!("can't use x here: {:?}", x);
-
-    let y = vec![1, 2, 3];
-
-    assert!(equal_to_x(y));
-}
+{{#rustdoc_include ../listings/ch13-functional-features/no-listing-03-move-closures/src/main.rs}}
 ```
 
 Мы получаем следующую ошибку:
 
-```text
-error[E0382]: use of moved value: `x`
- --> src/main.rs:6:40
-  |
-4 |     let equal_to_x = move |z| z == x;
-  |                      -------- value moved (into closure) here
-5 |
-6 |     println!("can't use x here: {:?}", x);
-  |                                        ^ value used here after move
-  |
-  = note: move occurs because `x` has type `std::vec::Vec<i32>`, which does not
-  implement the `Copy` trait
+```console
+{{#include ../listings/ch13-functional-features/no-listing-03-move-closures/output.txt}}
 ```
 
 Значение `x` перемещается в замыкание, когда замыкание определено, потому что мы добавили ключевое слово `move`. Замыкание тогда становится владельцем `x` и `main` больше не может использовать  `x` в макросе `println!`. Удаление `println!` исправляет этот пример.
 
-В большинстве случаев при указании одного из ограничений типажа `Fn` можно начать с типажа `Fn` и компилятор сообщит вам, нужен ли ещё `FnMut` или `FnOnce` в зависимости от того, что происходит в теле замыкания.
+В большинстве случаев при указании одного из ограничений типажа `Fn` можно начать с типажа `Fn` и компилятор сообщит нужен ли вам `FnMut` или `FnOnce` в зависимости от того, что происходит в теле замыкания.
 
-Для иллюстрации ситуаций, где замыкания захватывающие окружение являются полезными как параметры функций, давайте перейдём к следующей теме: Итераторы.
+Для иллюстрации ситуаций, где замыкания захватывающие окружение являются полезными как параметры функций, давайте перейдём к следующей теме: итераторы.
