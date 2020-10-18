@@ -8,29 +8,8 @@
 
 <span class="filename">Файл: src/main.rs</span>
 
-<!-- Hidden fn main is here to disable the automatic wrapping in fn main that
-doc tests do; the `use List` fails if this listing is put within a main -->
-
 ```rust
-# fn main() {}
-use std::rc::Rc;
-use std::cell::RefCell;
-use crate::List::{Cons, Nil};
-
-#[derive(Debug)]
-enum List {
-    Cons(i32, RefCell<Rc<List>>),
-    Nil,
-}
-
-impl List {
-    fn tail(&self) -> Option<&RefCell<Rc<List>>> {
-        match self {
-            Cons(_, item) => Some(item),
-            Nil => None,
-        }
-    }
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-25/src/main.rs}}
 ```
 
 <span class="caption">Листинг 15-25: Определение списка cons, который содержит <code>RefCell</code>, так что можно изменять то, на что ссылается вариант <code>Cons</code></span>
@@ -42,49 +21,7 @@ impl List {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# #[derive(Debug)]
-# enum List {
-#     Cons(i32, RefCell<Rc<List>>),
-#     Nil,
-# }
-#
-# impl List {
-#     fn tail(&self) -> Option<&RefCell<Rc<List>>> {
-#         match *self {
-#             Cons(_, ref item) => Some(item),
-#             Nil => None,
-#         }
-#     }
-# }
-#
-use List::{Cons, Nil};
-use std::rc::Rc;
-use std::cell::RefCell;
-
-fn main() {
-
-    let a = Rc::new(Cons(5, RefCell::new(Rc::new(Nil))));
-
-    println!("a initial rc count = {}", Rc::strong_count(&a));
-    println!("a next item = {:?}", a.tail());
-
-    let b = Rc::new(Cons(10, RefCell::new(a.clone())));
-
-    println!("a rc count after b creation = {}", Rc::strong_count(&a));
-    println!("b initial rc count = {}", Rc::strong_count(&b));
-    println!("b next item = {:?}", b.tail());
-
-    if let Some(ref link) = a.tail() {
-        *link.borrow_mut() = b.clone();
-    }
-
-    println!("b rc count after changing a = {}", Rc::strong_count(&b));
-    println!("a rc count after changing a = {}", Rc::strong_count(&a));
-
-    // Удалите коментарий ниже, чтобы увидеть зацикленность;
-    // будет переполнение стека
-    // println!("a next item = {:?}", a.tail());
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-26/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 15-26: Создание ссылочного зацикливания из двух значений <code>List</code> указывающих друг на друга</span>
@@ -95,19 +32,14 @@ fn main() {
 
 Когда мы запускаем этот код, оставив последний `println!` закомментированным в данный момент, мы получим вывод:
 
-```text
-a initial rc count = 1
-a next item = Some(RefCell { value: Nil })
-a rc count after b creation = 2
-b initial rc count = 1
-b next item = Some(RefCell { value: Cons(5, RefCell { value: Nil }) })
-b rc count after changing a = 2
-a rc count after changing a = 2
+```console
+{{#include ../listings/ch15-smart-pointers/listing-15-26/output.txt}}
 ```
 
 Счётчик ссылок экземпляров `Rc<List>` в обоих переменных `a` и `b` равен 2 после того, как мы изменяем список внутри `a`, чтобы он указывал на `b`. В конце `main` Rust сначала попытается удалить `b`, что уменьшит количество экземпляров `Rc<List>` в `b` на 1.
 
 Однако, поскольку `a` все ещё ссылается на `Rc<List>` который был в `b` , этот `Rc<List>` имеет счётчик 1, а не 0, поэтому память, которую `Rc<List>` держит в куче, не будет удалена. Память просто будет навсегда занята со счётчиком 1. Чтобы визуализировать этот ссылочный цикл, мы создали диаграмму на рисунке 15-4.
+
 
 <img alt="Reference cycle of lists" src="../../rustbook-en/src/img/trpl15-04.svg" class="center">
 
@@ -138,14 +70,7 @@ a rc count after changing a = 2
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::rc::Rc;
-use std::cell::RefCell;
-
-#[derive(Debug)]
-struct Node {
-    value: i32,
-    children: RefCell<Vec<Rc<Node>>>,
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:here}}
 ```
 
 Мы хотим, чтобы `Node` владел своими дочерними узлами и мы хотим поделиться этим владением с переменными так, чтобы мы могли напрямую обращаться к каждому `Node` в дереве. Для этого мы определяем внутренние элементы типа `Vec<T>` как значения типа `Rc<Node>`. Мы также хотим изменять те узлы, которые являются дочерними по отношению к другому узлу, поэтому у нас есть тип `RefCell<T>` в поле `children` оборачивающий тип `Vec<Rc<Node>>`.
@@ -155,26 +80,7 @@ struct Node {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::rc::Rc;
-# use std::cell::RefCell;
-#
-# #[derive(Debug)]
-# struct Node {
-#     value: i32,
-#    children: RefCell<Vec<Rc<Node>>>,
-# }
-#
-fn main() {
-    let leaf = Rc::new(Node {
-        value: 3,
-        children: RefCell::new(vec![]),
-    });
-
-    let branch = Rc::new(Node {
-        value: 5,
-        children: RefCell::new(vec![Rc::clone(&leaf)]),
-    });
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:there}}
 ```
 
 <span class="caption">Листинг 15-27. Создание узла <code>leaf</code> без дочерних узлов и узла <code>branch</code> с <code>leaf</code> как одним дочерним узлом</span>
@@ -192,15 +98,7 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::rc::{Rc, Weak};
-use std::cell::RefCell;
-
-#[derive(Debug)]
-struct Node {
-    value: i32,
-    parent: RefCell<Weak<Node>>,
-    children: RefCell<Vec<Rc<Node>>>,
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-28/src/main.rs:here}}
 ```
 
 Узел сможет ссылаться на свой родительский узел, но не владеет своим родителем. В листинге 15-28 мы обновляем `main` на использование нового определения так, чтобы у узла `leaf` был бы способ ссылаться на его родительский узел `branch`:
@@ -208,35 +106,7 @@ struct Node {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::rc::{Rc, Weak};
-# use std::cell::RefCell;
-#
-# #[derive(Debug)]
-# struct Node {
-#     value: i32,
-#     parent: RefCell<Weak<Node>>,
-#     children: RefCell<Vec<Rc<Node>>>,
-# }
-#
-fn main() {
-    let leaf = Rc::new(Node {
-        value: 3,
-        parent: RefCell::new(Weak::new()),
-        children: RefCell::new(vec![]),
-    });
-
-    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
-
-    let branch = Rc::new(Node {
-        value: 5,
-        parent: RefCell::new(Weak::new()),
-        children: RefCell::new(vec![Rc::clone(&leaf)]),
-    });
-
-    *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
-
-    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-28/src/main.rs:there}}
 ```
 
 <span class="caption">Листинг 15-28: Узел <code>leaf</code> со слабой ссылкой на свой родительский узел <code>branch</code>.</span>
@@ -268,58 +138,7 @@ children: RefCell { value: [] } }] } })
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::rc::{Rc, Weak};
-# use std::cell::RefCell;
-#
-# #[derive(Debug)]
-# struct Node {
-#     value: i32,
-#     parent: RefCell<Weak<Node>>,
-#     children: RefCell<Vec<Rc<Node>>>,
-# }
-#
-fn main() {
-    let leaf = Rc::new(Node {
-        value: 3,
-        parent: RefCell::new(Weak::new()),
-        children: RefCell::new(vec![]),
-    });
-
-    println!(
-        "leaf strong = {}, weak = {}",
-        Rc::strong_count(&leaf),
-        Rc::weak_count(&leaf),
-    );
-
-    {
-        let branch = Rc::new(Node {
-            value: 5,
-            parent: RefCell::new(Weak::new()),
-            children: RefCell::new(vec![Rc::clone(&leaf)]),
-        });
-
-        *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
-
-        println!(
-            "branch strong = {}, weak = {}",
-            Rc::strong_count(&branch),
-            Rc::weak_count(&branch),
-        );
-
-        println!(
-            "leaf strong = {}, weak = {}",
-            Rc::strong_count(&leaf),
-            Rc::weak_count(&leaf),
-        );
-    }
-
-    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
-    println!(
-        "leaf strong = {}, weak = {}",
-        Rc::strong_count(&leaf),
-        Rc::weak_count(&leaf),
-    );
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-29/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 15-29: Создание <code>branch</code> во внутренней области и проверка сильных и слабых ссылок</span>
@@ -336,8 +155,11 @@ fn main() {
 
 В этой главе рассказано как использовать умные указатели для обеспечения различных гарантий и компромиссов по сравнению с обычными ссылками, которые Rust использует по умолчанию. Тип `Box<T>` имеет известный размер и указывает на данные размещённые в куче. Тип `Rc<T>` отслеживает количество ссылок на данные в куче, поэтому данные могут иметь несколько владельцев. Тип `RefCell<T>` с его внутренней изменяемостью предоставляет тип, который можно использовать при необходимости неизменного типа, но необходимости изменить внутреннее значение этого типа; он также обеспечивает соблюдение правил заимствования во время выполнения, а не во время компиляции.
 
-Мы обсудили также типажи `Deref` и `Drop`, которые обеспечивают большую функциональность умных указателей. Мы исследовали ссылочную зацикленность, которая может вызывать утечки памяти и как это предотвратить с помощью типа `Weak<T>`.
+Мы обсудили также типажи <code>Deref</code> и <code>Drop</code>, которые обеспечивают большую функциональность умных указателей. Мы исследовали ссылочную зацикленность, которая может вызывать утечки памяти и как это предотвратить с помощью типа <code>Weak<T></code>.
 
-Если эта глава вызвала у вас интерес и вы хотите реализовать свои собственные умные указатели, обратитесь к [”The Rustonomicon”](https://doc.rust-lang.org/stable/nomicon/) за более полезной информацией.
+Если эта глава вызвала у вас интерес и вы хотите реализовать свои собственные умные указатели, обратитесь к [”The Rustonomicon”] за более полезной информацией.
 
 Далее мы поговорим о параллелизме в Rust. Вы даже узнаете о нескольких новых умных указателях.
+
+
+[”The Rustonomicon”]: ../nomicon/index.html
