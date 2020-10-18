@@ -9,25 +9,12 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
-
-        let query = args[1].clone();
-        let filename = args[2].clone();
-
-        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
-
-        Ok(Config { query, filename, case_sensitive })
-    }
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-12-23-reproduced/src/lib.rs:ch13}}
 ```
 
 <span class="caption">Листинг 13-24: Воспроизведение функции <code>Config::new</code> из листинга 12-23</span>
 
-В то время мы говорили, что не стоит беспокоиться о неэффективных вызовах `clone`, потому что мы удалим их в будущем. Ну что же, это время пришло!
+Ранее мы говорили, что не стоит беспокоиться о неэффективных вызовах `clone`, потому что мы удалим их в будущем. Ну что же, это время пришло!
 
 Нам был нужен вызов `clone` потому что у нас есть срез с элементами `String` в параметре `args`, но  функция `new` не владеет `args`. Чтобы вернуть владение экземпляром `Config`, нам пришлось клонировать значения из полей `query` и `filename` структуры `Config`, поэтому экземпляр `Config` может владеть своими значениями.
 
@@ -42,16 +29,7 @@ impl Config {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    let config = Config::new(&args).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {}", err);
-        process::exit(1);
-    });
-
-    // --snip--
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-12-24-reproduced/src/main.rs:ch13}}
 ```
 
 Мы изменим начало функции `main`, которая была в  листинге 12-24, на код из листинга 13-25. Он не компилируется, пока мы не обновим `Config::new`.
@@ -59,14 +37,7 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-fn main() {
-    let config = Config::new(env::args()).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {}", err);
-        process::exit(1);
-    });
-
-    // --snip--
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-25/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 13-25: Передача возвращаемого значения <code>env::args</code> в <code>Config::new</code></span>
@@ -78,9 +49,7 @@ fn main() {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-impl Config {
-    pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
-        // --snip--
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-26/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 13-26: Обновление сигнатуры <code>Config::new</code> для ожидания итератора</span>
@@ -94,34 +63,7 @@ impl Config {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-# fn main() {}
-# use std::env;
-#
-# struct Config {
-#     query: String,
-#     filename: String,
-#     case_sensitive: bool,
-# }
-#
-impl Config {
-    pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
-        args.next();
-
-        let query = match args.next() {
-            Some(arg) => arg,
-            None => return Err("Didn't get a query string"),
-        };
-
-        let filename = match args.next() {
-            Some(arg) => arg,
-            None => return Err("Didn't get a file name"),
-        };
-
-        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
-
-        Ok(Config { query, filename, case_sensitive })
-    }
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-27/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 13-27: Новое содержание функции <code>Config::new</code> с использованием методов итератора</span>
@@ -135,17 +77,7 @@ impl Config {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
-
-    for line in contents.lines() {
-        if line.contains(query) {
-            results.push(line);
-        }
-    }
-
-    results
-}
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-19/src/lib.rs:ch13}}
 ```
 
 <span class="caption">Листинг 13-28: Реализация функции <code>search</code> из листинга 12-19</span>
@@ -155,11 +87,7 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    contents.lines()
-        .filter(|line| line.contains(query))
-        .collect()
-}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-29/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 13-29: Использование адаптерных методов итератора в реализации функции <code>search</code></span>
@@ -168,4 +96,4 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
 
 Следующий логический вопрос - какой стиль вы должны выбрать в своём собственном коде и почему, тот что был в исходной реализации в листинге 13-28 или версию с использованием итераторов в листинге 13-29. Большинство программистов на Rust предпочитают использовать стиль с итератором. Поначалу немного сложнее освоиться, но как только вы изучите различные адаптерные методы итераторов и то, что они делают, итераторы будет легче понять. Вместо того, чтобы возиться с различными элементами цикла и создавать новые векторы, код фокусируется на высокоуровневом смысле цикла. Это абстрагирует часть обычного кода, поэтому легче увидеть концепции уникальные для этого кода, такие как условие фильтрации, которое должен пройти каждый элемент в итераторе.
 
-Но действительно ли эти конструкции равнозначны? Это вызывает сомнение. Рассуждения по поводу производительности мы продолжим в следующей секции этой главы.
+Но действительно ли эти две реализации эквивалентны? Интуитивное предположение может заключаться в том, что более низкоуровневый цикл будет быстрее. Поговорим о производительности.
