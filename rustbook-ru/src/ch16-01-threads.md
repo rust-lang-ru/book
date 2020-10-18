@@ -29,27 +29,16 @@ Rust пытается смягчить негативные последстви
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::thread;
-use std::time::Duration;
-
-fn main() {
-    thread::spawn(|| {
-        for i in 1..10 {
-            println!("hi number {} from the spawned thread!", i);
-            thread::sleep(Duration::from_millis(1));
-        }
-    });
-
-    for i in 1..5 {
-        println!("hi number {} from the main thread!", i);
-        thread::sleep(Duration::from_millis(1));
-    }
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-01/src/main.rs}}
 ```
 
 <span class="caption">Листинг 16-1: Создание нового потока для печати в отдельном потоке чего-либо во время печати в главном потоке чего-то другого</span>
 
 Обратите внимание, что с помощью этой функции новый поток будет остановлен по окончании основного потока, независимо от того, завершился он или нет. Вывод этой программы может каждый раз немного отличаться, но он будет выглядеть примерно так:
+
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
 
 ```text
 hi number 1 from the main thread!
@@ -76,29 +65,16 @@ hi number 5 from the spawned thread!
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::thread;
-use std::time::Duration;
-
-fn main() {
-    let handle = thread::spawn(|| {
-        for i in 1..10 {
-            println!("hi number {} from the spawned thread!", i);
-            thread::sleep(Duration::from_millis(1));
-        }
-    });
-
-    for i in 1..5 {
-        println!("hi number {} from the main thread!", i);
-        thread::sleep(Duration::from_millis(1));
-    }
-
-    handle.join().unwrap();
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-02/src/main.rs}}
 ```
 
 <span class="caption">Листинг 16-2: Сохранение значения <code>JoinHandle</code> из <code>thread::spawn</code> для гарантированного ожидания завершения работы потока</span>
 
 Вызов `join` у дескриптора блокирует текущий поток, пока поток, представленный дескриптором не завершится. *Блокировка* потока означает, что потоку запрещено выполнять работу или выходить из него. Поскольку мы поместили вызов `join` после цикла `for` основного потока, выполнение листинга 16-2 должно привести к выводу, подобному следующему:
+
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
 
 ```text
 hi number 1 from the main thread!
@@ -123,27 +99,14 @@ hi number 9 from the spawned thread!
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::thread;
-use std::time::Duration;
-
-fn main() {
-    let handle = thread::spawn(|| {
-        for i in 1..10 {
-            println!("hi number {} from the spawned thread!", i);
-            thread::sleep(Duration::from_millis(1));
-        }
-    });
-
-    handle.join().unwrap();
-
-    for i in 1..5 {
-        println!("hi number {} from the main thread!", i);
-        thread::sleep(Duration::from_millis(1));
-    }
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/no-listing-01-join-too-early/src/main.rs}}
 ```
 
 Основной поток будет ждать завершения порождённого потока, а затем запустит свой цикл `for` , поэтому выходные данные больше не будут чередоваться, как показано ниже:
+
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
 
 ```text
 hi number 1 from the spawned thread!
@@ -174,38 +137,15 @@ hi number 4 from the main thread!
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-use std::thread;
-
-fn main() {
-    let v = vec![1, 2, 3];
-
-    let handle = thread::spawn(|| {
-        println!("Here's a vector: {:?}", v);
-    });
-
-    handle.join();
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-03/src/main.rs}}
 ```
 
 <span class="caption">Листинг 16-3: Попытка использования вектора в дочернем потоке, созданного в основном потоке</span>
 
 Замыкание использует переменную `v`, поэтому оно захватит `v` и сделает его частью окружения замыкания. Поскольку `thread::spawn` запускает это замыкание в новом потоке, мы должны иметь доступ к `v` внутри этого нового потока. Но при компиляции этого примера, мы получаем следующую ошибку:
 
-```text
-error[E0373]: closure may outlive the current function, but it borrows `v`,
-which is owned by the current function
- --> src/main.rs:6:32
-  |
-6 |     let handle = thread::spawn(|| {
-  |                                ^^ may outlive borrowed value `v`
-7 |         println!("Here's a vector: {:?}", v);
-  |                                           - `v` is borrowed here
-  |
-help: to force the closure to take ownership of `v` (and any other referenced
-variables), use the `move` keyword
-  |
-6 |     let handle = thread::spawn(move || {
-  |                                ^^^^^^^
+```console
+{{#include ../listings/ch16-fearless-concurrency/listing-16-03/output.txt}}
 ```
 
 Rust *выводит* как захватить `v` и так как в `println!` нужна только ссылка на `v`, то замыкание пытается заимствовать `v`. Однако есть проблема: Rust не может определить, как долго будет работать порождённый поток, поэтому он не знает, будет ли всегда действительной ссылка на `v`.
@@ -215,19 +155,7 @@ Rust *выводит* как захватить `v` и так как в `println
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-use std::thread;
-
-fn main() {
-    let v = vec![1, 2, 3];
-
-    let handle = thread::spawn(|| {
-        println!("Here's a vector: {:?}", v);
-    });
-
-    drop(v); // oh no!
-
-    handle.join().unwrap();
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-04/src/main.rs}}
 ```
 
 <span class="caption">Листинг 16-4: Поток с замыканием, которое пытается захватить ссылку на <code>v</code> из главного потока, который удаляет <code>v</code></span>
@@ -236,12 +164,15 @@ fn main() {
 
 Чтобы исправить ошибку компилятора в листинге 16-3, мы можем использовать совет из сообщения об ошибке:
 
+<!-- manual-regeneration
+after automatic regeneration, look at listings/ch16-fearless-concurrency/listing-16-03/output.txt and copy the relevant part
+-->
+
 ```text
-help: to force the closure to take ownership of `v` (and any other referenced
-variables), use the `move` keyword
+help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
   |
 6 |     let handle = thread::spawn(move || {
-  |
+  |                                ^^^^^^^
 ```
 
 Добавляя ключевое слово `move` перед замыканием, мы заставляем замыкание забирать используемые значения во владение, вместо того, чтобы позволить Rust вывести необходимость заимствования значения. Модификация Листинга 16-3, показанная в Листинге 16-5, будет скомпилирована и запущена так, как мы ожидаем:
@@ -249,35 +180,15 @@ variables), use the `move` keyword
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::thread;
-
-fn main() {
-    let v = vec![1, 2, 3];
-
-    let handle = thread::spawn(move || {
-        println!("Here's a vector: {:?}", v);
-    });
-
-    handle.join().unwrap();
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-05/src/main.rs}}
 ```
 
 <span class="caption">Листинг 16-5: Использование ключевого слова <code>move</code> для принуждения замыкания забрать во владение используемых им значений</span>
 
 Что произойдёт с кодом в листинге 16-4, где основной поток вызывает `drop` при использовании в замыкании  `move`? Исправит ли `move` этот случай? К сожалению нет; мы получили бы другую ошибку, потому что то, что пытается сделать листинг 16-4 не разрешено по другой причине. Если бы мы добавили `move` в замыкание, мы бы переместили `v` в среду замыкания и больше не могли вызывать `drop` для него в главном потоке. Вместо этого мы получили бы ошибку компилятора:
 
-```text
-error[E0382]: use of moved value: `v`
-  --> src/main.rs:10:10
-   |
-6  |     let handle = thread::spawn(move || {
-   |                                ------- value moved (into closure) here
-...
-10 |     drop(v); // oh no!
-   |          ^ value used here after move
-   |
-   = note: move occurs because `v` has type `std::vec::Vec<i32>`, which does
-   not implement the `Copy` trait
+```console
+{{#include ../listings/ch16-fearless-concurrency/output-only-01-move-drop/output.txt}}
 ```
 
 Правила владения Rust снова нас спасли! Мы получили ошибку кода из листинга 16-3, потому что Rust был консервативен и только заимствовал `v` для потока, что означало, что основной поток теоретически может сделать недействительной ссылку на порождённый поток. Сообщив Rust о передаче владения `v` в порождаемый поток, мы гарантируем Rust, что основной поток больше не будет использовать `v`. Если мы изменим Листинг 16-4 таким же образом, то мы нарушаем правила владения при попытке использовать `v` в главном потоке. Ключевое слово `move` отменяет основное консервативное поведение Rust по заимствованию, что не позволяет нам нарушать правила владения.
