@@ -12,7 +12,7 @@
 
 Способ продемонстрировать это поведение - запустите программу с `>` и именем файла *output.txt* в который мы хотим перенаправить стандартный поток вывода. Мы не передадим никаких аргументов, что должно вызвать внутри ошибку:
 
-```text
+```console
 $ cargo run > output.txt
 ```
 
@@ -31,20 +31,7 @@ Problem parsing arguments: not enough arguments
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    let config = Config::new(&args).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {}", err);
-        process::exit(1);
-    });
-
-    if let Err(e) = minigrep::run(config) {
-        eprintln!("Application error: {}", e);
-
-        process::exit(1);
-    }
-}
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-24/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 12-24. Запись сообщений об ошибках в стандартный поток ошибок вместо потока стандартного вывода используя макрос <code>eprintln!</code></span>
@@ -60,7 +47,7 @@ Problem parsing arguments: not enough arguments
 
 Давайте снова запустим программу с аргументами, которые не вызывают ошибку, но все же перенаправляют стандартный вывод в файл, например так:
 
-```text
+```console
 $ cargo run to poem.txt > output.txt
 ```
 
