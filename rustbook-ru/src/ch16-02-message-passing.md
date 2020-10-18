@@ -1,6 +1,6 @@
 ## Передача данных с помощью сообщений между потоками
 
-Одним из все более популярных подходов к обеспечению безопасной многопоточности является *передача сообщений*, когда потоки или участники взаимодействуют друг с другом, отправляя друг другу сообщения, содержащие данные. Вот идея в слогане из [документации языка Go](http://golang.org/doc/effective_go.html): «Не общайтесь разделяя память; делитесь памятью обмениваясь сообщениями».
+Одним из все более популярных подходов к обеспечению безопасной многопоточности является *передача сообщений*, когда потоки или участники взаимодействуют друг с другом, отправляя друг другу сообщения, содержащие данные. Вот идея в слогане из [документации языка Go](https://golang.org/doc/effective_go.html#concurrency): «Не общайтесь разделяя память; делитесь памятью обмениваясь сообщениями».
 
 Одним из основных инструментов Rust для обеспечения многопоточной отправки сообщений является *канал* (channel), концепция программирования, для которой стандартная библиотека Rust предоставляет реализацию. Вы можете представить канал в контексте программирования как канал воды, как ручей или река. Если вы поместите что-то вроде резиновой утки или лодки в ручей, она пойдёт вниз по течению до конца водного пути.
 
@@ -13,11 +13,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-use std::sync::mpsc;
-
-fn main() {
-    let (tx, rx) = mpsc::channel();
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-06/src/main.rs}}
 ```
 
 <span class="caption">Листинг 16-6: Создание канала и назначение двух половин для <code>tx</code> (передачи) и <code>rx</code> (приёма)</span>
@@ -31,17 +27,7 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::thread;
-use std::sync::mpsc;
-
-fn main() {
-    let (tx, rx) = mpsc::channel();
-
-    thread::spawn(move || {
-        let val = String::from("hi");
-        tx.send(val).unwrap();
-    });
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-07/src/main.rs}}
 ```
 
 <span class="caption">Листинг 16-7: Перемещение <code>tx</code> в порождённый поток и отправка "hi"</span>
@@ -55,20 +41,7 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::thread;
-use std::sync::mpsc;
-
-fn main() {
-    let (tx, rx) = mpsc::channel();
-
-    thread::spawn(move || {
-        let val = String::from("hi");
-        tx.send(val).unwrap();
-    });
-
-    let received = rx.recv().unwrap();
-    println!("Got: {}", received);
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-08/src/main.rs}}
 ```
 
 <span class="caption">Листинг 16-8: Получение значения "hi" в главном потоке и его печать</span>
@@ -80,6 +53,10 @@ fn main() {
 Мы использовали `recv` в этом примере для простоты; у нас нет никакой другой работы для основного потока, кроме как ждать сообщений, поэтому блокировка основного потока уместна.
 
 При запуске кода листинга 16-8, мы увидим значение, напечатанное из основного потока:
+
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
 
 ```text
 Got: hi
@@ -94,38 +71,15 @@ Got: hi
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-use std::thread;
-use std::sync::mpsc;
-
-fn main() {
-    let (tx, rx) = mpsc::channel();
-
-    thread::spawn(move || {
-        let val = String::from("hi");
-        tx.send(val).unwrap();
-        println!("val is {}", val);
-    });
-
-    let received = rx.recv().unwrap();
-    println!("Got: {}", received);
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-09/src/main.rs}}
 ```
 
 <span class="caption">Листинг 16-9: Попытка использовать <code>val</code> после того, как мы отправили его в канал</span>
 
 Здесь мы пытаемся напечатать значение `val` после того, как отправили его в канал вызвав `tx.send`. Разрешить это было бы плохой идеей: после того, как значение было отправлено в другой поток, текущий поток мог бы изменить или удалить значение, прежде чем мы попытались бы использовать значение снова. Потенциально изменения в другом потоке могут привести к ошибкам или не ожидаемым результатам из-за противоречивых или несуществующих данных. Однако Rust выдаёт нам ошибку, если мы пытаемся скомпилировать код в листинге 16-9:
 
-```text
-error[E0382]: use of moved value: `val`
-  --> src/main.rs:10:31
-   |
-9  |         tx.send(val).unwrap();
-   |                 --- value moved here
-10 |         println!("val is {}", val);
-   |                               ^^^ value used here after move
-   |
-   = note: move occurs because `val` has type `std::string::String`, which does
-not implement the `Copy` trait
+```console
+{{#include ../listings/ch16-fearless-concurrency/listing-16-09/output.txt}}
 ```
 
 Наша ошибка для многопоточности привела к ошибке компиляции. Функция `send` вступает во владение своим параметром и когда значение перемещается, получатель становится владельцем этого параметра. Это останавливает нас от случайного использования значения снова после его отправки; анализатор заимствования проверяет, что все в порядке.
@@ -137,31 +91,7 @@ not implement the `Copy` trait
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::thread;
-use std::sync::mpsc;
-use std::time::Duration;
-
-fn main() {
-    let (tx, rx) = mpsc::channel();
-
-    thread::spawn(move || {
-        let vals = vec![
-            String::from("hi"),
-            String::from("from"),
-            String::from("the"),
-            String::from("thread"),
-        ];
-
-        for val in vals {
-            tx.send(val).unwrap();
-            thread::sleep(Duration::from_secs(1));
-        }
-    });
-
-    for received in rx {
-        println!("Got: {}", received);
-    }
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-10/src/main.rs}}
 ```
 
 <span class="caption">Листинг 16-10: Отправка нескольких сообщений и пауза между ними</span>
@@ -171,6 +101,10 @@ fn main() {
 В основном потоке мы больше не вызываем функцию `recv` явно: вместо этого мы используем `rx` как итератор. Для каждого полученного значения мы печатаем его. Когда канал будет закрыт, итерация закончится.
 
 При выполнении кода в листинге 16-10 вы должны увидеть следующий вывод с паузой в 1 секунду между каждой строкой:
+
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
 
 ```text
 Got: hi
@@ -188,50 +122,7 @@ Got: thread
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::thread;
-# use std::sync::mpsc;
-# use std::time::Duration;
-#
-# fn main() {
-// --snip--
-
-let (tx, rx) = mpsc::channel();
-
-let tx1 = mpsc::Sender::clone(&tx);
-thread::spawn(move || {
-    let vals = vec![
-        String::from("hi"),
-        String::from("from"),
-        String::from("the"),
-        String::from("thread"),
-    ];
-
-    for val in vals {
-        tx1.send(val).unwrap();
-        thread::sleep(Duration::from_secs(1));
-    }
-});
-
-thread::spawn(move || {
-    let vals = vec![
-        String::from("more"),
-        String::from("messages"),
-        String::from("for"),
-        String::from("you"),
-    ];
-
-    for val in vals {
-        tx.send(val).unwrap();
-        thread::sleep(Duration::from_secs(1));
-    }
-});
-
-for received in rx {
-    println!("Got: {}", received);
-}
-
-// --snip--
-# }
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-11/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 16-11. Отправка нескольких сообщений от нескольких отправителей</span>
@@ -239,6 +130,10 @@ for received in rx {
 На этот раз, прежде чем мы создадим первый порождённый поток, мы вызываем `clone` на передающей части канала. Это даст нам новый дескриптор отправки, который мы можем передать первому порождённому потоку. Мы передаём исходную отправляющую часть канала второму порождённому потоку. Это даёт нам два потока, каждый из которых отправляет разные сообщения принимающей части канала.
 
 Когда вы запустите код, вывод должен выглядеть примерно так:
+
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
 
 ```text
 Got: hi
