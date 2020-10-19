@@ -6,20 +6,14 @@
 
 > Примечание: есть одна большая разница между типом `MyBox<T>`, который мы собираемся создать и реальным `Box<T>`: наша версия не будет хранить свои данные в куче. В примере мы сосредоточимся на типаже `Deref`, поэтому менее важно то, где данные хранятся, чем поведение подобное указателю.
 
-### Следование указателю к значению с помощью оператора разыменования
+### Следование по указателю ко значению с помощью оператора разыменования
 
 Обычная ссылка является типом указателя и один из способов думать про указатель, как будто это стрела в направлении к значению, хранящемуся где-то ещё. В листинге 15-6 мы создаём ссылку на значение `i32` и затем используем оператор разыменования, чтобы следовать по ссылке к данным:
 
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let x = 5;
-    let y = &x;
-
-    assert_eq!(5, x);
-    assert_eq!(5, *y);
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-06/src/main.rs}}
 ```
 
 <span class="caption">Листинг 15-6: Использование оператора разыменования для следования по ссылке к значению <code>i32</code></span>
@@ -28,15 +22,8 @@ fn main() {
 
 Если бы мы попытались написать `assert_eq!(5, y);`, то получили ошибку компиляции:
 
-```text
-error[E0277]: can't compare `{integer}` with `&{integer}`
- --> src/main.rs:6:5
-  |
-6 |     assert_eq!(5, y);
-  |     ^^^^^^^^^^^^^^^^^ no implementation for `{integer} == &{integer}`
-  |
-  = help: the trait `std::cmp::PartialEq<&{integer}>` is not implemented for
-  `{integer}`
+```console
+{{#include ../listings/ch15-smart-pointers/output-only-01-comparing-to-reference/output.txt}}
 ```
 
 Сравнение числа и ссылки на число не допускается, потому что они различных типов. Мы должны использовать оператор разыменования, чтобы перейти по ссылке на значение, на которое она указывает.
@@ -48,18 +35,12 @@ error[E0277]: can't compare `{integer}` with `&{integer}`
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn main() {
-    let x = 5;
-    let y = Box::new(x);
-
-    assert_eq!(5, x);
-    assert_eq!(5, *y);
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-07/src/main.rs}}
 ```
 
-<span class="caption">Листинг 15-7: Использование оператора разыменования с типом <code>Box<i32></code></span>
+<span class="caption">Listing 15-7: Using the dereference operator on a <code>Box<i32></code></span>
 
-Единственная разница между листингом 15-7 и листингом 15-6 состоит в том, что здесь мы устанавливаем `y` на экземпляр box, указывающий на значение `x`, а не ссылкой, указывающей на значение `x` . В последнем утверждении мы можем использовать оператор разыменования, чтобы проследовать за указателем box-а так же, как мы это делали когда `y` была ссылкой. Далее мы рассмотрим, что особенного у типа `Box<T>`, что позволяет нам использовать оператор разыменования, определяя наш собственный тип `Box`.
+The only difference between Listing 15-7 and Listing 15-6 is that here we set `y` to be an instance of a box pointing to a copied value of `x` rather than a reference pointing to the value of `x`. In the last assertion, we can use the dereference operator to follow the box’s pointer in the same way that we did when `y` was a reference. Next, we’ll explore what is special about `Box<T>` that enables us to use the dereference operator by defining our own box type.
 
 ### Определение собственного умного указателя
 
@@ -70,16 +51,10 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-struct MyBox<T>(T);
-
-impl<T> MyBox<T> {
-    fn new(x: T) -> MyBox<T> {
-        MyBox(x)
-    }
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-08/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 15-8: Определение типа <code>MyBox<T></code></span>
+<span class="caption">Listing 15-8: Defining a <code>MyBox<T></code> type</span>
 
 Мы определяем структуру с именем `MyBox` и объявляем обобщённый параметр `T`, потому что мы хотим, чтобы наш тип хранил значения любого типа. Тип `MyBox` является структурой кортежа с одним элементом типа `T`. Функция `MyBox::new` принимает один параметр типа `T` и возвращает экземпляр `MyBox`, который содержит переданное значение.
 
@@ -88,25 +63,15 @@ impl<T> MyBox<T> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-fn main() {
-    let x = 5;
-    let y = MyBox::new(x);
-
-    assert_eq!(5, x);
-    assert_eq!(5, *y);
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-09/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 15-9: Попытка использовать <code>MyBox<T></code> таким же образом, как мы использовали ссылки и библиотечный <code>Box<T></code></span>
+<span class="caption">Listing 15-9: Attempting to use <code>MyBox<T></code> in the same way we used references and <code>Box<T></code></span>
 
 Вот результат ошибки компиляции:
 
-```text
-error[E0614]: type `MyBox<{integer}>` cannot be dereferenced
-  --> src/main.rs:14:19
-   |
-14 |     assert_eq!(5, *y);
-   |                   ^^
+```console
+{{#include ../listings/ch15-smart-pointers/listing-15-09/output.txt}}
 ```
 
 Наш тип `MyBox<T>` не может быть разыменован, потому что мы не реализовали эту возможность. Чтобы включить разыменование с помощью оператора `*`, мы реализуем типаж `Deref`.
@@ -118,19 +83,10 @@ error[E0614]: type `MyBox<{integer}>` cannot be dereferenced
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::ops::Deref;
-
-# struct MyBox<T>(T);
-impl<T> Deref for MyBox<T> {
-    type Target = T;
-
-    fn deref(&self) -> &T {
-        &self.0
-    }
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-10/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 15-10: Реализация <code>Deref</code> для типа <code>MyBox<T></code></span>
+<span class="caption">Листинг 15-10: Реализация <code>Deref</code> для типа <code>MyBox<t></t></code></span>
 
 Синтаксис `type Target = T;` определяет связанный тип для использования у типажа `Deref`. Связанные типы - это немного другой способ объявления обобщённого параметра, но пока вам не нужно о них беспокоиться; мы рассмотрим их более подробно в главе 19.
 
@@ -161,9 +117,7 @@ Rust заменяет оператор `*` вызовом метода `deref` �
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-fn hello(name: &str) {
-    println!("Hello, {}!", name);
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-11/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 15-11: Функция <code>hello</code> имеющая параметр  <code>name</code> типа <code>&str</code></span>
@@ -173,35 +127,10 @@ fn hello(name: &str) {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::ops::Deref;
-#
-# struct MyBox<T>(T);
-#
-# impl<T> MyBox<T> {
-#     fn new(x: T) -> MyBox<T> {
-#         MyBox(x)
-#     }
-# }
-#
-# impl<T> Deref for MyBox<T> {
-#     type Target = T;
-#
-#     fn deref(&self) -> &T {
-#         &self.0
-#     }
-# }
-#
-# fn hello(name: &str) {
-#     println!("Hello, {}!", name);
-# }
-#
-fn main() {
-    let m = MyBox::new(String::from("Rust"));
-    hello(&m);
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-12/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 15-12: Вызов <code>hello</code> со ссылкой на значение <code>MyBox<String></code>, которое работает из-за разыменованного приведения</span>
+<span class="caption">Listing 15-12: Calling <code>hello</code> with a reference to a <code>MyBox<String></code> value, which works because of deref coercion</span>
 
 Здесь мы вызываем функцию `hello` с аргументом `&m`, который является ссылкой на значение `MyBox<String>`. Поскольку мы реализовали типаж `Deref` для `MyBox<T>` в листинге 15-10, то Rust может преобразовать `&MyBox<String>` в `&String` вызывая `deref`. Стандартная библиотека предоставляет реализацию типажа `Deref` для типа `String`, которая возвращает срез строки, это описано в документации API типажа `Deref`. Rust снова вызывает `deref`, чтобы превратить `&String` в `&str`, что соответствует определению функции `hello`.
 
@@ -210,32 +139,7 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-# use std::ops::Deref;
-#
-# struct MyBox<T>(T);
-#
-# impl<T> MyBox<T> {
-#     fn new(x: T) -> MyBox<T> {
-#         MyBox(x)
-#     }
-# }
-#
-# impl<T> Deref for MyBox<T> {
-#     type Target = T;
-#
-#     fn deref(&self) -> &T {
-#         &self.0
-#     }
-# }
-#
-# fn hello(name: &str) {
-#     println!("Hello, {}!", name);
-# }
-#
-fn main() {
-    let m = MyBox::new(String::from("Rust"));
-    hello(&(*m)[..]);
-}
+{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-13/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 15-13: Код, который мы должны были бы написать, если бы в Rust не было разыменованного приведения.</span>
