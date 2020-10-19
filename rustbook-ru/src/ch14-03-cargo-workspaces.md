@@ -6,7 +6,7 @@
 
 *Рабочее пространство* является набором пакетов, которые совместно используют один и тот же файл *Cargo.lock* и папку для хранения конечных программных продуктов (будь то бинарные файлы или библиотеки). Давайте создадим проект, используя рабочее пространство, мы будем использовать простой код, чтобы сосредоточиться на структуре рабочего пространства. Есть несколько способов структурировать рабочее пространство; мы собираемся показать общий способ. У нас будет рабочее пространство, содержащее исполняемый файл и две библиотеки. Исполняемый файл, обеспечивающий основную функциональность, будет зависеть от двух библиотек. Одна библиотека будет предоставлять функцию `add_one`, а вторая функцию `add_two`. Эти три крейта будут частью одного рабочего пространства. Начнём с создания нового каталога для рабочей области:
 
-```text
+```console
 $ mkdir add
 $ cd add
 ```
@@ -16,18 +16,21 @@ $ cd add
 <span class="filename">Файл: Cargo.toml</span>
 
 ```toml
-[workspace]
-
-members = [
-    "adder",
-]
+{{#include ../listings/ch14-more-about-cargo/no-listing-01-workspace-with-adder-crate/add/Cargo.toml}}
 ```
 
 Затем мы создадим исполняемый крейт `adder`, запустив команду `cargo new` в каталоге *add*:
 
-```text
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/output-only-01-adder-crate/add
+rm -rf adder
+cargo new adder
+copy output below
+-->
+
+```console
 $ cargo new adder
-     Created binary (application) `adder` project
+     Created binary (application) `adder` package
 ```
 
 На этом этапе мы можем создать рабочее пространство, запустив  команду `cargo build`. Файлы в каталоге *add* должны выглядеть следующим образом:
@@ -51,19 +54,21 @@ $ cargo new adder
 <span class="filename">Файл: Cargo.toml</span>
 
 ```toml
-[workspace]
-
-members = [
-    "adder",
-    "add-one",
-]
+{{#include ../listings/ch14-more-about-cargo/no-listing-02-workspace-with-two-crates/add/Cargo.toml}}
 ```
 
 Затем сгенерируйте новый библиотечный крейт с именем `add-one` :
 
-```text
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/output-only-02-add-one/add
+rm -rf add-one
+cargo new add-one --lib
+copy output below
+-->
+
+```console
 $ cargo new add-one --lib
-     Created library `add-one` project
+     Created library `add-one` package
 ```
 
 Ваш каталог *add* должен теперь иметь следующие каталоги и файлы:
@@ -87,9 +92,7 @@ $ cargo new add-one --lib
 <span class="filename">Файл: add-one/src/lib.rs</span>
 
 ```rust
-pub fn add_one(x: i32) -> i32 {
-    x + 1
-}
+{{#rustdoc_include ../listings/ch14-more-about-cargo/no-listing-02-workspace-with-two-crates/add/add-one/src/lib.rs}}
 ```
 
 Теперь, когда у нас есть крейт библиотеки в рабочей области, мы можем иметь исполняемый крейт `adder` зависящий от библиотечного крейта `add-one`. Сначала нам нужно добавить путь зависимости от `add-one` к *adder/Cargo.toml*.
@@ -97,9 +100,7 @@ pub fn add_one(x: i32) -> i32 {
 <span class="filename">Файл: adder/Cargo.toml</span>
 
 ```toml
-[dependencies]
-
-add-one = { path = "../add-one" }
+{{#include ../listings/ch14-more-about-cargo/no-listing-02-workspace-with-two-crates/add/adder/Cargo.toml:7:9}}
 ```
 
 Cargo не предполагает, что крейты в рабочей области будут зависеть друг от друга, поэтому нам нужно чётко указать отношения зависимостей между крейтами.
@@ -109,30 +110,37 @@ Cargo не предполагает, что крейты в рабочей об�
 <span class="filename">Файл: adder/src/main.rs</span>
 
 ```rust,ignore
-use add_one;
-
-fn main() {
-    let num = 10;
-    println!("Hello, world! {} plus one is {}!", num, add_one::add_one(num));
-}
+{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-07/add/adder/src/main.rs}}
 ```
 
 <span class="caption">Листинг 14-12: Использование функционала библиотечного крейта <code>add-one</code> в крейте <code>adder</code></span>
 
 Давайте соберём рабочее пространство, запустив `cargo build` в верхнего уровня *add*!
 
-```text
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/listing-14-07/add
+cargo build
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+
+```console
 $ cargo build
    Compiling add-one v0.1.0 (file:///projects/add/add-one)
    Compiling adder v0.1.0 (file:///projects/add/adder)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.68 secs
+    Finished dev [unoptimized + debuginfo] target(s) in 0.68s
 ```
 
 Чтобы запустить бинарный крейт из каталога *add*, нам нужно указать какой пакет из рабочей области мы хотим использовать с помощью аргумента `-p` и названия пакета в команде `cargo run` :
 
-```text
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/listing-14-07/add
+cargo run -p adder
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+
+```console
 $ cargo run -p adder
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0s
      Running `target/debug/adder`
 Hello, world! 10 plus one is 11!
 ```
@@ -152,33 +160,45 @@ Hello, world! 10 plus one is 11!
 <span class="filename">Файл: add-one/Cargo.toml</span>
 
 ```toml
-[dependencies]
-rand = "0.5.5"
+{{#include ../listings/ch14-more-about-cargo/no-listing-03-workspace-with-external-dependency/add/add-one/Cargo.toml:7:8}}
 ```
 
 Теперь мы можем добавить `use rand;` в файл  *add-one/src/lib.rs* и сделать сборку рабочего пространства, запустив `cargo build` в каталоге *add*, что загрузит и скомпилирует `rand` крейт:
 
-```text
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-03-workspace-with-external-dependency/add
+cargo build
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+
+```console
 $ cargo build
     Updating crates.io index
   Downloaded rand v0.5.5
    --snip--
-   Compiling rand v0.5.5
+   Compiling rand v0.5.6
    Compiling add-one v0.1.0 (file:///projects/add/add-one)
    Compiling adder v0.1.0 (file:///projects/add/adder)
-    Finished dev [unoptimized + debuginfo] target(s) in 10.18 secs
+    Finished dev [unoptimized + debuginfo] target(s) in 10.18s
 ```
 
 Файл *Cargo.lock* верхнего уровня теперь содержит информацию о зависимости `add-one` к крейту `rand`. Тем не менее, не смотря на то что `rand` использован где-то в рабочем пространстве, мы не можем использовать его в других крейтах рабочего пространства, пока не добавим крейт `rand` в отдельные *Cargo.toml* файлы. Например, если мы добавим `use rand;` в файл *adder/src/main.rs* крейта  `adder`, то получим ошибку:
 
-```text
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/output-only-03-use-rand/add
+cargo build
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+
+```console
 $ cargo build
+  --snip--
    Compiling adder v0.1.0 (file:///projects/add/adder)
-error: use of unstable library feature 'rand': use `rand` from crates.io (see
-issue #27703)
- --> adder/src/main.rs:1:1
+error[E0432]: unresolved import `rand`
+ --> adder/src/main.rs:2:5
   |
-1 | use rand;
+2 | use rand;
+  |     ^^^^ no `rand` external crate
 ```
 
 Чтобы исправить ошибку, отредактируйте файл *Cargo.toml* крейта `adder` и укажите, что `rand` является зависимостью и для этого крейта. Сборка крейта `adder` добавит крейт `rand` в список зависимостей крейта `adder` в его *Cargo.lock*, но нет будет загружать дополнительные копии `rand`. Cargo гарантирует, что каждый крейт рабочего пространства, использующий крейт `rand`, будет использовать одну и ту же версию. Использование одной и той же версии `rand` в рабочем пространстве экономит место, потому что мы не будем иметь несколько копий и есть гарантия, что крейты в рабочем пространстве будут совместимы друг с другом.
@@ -190,28 +210,22 @@ issue #27703)
 <span class="filename">Файл: add-one/src/lib.rs</span>
 
 ```rust
-pub fn add_one(x: i32) -> i32 {
-    x + 1
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        assert_eq!(3, add_one(2));
-    }
-}
+{{#rustdoc_include ../listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add/add-one/src/lib.rs}}
 ```
 
 Выполните команду `cargo test` в каталоге верхнего уровня *adder*:
 
-```text
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
+cargo test
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+
+```console
 $ cargo test
    Compiling add-one v0.1.0 (file:///projects/add/add-one)
    Compiling adder v0.1.0 (file:///projects/add/adder)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.27 secs
+    Finished test [unoptimized + debuginfo] target(s) in 0.27s
      Running target/debug/deps/add_one-f0253159197f7841
 
 running 1 test
@@ -219,7 +233,7 @@ test tests::it_works ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
-     Running target/debug/deps/adder-f88af9d2cc175a5e
+     Running target/debug/deps/adder-49979ff40686fa8e
 
 running 0 tests
 
@@ -236,9 +250,15 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 Мы также можем запустить тесты для одного конкретного крейта в рабочем пространстве из каталог верхнего уровня с помощью флага `-p` и указанием имени крейта для которого мы хотим запустить тесты:
 
-```text
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
+cargo test -p add-one
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+
+```console
 $ cargo test -p add-one
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+    Finished test [unoptimized + debuginfo] target(s) in 0.00s
      Running target/debug/deps/add_one-b3235fea9a156f74
 
 running 1 test
