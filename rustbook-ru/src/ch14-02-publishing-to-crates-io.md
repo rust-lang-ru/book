@@ -1,6 +1,6 @@
 ## Публикация библиотеки в Crates.io
 
-Мы использовали пакеты из [crates.io](https://crates.io/)<comment></comment> в качестве зависимостей нашего проекта, но вы также можете поделиться своим кодом с другими людьми, опубликовав свои собственные пакеты. Реестр библиотек по адресу [crates.io](https://crates.io/)<comment></comment> распространяет исходный код ваших пакетов, поэтому он в основном размещает код с открытым исходным кодом.
+Мы использовали пакеты из [crates.io](https://crates.io/)<!--  --> в качестве зависимостей нашего проекта, но вы также можете поделиться своим кодом с другими людьми, опубликовав свои собственные пакеты. Реестр библиотек по адресу [crates.io](https://crates.io/)<!--  --> распространяет исходный код ваших пакетов, поэтому он в основном размещает код с открытым исходным кодом.
 
 В Rust и Cargo есть возможности, которые облегчают использование и поиск вашего опубликованного пакета. Далее мы поговорим о некоторых из этих возможностей, а затем объясним, как опубликовать пакет.
 
@@ -13,19 +13,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-/// Adds one to the number given.
-///
-/// # Examples
-///
-/// ```
-/// let arg = 5;
-/// let answer = my_crate::add_one(arg);
-///
-/// assert_eq!(6, answer);
-/// ```
-pub fn add_one(x: i32) -> i32 {
-    x + 1
-}
+{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-01/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 14-1: Комментарий к документации для функции</span>
@@ -33,6 +21,7 @@ pub fn add_one(x: i32) -> i32 {
 Здесь мы даём описание того, что делает функция `add_one`, начинаем раздел с заголовка `Examples`, а затем предоставляем код, который демонстрирует, как использовать функцию `add_one`. Мы можем сгенерировать документацию HTML из этого комментария к документации, запустив `cargo doc`. Эта команда запускает инструмент `rustdoc`, поставляемый с Rust, и помещает сгенерированную HTML-документацию в каталог *target/doc*.
 
 Для удобства, запустив `cargo doc --open`, мы создадим HTML для документации вашей текущей библиотеки (а также документацию для всех зависимостей вашей библиотеки) и откроем результат в веб-браузере. Перейдите к функции `add_one` и вы увидите, как отображается текст в комментариях к документации, что показано на рисунке 14-1:
+
 
 <img alt="HTML-документация для функции `add_one`` my_crate`" src="../../rustbook-en/src/img/trpl14-01.png" class="center">
 
@@ -51,6 +40,12 @@ pub fn add_one(x: i32) -> i32 {
 #### Комментарии к документации как тесты
 
 Добавление примеров кода в комментарии к документации может помочь продемонстрировать, как использовать вашу библиотеку, и это даёт дополнительный бонус: запуск `cargo test` запустит примеры кода в вашей документации как тесты! Нет ничего лучше, чем документация с примерами. Но нет ничего хуже, чем примеры, которые не работают, потому что код изменился с момента написания документации. Если мы запустим `cargo test` с документацией для функции `add_one` из листинга 14-1, мы увидим раздел результатов теста, подобный этому:
+
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/listing-14-01/
+cargo test
+copy just the doc-tests section below
+-->
 
 ```text
    Doc-tests my_crate
@@ -72,13 +67,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-//! # My Crate
-//!
-//! `my_crate` is a collection of utilities to make performing certain
-//! calculations more convenient.
-
-/// Adds one to the number given.
-// --snip--
+{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-02/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 14-2: Документация для крейта <code>my_crate</code> в целом</span>
@@ -87,7 +76,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 Когда мы запускаем `cargo doc --open`, эти комментарии будут отображаться на первой странице документации для `my_crate` над списком публичных элементов в библиотеке, как показано на рисунке 14-2:
 
-<img alt="HTML-документация с комментарием для библиотеки в целом" src="../../rustbook-en/src/img/trpl14-02.png" class="center">
+
+<img alt="Документация для библиотеки `art`, в которой перечислены модули `types` и `utils`" src="../../rustbook-en/src/img/trpl14-03.png" class="center">
 
 <span class="caption">Рисунок 14-2: Предоставленная документация для <code>my_crate</code>, включая комментарий, описывающие крейт в целом</span>
 
@@ -106,44 +96,15 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-//! # Art
-//!
-//! A library for modeling artistic concepts.
-
-pub mod kinds {
-    /// The primary colors according to the RYB color model.
-    pub enum PrimaryColor {
-        Red,
-        Yellow,
-        Blue,
-    }
-
-    /// The secondary colors according to the RYB color model.
-    pub enum SecondaryColor {
-        Orange,
-        Green,
-        Purple,
-    }
-}
-
-pub mod utils {
-    use crate::kinds::*;
-
-    /// Combines two primary colors in equal amounts to create
-    /// a secondary color.
-    pub fn mix(c1: PrimaryColor, c2: PrimaryColor) -> SecondaryColor {
-        // --snip--
-#         SecondaryColor::Orange
-    }
-}
-# fn main() {}
+{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-03/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 14-3: Библиотека <code>art</code> с элементами, организованными в модули <code>kinds</code> и <code>utils</code></span>
 
 На рисунке 14-3 показано, как будет выглядеть титульная страница документации для этого крейта, сгенерированный `cargo doc`:
 
-<img alt="Документация для библиотеки `art`, в которой перечислены модули `types` и `utils`" src="../../rustbook-en/src/img/trpl14-03.png" class="center">
+
+<img alt="Предоставлена Документация для библиотеки `art` с реэкспортом на первой странице" src="../../rustbook-en/src/img/trpl14-04.png" class="center">
 
 <span class="caption">Рисунок 14-3: Первая страница документации для <code>art</code>, в которой перечислены модули <code>kinds</code> и <code>utils</code></span>
 
@@ -154,14 +115,7 @@ pub mod utils {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-use art::kinds::PrimaryColor;
-use art::utils::mix;
-
-fn main() {
-    let red = PrimaryColor::Red;
-    let yellow = PrimaryColor::Yellow;
-    mix(red, yellow);
-}
+{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-04/src/main.rs}}
 ```
 
 <span class="caption">Листинг 14-4: Крейт использующий элементы из крейта <code>art</code> с экспортированной внутренней структурой</span>
@@ -173,28 +127,15 @@ fn main() {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-//! # Art
-//!
-//! A library for modeling artistic concepts.
-
-pub use self::kinds::PrimaryColor;
-pub use self::kinds::SecondaryColor;
-pub use self::utils::mix;
-
-pub mod kinds {
-    // --snip--
-}
-
-pub mod utils {
-    // --snip--
-}
+{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-05/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 14-5: Добавление операторов <code>pub use</code> для реэкспорта элементов</span>
 
 Документация API, которую `cargo doc` генерирует для этой библиотеки, теперь будет перечислять и связывать реэкспорты на главной странице, как показано на рисунке 14-4, упрощая поиск типов `PrimaryColor`, `SecondaryColor` и функции `mix`.
 
-<img alt="Предоставлена Документация для библиотеки `art` с реэкспортом на первой странице" src="../../rustbook-en/src/img/trpl14-04.png" class="center">
+
+<img alt="HTML-документация с комментарием для библиотеки в целом" src="../../rustbook-en/src/img/trpl14-02.png" class="center">
 
 <span class="caption">Рисунок 14-4: Первая страница документации для <code>art</code>,  которая перечисляет реэкспорт</span>
 
@@ -203,12 +144,7 @@ pub mod utils {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-use art::PrimaryColor;
-use art::mix;
-
-fn main() {
-    // --snip--
-}
+{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-06/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 14-6: Программа, использующая реэкспортированные элементы из крейта <code>art</code></span>
@@ -219,9 +155,9 @@ fn main() {
 
 ### Настройка учётной записи Crates.io
 
-Прежде чем вы сможете опубликовать любые библиотеки, вам необходимо создать учётную запись на [crates.io](https://crates.io/)<comment></comment> и получить API токен. Для этого зайдите на домашнюю страницу [crates.io](https://crates.io/)<comment></comment> и войдите в систему через учётную запись GitHub. (В настоящее время требуется наличие учётной записи GitHub, но сайт может поддерживать другие способы создания учётной записи в будущем.) Сразу после входа в систему перейдите в настройки своей учётной записи по адресу [https://crates.io/me/](https://crates.io/me/)<comment></comment> и получите свой ключ API. Затем выполните команду `cargo login` с вашим ключом API, например:
+Прежде чем вы сможете опубликовать любые библиотеки, вам необходимо создать учётную запись на [crates.io](https://crates.io/)<!--  --> и получить API токен. Для этого зайдите на домашнюю страницу [crates.io](https://crates.io/)<!--  --> и войдите в систему через учётную запись GitHub. (В настоящее время требуется наличие учётной записи GitHub, но сайт может поддерживать другие способы создания учётной записи в будущем.) Сразу после входа в систему перейдите в настройки своей учётной записи по адресу [https://crates.io/me/](https://crates.io/me/)<!--  --> и получите свой ключ API. Затем выполните команду `cargo login` с вашим ключом API, например:
 
-```text
+```console
 $ cargo login abcdefghijklmnopqrstuvwxyz012345
 ```
 
@@ -231,7 +167,7 @@ $ cargo login abcdefghijklmnopqrstuvwxyz012345
 
 Теперь у вас есть аккаунт, допустим, у вас есть библиотека, которую вы хотите опубликовать. Перед публикацией вам необходимо добавить некоторые метаданные в ваш крейт, добавив их в раздел `[package]` файла *Cargo.toml*.
 
-Вашему крейту понадобится уникальное имя. Пока вы работаете над библиотекой локально, вы можете назвать библиотеку как угодно. Однако имена крейтов на [crates.io](https://crates.io/)<comment></comment> выделяются по принципу "первым пришёл - первым обслужен". Как только имя крейта занято, никто не может опубликовать крейт с таким именем. Прежде чем пытаться опубликовать крейт, поищите имя, которое вы хотите использовать на сайте. Если имя было использовано другим крейтом, то вам нужно найти другое имя и отредактировать поле `name` в файле *Cargo.toml* в разделе `[package]`, чтобы использовать новое имя для публикации, например, так:
+Вашему крейту понадобится уникальное имя. Пока вы работаете над библиотекой локально, вы можете назвать библиотеку как угодно. Однако имена крейтов на [crates.io](https://crates.io/)<!--  --> выделяются по принципу "первым пришёл - первым обслужен". Как только имя крейта занято, никто не может опубликовать крейт с таким именем. Прежде чем пытаться опубликовать крейт, поищите имя, которое вы хотите использовать на сайте. Если имя было использовано другим крейтом, то вам нужно найти другое имя и отредактировать поле `name` в файле *Cargo.toml* в разделе `[package]`, чтобы использовать новое имя для публикации, например, так:
 
 <span class="filename">Файл: Cargo.toml</span>
 
@@ -242,18 +178,24 @@ name = "guessing_game"
 
 Даже если вы выбрали уникальное имя, когда вы запустите `cargo publish` чтобы опубликовать крейт, вы получите предупреждение, а затем ошибку:
 
-```text
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/listing-14-01/
+cargo publish
+copy just the relevant lines below
+-->
+
+```console
 $ cargo publish
-    Updating registry `https://github.com/rust-lang/crates.io-index`
-warning: manifest has no description, license, license-file, documentation,
-homepage or repository.
+    Updating crates.io index
+warning: manifest has no description, license, license-file, documentation, homepage or repository.
+See https://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info.
 --snip--
-error: api errors: missing or empty metadata fields: description, license.
+error: api errors (status 200 OK): missing or empty metadata fields: description, license. Please see https://doc.rust-lang.org/cargo/reference/manifest.html for how to upload metadata
 ```
 
 Причина в том, что вам не хватает важной информации: требуется описание и лицензия, чтобы люди знали, что делает ваша библиотека, и на каких условиях они могут её использовать. Чтобы исправить эту ошибку, вам нужно включить эту информацию в файл *Cargo.toml*.
 
-Добавьте описание, которое из себя представляет одно или два предложения, потому что оно будет отображаться вместе с вашим крейтом в результатах поиска. В поле `license` необходимо указать *значение идентификатора лицензии*. В [Linux Foundation’s Software Package Data Exchange (SPDX)](http://spdx.org/licenses/) перечислены идентификаторы, которые можно использовать для этого значения. Например, чтобы указать, что вы лицензировали свою библиотеку с использованием лицензии MIT, добавьте идентификатор `MIT`:
+Добавьте описание, которое из себя представляет одно или два предложения, потому что оно будет отображаться вместе с вашим крейтом в результатах поиска. В поле `license` необходимо указать *значение идентификатора лицензии*. В [Linux Foundation’s Software Package Data Exchange (SPDX)] перечислены идентификаторы, которые можно использовать для этого значения. Например, чтобы указать, что вы лицензировали свою библиотеку с использованием лицензии MIT, добавьте идентификатор `MIT`:
 
 <span class="filename">Файл: Cargo.toml</span>
 
@@ -287,28 +229,34 @@ license = "MIT OR Apache-2.0"
 
 ### Публикация на Crates.io
 
-Теперь, когда вы создали учётную запись, сохранили свой токен API, выбрали имя для своего крейта и указали необходимые метаданные, вы готовы к публикации! Публикация библиотеки загружает определённую версию в [crates.io](https://crates.io/)<comment></comment> для использования другими.
+Теперь, когда вы создали учётную запись, сохранили свой токен API, выбрали имя для своего крейта и указали необходимые метаданные, вы готовы к публикации! Публикация библиотеки загружает определённую версию в [crates.io](https://crates.io/)<!--  --> для использования другими.
 
-Будьте осторожны при публикации библиотеки, потому что публикация является *постоянной*. Версия никогда не может быть перезаписана и код не может быть удалён. Одна из основных целей [crates.io](https://crates.io/)<comment></comment> - является работа как постоянного архив кода, чтобы сборки всех проектов, которые зависят от библиотек из [crates.io](https://crates.io/)<comment> </comment>, продолжали работать. Разрешение на удаление версий сделает достижение этой цели невозможным. Однако, количество версий библиотек, которые вы можете опубликовать, не ограничено.
+Будьте осторожны при публикации библиотеки, потому что публикация является *постоянной*. Версия никогда не может быть перезаписана и код не может быть удалён. Одна из основных целей [crates.io](https://crates.io/)<!--  --> - является работа как постоянного архив кода, чтобы сборки всех проектов, которые зависят от библиотек из [crates.io](https://crates.io/)<!--  -->, продолжали работать. Разрешение на удаление версий сделает достижение этой цели невозможным. Однако, количество версий библиотек, которые вы можете опубликовать, не ограничено.
 
 Запустите команду `cargo publish` ещё раз. Сейчас эта команда должна выполниться успешно:
 
-```text
+<!-- manual-regeneration
+go to some valid crate, publish a new version
+cargo publish
+copy just the relevant lines below
+-->
+
+```console
 $ cargo publish
- Updating registry `https://github.com/rust-lang/crates.io-index`
-Packaging guessing_game v0.1.0 (file:///projects/guessing_game)
-Verifying guessing_game v0.1.0 (file:///projects/guessing_game)
-Compiling guessing_game v0.1.0
+    Updating crates.io index
+   Packaging guessing_game v0.1.0 (file:///projects/guessing_game)
+   Verifying guessing_game v0.1.0 (file:///projects/guessing_game)
+   Compiling guessing_game v0.1.0
 (file:///projects/guessing_game/target/package/guessing_game-0.1.0)
- Finished dev [unoptimized + debuginfo] target(s) in 0.19 secs
-Uploading guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.19s
+   Uploading guessing_game v0.1.0 (file:///projects/guessing_game)
 ```
 
 Поздравляем! Теперь вы поделились своим кодом с сообществом Rust и любой может легко добавить вашу библиотеку в качестве зависимости их проекта.
 
 ### Публикация новой версии существующей библиотеки
 
-Когда вы внесли изменения в свой крейт и готовы выпустить новую версию, измените значение `version`, указанное в вашем файле *Cargo.toml* и повторите публикацию. Воспользуйтесь [Semantic Versioning rules](http://semver.org/), чтобы решить, какой номер следующей версии подходит для ваших изменений. Затем запустите `cargo publish`, чтобы загрузить новую версию.
+Когда вы внесли изменения в свой крейт и готовы выпустить новую версию, измените значение `version`, указанное в вашем файле *Cargo.toml* и повторите публикацию. Воспользуйтесь [Semantic Versioning rules], чтобы решить, какой номер следующей версии подходит для ваших изменений. Затем запустите `cargo publish`, чтобы загрузить новую версию.
 
 ### Удаление версий из Crates.io с помощью `cargo yank`
 
@@ -318,14 +266,18 @@ Uploading guessing_game v0.1.0 (file:///projects/guessing_game)
 
 Чтобы выломать версию крейт, запустите `cargo yank` и укажите, какую версию вы хотите выломать:
 
-```text
+```console
 $ cargo yank --vers 1.0.1
 ```
 
 Добавив в команду `--undo`, вы также можете отменить выламывание и разрешить проектам начать зависеть от версии снова:
 
-```text
+```console
 $ cargo yank --vers 1.0.1 --undo
 ```
 
 Выламывание *не* удаляет код. Например, функция выламывания не предназначена для удаления случайно загруженных секретов. Если это произойдёт, вы должны немедленно сбросить эти секреты.
+
+
+[Linux Foundation’s Software Package Data Exchange (SPDX)]: http://spdx.org/licenses/
+[Semantic Versioning rules]: http://semver.org/
