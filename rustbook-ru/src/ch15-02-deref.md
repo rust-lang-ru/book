@@ -38,9 +38,9 @@
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-07/src/main.rs}}
 ```
 
-<span class="caption">Listing 15-7: Using the dereference operator on a <code>Box<i32></code></span>
+<span class="caption">Листинг 15-7: Использование оператора разыменования с типом <code>Box<i32></code></span>
 
-The only difference between Listing 15-7 and Listing 15-6 is that here we set `y` to be an instance of a box pointing to a copied value of `x` rather than a reference pointing to the value of `x`. In the last assertion, we can use the dereference operator to follow the box’s pointer in the same way that we did when `y` was a reference. Next, we’ll explore what is special about `Box<T>` that enables us to use the dereference operator by defining our own box type.
+Единственная разница между листингом 15-7 и листингом 15-6 состоит в том, что здесь мы устанавливаем `y` на экземпляр box, указывающий на значение `x`, а не ссылкой, указывающей на значение `x` . В последнем утверждении мы можем использовать оператор разыменования, чтобы проследовать за указателем box-а так же, как мы это делали когда `y` была ссылкой. Далее мы рассмотрим, что особенного у типа `Box<T>`, что позволяет нам использовать оператор разыменования, определяя наш собственный тип `Box`.
 
 ### Определение собственного умного указателя
 
@@ -54,7 +54,7 @@ The only difference between Listing 15-7 and Listing 15-6 is that here we set `y
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-08/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-8: Defining a <code>MyBox<T></code> type</span>
+<span class="caption">Листинг 15-8: Определение типа <code>MyBox<T></code></span>
 
 Мы определяем структуру с именем `MyBox` и объявляем обобщённый параметр `T`, потому что мы хотим, чтобы наш тип хранил значения любого типа. Тип `MyBox` является структурой кортежа с одним элементом типа `T`. Функция `MyBox::new` принимает один параметр типа `T` и возвращает экземпляр `MyBox`, который содержит переданное значение.
 
@@ -66,7 +66,7 @@ The only difference between Listing 15-7 and Listing 15-6 is that here we set `y
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-09/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-9: Attempting to use <code>MyBox<T></code> in the same way we used references and <code>Box<T></code></span>
+<span class="caption">Листинг 15-9: Попытка использовать <code>MyBox<T></code> таким же образом, как мы использовали ссылки и библиотечный <code>Box<T></code></span>
 
 Вот результат ошибки компиляции:
 
@@ -86,7 +86,7 @@ The only difference between Listing 15-7 and Listing 15-6 is that here we set `y
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-10/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 15-10: Реализация <code>Deref</code> для типа <code>MyBox<t></t></code></span>
+<span class="caption">Листинг 15-10: Реализация <code>Deref</code> для типа <code>MyBox<T></code></span>
 
 Синтаксис `type Target = T;` определяет связанный тип для использования у типажа `Deref`. Связанные типы - это немного другой способ объявления обобщённого параметра, но пока вам не нужно о них беспокоиться; мы рассмотрим их более подробно в главе 19.
 
@@ -130,7 +130,7 @@ Rust заменяет оператор `*` вызовом метода `deref` �
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-12/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-12: Calling <code>hello</code> with a reference to a <code>MyBox<String></code> value, which works because of deref coercion</span>
+<span class="caption">Листинг 15-12: Вызов <code>hello</code> со ссылкой на значение <code>MyBox<String></code>, которое работает из-за разыменованного приведения</span>
 
 Здесь мы вызываем функцию `hello` с аргументом `&m`, который является ссылкой на значение `MyBox<String>`. Поскольку мы реализовали типаж `Deref` для `MyBox<T>` в листинге 15-10, то Rust может преобразовать `&MyBox<String>` в `&String` вызывая `deref`. Стандартная библиотека предоставляет реализацию типажа `Deref` для типа `String`, которая возвращает срез строки, это описано в документации API типажа `Deref`. Rust снова вызывает `deref`, чтобы превратить `&String` в `&str`, что соответствует определению функции `hello`.
 
