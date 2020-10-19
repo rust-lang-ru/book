@@ -6,16 +6,23 @@ Cargo имеет два основных профиля: профиль `dev` и
 
 Эти имена профилей могут быть знакомы по результатам ваших сборок:
 
-```text
+<!-- manual-regeneration
+anywhere, run:
+cargo build
+cargo build --release
+and ensure output below is accurate
+-->
+
+```console
 $ cargo build
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0s
 $ cargo build --release
-    Finished release [optimized] target(s) in 0.0 secs
+    Finished release [optimized] target(s) in 0.0s
 ```
 
 Выводы для `dev` и `release`, показанные при сборке указывают, что компилятор использует разные профили.
 
-Cargo имеет настройки по умолчанию для каждого из профилей, которые применяются, когда в файле проекта *Cargo.toml* нет разделов `[profile.*]`. Добавляя разделы `[profile.*]` для любого профиля, который вы хотите настроить, вы можете переопределить любое подмножество настроек по умолчанию. Например, вот значения по умолчанию для параметра `opt-level` для профилей`dev` и `release`:
+Cargo имеет настройки по умолчанию для каждого из профилей, которые применяются, когда в файле проекта <em>Cargo.toml</em> нет разделов <code>[profile.*]</code>. Добавляя разделы `[profile.*]` для любого профиля, который вы хотите настроить, вы можете переопределить любое подмножество настроек по умолчанию. Например, вот значения по умолчанию для параметра `opt-level` для профилей`dev` и `release`:
 
 <span class="filename">Файл: Cargo.toml</span>
 
@@ -40,4 +47,4 @@ opt-level = 1
 
 Этот код переопределяет настройку по умолчанию `0`. Теперь, когда мы запустим `cargo build`, Cargo будет использовать значения по умолчанию для профиля `dev` плюс нашу настройку для `opt-level`. Поскольку мы установили для `opt-level` значение `1`, Cargo будет применять больше оптимизаций, чем по умолчанию, но не так много, как при сборке релиза.
 
-Полный список параметров конфигурации и значений по умолчанию для каждого профиля вы можете найти в [документации Cargo](https://doc.rust-lang.org/cargo/reference/manifest.html#the-profile-sections).
+Полный список параметров конфигурации и значений по умолчанию для каждого профиля вы можете найти в [документации Cargo](https://doc.rust-lang.org/cargo/reference/profiles.html).
