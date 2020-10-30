@@ -78,8 +78,7 @@ fn second_word(s: &String) -> (usize, usize) {
 
 Рисунок 4-12 отображает это на диаграмме.
 
-
-<img alt="world containing a pointer to the 6th byte of String s and a length 5" src="https://github.com/ruRust/book/blob/master/rustbook-en/src/img/trpl04-06.svg?raw=true" class="center" style="width: 50%;">
+ <img alt="world containing a pointer to the 6th byte of String s and a length 5" src="img/trpl04-06.svg" class="center" style="width: 50%;">
 
 <span class="caption">Рисунок 4-6: Строковый срез ссылается на часть <code>String</code></span>
 
