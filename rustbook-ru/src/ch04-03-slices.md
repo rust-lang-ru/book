@@ -1,8 +1,8 @@
 ## Срезы
 
-Another data type that does not have ownership is the *slice*. Slices let you reference a contiguous sequence of elements in a collection rather than the whole collection.
+Другим типом данных, который не забирает во владение является *срез* (slice). Срез позволяет ссылаться на смежную последовательность элементов из коллекции, вместо полной коллекции.
 
-Here’s a small programming problem: write a function that takes a string and returns the first word it finds in that string. If the function doesn’t find a space in the string, the whole string must be one word, so the entire string should be returned.
+Рассмотрим небольшую программную проблему: необходимо написать функцию, входным параметром которой является строка. Выходным значением функции является первое слово, которое будет найдено в этой строке. Если функция не находит пробелы, она возвращает полную строку.
 
 Давайте подумаем над сигнатурой этой функции:
 
@@ -10,7 +10,7 @@ Here’s a small programming problem: write a function that takes a string and r
 fn first_word(s: &String) -> ?
 ```
 
-This function, `first_word`, has a `&String` as a parameter. We don’t want ownership, so this is fine. But what should we return? We don’t really have a way to talk about *part* of a string. However, we could return the index of the end of the word. Let’s try that, as shown in Listing 4-7.
+Функция `first_word` имеет входной параметр типа `&String`. Нам не нужно владение переменной, так что это нормально. Но что мы должны вернуть? На самом деле у нас нет способа говорить о *части* строки. Тем не менее, для решения задачи мы можем найти индекс конца слова в строке. Попробуем сделать как на листинге 4-7:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -18,9 +18,9 @@ This function, `first_word`, has a `&String` as a parameter. We don’t want own
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 4-7: The <code>first_word</code> function that returns a byte index value into the <code>String</code> parameter</span>
+<span class="caption">Листинг 4-7: Пример функции <code>first_word</code>, которая возвращает значение байтового индекса пробела внутри строкового параметра <code>String</code></span>
 
-Because we need to go through the `String` element by element and check whether a value is a space, we’ll convert our `String` to an array of bytes using the `as_bytes` method:
+Для того, чтобы найти пробел в строке, мы превратим `String` в массив байт, используя метод `as_bytes` и пройдём по `String` элемент за элементом, проверяя является ли значение пробелом.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:as_bytes}}
@@ -32,11 +32,11 @@ Because we need to go through the `String` element by element and check whether 
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:iter}}
 ```
 
-We’ll discuss iterators in more detail in Chapter 13. For now, know that `iter` is a method that returns each element in a collection and that `enumerate` wraps the result of `iter` and returns each element as part of a tuple instead. The first element of the tuple returned from `enumerate` is the index, and the second element is a reference to the element. This is a bit more convenient than calculating the index ourselves.
+Мы изучим итераторы более детально в главе 13. Сейчас, достаточно понять, что метод `iter` возвращает каждый элемент коллекции, а метод `enumerate` оборачивает результаты работы метода `iter` и возвращает каждый элемент как кортеж. Первый элемент этого кортежа возвращённый из  `enumerate` является индексом, а второй элемент - ссылкой на элемент. Такой способ перебора элементов массива является более удобным, чем считать индекс самостоятельно.
 
-Because the `enumerate` method returns a tuple, we can use patterns to destructure that tuple, just like everywhere else in Rust. So in the `for` loop, we specify a pattern that has `i` for the index in the tuple and `&item` for the single byte in the tuple. Because we get a reference to the element from `.iter().enumerate()`, we use `&` in the pattern.
+Так как метод `enumerate` возвращает кортеж, мы можем использовать шаблон деструктуризации кортежа, как и везде в Rust. Так в цикле `for`, мы указываем шаблон имеющий `i` для индекса в кортеже и `&item` для байта в кортеже. По причине получения ссылки на элемент из метода  `.iter().enumerate()`, используется `&` в шаблоне.
 
-Inside the `for` loop, we search for the byte that represents the space by using the byte literal syntax. If we find a space, we return the position. Otherwise, we return the length of the string by using `s.len()`:
+Внутри цикла `for`, ищем байт представляющий пробел используя синтаксис байт литерала. Если пробел найден, возвращается его позиция. Иначе, возвращается длина строки используя `s.len()`:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:inside_for}}
@@ -50,17 +50,17 @@ We now have a way to find out the index of the end of the first word in the stri
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-08/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 4-8: Storing the result from calling the <code>first_word</code> function and then changing the <code>String</code> contents</span>
+<span class="caption">Listing 4-8: Сохранение результата вызова функции <code>first_word</code>, а затем изменение содержимого <code>String</code></span>
 
-This program compiles without any errors and would also do so if we used `word` after calling `s.clear()`. Because `word` isn’t connected to the state of `s` at all, `word` still contains the value `5`. We could use that value `5` with the variable `s` to try to extract the first word out, but this would be a bug because the contents of `s` have changed since we saved `5` in `word`.
+Данная программа компилируется без ошибок и возможно продолжит это делать, если мы воспользуемся `word` после вызова `s.clear()`. Так как значение `word` совсем не связано с состоянием переменной `s`, то `word` всё ещё имеет значение `5`. Мы могли бы использовать `5` вместе с переменной `s` и попытаться извлечь первое слово, но это будет ошибкой, потому что содержимое `s` изменилось после того как мы сохранили `5` в переменной `word`.
 
-Having to worry about the index in `word` getting out of sync with the data in `s` is tedious and error prone! Managing these indices is even more brittle if we write a `second_word` function. Its signature would have to look like this:
+Необходимость беспокоиться о том, что индекс в переменной `word` не синхронизируется с данными в переменной  `s` является утомительной и подверженной ошибкам! Управление этими индексами становится ещё более хрупким, если мы напишем функцию `second_word`. Её сигнатура могла бы выглядеть так:
 
 ```rust,ignore
 fn second_word(s: &String) -> (usize, usize) {
 ```
 
-Now we’re tracking a starting *and* an ending index, and we have even more values that were calculated from data in a particular state but aren’t tied to that state at all. We now have three unrelated variables floating around that need to be kept in sync.
+Теперь мы отслеживаем начальный *и* конечный индексы, у нас ещё больше значений, которые рассчитаны на основе данных о содержимом в определённом состоянии, но которые также совсем не привязаны к данному состоянию. Теперь есть уже три не связанные переменные, которые необходимо синхронизировать.
 
 К счастью в Rust есть решение данной проблемы: строковые срезы.
 
@@ -72,18 +72,17 @@ Now we’re tracking a starting *and* an ending index, and we have even more val
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-17-slice/src/main.rs:here}}
 ```
 
-This is similar to taking a reference to the whole `String` but with the extra `[0..5]` bit. Rather than a reference to the entire `String`, it’s a reference to a portion of the `String`.
+Эта инициализация похожа на создание ссылки на переменную `String`, но с дополнительным условием - указанием отрезка `[0..5]`. Вместо ссылки на всю `String`, срез ссылается на её часть.
 
-We can create slices using a range within brackets by specifying `[starting_index..ending_index]`, where `starting_index` is the first position in the slice and `ending_index` is one more than the last position in the slice. Internally, the slice data structure stores the starting position and the length of the slice, which corresponds to `ending_index` minus `starting_index`. So in the case of `let world = &s[6..11];`, `world` would be a slice that contains a pointer to the 7th byte (counting from 1) of `s` with a length value of 5.
+Мы можем создавать срезы, используя диапазон в квадратных скобках указывая `[starting_index..ending_index]`, где `starting_index` означает первую позицию в срезе, а `ending_index` на единицу больше, чем последняя позиция. Во внутреннем представлении, структура данных срез хранит начальную позицию и длину среза, которая соответствует числу `ending_index` минус `starting_index`. Таким образом, в примере `let world = &s[6..11];`, переменная `world` будет срезом, который содержит ссылку на 7-ой байт в `s` со значением длины равным 5.
 
 Рисунок 4-12 отображает это на диаграмме.
 
+ <img alt="world containing a pointer to the 6th byte of String s and a length 5" src="img/trpl04-06.svg" class="">
 
-<img alt="world containing a pointer to the 6th byte of String s and a length 5" src="img/trpl04-06.svg" class="center" style="width: 50%;">
+<span class="caption">Рисунок 4-6: Строковый срез ссылается на часть <code>String</code></span>
 
-<span class="caption">Figure 4-6: String slice referring to part of a <code>String</code></span>
-
-With Rust’s `..` range syntax, if you want to start at the first index (zero), you can drop the value before the two periods. In other words, these are equal:
+С помощью Rust синтаксиса диапазона `..`, если хочется начать с начального индекса (ноль), то можно убрать число перед двоеточием. Другими словами, это эквивалентно:
 
 ```rust
 let s = String::from("hello");
@@ -92,7 +91,7 @@ let slice = &s[0..2];
 let slice = &s[..2];
 ```
 
-By the same token, if your slice includes the last byte of the `String`, you can drop the trailing number. That means these are equal:
+Таким же образом, если срез включает последний байт строки `String`, можно убрать завершающее число. Это эквивалентно:
 
 ```rust
 let s = String::from("hello");
@@ -103,7 +102,7 @@ let slice = &s[3..len];
 let slice = &s[3..];
 ```
 
-You can also drop both values to take a slice of the entire string. So these are equal:
+Также можно не указывать оба значения, чтобы получить срез всей строки. Это эквивалентно:
 
 ```rust
 let s = String::from("hello");
@@ -114,9 +113,9 @@ let slice = &s[0..len];
 let slice = &s[..];
 ```
 
-> Note: String slice range indices must occur at valid UTF-8 character boundaries. If you attempt to create a string slice in the middle of a multibyte character, your program will exit with an error. For the purposes of introducing string slices, we are assuming ASCII only in this section; a more thorough discussion of UTF-8 handling is in the [“Storing UTF-8 Encoded Text with Strings”](ch08-02-strings.html#storing-utf-8-encoded-text-with-strings)<!-- ignore --> section of Chapter 8.
+> Внимание: Индексы среза строк должны соответствовать границам UTF-8 символов. Если вы попытаетесь получить срез нарушая границы символа в котором больше одного байта, то вы получите ошибку времени исполнения. В рамках этой главы мы будем предполагать только ASCII кодировку. Более детальное обсуждение UTF-8 находится в секции [“Сохранение текста с кодировкой UTF-8 в строках”](ch08-02-strings.html#storing-utf-8-encoded-text-with-strings)<!-- ignore --> главы 8.
 
-With all this information in mind, let’s rewrite `first_word` to return a slice. The type that signifies “string slice” is written as `&str`:
+Имея всю данную информацию, давайте перепишем метод `first_word` для возврата среза. Для обозначения типа "срез строки" существует запись `&str`:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -124,9 +123,9 @@ With all this information in mind, let’s rewrite `first_word` to return a slic
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-18-first-word-slice/src/main.rs:here}}
 ```
 
-We get the index for the end of the word in the same way as we did in Listing 4-7, by looking for the first occurrence of a space. When we find a space, we return a string slice using the start of the string and the index of the space as the starting and ending indices.
+Мы получаем индекс конца слова способом аналогичным тому, как мы это делали в листинге 4-7, поиском первого вхождения пробела. Когда пробел найден, возвращается строковый срез, используя начало строки и индекс пробела в качестве начального и конечного индексов.
 
-Now when we call `first_word`, we get back a single value that is tied to the underlying data. The value is made up of a reference to the starting point of the slice and the number of elements in the slice.
+Теперь, вызвав метод `first_word`, мы получим одно единственное значение, которое привязано к нижележащим данным. Значение, которое составлено из ссылки на начальную точку среза и количества элементов в срезе.
 
 Аналогичным образом можно переписать и второй метод `second_word`:
 
@@ -134,7 +133,7 @@ Now when we call `first_word`, we get back a single value that is tied to the un
 fn second_word(s: &String) -> &str {
 ```
 
-We now have a straightforward API that’s much harder to mess up, because the compiler will ensure the references into the `String` remain valid. Remember the bug in the program in Listing 4-8, when we got the index to the end of the first word but then cleared the string so our index was invalid? That code was logically incorrect but didn’t show any immediate errors. The problems would show up later if we kept trying to use the first word index with an emptied string. Slices make this bug impossible and let us know we have a problem with our code much sooner. Using the slice version of `first_word` will throw a compile-time error:
+Теперь есть простое API, которое гораздо сложнее перепутать, потому что компилятор обеспечит то, что ссылки на `String` останутся действительными. Помните ошибку в программе листинга 4-8, когда мы получили индекс конца первого слова, но затем очистили строку, так что она стала не действительной? Тот код был логически не корректным, хотя не показывал никаких ошибок. Проблемы возникли бы позже, если бы мы попытались использовать индекс первого слова для пустой строки. Срезы делают не возможной данную ошибку и позволяют понять о наличии проблемы гораздо раньше. Использование версии метода со срезом `first_word` вернёт ошибку компиляции:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -148,35 +147,35 @@ We now have a straightforward API that’s much harder to mess up, because the c
 {{#include ../listings/ch04-understanding-ownership/no-listing-19-slice-error/output.txt}}
 ```
 
-Recall from the borrowing rules that if we have an immutable reference to something, we cannot also take a mutable reference. Because `clear` needs to truncate the `String`, it needs to get a mutable reference. Rust disallows this, and compilation fails. Not only has Rust made our API easier to use, but it has also eliminated an entire class of errors at compile time!
+Напомним из правил заимствования, что если у нас есть неизменяемая ссылка на что-либо, то нельзя взять ещё изменяемую ссылку. Так как методу `clear` требуется обрезать `String`, ему нужно получить изменяемую ссылку. Rust не позволяет это сделать и компиляции не проходит. Rust не только упростил использование нашего API, но и исключил целый класс ошибок во время компиляции!
 
 #### Строковые литералы это срезы
 
-Recall that we talked about string literals being stored inside the binary. Now that we know about slices, we can properly understand string literals:
+Напомним, что мы говорили о строковых литералах, хранящихся внутри двоичного файла. Теперь, когда мы знаем чем являются срезы, мы правильно понимаем что такое строковые литералы:
 
 ```rust
 let s = "Hello, world!";
 ```
 
-The type of `s` here is `&str`: it’s a slice pointing to that specific point of the binary. This is also why string literals are immutable; `&str` is an immutable reference.
+Тип `s` здесь является `&str` срезом, указывающим на конкретное место в коде программы. Это также объясняет, почему строковый литерал является неизменяемым, потому что тип `&str` это неизменяемая ссылка.
 
 #### Строковые срезы как параметры
 
-Knowing that you can take slices of literals and `String` values leads us to one more improvement on `first_word`, and that’s its signature:
+Знание о том, что можно брать срезы строковых литералов и значения `String` приводит к ещё одному улучшению `first_word` и вот его сигнатура:
 
 ```rust,ignore
 fn first_word(s: &String) -> &str {
 ```
 
-A more experienced Rustacean would write the signature shown in Listing 4-9 instead because it allows us to use the same function on both `&String` values and `&str` values.
+Более опытные разработчики Rust написали бы сигнатуру из листинга  4-9, потому что она позволяет использовать одну функцию для значений обоих типов `&String` и `&str`.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 4-9: Improving the <code>first_word</code> function by using a string slice for the type of the <code>s</code> parameter</span>
+<span class="caption">Пример 4-9: Улучшение функции <code>first_word</code> используя тип строкового среза для параметра <code>s</code></span>
 
-If we have a string slice, we can pass that directly. If we have a `String`, we can pass a slice of the entire `String`. Defining a function to take a string slice instead of a reference to a `String` makes our API more general and useful without losing any functionality:
+Если есть строковый срез, то можно его передавать напрямую. Если есть `String`, можно передавать срез полностью всей строки `String`. Определение функции принимающей строковый срез вместо ссылки на `String` делает API более общим и полезным без потери функциональности:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -186,13 +185,13 @@ If we have a string slice, we can pass that directly. If we have a `String`, we 
 
 ### Другие срезы
 
-String slices, as you might imagine, are specific to strings. But there’s a more general slice type, too. Consider this array:
+Как вы могли бы представить, строковые срезы относятся к строкам. Но также есть более общий тип среза. Рассмотрим массив:
 
 ```rust
 let a = [1, 2, 3, 4, 5];
 ```
 
-Just as we might want to refer to a part of a string, we might want to refer to part of an array. We’d do so like this:
+Подобно тому как мы хотели бы ссылаться на часть строки, мы можем захотеть ссылаться на часть массива. Мы можем делать это вот так:
 
 ```rust
 let a = [1, 2, 3, 4, 5];
@@ -200,10 +199,10 @@ let a = [1, 2, 3, 4, 5];
 let slice = &a[1..3];
 ```
 
-This slice has the type `&[i32]`. It works the same way as string slices do, by storing a reference to the first element and a length. You’ll use this kind of slice for all sorts of other collections. We’ll discuss these collections in detail when we talk about vectors in Chapter 8.
+Данный срез имеет тип `&[i32]`. Он работает тем же способом, как и строковый срез, сохраняя ссылку на первый элемент и длину. Вы будете использовать данную разновидность среза для всех видов коллекций. Мы обсудим эти коллекции детально, когда будем говорить про векторы в главе 8.
 
 ## Итоги
 
-The concepts of ownership, borrowing, and slices ensure memory safety in Rust programs at compile time. The Rust language gives you control over your memory usage in the same way as other systems programming languages, but having the owner of data automatically clean up that data when the owner goes out of scope means you don’t have to write and debug extra code to get this control.
+Концепции владения, заимствования и срезов обеспечивают защиту использования памяти в Rust. Rust даёт вам возможность контролировать использование памяти тем же способом, как другие языки системного программирования, но даёт возможность автоматической очистки этих данных, когда их владелец покидает область видимости. Это означает, что не нужно писать и отлаживать дополнительный код, чтобы получить этот контроль.
 
-Ownership affects how lots of other parts of Rust work, so we’ll talk about these concepts further throughout the rest of the book. Let’s move on to Chapter 5 and look at grouping pieces of data together in a `struct`.
+Владение влияет на множество других частей и концепций языка Rust. Мы будем говорить об этих концепциях на протяжении оставшихся частей книги. Давайте перейдём к главе 5 и рассмотрим группировку частей данных в структуры `struct`.
