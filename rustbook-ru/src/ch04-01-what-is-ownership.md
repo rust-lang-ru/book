@@ -120,8 +120,7 @@ Rust выбирает другой путь: память автоматичес
 
 Посмотрим на рисунок 4-1 и разберём, что происходит со `String` под капотом. Тип `String` состоит из трёх частей показанных слева: указатель на память занятую содержимым строки, длина и ёмкость. Данная группа данных сохраняется в стеке. Справа память в куче, которая хранит содержимое строки.
 
-
-<img alt="String in memory" src="https://github.com/ruRust/book/blob/master/rustbook-en/src/img/trpl04-01.svg?raw=true" class="center" style="width: 50%;">
+ <img alt="String in memory" src="img/trpl04-01.svg" class="">
 
 <span class="caption">Рисунок 4-1: Представление в памяти строки <code>String</code> содержащей значение <code>"hello"</code> привязанное к <code>s1</code></span>
 
@@ -129,15 +128,13 @@ Rust выбирает другой путь: память автоматичес
 
 Когда мы назначили `s1` переменной `s2`, то данные типа `String` были скопированы, что означает мы скопировали указатель, длину и ёмкость, которые находятся в стеке. Мы не копируем данные в куче на которые ссылается указатель. Другими словами данные представленные в памяти выглядят как на картинке 4-2.
 
-
-<img alt="s1 and s2 pointing to the same value" src="https://github.com/ruRust/book/blob/master/rustbook-en/src/img/trpl04-02.svg?raw=true" class="center" style="width: 50%;">
+ <img alt="s1 and s2 pointing to the same value" src="img/trpl04-02.svg" class="">
 
 <span class="caption">Картинка 4-2: Представление в памяти переменной <code>s2</code>, которая является копией указателя, длины и ёмкости переменной <code>s1</code></span>
 
 Представление *НЕ* выглядит как на картинке 4-3, при котором память могла бы выглядеть как, если бы Rust ещё скопировал и сами данные в куче. Если Rust сделал бы это, то операция `s2 = s1` могла бы быть очень дорогостоящей в смысле производительности времени выполнения, если данные в куче были бы большими.
 
-
-<img alt="String in memory" src="https://github.com/ruRust/book/blob/master/rustbook-en/src/img/trpl04-03.svg?raw=true" class="center" style="width: 50%;">
+ <img alt="String in memory" src="img/trpl04-03.svg" class="">
 
 <span class="caption">Картинка 4-3: другая возможность того, как можно было бы сделать при <code>s2 = s1</code>, если бы Rust также копировал бы данные в куче</span>
 
@@ -157,8 +154,7 @@ Rust выбирает другой путь: память автоматичес
 
 Если вы слышали термины "поверхностное копирование" *shallow copy* и "глубокое копирование" *deep copy* в других языках, то концепция копирования указателя, длины и ёмкости без копирования самих данных в куче, возможно выглядит как создание "поверхностной копии". Но так как Rust делает первую переменную недействительной вместо создания поверхностной копии, то такое действие известно как "перемещение" *move*. В данном примере, мы бы сказали, что `s1` была *перемещена* в переменную `s2`. То что происходит на самом деле показано на картинке 4-4.
 
-
-<img alt="s1 and s2 pointing to the same value" src="https://github.com/ruRust/book/blob/master/rustbook-en/src/img/trpl04-04.svg?raw=true" class="center" style="width: 50%;">
+ <img alt="s1 and s2 pointing to the same value" src="img/trpl04-04.svg" class="">
 
 <span class="caption">Картинка 4-4: представление памяти после того как <code>s1</code> была сделана не действительной</span>
 
