@@ -14,8 +14,7 @@
 
 Данные амперсанды являются *ссылками* и позволяют ссылаться на некоторые значения не забирая их во владение. Картинка 4-5 показывает диаграмму.
 
-
-<img alt="&String s pointing at String s1" src="https://github.com/ruRust/book/blob/master/rustbook-en/src/img/trpl04-05.svg?raw=true" class="center">
+ <img alt="&String указывает на String s1" src="img/trpl04-05.svg" class="center" >
 
 <span class="caption">Картинка 4-5: Диаграмма для <code>&String s</code> указывающей на <code>String s1</code></span>
 
