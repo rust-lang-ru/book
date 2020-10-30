@@ -4,7 +4,7 @@ Another data type that does not have ownership is the *slice*. Slices let you re
 
 Here’s a small programming problem: write a function that takes a string and returns the first word it finds in that string. If the function doesn’t find a space in the string, the whole string must be one word, so the entire string should be returned.
 
-Let’s think about the signature of this function:
+Давайте подумаем над сигнатурой этой функции:
 
 ```rust,ignore
 fn first_word(s: &String) -> ?
@@ -12,7 +12,7 @@ fn first_word(s: &String) -> ?
 
 This function, `first_word`, has a `&String` as a parameter. We don’t want ownership, so this is fine. But what should we return? We don’t really have a way to talk about *part* of a string. However, we could return the index of the end of the word. Let’s try that, as shown in Listing 4-7.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:here}}
@@ -26,7 +26,7 @@ Because we need to go through the `String` element by element and check whether 
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:as_bytes}}
 ```
 
-Next, we create an iterator over the array of bytes using the `iter` method:
+Далее, создаём итератор по массиву байт используя метод  `iter`:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:iter}}
@@ -44,7 +44,7 @@ Inside the `for` loop, we search for the byte that represents the space by using
 
 We now have a way to find out the index of the end of the first word in the string, but there’s a problem. We’re returning a `usize` on its own, but it’s only a meaningful number in the context of the `&String`. In other words, because it’s a separate value from the `String`, there’s no guarantee that it will still be valid in the future. Consider the program in Listing 4-8 that uses the `first_word` function from Listing 4-7.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-08/src/main.rs:here}}
@@ -62,11 +62,11 @@ fn second_word(s: &String) -> (usize, usize) {
 
 Now we’re tracking a starting *and* an ending index, and we have even more values that were calculated from data in a particular state but aren’t tied to that state at all. We now have three unrelated variables floating around that need to be kept in sync.
 
-Luckily, Rust has a solution to this problem: string slices.
+К счастью в Rust есть решение данной проблемы: строковые срезы.
 
-### String Slices
+### Строковые срезы
 
-A *string slice* is a reference to part of a `String`, and it looks like this:
+Строковый срез - это ссылка на часть строки `String` и он выглядит следующим образом:
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-17-slice/src/main.rs:here}}
@@ -76,7 +76,7 @@ This is similar to taking a reference to the whole `String` but with the extra `
 
 We can create slices using a range within brackets by specifying `[starting_index..ending_index]`, where `starting_index` is the first position in the slice and `ending_index` is one more than the last position in the slice. Internally, the slice data structure stores the starting position and the length of the slice, which corresponds to `ending_index` minus `starting_index`. So in the case of `let world = &s[6..11];`, `world` would be a slice that contains a pointer to the 7th byte (counting from 1) of `s` with a length value of 5.
 
-Figure 4-6 shows this in a diagram.
+Рисунок 4-12 отображает это на диаграмме.
 
 
 <img alt="world containing a pointer to the 6th byte of String s and a length 5" src="img/trpl04-06.svg" class="center" style="width: 50%;">
@@ -118,7 +118,7 @@ let slice = &s[..];
 
 With all this information in mind, let’s rewrite `first_word` to return a slice. The type that signifies “string slice” is written as `&str`:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-18-first-word-slice/src/main.rs:here}}
@@ -128,7 +128,7 @@ We get the index for the end of the word in the same way as we did in Listing 4-
 
 Now when we call `first_word`, we get back a single value that is tied to the underlying data. The value is made up of a reference to the starting point of the slice and the number of elements in the slice.
 
-Returning a slice would also work for a `second_word` function:
+Аналогичным образом можно переписать и второй метод `second_word`:
 
 ```rust,ignore
 fn second_word(s: &String) -> &str {
@@ -136,13 +136,13 @@ fn second_word(s: &String) -> &str {
 
 We now have a straightforward API that’s much harder to mess up, because the compiler will ensure the references into the `String` remain valid. Remember the bug in the program in Listing 4-8, when we got the index to the end of the first word but then cleared the string so our index was invalid? That code was logically incorrect but didn’t show any immediate errors. The problems would show up later if we kept trying to use the first word index with an emptied string. Slices make this bug impossible and let us know we have a problem with our code much sooner. Using the slice version of `first_word` will throw a compile-time error:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-19-slice-error/src/main.rs:here}}
 ```
 
-Here’s the compiler error:
+Ошибка компиляции:
 
 ```console
 {{#include ../listings/ch04-understanding-ownership/no-listing-19-slice-error/output.txt}}
@@ -150,7 +150,7 @@ Here’s the compiler error:
 
 Recall from the borrowing rules that if we have an immutable reference to something, we cannot also take a mutable reference. Because `clear` needs to truncate the `String`, it needs to get a mutable reference. Rust disallows this, and compilation fails. Not only has Rust made our API easier to use, but it has also eliminated an entire class of errors at compile time!
 
-#### String Literals Are Slices
+#### Строковые литералы это срезы
 
 Recall that we talked about string literals being stored inside the binary. Now that we know about slices, we can properly understand string literals:
 
@@ -160,7 +160,7 @@ let s = "Hello, world!";
 
 The type of `s` here is `&str`: it’s a slice pointing to that specific point of the binary. This is also why string literals are immutable; `&str` is an immutable reference.
 
-#### String Slices as Parameters
+#### Строковые срезы как параметры
 
 Knowing that you can take slices of literals and `String` values leads us to one more improvement on `first_word`, and that’s its signature:
 
@@ -178,13 +178,13 @@ A more experienced Rustacean would write the signature shown in Listing 4-9 inst
 
 If we have a string slice, we can pass that directly. If we have a `String`, we can pass a slice of the entire `String`. Defining a function to take a string slice instead of a reference to a `String` makes our API more general and useful without losing any functionality:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:usage}}
 ```
 
-### Other Slices
+### Другие срезы
 
 String slices, as you might imagine, are specific to strings. But there’s a more general slice type, too. Consider this array:
 
@@ -202,7 +202,7 @@ let slice = &a[1..3];
 
 This slice has the type `&[i32]`. It works the same way as string slices do, by storing a reference to the first element and a length. You’ll use this kind of slice for all sorts of other collections. We’ll discuss these collections in detail when we talk about vectors in Chapter 8.
 
-## Summary
+## Итоги
 
 The concepts of ownership, borrowing, and slices ensure memory safety in Rust programs at compile time. The Rust language gives you control over your memory usage in the same way as other systems programming languages, but having the owner of data automatically clean up that data when the owner goes out of scope means you don’t have to write and debug extra code to get this control.
 
