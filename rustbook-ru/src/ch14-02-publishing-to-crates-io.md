@@ -22,8 +22,7 @@
 
 Для удобства, запустив `cargo doc --open`, мы создадим HTML для документации вашей текущей библиотеки (а также документацию для всех зависимостей вашей библиотеки) и откроем результат в веб-браузере. Перейдите к функции `add_one` и вы увидите, как отображается текст в комментариях к документации, что показано на рисунке 14-1:
 
-
-<img alt="HTML-документация для функции `add_one`` my_crate`" src="../../rustbook-en/src/img/trpl14-01.png" class="center">
+ <img alt="HTML-документация для функции `add_one`` my_crate`" src="img/trpl14-01.png" class="center" >
 
 <span class="caption">Рисунок 14-1: HTML документация для функции <code>add_one</code></span>
 
@@ -76,8 +75,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 Когда мы запускаем `cargo doc --open`, эти комментарии будут отображаться на первой странице документации для `my_crate` над списком публичных элементов в библиотеке, как показано на рисунке 14-2:
 
-
-<img alt="Документация для библиотеки `art`, в которой перечислены модули `types` и `utils`" src="../../rustbook-en/src/img/trpl14-03.png" class="center">
+ <img alt="Документация для библиотеки `art`, в которой перечислены модули `types` и `utils`" src="img/trpl14-03.png" class="center" >
 
 <span class="caption">Рисунок 14-2: Предоставленная документация для <code>my_crate</code>, включая комментарий, описывающие крейт в целом</span>
 
@@ -103,8 +101,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 На рисунке 14-3 показано, как будет выглядеть титульная страница документации для этого крейта, сгенерированный `cargo doc`:
 
-
-<img alt="Предоставлена Документация для библиотеки `art` с реэкспортом на первой странице" src="../../rustbook-en/src/img/trpl14-04.png" class="center">
+ <img alt="Предоставлена Документация для библиотеки `art` с реэкспортом на первой странице" src="img/trpl14-04.png" class="center" >
 
 <span class="caption">Рисунок 14-3: Первая страница документации для <code>art</code>, в которой перечислены модули <code>kinds</code> и <code>utils</code></span>
 
@@ -134,8 +131,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 Документация API, которую `cargo doc` генерирует для этой библиотеки, теперь будет перечислять и связывать реэкспорты на главной странице, как показано на рисунке 14-4, упрощая поиск типов `PrimaryColor`, `SecondaryColor` и функции `mix`.
 
-
-<img alt="HTML-документация с комментарием для библиотеки в целом" src="../../rustbook-en/src/img/trpl14-02.png" class="center">
+ <img alt="HTML-документация с комментарием для библиотеки в целом" src="img/trpl14-02.png" class="center" >
 
 <span class="caption">Рисунок 14-4: Первая страница документации для <code>art</code>,  которая перечисляет реэкспорт</span>
 
