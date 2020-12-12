@@ -574,6 +574,6 @@ You win!
 [*перечислением*]: ../std/io/struct.Stdin.html#method.read_line
 [`expect` method]: ../std/io/type.Result.html
 [семантическое версионирование]: ../std/result/enum.Result.html
-[Crates.io]: ch06-00-enums.html
+[Crates.io]: https://crates.io/
 [`match`]: ../std/result/enum.Result.html#method.expect
 [`parse` у строк]: https://crates.io/crates/rand
