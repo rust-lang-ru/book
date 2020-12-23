@@ -12,8 +12,8 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
-{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-01/src/lib.rs:here}}
+```rust,noplayground
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-01/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 7-1. Модуль <code>front_of_house</code> содержащий другие модули, которые затем содержат функции</span>
