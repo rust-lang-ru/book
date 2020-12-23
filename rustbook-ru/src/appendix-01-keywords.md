@@ -1,6 +1,6 @@
 ## Дополнение А: Ключевые слова
 
-The following list contains keywords that are reserved for current or future use by the Rust language. As such, they cannot be used as identifiers (except as raw identifiers as we’ll discuss in the “[Raw Identifiers](#raw-identifiers)<!-- ignore -->” section), including names of functions, variables, parameters, struct fields, modules, crates, constants, macros, static values, attributes, types, traits, or lifetimes.
+Следующий список состоит из ключевых слов, зарезервированных для текущего, ну или будущего использования в Rust. Таким образом, данные слова нельзя использовать для идентификаторов в программах (кроме сырых идентификаторов, которые мы обсудили в разделе "[Сырые идентификаторы](#raw-identifiers)<!--  -->"), включая имена функций, переменных, параметров, имена полей структур, модулей, пакетов, констант, макросов, статических переменных, атрибутов, имён типов, типажей или времён жизни.
 
 ### Ключевые слова в Rust
 
