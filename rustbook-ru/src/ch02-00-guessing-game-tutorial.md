@@ -33,7 +33,7 @@ $ cd guessing_game
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/src/main.rs}}
 ```
 
-Теперь давайте скомпилируем программу "Hello, world!" и сразу запустим ее, используя команду `cargo run`:
+Теперь давайте скомпилируем программу "Hello, world!" и сразу запустим её, используя команду `cargo run`:
 
 ```console
 {{#include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/output.txt}}
