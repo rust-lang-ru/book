@@ -552,7 +552,7 @@ You guessed: 61
 You win!
 ```
 
-Awesome! With one tiny final tweak, we will finish the guessing game. Recall that the program is still printing the secret number. That worked well for testing, but it ruins the game. Let’s delete the `println!` that outputs the secret number. Listing 2-6 shows the final code.
+Потрясающе! Одним крошечным финальным изменением мы закончим игру в угадывание. Напомним, что программа все еще печатает секретное число. Это хорошо сработало для тестирования, но испортило игру. `println!` который выводит секретный номер. В листинге 2-6 показан окончательный код.
 
 <span class="filename">Файл: src/main.rs</span>
 
