@@ -6,20 +6,20 @@ The following list contains keywords that are reserved for current or future use
 
 Следующие ключевые слова имеют описанную функциональность.
 
-- `as` - perform primitive casting, disambiguate the specific trait containing an item, or rename items in `use` and `extern crate` statements
-- `async` -  return a `Future` instead of blocking the current thread
-- `await` - suspend execution until the result of a `Future` is ready
+- `as` - простое приведение типа, устранение неоднозначности реализованного для элемента трейта, или переименование элементов в `use` и `extern crate`
+- `async` -  возврат объекта `Future` вместо блокировки выполнения текущего потока
+- `await` - приостановка выполнения до тех пор, пока результат выполнения `Future` не станет готов
 - `break` - немедленное прекращение цикла
 - `const` - объявляет константу или константный сырой указатель
 - `continue` - перейти к следующей итерации цикла
-- `crate` - link an external crate or a macro variable representing the crate in which the macro is defined
+- `crate` - подключение внешнего крейта или макро-переменной, представляющей внешний пакет, в котором она объявлена
 - `dyn` - динамическая диспетчеризация для трейт-объектов
 - `else` - альтернатива для `if` и `if let`
 - `enum` - определение перечисления
 - `extern` - определение использования внешнего пакета, функции или переменной
 - `false` - логический литерал false
 - `fn` - определение функции или типа-указателя на функцию
-- `for` - loop over items from an iterator, implement a trait, or specify a higher-ranked lifetime
+- `for` -  цикл по элементам итератора, реализация трейта или указание времени жизни высокого уровня
 - `if` - условный оператор ветвления
 - `impl` - наследование или реализация трейта
 - `in` - часть синтаксической конструкции цикла `for`
@@ -32,7 +32,7 @@ The following list contains keywords that are reserved for current or future use
 - `pub` - обозначение публичного доступа к полям структуры, `impl` блокам или модулям
 - `ref` - ссылочное связывание
 - `return` - оператор возврата из функции
-- `Self` - a type alias for the type we are defining or implementing
+- `Self` - псевдоним типа, для которого объявляется или реализуется типаж
 - `self` - предмет метода или текущий модуль
 - `static` - глобальная переменная или время жизни, продолжающееся всё время работы программы
 - `struct` - определение структуры
@@ -40,7 +40,7 @@ The following list contains keywords that are reserved for current or future use
 - `trait` - обозначение трейта
 - `true` - логический литерал true
 - `type` - объявление псевдонима типа или ассоциированного типа
-- `union` - define a [union](../reference/items/unions.html) and is only a keyword when used in a union declaration
+- `union` - определение [объединения](../reference/items/unions.html) что и является единственным ключевым словом при использовании в объединении
 - `unsafe` - определение небезопасного кода, функции, трейта или реализаций
 - `use` - оператор импорта символов в текущую область видимости
 - `where` - оператор условия-ограничения для типа
@@ -66,9 +66,9 @@ The following keywords do not have any functionality but are reserved by Rust fo
 
 ### Сырые идентификаторы
 
-*Raw identifiers* are the syntax that lets you use keywords where they wouldn’t normally be allowed. You use a raw identifier by prefixing a keyword with `r#`.
+*Сырые идентификаторы* - это синтаксис, позволяющий вам использовать ключевые слова там, где обычно они не могут быть. Для создания и использования сырого идентификатора, к ключевому слову добавляется префикс `r#`.
 
-For example, `match` is a keyword. If you try to compile the following function that uses `match` as its name:
+Например, ключевое слово `match`. Если вы попытаетесь скомпилировать следующую функцию, использующую в качестве имени `match`:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -88,7 +88,7 @@ error: expected identifier, found keyword `match`
   |    ^^^^^ expected identifier, found keyword
 ```
 
-The error shows that you can’t use the keyword `match` as the function identifier. To use `match` as a function name, you need to use the raw identifier syntax, like this:
+Ошибка говорит о том, что вы не можете использовать ключевое слово `match` в качестве идентификатора функции. Чтобы получить возможность использования слова `match` в качестве имени функции, нужно использовать синтаксис "сырых идентификаторов", например так:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -102,6 +102,6 @@ fn main() {
 }
 ```
 
-This code will compile without any errors. Note the `r#` prefix on the function name in its definition as well as where the function is called in `main`.
+Этот код скомпилируется без ошибок. Обратите внимание, что префикс `r#` в определении имени функции, указан также, как он указан в месте её вызова в `main`.
 
-Raw identifiers allow you to use any word you choose as an identifier, even if that word happens to be a reserved keyword. In addition, raw identifiers allow you to use libraries written in a different Rust edition than your crate uses. For example, `try` isn’t a keyword in the 2015 edition but is in the 2018 edition. If you depend on a library that’s written using the 2015 edition and has a `try` function, you’ll need to use the raw identifier syntax, `r#try` in this case, to call that function from your 2018 edition code. See [Appendix E](appendix-05-editions.html)<!-- ignore --> for more information on editions.
+Сырые идентификаторы позволяют использовать любые слова <br>в качестве идентификатора, даже если это зарезервированное <br>слово. Дополнительно сырые идентификаторы позволяют использовать библиотеки, написанные на отличной от используемой вами редакции Rust. Например `try`  является ключевым словом в 2018 редакции, но не в 2015. Если вы зависите от библиотеки, написанной с использованием 2015 редакции и имеющей функцию `try`, то для вызова такой функции из код 2018 редакции, вам необходимо использовать синтаксис сырых идентификаторов. В данном случае `r#try`. Детальнее про редакции рассмотрены более детально в [Приложении Е](appendix-05-editions.html)<!-- . -->
