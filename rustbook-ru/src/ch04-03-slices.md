@@ -20,7 +20,7 @@ fn first_word(s: &String) -> ?
 
 <span class="caption">Листинг 4-7: Пример функции <code>first_word</code>, которая возвращает значение индекса пробела внутри строкового параметра <code>String</code></span>
 
-Because we need to go through the `String` element by element and check whether a value is a space, we’ll convert our `String` to an array of bytes using the `as_bytes` method:
+Для того, чтобы найти пробел в строке, мы превратим `String` в массив байт, используя метод `as_bytes` и пройдём по `String` элемент за элементом, проверяя является ли значение пробелом.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:as_bytes}}
@@ -50,11 +50,11 @@ Because we need to go through the `String` element by element and check whether 
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-08/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 4-8: Storing the result from calling the <code>first_word</code> function and then changing the <code>String</code> contents</span>
+<span class="caption">Listing 4-8: Сохранение результата вызова функции <code>first_word</code>, а затем изменение содержимого <code>String</code></span>
 
 Данная программа компилируется без ошибок и будет успешно работать, даже после того как мы воспользуемся переменной `word` после вызова `s.clear()`. Так как значение `word` совсем не связано с состоянием переменной `s`, то `word` сохраняет свое значение `5` без изменений. Мы могли бы использовать `5` вместе с переменной `s` и попытаться извлечь первое слово из строки, но это приведет к ошибке, потому что содержимое `s` изменилось после того как мы сохранили `5` в переменной `word` (стало пустой строкой в вызове `s.clear()`).
 
-Having to worry about the index in `word` getting out of sync with the data in `s` is tedious and error prone! Managing these indices is even more brittle if we write a `second_word` function. Its signature would have to look like this:
+Необходимость беспокоиться о том, что индекс в переменной `word` не синхронизируется с данными в переменной  `s` является утомительной и подверженной ошибкам! Управление этими индексами становится ещё более хрупким, если мы напишем функцию `second_word`. Её сигнатура могла бы выглядеть так:
 
 ```rust,ignore
 fn second_word(s: &String) -> (usize, usize) {
@@ -72,16 +72,15 @@ fn second_word(s: &String) -> (usize, usize) {
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-17-slice/src/main.rs:here}}
 ```
 
-This is similar to taking a reference to the whole `String` but with the extra `[0..5]` bit. Rather than a reference to the entire `String`, it’s a reference to a portion of the `String`.
+Эта инициализация похожа на создание ссылки на переменную `String`, но с дополнительным условием - указанием отрезка `[0..5]`. Вместо ссылки на всю `String`, срез ссылается на её часть.
 
 Мы можем создавать срезы, используя диапазон в квадратных скобках указывая `[starting_index..ending_index]`, где `starting_index` означает первую позицию в срезе, а `ending_index` на единицу больше, чем последняя позиция. Во внутреннем представлении, срез хранит начальную позицию и длину среза, которая соответствует числу `ending_index` минус `starting_index`. Таким образом, в примере `let world = &s[6..11];`, переменная `world` будет срезом, который содержит ссылку на 7-ой байт в `s` со значением длины равным 5.
 
 Рисунок 4-12 отображает это на диаграмме.
 
+ <img alt="world containing a pointer to the 6th byte of String s and a length 5" src="img/trpl04-06.svg" class="">
 
-<img alt="world containing a pointer to the 6th byte of String s and a length 5" src="img/trpl04-06.svg" class="center" style="width: 50%;">
-
-<span class="caption">Figure 4-6: String slice referring to part of a <code>String</code></span>
+<span class="caption">Рисунок 4-6: Строковый срез ссылается на часть <code>String</code></span>
 
 Возможно использовать синтаксис диапазона `..` и другим способом. Если хочется начать с начального индекса (с нуля), то можно убрать число перед двоеточием. Другими словами, это эквивалентно:
 
@@ -92,7 +91,7 @@ let slice = &s[0..2];
 let slice = &s[..2];
 ```
 
-By the same token, if your slice includes the last byte of the `String`, you can drop the trailing number. That means these are equal:
+Таким же образом, если срез включает последний байт строки `String`, можно убрать завершающее число. Это эквивалентно:
 
 ```rust
 let s = String::from("hello");
@@ -103,7 +102,7 @@ let slice = &s[3..len];
 let slice = &s[3..];
 ```
 
-You can also drop both values to take a slice of the entire string. So these are equal:
+Также можно не указывать оба значения, чтобы получить срез всей строки. Это эквивалентно:
 
 ```rust
 let s = String::from("hello");
@@ -126,7 +125,7 @@ let slice = &s[..];
 
 Мы получаем индекс конца слова способом аналогичным тому, как мы это делали в листинге 4-7: ищем индекс первого вхождения пробела, когда пробел найден, возвращается строковый срез, используя начало строки в качестве начального индекса и индекс пробела в качестве конечного индекса среза.
 
-Now when we call `first_word`, we get back a single value that is tied to the underlying data. The value is made up of a reference to the starting point of the slice and the number of elements in the slice.
+Теперь, вызвав метод `first_word`, мы получим одно единственное значение, которое привязано к нижележащим данным. Значение, которое составлено из ссылки на начальную точку среза и количества элементов в срезе.
 
 Аналогичным образом можно переписать и второй метод `second_word`:
 
@@ -168,15 +167,15 @@ let s = "Hello, world!";
 fn first_word(s: &String) -> &str {
 ```
 
-A more experienced Rustacean would write the signature shown in Listing 4-9 instead because it allows us to use the same function on both `&String` values and `&str` values.
+Более опытные разработчики Rust написали бы сигнатуру из листинга  4-9, потому что она позволяет использовать одну функцию для значений обоих типов `&String` и `&str`.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 4-9: Improving the <code>first_word</code> function by using a string slice for the type of the <code>s</code> parameter</span>
+<span class="caption">Пример 4-9: Улучшение функции <code>first_word</code> используя тип строкового среза для параметра <code>s</code></span>
 
-If we have a string slice, we can pass that directly. If we have a `String`, we can pass a slice of the entire `String`. Defining a function to take a string slice instead of a reference to a `String` makes our API more general and useful without losing any functionality:
+Если есть строковый срез, то можно его передавать напрямую. Если есть `String`, можно передавать срез полностью всей строки `String`. Определение функции принимающей строковый срез вместо ссылки на `String` делает API более общим и полезным без потери функциональности:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -186,13 +185,13 @@ If we have a string slice, we can pass that directly. If we have a `String`, we 
 
 ### Другие срезы
 
-String slices, as you might imagine, are specific to strings. But there’s a more general slice type, too. Consider this array:
+Как вы могли бы представить, строковые срезы относятся к строкам. Но также есть более общий тип среза. Рассмотрим массив:
 
 ```rust
 let a = [1, 2, 3, 4, 5];
 ```
 
-Just as we might want to refer to a part of a string, we might want to refer to part of an array. We’d do so like this:
+Подобно тому как мы хотели бы ссылаться на часть строки, мы можем захотеть ссылаться на часть массива. Мы можем делать это вот так:
 
 ```rust
 let a = [1, 2, 3, 4, 5];
