@@ -60,7 +60,7 @@
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-05/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 6-5: Функция, которая использует выражение <code>match</code> с типом <code>Option<i32></i32></code></span>
+<span class="caption">Листинг 6-5: Функция, которая использует выражение <code>match</code> с типом <code>Option<i32></code></span>
 
 Давайте рассмотрим процесс выполнения функции `plus_one` более подробно. Когда мы вызываем `plus_one(five)`, то переменная `x` в теле `plus_one` будет иметь значение `Some(5)`. Затем мы сравниваем это значение с каждой веткой выражения match.
 
