@@ -18,9 +18,9 @@
 
 В сигнатуре `area`, используется `&self` вместо `rectangle: &Rectangle` потому что Rust знает, что тип `self` является типом `Rectangle`, так как данный метод находится внутри `impl Rectangle` контекста. Заметьте, всё ещё нужно использовать `&` перед `self`, как мы делали `&Rectangle`. Методы могут принимать во владение `self`, заимствовать неизменный `self`, как делалось ранее или заимствовать изменяемый `self`, как любые другие параметры.
 
-We’ve chosen `&self` here for the same reason we used `&Rectangle` in the function version: we don’t want to take ownership, and we just want to read the data in the struct, not write to it. If we wanted to change the instance that we’ve called the method on as part of what the method does, we’d use `&mut self` as the first parameter. Having a method that takes ownership of the instance by using just `self` as the first parameter is rare; this technique is usually used when the method transforms `self` into something else and you want to prevent the caller from using the original instance after the transformation.
+Мы выбрали `&self` здесь по той же причине, по которой использовали `&Rectangle` в версии кода с функцией: мы не хотим брать структуру во владение, мы просто хотим прочитать данные в структуре, а не писать в неё. Если бы мы хотели изменить экземпляр, на котором мы вызывали метод силами самого метода, то мы бы использовали `&mut self` в качестве первого параметра. Наличие метода, который берёт экземпляр во владение, используя только `self` в качестве первого параметра является редким; эта техника обычно используется, когда метод превращает `self` во что-то ещё, и вы хотите запретить вызывающей стороне использовать исходный экземпляр после превращения.
 
-The main benefit of using methods instead of functions, in addition to using method syntax and not having to repeat the type of `self` in every method’s signature, is for organization. We’ve put all the things we can do with an instance of a type in one `impl` block rather than making future users of our code search for capabilities of `Rectangle` in various places in the library we provide.
+Основным преимуществом использования методов вместо функций, в дополнение к использованию синтаксиса метода, где не нужно повторять тип `self` в каждой сигнатуре метода, является организация кода. Мы собрали все, что мы можем сделать с экземпляром типа в одном блоке `impl`, не заставляя будущих пользователей нашего кода искать дополнительный реализованный функционал для `Rectangle` в разных местах библиотеки.
 
 > ### Где используется оператор `->`?
 > В языках C++, используются два различных оператора для вызова методов: используется `.`, если вызывается метод непосредственно у экземпляра структуры и используется `->`, если вызывается метод у ссылки на объект. Другими словами, если `object` является ссылкой, то вызовы метода `object->something()` и ` (*object).something()` являются аналогичными.
@@ -49,11 +49,11 @@ The main benefit of using methods instead of functions, in addition to using met
 > p1.distance(&p2);
 > (&p1).distance(&p2);
 > ```
-> The first one looks much cleaner. This automatic referencing behavior works because methods have a clear receiver—the type of `self`. Given the receiver and name of a method, Rust can figure out definitively whether the method is reading (`&self`), mutating (`&mut self`), or consuming (`self`). The fact that Rust makes borrowing implicit for method receivers is a big part of making ownership ergonomic in practice.
+> Первый пример выглядит намного понятнее. Автоматический вывод ссылки работает потому, что методы имеют понятного получателя - тип `self`. Учитывая получателя и имя метода, Rust может точно определить, что в данном случае делает код: читает ли метод (`&self`), делает ли изменение (`&mut self`) или поглощает (`self`). Факт в том, что Rust делает заимствование неявным для принимающего метода, в большей степени для того, чтобы сделать владение эргономичным на практике.
 
 ### Методы с несколькими параметрами
 
-Let’s practice using methods by implementing a second method on the `Rectangle` struct. This time, we want an instance of `Rectangle` to take another instance of `Rectangle` and return `true` if the second `Rectangle` can fit completely within `self`; otherwise it should return `false`. That is, we want to be able to write the program shown in Listing 5-14, once we’ve defined the `can_hold` method.
+Давайте попрактикуемся в использовании методов, реализовав второй метод у структуры `Rectangle`. На этот раз мы хотим, чтобы экземпляр `Rectangle` использовал другой экземпляр типа `Rectangle` и возвращал `true`, если второй `Rectangle` может полностью разместиться внутри площади экземпляра `self`; в противном случае он должен возвращать `false`. То есть мы хотим иметь возможность написать программу, показанную в листинге 5-14, в которой определили метод `can_hold`.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -84,9 +84,9 @@ When we run this code with the `main` function in Listing 5-14, we’ll get our 
 
 ### Ассоциированные функции
 
-Another useful feature of `impl` blocks is that we’re allowed to define functions within `impl` blocks that *don’t* take `self` as a parameter. These are called *associated functions* because they’re associated with the struct. They’re still functions, not methods, because they don’t have an instance of the struct to work with. You’ve already used the `String::from` associated function.
+Ещё одной полезной особенностью блоков `impl` является то, что мы можем определить функции внутри блоков `impl`, которые *не принимают* `self` в качестве параметра. Они называются *ассоциированными функциями*, потому что они всё ещё связаны со структурой в отличии от простых функций. Так же они всё ещё функции, а не методы, потому что у них нет экземпляра структуры над которой они могут работать. Вы уже использовали ассоциированную функцию `String::from`.
 
-Associated functions are often used for constructors that will return a new instance of the struct. For example, we could provide an associated function that would have one dimension parameter and use that as both width and height, thus making it easier to create a square `Rectangle` rather than having to specify the same value twice:
+Ассоциированные функции часто используются в качестве конструкторов - функций которые будут возвращать новый экземпляр структуры. Например, мы могли бы предоставить ассоциированную функцию, которая будет иметь один параметр измерения и использовать его как ширину и высоту, тем самым облегчая создание квадратного прямоугольника `Rectangle`, вместо указания одно и того же значение дважды:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -94,7 +94,7 @@ Associated functions are often used for constructors that will return a new inst
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-03-associated-functions/src/main.rs:here}}
 ```
 
-To call this associated function, we use the `::` syntax with the struct name; `let sq = Rectangle::square(3);` is an example. This function is namespaced by the struct: the `::` syntax is used for both associated functions and namespaces created by modules. We’ll discuss modules in Chapter 7.
+Чтобы вызвать эту ассоциированную функцию, используется синтаксис `::` с именем структуры; пример `let sq = Rectangle::square(3);`. Эта функция относится к структуре: синтаксис `::` используется как для ассоциированных функций, так и для пространства имён, созданных модулями. Мы обсудим модули в Главе 7.
 
 ### Несколько блоков `impl`
 
@@ -106,10 +106,10 @@ To call this associated function, we use the `::` syntax with the struct name; `
 
 <span class="caption">Листинг 5-16: Переписанный листинг 5-15 с использованием нескольких блоков <code>impl</code></span>
 
-There’s no reason to separate these methods into multiple `impl` blocks here, but this is valid syntax. We’ll see a case in which multiple `impl` blocks are useful in Chapter 10, where we discuss generic types and traits.
+В данном случае нет причин разделять эти методы на несколько блоков `impl`, но это тоже является правильным синтаксисом. Мы увидим случай, в котором полезно иметь несколько `impl` блоков в Главе 10, где мы будем обсуждать обобщённые типы и типажи.
 
 ## Итоги
 
 Структуры позволяют создавать собственные типы, которые имеют смысл в вашей предметной области. Используя структуры, вы храните ассоциированные друг с другом фрагменты данных и даёте название частям данных, чтобы ваш код был более понятным. Методы позволяют определить поведение, которое имеют экземпляры ваших структур, а ассоциированные функции позволяют привязать функциональность к вашей структуре, не обращаясь к её экземпляру.
 
-But structs aren’t the only way you can create custom types: let’s turn to Rust’s enum feature to add another tool to your toolbox.
+Но структуры - это не единственный способ создания пользовательских типов: давайте обратимся к перечислениям в Rust, чтобы добавить ещё один инструмент в наш арсенал.
