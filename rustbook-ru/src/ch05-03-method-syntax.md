@@ -1,10 +1,10 @@
 ## Синтаксис метода
 
-*Methods* are similar to functions: they’re declared with the `fn` keyword and their name, they can have parameters and a return value, and they contain some code that is run when they’re called from somewhere else. However, methods are different from functions in that they’re defined within the context of a struct (or an enum or a trait object, which we cover in Chapters 6 and 17, respectively), and their first parameter is always `self`, which represents the instance of the struct the method is being called on.
+*Методы* похожи на функции: они объявлены с помощью ключевого слова `fn` и его имени. Они могут иметь параметры и возвращаемое значение, могут содержать некоторый код, который выполняется при вызове из другого места. Тем не менее, методы отличаются от функций тем, что они определены внутри контекста структуры (также перечисления или объекта-типажа, которые мы рассмотрим в главе 6 и 17, соответственно), а их первым параметром всегда является `self`, который представляет экземпляр структуры для которого этот метод будет вызван.
 
 ### Определение методов
 
-Let’s change the `area` function that has a `Rectangle` instance as a parameter and instead make an `area` method defined on the `Rectangle` struct, as shown in Listing 5-13.
+Давайте изменим функцию `area` так, чтобы она имела экземпляр `Rectangle` в качестве входного параметра и сделаем её методом `area`, определённым для структуры `Rectangle`, как показано в листинге 5-13:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -12,20 +12,20 @@ Let’s change the `area` function that has a `Rectangle` instance as a paramete
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-13/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-13: Defining an <code>area</code> method on the <code>Rectangle</code> struct</span>
+<span class="caption">Листинг 5-13: Определение метода <code>area</code> у структуры <code>Rectangle</code></span>
 
-To define the function within the context of `Rectangle`, we start an `impl` (implementation) block. Then we move the `area` function within the `impl` curly brackets and change the first (and in this case, only) parameter to be `self` in the signature and everywhere within the body. In `main`, where we called the `area` function and passed `rect1` as an argument, we can instead use *method syntax* to call the `area` method on our `Rectangle` instance. The method syntax goes after an instance: we add a dot followed by the method name, parentheses, and any arguments.
+Для определения функции в контексте типа `Rectangle`, мы начинаем блок `impl` (implementation - реализация). Затем переносим функцию `area` внутрь фигурных скобок `impl` и меняем первый (в данном случае единственный) параметр в сигнатуре на `self`, и далее везде в теле метода. В `main`, там где мы вызывали функцию `area` и передавали ей переменную `rect1` в качестве аргумента, теперь можно использовать *синтаксис метода* для вызова метода `area` на экземпляре типа `Rectangle`. Синтаксис метода идёт после экземпляра: мы добавляем точечную нотацию за которой следует название метода, круглые скобки и любые аргументы.
 
-In the signature for `area`, we use `&self` instead of `rectangle: &Rectangle` because Rust knows the type of `self` is `Rectangle` due to this method’s being inside the `impl Rectangle` context. Note that we still need to use the `&` before `self`, just as we did in `&Rectangle`. Methods can take ownership of `self`, borrow `self` immutably as we’ve done here, or borrow `self` mutably, just as they can any other parameter.
+В сигнатуре `area`, используется `&self` вместо `rectangle: &Rectangle` потому что Rust знает, что тип `self` является типом `Rectangle`, так как данный метод находится внутри `impl Rectangle` контекста. Заметьте, всё ещё нужно использовать `&` перед `self`, как мы делали `&Rectangle`. Методы могут принимать во владение `self`, заимствовать неизменный `self`, как делалось ранее или заимствовать изменяемый `self`, как любые другие параметры.
 
 We’ve chosen `&self` here for the same reason we used `&Rectangle` in the function version: we don’t want to take ownership, and we just want to read the data in the struct, not write to it. If we wanted to change the instance that we’ve called the method on as part of what the method does, we’d use `&mut self` as the first parameter. Having a method that takes ownership of the instance by using just `self` as the first parameter is rare; this technique is usually used when the method transforms `self` into something else and you want to prevent the caller from using the original instance after the transformation.
 
 The main benefit of using methods instead of functions, in addition to using method syntax and not having to repeat the type of `self` in every method’s signature, is for organization. We’ve put all the things we can do with an instance of a type in one `impl` block rather than making future users of our code search for capabilities of `Rectangle` in various places in the library we provide.
 
 > ### Где используется оператор `->`?
-> In C and C++, two different operators are used for calling methods: you use `.` if you’re calling a method on the object directly and `->` if you’re calling the method on a pointer to the object and need to dereference the pointer first. In other words, if `object` is a pointer, `object->something()` is similar to `(*object).something()`.
-> Rust doesn’t have an equivalent to the `->` operator; instead, Rust has a feature called *automatic referencing and dereferencing*. Calling methods is one of the few places in Rust that has this behavior.
-> Here’s how it works: when you call a method with `object.something()`, Rust automatically adds in `&`, `&mut`, or `*` so `object` matches the signature of the method. In other words, the following are the same:
+> В языках C++, используются два различных оператора для вызова методов: используется `.`, если вызывается метод непосредственно у экземпляра структуры и используется `->`, если вызывается метод у ссылки на объект. Другими словами, если `object` является ссылкой, то вызовы метода `object->something()` и ` (*object).something()` являются аналогичными.
+> Rust не имеет эквивалента оператора `->`, наоборот в Rust есть функциональность называемая *автоматическое обращение по ссылке и разыменование* (automatic referencing and dereferencing). Вызов методов является одним из немногих мест в Rust, в котором есть такое поведение.
+> Вот как это работает: когда вы вызываете метод `object.something()`, Rust автоматически добавляет `&`, `&mut` или  `*`, таким образом, чтобы `object` соответствовал сигнатуре метода. Другими словами, следующий код является одинаковым:
 
 <!-- CAN'T EXTRACT SEE BUG TODO -->
 
@@ -61,7 +61,7 @@ Let’s practice using methods by implementing a second method on the `Rectangle
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-14/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-14: Using the as-yet-unwritten <code>can_hold</code> method</span>
+<span class="caption">Листинг 5-14: Использование ещё не написанного метода <code>can_hold</code></span>
 
 И ожидаемый результат будет выглядеть следующим образом, т.к. оба размера в экземпляре `rect2` меньше, чем размеры в экземпляре `rect1`, а `rect3` шире, чем `rect1`:
 
@@ -78,7 +78,7 @@ Can rect1 hold rect3? false
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-15/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 5-15: Implementing the <code>can_hold</code> method on <code>Rectangle</code> that takes another <code>Rectangle</code> instance as a parameter</span>
+<span class="caption">Листинг 5-15: реализация метода <code>can_hold</code> у структуры <code>Rectangle</code>, который принимает другой экземпляр <code>Rectangle</code> в качестве параметра</span>
 
 When we run this code with the `main` function in Listing 5-14, we’ll get our desired output. Methods can take multiple parameters that we add to the signature after the `self` parameter, and those parameters work just like parameters in functions.
 
@@ -98,18 +98,18 @@ To call this associated function, we use the `::` syntax with the struct name; `
 
 ### Несколько блоков `impl`
 
-Each struct is allowed to have multiple `impl` blocks. For example, Listing 5-15 is equivalent to the code shown in Listing 5-16, which has each method in its own `impl` block.
+Для каждой структуры разрешено иметь множество `impl` блоков. Например, листинг 5-15 является эквивалентным коду из листинга 5-16, который описывает метод в своём отдельном блоке `impl`.
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-16/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 5-16: Rewriting Listing 5-15 using multiple <code>impl</code> blocks</span>
+<span class="caption">Листинг 5-16: Переписанный листинг 5-15 с использованием нескольких блоков <code>impl</code></span>
 
 There’s no reason to separate these methods into multiple `impl` blocks here, but this is valid syntax. We’ll see a case in which multiple `impl` blocks are useful in Chapter 10, where we discuss generic types and traits.
 
 ## Итоги
 
-Structs let you create custom types that are meaningful for your domain. By using structs, you can keep associated pieces of data connected to each other and name each piece to make your code clear. Methods let you specify the behavior that instances of your structs have, and associated functions let you namespace functionality that is particular to your struct without having an instance available.
+Структуры позволяют создавать собственные типы, которые имеют смысл в вашей предметной области. Используя структуры, вы храните ассоциированные друг с другом фрагменты данных и даёте название частям данных, чтобы ваш код был более понятным. Методы позволяют определить поведение, которое имеют экземпляры ваших структур, а ассоциированные функции позволяют привязать функциональность к вашей структуре, не обращаясь к её экземпляру.
 
 But structs aren’t the only way you can create custom types: let’s turn to Rust’s enum feature to add another tool to your toolbox.
