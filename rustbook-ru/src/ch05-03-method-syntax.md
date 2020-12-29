@@ -2,11 +2,11 @@
 
 *Methods* are similar to functions: they’re declared with the `fn` keyword and their name, they can have parameters and a return value, and they contain some code that is run when they’re called from somewhere else. However, methods are different from functions in that they’re defined within the context of a struct (or an enum or a trait object, which we cover in Chapters 6 and 17, respectively), and their first parameter is always `self`, which represents the instance of the struct the method is being called on.
 
-### Defining Methods
+### Определение методов
 
 Let’s change the `area` function that has a `Rectangle` instance as a parameter and instead make an `area` method defined on the `Rectangle` struct, as shown in Listing 5-13.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-13/src/main.rs}}
@@ -22,7 +22,7 @@ We’ve chosen `&self` here for the same reason we used `&Rectangle` in the func
 
 The main benefit of using methods instead of functions, in addition to using method syntax and not having to repeat the type of `self` in every method’s signature, is for organization. We’ve put all the things we can do with an instance of a type in one `impl` block rather than making future users of our code search for capabilities of `Rectangle` in various places in the library we provide.
 
-> ### Where’s the `->` Operator?
+> ### Где используется оператор `->`?
 > In C and C++, two different operators are used for calling methods: you use `.` if you’re calling a method on the object directly and `->` if you’re calling the method on a pointer to the object and need to dereference the pointer first. In other words, if `object` is a pointer, `object->something()` is similar to `(*object).something()`.
 > Rust doesn’t have an equivalent to the `->` operator; instead, Rust has a feature called *automatic referencing and dereferencing*. Calling methods is one of the few places in Rust that has this behavior.
 > Here’s how it works: when you call a method with `object.something()`, Rust automatically adds in `&`, `&mut`, or `*` so `object` matches the signature of the method. In other words, the following are the same:
@@ -51,11 +51,11 @@ The main benefit of using methods instead of functions, in addition to using met
 > ```
 > The first one looks much cleaner. This automatic referencing behavior works because methods have a clear receiver—the type of `self`. Given the receiver and name of a method, Rust can figure out definitively whether the method is reading (`&self`), mutating (`&mut self`), or consuming (`self`). The fact that Rust makes borrowing implicit for method receivers is a big part of making ownership ergonomic in practice.
 
-### Methods with More Parameters
+### Методы с несколькими параметрами
 
 Let’s practice using methods by implementing a second method on the `Rectangle` struct. This time, we want an instance of `Rectangle` to take another instance of `Rectangle` and return `true` if the second `Rectangle` can fit completely within `self`; otherwise it should return `false`. That is, we want to be able to write the program shown in Listing 5-14, once we’ve defined the `can_hold` method.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-14/src/main.rs}}
@@ -63,14 +63,14 @@ Let’s practice using methods by implementing a second method on the `Rectangle
 
 <span class="caption">Listing 5-14: Using the as-yet-unwritten <code>can_hold</code> method</span>
 
-And the expected output would look like the following, because both dimensions of `rect2` are smaller than the dimensions of `rect1` but `rect3` is wider than `rect1`:
+И ожидаемый результат будет выглядеть следующим образом, т.к. оба размера в экземпляре `rect2` меньше, чем размеры в экземпляре `rect1`, а `rect3` шире, чем `rect1`:
 
 ```text
 Can rect1 hold rect2? true
 Can rect1 hold rect3? false
 ```
 
-We know we want to define a method, so it will be within the `impl Rectangle` block. The method name will be `can_hold`, and it will take an immutable borrow of another `Rectangle` as a parameter. We can tell what the type of the parameter will be by looking at the code that calls the method: `rect1.can_hold(&rect2)` passes in `&rect2`, which is an immutable borrow to `rect2`, an instance of `Rectangle`. This makes sense because we only need to read `rect2` (rather than write, which would mean we’d need a mutable borrow), and we want `main` to retain ownership of `rect2` so we can use it again after calling the `can_hold` method. The return value of `can_hold` will be a Boolean, and the implementation will check whether the width and height of `self` are both greater than the width and height of the other `Rectangle`, respectively. Let’s add the new `can_hold` method to the `impl` block from Listing 5-13, shown in Listing 5-15.
+Мы знаем, что хотим определить метод, поэтому он будет находится в `impl Rectangle` блоке. Имя метода будет `can_hold`, и оно будет принимать неизменяемое заимствование на другой `Rectangle` в качестве параметра. Мы можем сказать, какой это будет тип параметра, посмотрев на код вызывающего метода: метод `rect1.can_hold(&rect2)` передаёт в него  `&rect2` , который является неизменяемым заимствованием экземпляра `rect2` типа `Rectangle`. В этом есть смысл, потому что нам нужно только читать `rect2` (а не писать, что означало бы, что нужно изменяемое заимствование), и мы хотим, чтобы `main` сохранил право собственности на экземпляр `rect2`, чтобы мы могли использовать его снова после вызов метода `can_hold`. Возвращаемое значение `can_hold` имеет булевый тип, а реализация проверяет, являются ли ширина и высота `self` больше, чем ширина и высота другого `Rectangle` соответственно. Давайте добавим новый метод `can_hold` в `impl` блок из листинга 5-13, как показано в листинге 5-15.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -82,7 +82,7 @@ We know we want to define a method, so it will be within the `impl Rectangle` bl
 
 When we run this code with the `main` function in Listing 5-14, we’ll get our desired output. Methods can take multiple parameters that we add to the signature after the `self` parameter, and those parameters work just like parameters in functions.
 
-### Associated Functions
+### Ассоциированные функции
 
 Another useful feature of `impl` blocks is that we’re allowed to define functions within `impl` blocks that *don’t* take `self` as a parameter. These are called *associated functions* because they’re associated with the struct. They’re still functions, not methods, because they don’t have an instance of the struct to work with. You’ve already used the `String::from` associated function.
 
@@ -96,7 +96,7 @@ Associated functions are often used for constructors that will return a new inst
 
 To call this associated function, we use the `::` syntax with the struct name; `let sq = Rectangle::square(3);` is an example. This function is namespaced by the struct: the `::` syntax is used for both associated functions and namespaces created by modules. We’ll discuss modules in Chapter 7.
 
-### Multiple `impl` Blocks
+### Несколько блоков `impl`
 
 Each struct is allowed to have multiple `impl` blocks. For example, Listing 5-15 is equivalent to the code shown in Listing 5-16, which has each method in its own `impl` block.
 
@@ -108,7 +108,7 @@ Each struct is allowed to have multiple `impl` blocks. For example, Listing 5-15
 
 There’s no reason to separate these methods into multiple `impl` blocks here, but this is valid syntax. We’ll see a case in which multiple `impl` blocks are useful in Chapter 10, where we discuss generic types and traits.
 
-## Summary
+## Итоги
 
 Structs let you create custom types that are meaningful for your domain. By using structs, you can keep associated pieces of data connected to each other and name each piece to make your code clear. Methods let you specify the behavior that instances of your structs have, and associated functions let you namespace functionality that is particular to your struct without having an instance available.
 
