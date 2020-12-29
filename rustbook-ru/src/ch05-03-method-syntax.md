@@ -80,7 +80,7 @@ Can rect1 hold rect3? false
 
 <span class="caption">Листинг 5-15: реализация метода <code>can_hold</code> у структуры <code>Rectangle</code>, который принимает другой экземпляр <code>Rectangle</code> в качестве параметра</span>
 
-When we run this code with the `main` function in Listing 5-14, we’ll get our desired output. Methods can take multiple parameters that we add to the signature after the `self` parameter, and those parameters work just like parameters in functions.
+Когда мы запустим код с функцией `main` листинга 5-14, мы получим желаемый вывод. Методы могут принимать несколько параметров, которые мы добавляем в сигнатуру после первого  параметра `self`, и эти параметры работают так же, как параметры в функциях.
 
 ### Ассоциированные функции
 
