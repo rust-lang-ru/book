@@ -25,7 +25,7 @@ the `pub` Keyword”][pub]<!-- ignore --> section, we’ll go into more detail
 about `pub`. Note that this example won’t compile just yet; we’ll explain why
 in a bit.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">File: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-03/src/lib.rs}}
