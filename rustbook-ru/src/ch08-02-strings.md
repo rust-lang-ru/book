@@ -1,6 +1,6 @@
 ## Сохранение текста с UTF-8 кодировкой в строках
 
-We talked about strings in Chapter 4, but we’ll look at them in more depth now. New Rustaceans commonly get stuck on strings for a combination of three reasons: Rust’s propensity for exposing possible errors, strings being a more complicated data structure than many programmers give them credit for, and UTF-8. These factors combine in a way that can seem difficult when you’re coming from other programming languages.
+Мы говорили о строках в главе 4, но сейчас мы рассмотрим их более подробно. Новички в Rust обычно застревают на строках из-за  комбинации трёх причин: склонность Rust компилятора к выявлению возможных ошибок, более сложная структура данных чем считают многие программисты и UTF-8. Эти факторы объединяются таким образом, что тема может показаться сложной, если вы пришли из других языков программирования.
 
 Полезно обсуждать строки в контексте коллекций, потому что строки реализованы в виде набора байтов, плюс некоторые методы для обеспечения полезной функциональности, когда эти байты интерпретируются как текст. В этом разделе мы поговорим об операциях над `String`, которые есть у каждого типа коллекций такие как создание, обновление и чтение. Мы также обсудим какими особенностями `String` отличается от других коллекций, а именно, как индексирование в `String` осложняется различием между тем, как люди и компьютеры интерпретируют данные заключённые в `String`.
 
@@ -28,11 +28,11 @@ We talked about strings in Chapter 4, but we’ll look at them in more depth now
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-12/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 8-12: Using the <code>to_string</code> method to create a <code>String</code> from a string literal</span>
+<span class="caption">Листинг 8-12. Использование метода <code>to_string</code> для создания экземпляра типа <code>String</code> из строкового литерала</span>
 
 Эти выражения создают строку с  `initial contents`.
 
-We can also use the function `String::from` to create a `String` from a string literal. The code in Listing 8-13 is equivalent to the code from Listing 8-12 that uses `to_string`.
+Мы также можем использовать функцию `String::from` для создания `String`  из строкового литерала. Код листинга 8-13 является эквивалентным коду из листинга 8-12, который использует функцию `to_string`:
 
 ```rust
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-13/src/main.rs:here}}
@@ -74,7 +74,7 @@ We can also use the function `String::from` to create a `String` from a string l
 
 <span class="caption">Листинг 8-16. Использование фрагмента строки после его добавления в состав другого <code>String</code></span>
 
-If the `push_str` method took ownership of `s2`, we wouldn’t be able to print its value on the last line. However, this code works as we’d expect!
+Если метод `push_str` стал бы владельцем переменной`s2`, мы не смогли бы напечатать его значение в последней строке. Однако этот код работает так, как мы ожидали!
 
 Метод `push` принимает один символ в качестве параметра и добавляет его к `String`. В листинге 8-17 показан код, добавляющий букву "l" к `String`, используя метод `push`.
 
