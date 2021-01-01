@@ -141,7 +141,7 @@ don't want to include it for rustdoc testing purposes. -->
 {{#include ../listings/ch09-error-handling/listing-09-06/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 9-6: A function that returns errors to the calling code using <code>match</code></span>
+<span class="caption">Листинг 9-6: Функция, которая возвращает ошибки в вызывающий код, используя оператор <code>match</code></span>
 
 Данную функцию можно записать гораздо короче. Чтобы больше проникнуться обработкой ошибок, мы сначала сделаем многое самостоятельно, а в конце покажем более короткий способ. Давайте сначала рассмотрим тип возвращаемого значения: `Result<String, io::Error>`. Здесь есть возвращаемое значение функции типа `Result<T, E>` где шаблонный параметр `T` был заполнен конкретным типом `String` и шаблонный параметр `E` был заполнен конкретным типом `io::Error`. Если эта функция выполнится успешно, будет возвращено `Ok`, содержащее значение типа `String` - имя пользователя прочитанное функцией из файла. Если же при чтении файла будут какие-либо проблемы, то вызываемый код получит значение `Err` с экземпляром `io::Error`, в котором содержится больше информации об ошибке. Мы выбрали `io::Error` в качестве возвращаемого значения функции, потому что обе операции, которые мы вызываем внутри этой функции, возвращают этот тип ошибки: функция `File::open` и метод `read_to_string`.
 
@@ -151,7 +151,7 @@ don't want to include it for rustdoc testing purposes. -->
 
 Код, вызывающий данный код, будет обрабатывать либо значение `Ok`, содержащее имя пользователя, либо значение `Err`, содержащее `io::Error`. Мы не знаем, что будет делать вызывающий код с этими значениями. Если вызывающий код получает значение `Err`, он может вызвать `panic!` и завершить программу, использовать имя пользователя по умолчанию, или например, попытается получить имя пользователя из какого-то другого места. У нас недостаточно информации о том, чего пытается достичь вызывающий код, поэтому мы пробрасываем всю информацию об успехе или ошибке наверх для её правильной обработки.
 
-This pattern of propagating errors is so common in Rust that Rust provides the question mark operator `?` to make this easier.
+Такая схема распространения ошибок настолько распространена в Rust, что Rust предоставляет оператор вопросительный знак `?` для простоты.
 
 #### Сокращение для проброса ошибок: оператор `?`
 
@@ -175,7 +175,7 @@ don't want to include it for rustdoc testing purposes. -->
 
 В коде примера 9-7 оператор `?` в конце вызова функции `File::open` возвращает значения содержимого `Ok` в переменную `f`. Если же в при работе этой функции произошла ошибка, оператор `?` произведёт ранний возврат из функции со значением `Err`. То же касается `?` на конце вызова `read_to_string`.
 
-The `?` operator eliminates a lot of boilerplate and makes this function’s implementation simpler. We could even shorten this code further by chaining method calls immediately after the `?`, as shown in Listing 9-8.
+Использование оператора `?` позволят уменьшить количество строк кода и сделать реализацию проще. Написанный в предыдущем примере код можно<br>сделать ещё короче с помощью сокращения промежуточных переменных и конвейерного вызова нескольких методов подряд, как показано в листинге 9-8:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -187,7 +187,7 @@ don't want to include it for rustdoc testing purposes. -->
 {{#include ../listings/ch09-error-handling/listing-09-08/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 9-8: Chaining method calls after the <code>?</code> operator</span>
+<span class="caption">Листинг 9-8. Цепочка вызовов методов после оператора <code>?</code></span>
 
 Мы перенесли в начало функции создание новой переменной `s` типа `String`; эта часть не изменилась. Вместо создания переменной `f` мы добавили вызов `read_to_string` непосредственно к результату `File::open("hello.txt")?`, У нас ещё есть `?` в конце вызова `read_to_string`, и мы по-прежнему возвращаем значение `Ok`, содержащее имя пользователя в `s` когда оба метода: `File::open` и `read_to_string` успешны, а не возвращают ошибки. Функциональность снова такая же, как в листинге 9-6 и листинге 9-7; это просто другой, более эргономичный способ решения той же задачи.
 
@@ -209,7 +209,7 @@ don't want to include it for rustdoc testing purposes. -->
 
 #### Оператор `?` можно использовать для функций возвращающих `Result`
 
-The `?` operator can be used in functions that have a return type of `Result`, because it is defined to work in the same way as the `match` expression we defined in Listing 9-6. The part of the `match` that requires a return type of `Result` is `return Err(e)`, so the return type of the function has to be a `Result` to be compatible with this `return`.
+Оператор `?` может использоваться в функциях, которые имеют возвращаемый тип `Result`, потому что он работает так же, как выражение `match`, определённое в листинге 9-6. Той частью `match`, которая требует возвращаемый тип `Result`, является код `return Err(e)`, таким образом возвращаемый тип функции может быть `Result`, чтобы быть совместимым с этим `return`.
 
 Посмотрим что происходит, если использовать оператор `?` в теле функции `main`, которая, как вы помните, имеет возвращаемый тип `()`:
 
@@ -225,7 +225,7 @@ The `?` operator can be used in functions that have a return type of `Result`, b
 
 Эта ошибка указывает на то, что разрешено использовать оператор `?` только в функциях, которые возвращают `Result` или `Option` или другой тип, который реализует типаж `std::ops::Try`. Если вы пишете функцию, которая не возвращает один из этих типов, и хотите использовать `?` при вызове других функций, возвращающих `Result<T, E>`, у вас есть два варианта решения этой проблемы. Один из методов - изменить тип возвращаемого значения вашей функции на `Result<T, E>`, при условии что у вас нет ограничений, препятствующих этому. Другая техника заключается в использовании `match` или одного из методов `Result<T, E>` для обработки `Result<T, E>` любым подходящим способом.
 
-The `main` function is special, and there are restrictions on what its return type must be. One valid return type for main is `()`, and conveniently, another valid return type is `Result<T, E>`, as shown here:
+Функция `main` является специальной и имеются ограничение на то, какой должен быть её возвращаемый тип. Один из допустимых типов для main это `()`, другой - `Result<T, E>`, как в примере:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch09-error-handling/no-listing-07-main-returning-result/src/main.rs}}
