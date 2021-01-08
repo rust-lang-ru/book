@@ -90,8 +90,8 @@
 
 > ### Владение данными структуры
 > При определении структуры `User` в листинге 5-1 мы использовали тип `String` владеющий данными вместо `&str`. Это было осознанное решение, т.к. мы хотели, чтобы экземпляры структур владели всеми своими данными и чтобы данные были действительными во время всего существования структуры.
-> It’s possible for structs to store references to data owned by something else, but to do so requires the use of *lifetimes*, a Rust feature that we’ll discuss in Chapter 10. Lifetimes ensure that the data referenced by a struct is valid for as long as the struct is. Let’s say you try to store a reference in a struct without specifying lifetimes, like this, which won’t work:
-> <span class="filename">Filename: src/main.rs</span>
+> Возможно сделать так, чтобы структуры сохраняли ссылки на данные которыми владеет кто-то другой, но это требует использования функциональности  *времён жизни (lifetimes)* Rust, о которой мы поговорим в Главе 10. Времена жизни гарантируют, что данные на которые ссылается структура, действительны столько же времени, сколько действительна сама структура. Допустим, вы пробуете сохранить ссылку в структуре без указания времени жизни, вот так, но это не будет работать:
+> <span class="filename"><span>Файл: src/main.rs</span></span>
 > <!-- CAN'T EXTRACT SEE https://github.com/rust-lang/mdBook/issues/1127 -->
 > ```rust,ignore,does_not_compile
 >  struct User {
