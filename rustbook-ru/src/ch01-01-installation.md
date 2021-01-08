@@ -1,6 +1,6 @@
 ## Установка
 
-The first step is to install Rust. We’ll download Rust through `rustup`, a command line tool for managing Rust versions and associated tools. You’ll need an internet connection for the download.
+Первым шагом является установка Rust. Мы загрузим Rust, используя инструмент командной строки `rustup`, предназначенный для управлениями версиями Rust и другими связанными с ним инструментами. Вам понадобится интернет соединение для его загрузки.
 
 > Note: If you prefer not to use `rustup` for some reason, please see [the Rust installation page](https://www.rust-lang.org/tools/install) for other options.
 
@@ -33,13 +33,13 @@ The rest of this book uses commands that work in both *cmd.exe* and PowerShell. 
 
 ### Updating and Uninstalling
 
-After you’ve installed Rust via `rustup`, updating to the latest version is easy. From your shell, run the following update script:
+После установки Rust с помощью `rustup`, обновление на последние версии выполняется с помощью следующего простого скрипта командой:
 
 ```console
 $ rustup update
 ```
 
-To uninstall Rust and `rustup`, run the following uninstall script from your shell:
+Чтобы удалить Rust и `rustup`, выполните<br>следующую команду:
 
 ```console
 $ rustup self uninstall
@@ -47,7 +47,7 @@ $ rustup self uninstall
 
 ### Troubleshooting
 
-To check whether you have Rust installed correctly, open a shell and enter this line:
+Чтобы проверить, правильно ли у вас установлен Rust, откройте оболочку и введите эту строку:
 
 ```console
 $ rustc --version
