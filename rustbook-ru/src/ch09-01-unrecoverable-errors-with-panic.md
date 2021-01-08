@@ -61,7 +61,7 @@ check the backtrace number mentioned in the text below the listing
 -->
 
 ```console
-$ RUST_BACKTRACE=1 cargo run
+$  RUST_BACKTRACE=1 cargo run
 thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 99', src/main.rs:4:5
 stack backtrace:
    0: rust_begin_unwind
