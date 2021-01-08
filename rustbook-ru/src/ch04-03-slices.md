@@ -173,7 +173,7 @@ fn first_word(s: &String) -> &str {
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:here}}
 ```
 
-<span class="caption">Пример 4-9: Улучшение функции <code>first_word</code> используя тип строкового среза для параметра <code>s</code></span>
+<span class="caption">Листинг 4-9: Улучшение функции <code>first_word</code> используя тип строкового среза для параметра <code>s</code></span>
 
 Если есть строковый срез, то можно его передавать напрямую. Если есть `String`, можно передавать срез полностью всей строки `String`. Определение функции принимающей строковый срез вместо ссылки на `String` делает API более общим и полезным без потери функциональности:
 
