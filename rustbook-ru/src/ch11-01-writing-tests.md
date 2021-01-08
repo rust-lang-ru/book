@@ -14,7 +14,7 @@
 
 Когда мы создаём новый проект библиотеки с помощью Cargo, то в нём автоматически генерируется тестовый модуль с тест функцией для нас. Этот модуль поможет вам начать написание ваших тестов, так что вам не нужно искать точную структуру и синтаксис тестовых функций каждый раз, когда вы начинаете новый проект. Вы можете добавить как большее количество дополнительных тестовых функций так и несколько тестовых модулей!
 
-We’ll explore some aspects of how tests work by experimenting with the template test generated for us without actually testing any code. Then we’ll write some real-world tests that call some code that we’ve written and assert that its behavior is correct.
+Мы исследуем некоторые аспекты работы тестов, экспериментируя с шаблонным тестом сгенерированным для нас, без реального тестирования любого кода. Затем мы напишем некоторые реальные тесты, которые вызывают некоторый написанный код и убедимся в его правильном поведении.
 
 Давайте создадим новый проект библиотеки под названием `adder` :
 
@@ -62,7 +62,7 @@ The `0 measured` statistic is for benchmark tests that measure performance. Benc
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/src/lib.rs}}
 ```
 
-Then run `cargo test` again. The output now shows `exploration` instead of `it_works`:
+Снова выполним команду `cargo test`. Вывод показывает наименование нашей тест функции - `exploration` вместо `it_works`:
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/output.txt}}
@@ -124,7 +124,7 @@ The `can_hold` method returns a Boolean, which means it’s a perfect use case f
 {{#include ../listings/ch11-writing-automated-tests/listing-11-06/output.txt}}
 ```
 
-It does pass! Let’s add another test, this time asserting that a smaller rectangle cannot hold a larger rectangle:
+Тест проходит. Теперь добавим другой тест, в этот раз мы попытаемся убедиться, что меньший прямоугольник не может содержать больший прямоугольник:
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -138,7 +138,7 @@ Because the correct result of the `can_hold` function in this case is `false`, w
 {{#include ../listings/ch11-writing-automated-tests/no-listing-02-adding-another-rectangle-test/output.txt}}
 ```
 
-Two tests that pass! Now let’s see what happens to our test results when we introduce a bug in our code. Let’s change the implementation of the `can_hold` method by replacing the greater than sign with a less than sign when it compares the widths:
+Два теста работают. Теперь проверим, как отреагируют тесты, если мы добавим ошибку в код. Давайте изменим реализацию метода `can_hold` заменив одно из логических выражений знак сравнения с "больше чем" на противоположный "меньше чем" при сравнении ширины:
 
 ```rust,not_desired_behavior,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/src/lib.rs:here}}
@@ -164,7 +164,7 @@ Two tests that pass! Now let’s see what happens to our test results when we in
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-07/src/lib.rs}}
 ```
 
-<span class="caption">Listing 11-7: Testing the function <code>add_two</code> using the <code>assert_eq!</code> macro</span>
+<span class="caption">Листинг 11-7: Тестирование функции <code>add_two</code>, используя макрос <code>assert_eq!</code></span>
 
 Проверим, что тесты проходят!
 
@@ -188,7 +188,7 @@ Two tests that pass! Now let’s see what happens to our test results when we in
 
 Наш тест нашёл ошибку! Тест `it_adds_two` не выполнился, отображается сообщение `assertion failed: `(left == right)`` и показывает, что `left` было `4`, а `right` было `5`. Это сообщение полезно и помогает начать отладку: это означает `left` аргумент `assert_eq!` имел значение `4`, но `right` аргумент для вызова `add_two(2)` был со значением `5`.
 
-Note that in some languages and test frameworks, the parameters to the functions that assert two values are equal are called `expected` and `actual`, and the order in which we specify the arguments matters. However, in Rust, they’re called `left` and `right`, and the order in which we specify the value we expect and the value that the code under test produces doesn’t matter. We could write the assertion in this test as `assert_eq!(add_two(2), 4)`, which would result in a failure message that displays `assertion failed: `(left == right)`` and that `left` was `5` and `right` was `4`.
+Обратите внимание, что в некоторых языках (таких как Java) в библиотеках кода для тестирования принято именовать входные параметры проверочных функций как "ожидаемое" (`expected`) и "фактическое" (`actual`). В Rust приняты следующие обозначения `left` и `right` соответственно, а порядок в котором определяются ожидаемое значение и производимое тестируемым кодом значение не имеют значения. Мы могли бы написать выражение в тесте как `assert_eq!(add_two(2), 4)`, что приведёт к отображаемому сообщению об ошибке `assertion failed: `(left == right)``, слева `left` было бы `5`, а справа `right` было бы `4`.
 
 Макрос `assert_ne!` сработает успешно, если входные параметры не равны друг другу и завершится с ошибкой, если значения равны. Этот макрос наиболее полезен в тех случаях, когда мы не знаем заранее, каким значение *будет*, но знаем точно, каким оно *не может* быть. К примеру, если тестируется функция, которая гарантировано изменяет входные данные определённым образом, но способ изменения входного параметра зависит от дня недели, в который запускаются тесты, что лучший способ проверить правильность работы такой функции - это сравнить и убедиться, что выходное значение функции не должно быть равным входному значению.
 
@@ -256,7 +256,7 @@ Note that in some languages and test frameworks, the parameters to the functions
 {{#include ../listings/ch11-writing-automated-tests/listing-11-08/output.txt}}
 ```
 
-Looks good! Now let’s introduce a bug in our code by removing the condition that the `new` function will panic if the value is greater than 100:
+Выглядит хорошо! Теперь давайте внесём ошибку в наш код, убрав условие о том, что функция `new` будет паниковать если значение больше 100:
 
 ```rust,not_desired_behavior,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-08-guess-with-bug/src/lib.rs:here}}
@@ -306,8 +306,8 @@ Looks good! Now let’s introduce a bug in our code by removing the condition th
 
 The `it_works` function now has a return type, `Result<(), String>`. In the body of the function, rather than calling the `assert_eq!` macro, we return `Ok(())` when the test passes and an `Err` with a `String` inside when the test fails.
 
-Writing tests so they return a `Result<T, E>` enables you to use the question mark operator in the body of tests, which can be a convenient way to write tests that should fail if any operation within them returns an `Err` variant.
+Написание тестов так, чтобы они возвращали `Result<T, E>` позволяет использовать оператор "вопросительный знак"  в теле тестов, который может быть удобным способом писать тесты, которые должны выполниться не успешно, если какая-либо операция внутри них возвращает вариант ошибки `Err`.
 
-You can’t use the `#[should_panic]` annotation on tests that use `Result<T, E>`. Instead, you should return an `Err` value directly when the test should fail.
+Можно использовать аннотацию `#[should_panic]` в тестах, которые используют `Result<T, E>`. Вместо этого вы должны вернуть непосредственно значение `Err`, когда тест должен быть не успешен.
 
-Now that you know several ways to write tests, let’s look at what is happening when we run our tests and explore the different options we can use with `cargo test`.
+Теперь, когда вы знаете несколько способов написания тестов, давайте взглянем на то, что происходит при запуске тестов и исследуем разные опции используемые с командой `cargo test`.
