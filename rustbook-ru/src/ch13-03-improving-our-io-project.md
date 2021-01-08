@@ -92,7 +92,7 @@ We also needed to specify that the string slice error type can now only have the
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-29/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 13-29: Использование адаптерных методов итератора в реализации функции <code>search{/ code0}</code></span>
+<span class="caption">Листинг 13-29: Использование адаптерных методов итератора в реализации функции <code>search</code></span>
 
 Напомним, что целью функции `search` является возвращение всех строк `content`, содержащих `query`. Подобно примеру `filter` в листинге 13-19, этот код использует адаптер `filter` для выбора только тех строк, для которых код `line.contains(query)` возвращается значение `true`. Затем мы собираем совпадающие строки в другой вектор с помощью `collect`. Все намного проще! Не стесняйтесь вносить похожие изменения, чтобы использовать методы итератора в функции `search_case_insensitive`.
 
