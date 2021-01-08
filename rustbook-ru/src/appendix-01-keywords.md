@@ -1,10 +1,10 @@
 ## Дополнение А: Ключевые слова
 
-The following list contains keywords that are reserved for current or future use by the Rust language. As such, they cannot be used as identifiers (except as raw identifiers as we’ll discuss in the “[Raw Identifiers](#raw-identifiers)<!-- ignore -->” section), including names of functions, variables, parameters, struct fields, modules, crates, constants, macros, static values, attributes, types, traits, or lifetimes.
+Следующий список содержит ключевые слова, зарезервированные для текущего или будущего использования в Rust. Таким образом, данные слова нельзя использовать для идентификаторов (кроме сырых идентификаторов, которые мы обсудили в разделе "[Сырые идентификаторы](#raw-identifiers)<!--  -->"), включая имена функций, переменных, параметров, полей структур, модулей, пакетов, констант, макросов, статических переменных, атрибутов, типов, типажей или времён жизни.
 
-### Keywords Currently in Use
+### Ключевые слова, использующиеся в Rust настоящее время
 
-The following keywords currently have the functionality described.
+Следующие ключевые слова в настоящее время имеют описанную функциональность.
 
 - `as` - perform primitive casting, disambiguate the specific trait containing an item, or rename items in `use` and `extern crate` statements
 - `async` -  return a `Future` instead of blocking the current thread
@@ -66,7 +66,7 @@ The following keywords do not have any functionality but are reserved by Rust fo
 
 ### Raw Identifiers
 
-*Raw identifiers* are the syntax that lets you use keywords where they wouldn’t normally be allowed. You use a raw identifier by prefixing a keyword with `r#`.
+*Сырые идентификаторы* - это синтаксис, позволяющий вам использовать ключевые слова там, где обычно они не могут быть. Для создания и использования сырого идентификатора к ключевому слову добавляется префикс `r#`.
 
 For example, `match` is a keyword. If you try to compile the following function that uses `match` as its name:
 
@@ -104,4 +104,4 @@ fn main() {
 
 This code will compile without any errors. Note the `r#` prefix on the function name in its definition as well as where the function is called in `main`.
 
-Raw identifiers allow you to use any word you choose as an identifier, even if that word happens to be a reserved keyword. In addition, raw identifiers allow you to use libraries written in a different Rust edition than your crate uses. For example, `try` isn’t a keyword in the 2015 edition but is in the 2018 edition. If you depend on a library that’s written using the 2015 edition and has a `try` function, you’ll need to use the raw identifier syntax, `r#try` in this case, to call that function from your 2018 edition code. See [Appendix E](appendix-05-editions.html)<!-- ignore --> for more information on editions.
+Сырые идентификаторы позволяют использовать любые слова <br>в качестве идентификатора, даже если это зарезервированное <br>слово. Дополнительно сырые идентификаторы позволяют использовать библиотеки, написанные на отличной от используемой вами редакции Rust. Например `try`  является ключевым словом в 2018 редакции, но не в 2015. Если вы зависите от библиотеки, написанной с использованием 2015 редакции и имеющей функцию `try`, то для вызова такой функции из кода 2018 редакции, вам необходимо использовать синтаксис сырых идентификаторов. В данном случае `r#try`. Больше подробностей про редакции можно найти в [Приложении Е](appendix-05-editions.html)<!-- . -->
