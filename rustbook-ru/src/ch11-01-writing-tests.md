@@ -6,13 +6,13 @@
 2. Запуск кода, который вы хотите проверить.
 3. Утверждение, что результаты являются теми, которые вы ожидаете.
 
-Let’s look at the features Rust provides specifically for writing tests that take these actions, which include the `test` attribute, a few macros, and the `should_panic` attribute.
+Давайте рассмотрим функции предоставляемые в Rust специально для написания тестов, которые выполнят все эти действия, включая атрибут `test`, несколько макросов и атрибут `should_panic` .
 
 ### Структура тестирующей функции
 
 В простейшем случае в Rust тест - это функция, аннотированная атрибутом `test`. Атрибуты представляют собой метаданные о фрагментах кода Rust; один из примеров атрибут `derive`, который мы использовали со структурами в главе 5. Чтобы изменить функцию в тестирующую функцию добавьте `#[test]` в строку перед `fn` . Когда вы запускаете тесты командой `cargo test`, Rust создаёт бинарный модуль выполняющий функции аннотированные атрибутом `test` и сообщающий о том, прошла успешно или не прошла каждая тестирующая функция.
 
-When we make a new library project with Cargo, a test module with a test function in it is automatically generated for us. This module helps you start writing your tests so you don’t have to look up the exact structure and syntax of test functions every time you start a new project. You can add as many additional test functions and as many test modules as you want!
+Когда мы создаём новый проект библиотеки с помощью Cargo, то в нём автоматически генерируется тестовый модуль с тест функцией для нас. Этот модуль поможет вам начать написание ваших тестов, так что вам не нужно искать точную структуру и синтаксис тестовых функций каждый раз, когда вы начинаете новый проект. Вы можете добавить как большее количество дополнительных тестовых функций так и несколько тестовых модулей!
 
 We’ll explore some aspects of how tests work by experimenting with the template test generated for us without actually testing any code. Then we’ll write some real-world tests that call some code that we’ve written and assert that its behavior is correct.
 
@@ -36,7 +36,7 @@ $ cd adder
 
 Сейчас проигнорируем первые две строчки кода и сосредоточимся на функции, чтобы увидеть как она работает. Обратите внимание на синтаксис аннотации `#[test]` перед ключевым словом `fn`. Этот атрибут сообщает компилятору, что это является заголовком тестирующей функции, так что функционал запускающий тесты на выполнение теперь знает, что это тестирующая функция. Также в составе модуля тестов `tests` могут быть вспомогательные функции, помогающие настроить и выполнить общие подготовительные операции, поэтому специальная аннотация важна для указания объявления функций тестами с использованием атрибута `#[test]`.
 
-The function body uses the `assert_eq!` macro to assert that 2 + 2 equals 4. This assertion serves as an example of the format for a typical test. Let’s run it to see that this test passes.
+Тело функции использует макрос `assert_eq!`, чтобы утверждать, что 2 + 2 равно 4. Это утверждение служит примером формата для типичного теста. Давайте запустим, чтобы увидеть, что этот тест проходит.
 
 Команда `cargo test` выполнит все тесты в выбранном проекте и сообщит о результатах как в листинге 11-2:
 
@@ -44,15 +44,15 @@ The function body uses the `assert_eq!` macro to assert that 2 + 2 equals 4. Thi
 {{#include ../listings/ch11-writing-automated-tests/listing-11-01/output.txt}}
 ```
 
-<span class="caption">Listing 11-2: The output from running the automatically generated test</span>
+<span class="caption">Листинг 11-2: Вывод информации о работе автоматически сгенерированных тестов</span>
 
 Cargo скомпилировал и выполнил тест. После строк `Compiling`, `Finished` и `Running` мы видим строку `running 1 test`. Следующая строка показывает имя созданной тест функции  с названием `it_works` и результат её выполнения - `ok`. Далее вы видите обобщённую информации о работе всех тестов. Текст `test result: ok.` означает, что все тесты пройдены успешно и часть вывода `1 passed; 0 failed` сообщает общее количество тестов, которые прошли или были ошибочными.
 
-Поскольку у нас нет тестов, которые мы пометили как игнорируемые, в сводке отображается `0 ignored`. Мы также не отфильтровывали тесты для выполнения, поэтому конец сводки пишет `0 filtered out`. Мы поговорим про игнорирование и фильтрацию тестов в следующем разделе [“Controlling How Tests Are Run.”](ch11-02-running-tests.html#controlling-how-tests-are-run)<comment></comment>
+Поскольку у нас нет тестов, которые мы пометили как игнорируемые, в сводке отображается `0 ignored`. Мы также не отфильтровывали тесты для выполнения, поэтому конец сводки пишет `0 filtered out`. Мы поговорим про игнорирование и фильтрацию тестов в следующем разделе ["Controlling How Tests Are Run."](ch11-02-running-tests.html#controlling-how-tests-are-run)<comment></comment>
 
 The `0 measured` statistic is for benchmark tests that measure performance. Benchmark tests are, as of this writing, only available in nightly Rust. See [the documentation about benchmark tests](../unstable-book/library-features/test.html) to learn more.
 
-Следующая часть вывода тестов начинается с `Doc-tests adder` - это информация о тестах в документации. У нас пока нет тестов документации, но Rust может компилировать любые примеры кода, которые находятся в API документации. Такая возможность помогает поддерживать документацию и код в синхронизированном состоянии. Мы поговорим о написании тестов документации в секции [“Комментарии документации как тесты”](ch14-02-publishing-to-crates-io.html#documentation-comments-as-tests)<!-- <!--  --> --> главы 14. Пока просто проигнорируем часть `Doc-tests` вывода.
+Следующая часть вывода тестов начинается с `Doc-tests adder` - это информация о тестах в документации. У нас пока нет тестов документации, но Rust может компилировать любые примеры кода, которые находятся в API документации. Такая возможность помогает поддерживать документацию и код в синхронизированном состоянии. Мы поговорим о написании тестов документации в секции ["Комментарии документации как тесты"](ch14-02-publishing-to-crates-io.html#documentation-comments-as-tests)<!--  --> Главы 14. Пока просто проигнорируем часть `Doc-tests` вывода.
 
 Давайте поменяем название нашего теста и посмотрим что же измениться в строке вывода. Назовём нашу функцию `it_works` другим именем - `exploration`:
 
@@ -76,9 +76,9 @@ Then run `cargo test` again. The output now shows `exploration` instead of `it_w
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-03/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 11-3: Adding a second test that will fail because we call the <code>panic!</code> macro</span>
+<span class="caption">Листинг 11-3: Добавление второго теста. Второй тест вызывает макрос <code>panic!</code></span>
 
-Run the tests again using `cargo test`. The output should look like Listing 11-4, which shows that our `exploration` test passed and `another` failed.
+Запустим команду `cargo test`. Вывод результатов показан в листинге 11-4, который сообщает, что тест `exploration` пройден, а `another` нет:
 
 ```text
 {{#include ../listings/ch11-writing-automated-tests/listing-11-03/output.txt}}
@@ -86,11 +86,11 @@ Run the tests again using `cargo test`. The output should look like Listing 11-4
 
 <span class="caption">Листинг 11-4: Результаты выполнения тестов, когда один пройден, а второй нет</span>
 
-Вместо `ok`, строка `test tests::another` сообщает `FAILED`. У нас есть два новых раздела между результатами и итогами. Первый раздел показывает детальную причину ошибки каждого теста. В данном случае тест `another` не сработал, потому что `panicked at 'Make this test fail'`, произошло в строке 10 файла *src/lib.rs*. В следующем разделе перечисляют имена всех не пройденных тестов, что удобно, когда тестов очень много и есть много деталей про аварийное завершение. Мы можем использовать имя не пройденного теста для его дальнейшей отладки; мы больше поговорим о способах запуска тестов в разделе [“Управление запуска тестов”](ch11-02-running-tests.html#controlling-how-tests-are-run)<!-- <!--  --> -->.
+Вместо `ok`, строка `test tests::another` сообщает `FAILED`. У нас есть два новых раздела между результатами и итогами. Первый раздел показывает детальную причину ошибки каждого теста. В данном случае тест `another` не сработал, потому что `panicked at 'Make this test fail'`, произошло в строке 10 файла *src/lib.rs*. В следующем разделе перечисляют имена всех не пройденных тестов, что удобно, когда тестов очень много и есть много деталей про аварийное завершение. Мы можем использовать имя не пройденного теста для его дальнейшей отладки; мы больше поговорим о способах запуска тестов в разделе ["Управление запуска тестов"](ch11-02-running-tests.html#controlling-how-tests-are-run)<!--  -->.
 
 Итоговая строка отображается в конце: общий результат нашего тестирования `FAILED`. У нас один тест пройден и один тест завершён аварийно.
 
-Now that you’ve seen what the test results look like in different scenarios, let’s look at some macros other than `panic!` that are useful in tests.
+Теперь, когда вы увидели, как выглядят результаты теста при разных сценариях, давайте рассмотрим другие макросы полезные в тестах, кроме `panic!`.
 
 ### Проверка результатов с помощью макроса `assert!`
 
@@ -104,7 +104,7 @@ Now that you’ve seen what the test results look like in different scenarios, l
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-05/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 11-5: Using the <code>Rectangle</code> struct and its <code>can_hold</code> method from Chapter 5</span>
+<span class="caption">Листинг 11-5. Использование структуры <code>Rectangle</code> и её метода <code>can_hold</code> из главы 5</span>
 
 The `can_hold` method returns a Boolean, which means it’s a perfect use case for the `assert!` macro. In Listing 11-6, we write a test that exercises the `can_hold` method by creating a `Rectangle` instance that has a width of 8 and a height of 7 and asserting that it can hold another `Rectangle` instance that has a width of 5 and a height of 1.
 
@@ -116,9 +116,9 @@ The `can_hold` method returns a Boolean, which means it’s a perfect use case f
 
 <span class="caption">Листинг 11-6: Теста для метода <code>can_hold</code>, который проверяет что больший прямоугольник действительно может содержать меньший</span>
 
-Также, в модуле `tests` обратите внимание на новую добавленную строку `use super::*;`. Модуль `tests` является обычным и подчиняется тем же правилам видимости, которые мы обсуждали в главе 7 [“Пути для ссылки на элементы внутри дерева модуля”](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html)<!-- <!--  --> -->. Так как этот модуль `tests` является внутренним, нужно подключить тестируемый код из внешнего модуля в область видимости внутреннего модуля с тестами. Для этого используется глобальное подключения, так что все что определено во внешнем модуле становится доступным внутри `tests` модуле.
+Также, в модуле `tests` обратите внимание на новую добавленную строку `use super::*;`. Модуль `tests` является обычным и подчиняется тем же правилам видимости, которые мы обсуждали в главе 7 ["Пути для ссылки на элементы внутри дерева модуля"](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html)<!--  -->. Так как этот модуль `tests` является внутренним, нужно подключить тестируемый код из внешнего модуля в область видимости внутреннего модуля с тестами. Для этого используется глобальное подключения, так что все что определено во внешнем модуле становится доступным внутри `tests` модуле.
 
-We’ve named our test `larger_can_hold_smaller`, and we’ve created the two `Rectangle` instances that we need. Then we called the `assert!` macro and passed it the result of calling `larger.can_hold(&smaller)`. This expression is supposed to return `true`, so our test should pass. Let’s find out!
+Мы назвали наш тест `larger_can_hold_smaller` и создали два нужных экземпляра `Rectangle`. Затем вызвали макрос `assert!` и передали результат вызова `larger.can_hold(&smaller)` в него. Это выражение должно возвращать `true`, поэтому наш тест должен пройти. Давайте выясним!
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/listing-11-06/output.txt}}
@@ -150,11 +150,11 @@ Two tests that pass! Now let’s see what happens to our test results when we in
 {{#include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/output.txt}}
 ```
 
-Our tests caught the bug! Because `larger.width` is 8 and `smaller.width` is 5, the comparison of the widths in `can_hold` now returns `false`: 8 is not less than 5.
+Наши тесты нашли ошибку! Так как в тесте `larger.width` равно 8 и `smaller.width` равно 5 сравнение ширины в методе `can_hold` возвращает результат `false`, то число 8 не меньше чем 5.
 
 ### Проверка на равенство с помощью макросов `assert_eq!` и `assert_ne!`
 
-A common way to test functionality is to compare the result of the code under test to the value you expect the code to return to make sure they’re equal. You could do this using the `assert!` macro and passing it an expression using the `==` operator. However, this is such a common test that the standard library provides a pair of macros—`assert_eq!` and `assert_ne!`—to perform this test more conveniently. These macros compare two arguments for equality or inequality, respectively. They’ll also print the two values if the assertion fails, which makes it easier to see *why* the test failed; conversely, the `assert!` macro only indicates that it got a `false` value for the `==` expression, not the values that lead to the `false` value.
+Общим способом проверки функциональности является использование сравнения результата тестируемого кода и ожидаемого значения, чтобы убедиться в их равенстве. Для этого можно использовать макрос `assert!`, передавая ему выражение с использованием оператора `==`. Важно также знать, что кроме этого стандартная библиотека предлагает пару макросов `assert_eq!` и `assert_ne!`, чтобы сделать тестирование более удобным. Эти макросы сравнивают два аргумента на равенство или не равенство соответственно. Макросы также печатают два значения входных параметров, если тест завершился ошибкой, что позволяет легче увидеть *почему* тест ошибочен. Противоположно этому, макрос `assert!` может только отобразить, что он вычислил значение `false` для выражения `==`, но не значения, которые привели к результату `false`.
 
 В листинге 11-7, мы напишем функцию `add_two`, которая прибавляет к входному параметру `2` и возвращает значение. Затем, протестируем эту функцию с помощью макроса `assert_eq!`:
 
@@ -174,7 +174,7 @@ A common way to test functionality is to compare the result of the code under te
 
 Первый аргумент, который мы передаём в макрос `assert_eq!` число `4` чей результат вызова равен `add_two(2)` . Строка для этого теста - `test tests::it_adds_two ... ok` , а текст `ok` означает, что наш тест пройден!
 
-Let’s introduce a bug into our code to see what it looks like when a test that uses `assert_eq!` fails. Change the implementation of the `add_two` function to instead add `3`:
+Давайте введём ошибку в код, чтобы увидеть, как она выглядит, когда тест, который использует `assert_eq!` завершается ошибкой. Измените реализацию функции `add_two`, чтобы добавлять `3` :
 
 ```rust,not_desired_behavior,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-04-bug-in-add-two/src/lib.rs:here}}
@@ -190,13 +190,13 @@ Let’s introduce a bug into our code to see what it looks like when a test that
 
 Note that in some languages and test frameworks, the parameters to the functions that assert two values are equal are called `expected` and `actual`, and the order in which we specify the arguments matters. However, in Rust, they’re called `left` and `right`, and the order in which we specify the value we expect and the value that the code under test produces doesn’t matter. We could write the assertion in this test as `assert_eq!(add_two(2), 4)`, which would result in a failure message that displays `assertion failed: `(left == right)`` and that `left` was `5` and `right` was `4`.
 
-The `assert_ne!` macro will pass if the two values we give it are not equal and fail if they’re equal. This macro is most useful for cases when we’re not sure what a value *will* be, but we know what the value definitely *won’t* be if our code is functioning as we intend. For example, if we’re testing a function that is guaranteed to change its input in some way, but the way in which the input is changed depends on the day of the week that we run our tests, the best thing to assert might be that the output of the function is not equal to the input.
+Макрос `assert_ne!` сработает успешно, если входные параметры не равны друг другу и завершится с ошибкой, если значения равны. Этот макрос наиболее полезен в тех случаях, когда мы не знаем заранее, каким значение *будет*, но знаем точно, каким оно *не может* быть. К примеру, если тестируется функция, которая гарантировано изменяет входные данные определённым образом, но способ изменения входного параметра зависит от дня недели, в который запускаются тесты, что лучший способ проверить правильность работы такой функции - это сравнить и убедиться, что выходное значение функции не должно быть равным входному значению.
 
-Under the surface, the `assert_eq!` and `assert_ne!` macros use the operators `==` and `!=`, respectively. When the assertions fail, these macros print their arguments using debug formatting, which means the values being compared must implement the `PartialEq` and `Debug` traits. All the primitive types and most of the standard library types implement these traits. For structs and enums that you define, you’ll need to implement `PartialEq` to assert that values of those types are equal or not equal. You’ll need to implement `Debug` to print the values when the assertion fails. Because both traits are derivable traits, as mentioned in Listing 5-12 in Chapter 5, this is usually as straightforward as adding the `#[derive(PartialEq, Debug)]` annotation to your struct or enum definition. See Appendix C, [“Derivable Traits,”](appendix-03-derivable-traits.html)<!-- ignore --> for more details about these and other derivable traits.
+С своей работе макросы `assert_eq!` и `assert_ne!` неявным образом используют операторы `==` и `!=` соответственно. Когда проверка не срабатывает, макросы печатают значения аргументов с помощью отладочного форматирования и это означает, что значения сравниваемых аргументов должны реализовать типажи `PartialEq` и `Debug`. Все примитивные и большая часть типов стандартной библиотеки Rust реализуют эти типажи. Для структур и перечислений, которые вы реализуете сами будет необходимо реализовать типаж `PartialEq` для сравнения значений на равенство или не равенство. Для печати отладочной информации в виде сообщений в строку вывода консоли необходимо реализовать типаж `Debug`. Так как оба типажа являются выводимыми типажами, как упоминалось в листинге 5-12 главы 5, то эти типажи можно реализовать добавив аннотацию `#[derive(PartialEq, Debug)]` к определению структуры или перечисления. Смотрите больше деталей в Appendix C ["Выводимые типажи"](appendix-03-derivable-traits.html)<!--  --> про эти и другие выводимые типажи.
 
 ### Создание сообщений об ошибках
 
-You can also add a custom message to be printed with the failure message as optional arguments to the `assert!`, `assert_eq!`, and `assert_ne!` macros. Any arguments specified after the one required argument to `assert!` or the two required arguments to `assert_eq!` and `assert_ne!` are passed along to the `format!` macro (discussed in Chapter 8 in the <a href="ch08-02-strings.html#concatenation-with-the--operator-or-the-format-macro" data-md-type="link">“Concatenation with the <code data-md-type="codespan">+</code> Operator or the `format!` Macro”</a><!-- ignore --> section), so you can pass a format string that contains `{}` placeholders and values to go in those placeholders. Custom messages are useful to document what an assertion means; when a test fails, you’ll have a better idea of what the problem is with the code.
+Также можно добавить пользовательское сообщение для печати в сообщении об ошибке теста как дополнительный аргумент макросов `assert!`, `assert_eq!`, and `assert_ne!`. Любые аргументы, указанные после одного обязательного аргумента в `assert!` или после двух обязательных аргументов в `assert_eq!` и `assert_ne!` передаются в макрос `format!` (он обсуждается в разделе <a data-md-type="raw_html" href="ch08-02-strings.html#concatenation-with-the--operator-or-the-format-macro">"Конкатенация с помощью оператора <code data-md-type="raw_html">+</code> или макроса `format!`"</a><!--  --> главы 8), так что вы можете передать форматированную строку, которая содержит символы `{}` для заполнителей и значения, заменяющие эти заполнители. Пользовательские сообщения полезны для пояснения, что означает утверждение, когда тест не пройден. У вас будет лучшее представление о том, какая проблема в коде.
 
 Например, есть функция, которая приветствует человека по имени и мы хотим протестировать эту функцию. Мы хотим чтобы передаваемое ей имя выводилось в консоль:
 
@@ -206,9 +206,9 @@ You can also add a custom message to be printed with the failure message as opti
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-05-greeter/src/lib.rs}}
 ```
 
-The requirements for this program haven’t been agreed upon yet, and we’re pretty sure the `Hello` text at the beginning of the greeting will change. We decided we don’t want to have to update the test when the requirements change, so instead of checking for exact equality to the value returned from the `greeting` function, we’ll just assert that the output contains the text of the input parameter.
+Требования к этой программе ещё не были согласованы и мы вполне уверены, что текст `Hello` в начале приветствия ещё изменится. Мы решили, что не хотим обновлять тест при изменении требований, поэтому вместо проверки на точное равенство со значением возвращённым из `greeting`, мы просто будем проверять, что вывод содержит текст из входного параметра.
 
-Let’s introduce a bug into this code by changing `greeting` to not include `name` to see what this test failure looks like:
+Давайте внесём ошибку в этот код, изменив `greeting` так, чтобы оно не включало `name` и увидим, как выглядит сбой этого теста:
 
 ```rust,not_desired_behavior,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-06-greeter-with-bug/src/lib.rs:here}}
@@ -229,17 +229,14 @@ Let’s introduce a bug into this code by changing `greeting` to not include `na
 После того, как выполним тест ещё раз мы получим подробное сообщение об ошибке:
 
 ```console
----- tests::greeting_contains_name stdout ----
-thread 'tests::greeting_contains_name' panicked at 'Greeting did not
-contain name, value was `Hello!`', src/lib.rs:12:9
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
+{{#include ../listings/ch11-writing-automated-tests/no-listing-07-custom-failure-message/output.txt}}
 ```
 
-We can see the value we actually got in the test output, which would help us debug what happened instead of what we were expecting to happen.
+Мы можем увидеть значение, которое мы на самом деле получили в тестовом выводе, что поможет нам отлаживать произошедшее, а не то, что мы ожидали.
 
 ### Проверка с помощью макроса `should_panic`
 
-In addition to checking that our code returns the correct values we expect, it’s also important to check that our code handles error conditions as we expect. For example, consider the `Guess` type that we created in Chapter 9, Listing 9-10. Other code that uses `Guess` depends on the guarantee that `Guess` instances will contain only values between 1 and 100. We can write a test that ensures that attempting to create a `Guess` instance with a value outside that range panics.
+В дополнение к проверке того, что наш код возвращает правильные, ожидаемые значения, важным также является проверить, что наш код обрабатывает ошибки, которые мы ожидаем. Например, рассмотрим тип `Guess` который мы создали в главе 9, листинга 9-10. Другой код, который использует `Guess` зависит от гарантии того, что `Guess` экземпляры будут содержать значения только от 1 до 100. Мы можем написать тест, который гарантирует, что попытка создать экземпляр `Guess` со значением вне этого диапазона вызывает панику.
 
 Реализуем это с помощью другого атрибута тест функции `#[should_panic]`. Этот атрибут сообщает системе тестирования, что тест проходит, когда метод генерирует ошибку. Если ошибка не генерируется - тест считается не пройденным.
 
@@ -273,7 +270,7 @@ Looks good! Now let’s introduce a bug in our code by removing the condition th
 
 Мы получаем не очень полезное сообщение в этом случае, но когда мы смотрим на тестирующую функцию, мы видим, что она `#[should_panic]`. Аварийное выполнение, которое мы получили означает, что код в тестирующей функции не вызвал паники.
 
-Tests that use `should_panic` can be imprecise because they only indicate that the code has caused some panic. A `should_panic` test would pass even if the test panics for a different reason from the one we were expecting to happen. To make `should_panic` tests more precise, we can add an optional `expected` parameter to the `should_panic` attribute. The test harness will make sure that the failure message contains the provided text. For example, consider the modified code for `Guess` in Listing 11-9 where the `new` function panics with different messages depending on whether the value is too small or too large.
+Тесты, которые используют `should_panic` могут быть неточными, потому что они только указывают, что код вызвал панику. Тест с атрибутом `should_panic` пройдёт, даже если тест паникует по причине, отличной от той, которую мы ожидали. Чтобы сделать тесты с `should_panic` более точными, мы можем добавить необязательный параметр `expected`  для атрибута `should_panic`. Такая детализация теста позволит удостовериться, что сообщение об ошибке содержит предоставленный текст. Например, рассмотрим модифицированный код для `Guess` в листинге 11-9, где `new` функция паникует с различными сообщениями в зависимости от того, является ли значение слишком маленьким или слишком большим.
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -283,7 +280,7 @@ Tests that use `should_panic` can be imprecise because they only indicate that t
 
 <span class="caption">Listing 11-9: Testing that a condition will cause a <code>panic!</code> with a particular panic message</span>
 
-This test will pass because the value we put in the `should_panic` attribute’s `expected` parameter is a substring of the message that the `Guess::new` function panics with. We could have specified the entire panic message that we expect, which in this case would be `Guess value must be less than or equal to 100, got 200.` What you choose to specify in the expected parameter for `should_panic` depends on how much of the panic message is unique or dynamic and how precise you want your test to be. In this case, a substring of the panic message is enough to ensure that the code in the test function executes the `else if value > 100` case.
+Этот тест пройдёт, потому что значение, которое мы поместили для `should_panic` в параметр атрибута `expected` является подстрокой сообщения, с которым функция `Guess::new` вызывает панику. Мы могли бы указать полное, ожидаемое сообщение для паники, в этом случае это будет `Guess value must be less than or equal to 100, got 200`. То что вы выберите для указания как ожидаемого параметра у `should_panic` зависит от того, какая часть сообщения о панике уникальна или динамична, насколько вы хотите, чтобы ваш тест был точным. В этом случае достаточно подстроки из сообщения паники, чтобы гарантировать выполнение кода в тестовой функции `else if value > 100` .
 
 Чтобы увидеть, что происходит, когда тест `should_panic` не успешно завершается с сообщением `expected`, давайте снова внесём ошибку в наш код, поменяв местами `if value < 1` и `else if value > 100` блоки:
 
@@ -297,7 +294,7 @@ This test will pass because the value we put in the `should_panic` attribute’s
 {{#include ../listings/ch11-writing-automated-tests/no-listing-09-guess-with-panic-msg-bug/output.txt}}
 ```
 
-The failure message indicates that this test did indeed panic as we expected, but the panic message did not include the expected string `'Guess value must be less than or equal to 100'`. The panic message that we did get in this case was `Guess value must be greater than or equal to 1, got 200.` Now we can start figuring out where our bug is!
+Сообщение об ошибке указывает, что этот тест действительно вызвал панику, как мы и ожидали, но сообщение о панике не включено ожидаемую строку `'Guess value must be less than or equal to 100'`. Сообщение о панике, которое мы получили в этом случае, было `Guess value must be greater than or equal to 1, got 200.` Теперь мы можем начать выяснение, где ошибка!
 
 ### Использование `Result<T, E>` в тестах
 
