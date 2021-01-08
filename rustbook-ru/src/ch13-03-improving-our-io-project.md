@@ -58,9 +58,9 @@
 
 We also needed to specify that the string slice error type can now only have the `'static` lifetime. Because we’re only ever returning string literals, this was true before. However, when we had a reference in the parameters, there was the possibility that the reference in the return type could have had the same lifetime as the reference in the parameters. The rules that we discussed in the [“Lifetime Elision”] section of Chapter 10 applied, and we weren’t required to annotate the lifetime of `&str`. With the change to `args`, the lifetime elision rules no longer apply, and we must specify the `'static` lifetime.
 
-#### Using `Iterator` Trait Methods Instead of Indexing
+#### Использование методов типажа `Iterator` вместо индексов
 
-Использование методов типажа `Iterator` вместо индексов<br>Далее мы вносим изменения в код тела `Config::new`. Стандартная библиотека документации также упоминает, что `std::env::Args` реализует типаж `Iterator`, поэтому мы знаем, что можем вызвать метод `next`! Листинг 13-27 обновляет код из листинга 12-23 с использованием метода `next`:
+Далее мы вносим изменения в код тела `Config::new`. Стандартная библиотека документации также упоминает, что `std::env::Args` реализует типаж `Iterator`, поэтому мы знаем, что можем вызвать метод `next`! Листинг 13-27 обновляет код из листинга 12-23 с использованием метода `next`:
 
 <span class="filename">Файл: src/lib.rs</span>
 
