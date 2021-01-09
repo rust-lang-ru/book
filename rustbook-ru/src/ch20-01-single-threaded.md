@@ -1,6 +1,6 @@
 ## Создание однопоточного веб-сервера
 
-Начнём с однопоточного веб-сервера. Перед тем, как начать, давайте рассмотрим краткий обзор протоколов, задействованных в создании веб-серверов. Детальное описание этих протоколов выходит за рамки этой книги, но краткий обзор даст вам необходимую информацию.
+Начнем с однопоточного веб-сервера. Перед тем, как начать, давайте рассмотрим краткий обзор протоколов, задействованных в создании веб-серверов. Детальное описание этих протоколов выходит за рамки этой книги, но краткий обзор даст вам необходимую информацию.
 
 Два основных протокола, задействованных в веб-серверах, - это *протокол передачи гипертекста* *(HTTP)* и *протокол управления передачей* *(TCP)*. Оба протокола являются протоколами типа *запрос-ответ*, что означает, что *клиент* инициирует запросы, а *сервер* слушает запросы и предоставляет ответ клиенту. Содержание этих запросов и ответов определяется протоколами.
 
@@ -49,7 +49,7 @@ $ cd hello
 
 Также может быть, что браузер пытается подключиться к серверу несколько раз, потому что сервер не отвечает. Когда `stream` выходит из области видимости и отбрасывается в конце цикла, соединение закрывается как часть реализации `drop`. Браузеры иногда обрабатывают закрытые соединения, повторяя попытки, потому что проблема может быть временной. Важным фактором является то, что мы успешно получили дескриптор TCP-соединения!
 
-Не забудьте остановить программу, нажав <span class="keystroke">ctrl-c,</span> когда вы закончите запускать определённую версию кода. Затем перезапустите `cargo run` после того, как вы внесли следующий набор изменений, чтобы убедиться, что вы используете самый новый код.
+Remember to stop the program by pressing <span class="keystroke">ctrl-c</span> when you’re done running a particular version of the code. Then restart `cargo run` after you’ve made each set of code changes to make sure you’re running the newest code.
 
 ### Чтение запросов
 
@@ -61,7 +61,7 @@ $ cd hello
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-02/src/main.rs}}
 ```
 
-<span class="caption">Листинг 20-2: Чтение из потока <code>TcpStream</code> и печать данных</span>
+<span class="caption">Listing 20-2: Reading from the <code>TcpStream</code> and printing the data</span>
 
 Мы добавляем `std::io::prelude` в область видимости, чтобы получить доступ к определённым свойствам, которые позволяют нам читать и писать в поток. В цикле `for` функции `main` вместо вывода сообщения о том, что мы установили соединение, мы теперь вызываем новую функцию `handle_connection` и передаём ей `stream`.
 
@@ -69,7 +69,7 @@ $ cd hello
 
 Далее нам нужно фактически прочитать данные из потока. Мы делаем это в два этапа: во-первых, мы объявляем `buffer` в стеке для хранения считываемых данных. Мы сделали буфер размером 1024 байта, что достаточно для хранения данных базового запроса и достаточно для наших целей в этой главе. Если бы мы хотели обрабатывать запросы произвольного размера, управление буфером должно было бы быть более сложным; пока делаем проще. Мы передаём буфер в `stream.read` , который считывает байты из `TcpStream` и помещает их в буфер.
 
-Во-вторых, мы конвертируем байты из буфера в строку и печатаем эту строку. Функция `String::from_utf8_lossy` принимает `&[u8]` и создаёт из неё `String`. Названия «lossy» (с потерями) в её имени указывает на поведение этой функции. Когда она видит недопустимую последовательность UTF-8: она заменяет недопустимую последовательность на символ `�`, символ замены `U+FFFD REPLACEMENT CHARACTER`. Вы могли видеть заменяющие символы в буфере, который не заполнен данными из запроса.
+Second, we convert the bytes in the buffer to a string and print that string. The `String::from_utf8_lossy` function takes a `&[u8]` and produces a `String` from it. The “lossy” part of the name indicates the behavior of this function when it sees an invalid UTF-8 sequence: it will replace the invalid sequence with `�`, the `U+FFFD REPLACEMENT CHARACTER`. You might see replacement characters for characters in the buffer that aren’t filled by request data.
 
 Попробуем этот код! Запустите программу и снова сделайте запрос в веб-браузере. Обратите внимание, что мы по-прежнему будем получать в браузере страницу с ошибкой, но вывод нашей программы в терминале теперь будет выглядеть примерно так:
 
@@ -128,7 +128,7 @@ headers CRLF
 message-body
 ```
 
-Первая строка - это *строка состояния*, которая содержит версию HTTP, используемую в ответе, числовой код состояния, который суммирует результат запроса, и фразу причины, которая предоставляет текстовое описание кода состояния. После последовательности CRLF идут любые заголовки, другая последовательность CRLF и тело ответа.
+The first line is a *status line* that contains the HTTP version used in the response, a numeric status code that summarizes the result of the request, and a reason phrase that provides a text description of the status code. After the CRLF sequence are any headers, another CRLF sequence, and the body of the response.
 
 Вот пример ответа, который использует HTTP версии 1.1, имеет код состояния 200, фразу причины OK, без заголовков и без тела:
 
@@ -144,11 +144,11 @@ HTTP/1.1 200 OK\r\n\r\n
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-03/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 20-3: Запись короткого успешного HTTP ответа в поток</span>
+<span class="caption">Listing 20-3: Writing a tiny successful HTTP response to the stream</span>
 
 Первая новая строка определяет переменную `response` которая содержит данные сообщения об успешном выполнении. Затем мы вызываем `as_bytes` в нашем `response` чтобы преобразовать строковые данные в байты. Метод `write` в `stream` принимает `&[u8]` и отправляет эти байты напрямую по соединению.
 
-Поскольку операция `write` может завершиться неудачно, мы, как и раньше, используем `unwrap` для любого результата ошибки. Опять же, в реальном приложении вы бы добавили сюда обработку ошибок. Наконец, `flush` подождёт и предотвратит продолжение программы, пока все байты не будут записаны в соединение; `TcpStream` содержит внутренний буфер для минимизации обращений к базовой операционной системе.
+Because the `write` operation could fail, we use `unwrap` on any error result as before. Again, in a real application you would add error handling here. Finally, `flush` will wait and prevent the program from continuing until all the bytes are written to the connection; `TcpStream` contains an internal buffer to minimize calls to the underlying operating system.
 
 Сделав этим изменения давайте запустим код и сделаем запрос. Мы больше не выводим в терминал любые данные, поэтому мы не увидим ничего, кроме вывода из Cargo. Когда вы загружаете адрес *127.0.0.1:7878* в веб-браузер, вы должны получить пустую страницу вместо ошибки. Вы только что вручную закодировали запрос и ответ HTTP!
 
@@ -174,7 +174,7 @@ HTTP/1.1 200 OK\r\n\r\n
 
 <span class="caption">Листинг 20-5. Отправка содержимого <em>hello.html</em> в качестве тела ответа</span>
 
-Мы добавили строку вверху, чтобы включить в область видимости модуль файловой системы стандартной библиотеки. Код для чтения содержимого файла в строку должен выглядеть знакомо; мы использовали его в главе 12, когда читали содержимое файла для нашего проекта ввода-вывода в листинге 12-4.
+We’ve added a line at the top to bring the standard library’s filesystem module into scope. The code for reading the contents of a file to a string should look familiar; we used it in Chapter 12 when we read the contents of a file for our I/O project in Listing 12-4.
 
 Далее мы используем `format!` чтобы добавить содержимое файла в качестве тела ответа об успешном завершении. Чтобы гарантировать действительный HTTP-ответ, мы добавляем заголовок `Content-Length` который имеет размер тела нашего ответа, в данном случае размер `hello.html` .
 
@@ -192,7 +192,7 @@ HTTP/1.1 200 OK\r\n\r\n
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-06/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 20-6: Сопоставление запроса и обработка запросов для корневого ресурса <em>/</em>, отличающимся от запросов других ресурсов</span>
+<span class="caption">Listing 20-6: Matching the request and handling requests to <em>/</em> differently from other requests</span>
 
 Сначала мы жёстко кодируем данные, соответствующие запросу */,* в переменную `get` . Поскольку мы читаем необработанные байты в буфер, мы преобразуем `get` в байтовую строку, добавляя синтаксис байтовой строки `b""` в начало данных содержимого. Затем мы проверяем, начинается ли `buffer` с байтов в `get` . Если это так, это означает, что мы получили правильно сформированный запрос к */* , и это успешный случай, который мы обработаем в блоке `if` который возвращает содержимое нашего HTML-файла.
 
@@ -200,7 +200,7 @@ HTTP/1.1 200 OK\r\n\r\n
 
 Запустите этот код сейчас и запросите *127.0.0.1:7878* ; вы должны получить HTML в *hello.html* . Если вы сделаете любой другой запрос, например *127.0.0.1:7878/something-else* , вы получите ошибку соединения, подобную той, которую вы видели при запуске кода из Листинга 20-1 и Листинга 20-2.
 
-Теперь давайте добавим код из листинга 20-7 в блок `else` чтобы вернуть ответ с кодом состояния 404, который сигнализирует о том, что контент для запроса не найден. Мы также вернём HTML-код для страницы, отображаемой в браузере, с указанием ответа конечному пользователю.
+Now let’s add the code in Listing 20-7 to the `else` block to return a response with the status code 404, which signals that the content for the request was not found. We’ll also return some HTML for a page to render in the browser indicating the response to the end user.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -232,12 +232,12 @@ HTTP/1.1 200 OK\r\n\r\n
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-09/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 20-9. Реорганизация блоков <code>if</code> и <code>else</code> чтобы они содержали только код, который отличается в двух случаях.</span>
+<span class="caption">Listing 20-9: Refactoring the <code>if</code> and <code>else</code> blocks to contain only the code that differs between the two cases</span>
 
 Теперь блоки `if` и `else` возвращают только соответствующие значения для строки состояния и имени файла в кортеже; Затем мы используем деструктурирование, чтобы присвоить эти два значения `status_line` и `filename` используя шаблон в операторе `let`, как обсуждалось в главе 18.
 
 Ранее дублированный код теперь находится вне блоков `if` и `else` и использует переменные `status_line` и `filename`. Это позволяет легче увидеть разницу между этими двумя случаями и означает, что у нас есть только одно место для обновления кода, если захотим изменить работу чтения файлов и записи ответов. Поведение кода в листинге 20-9 будет таким же, как и в 20-8.
 
-Потрясающие! Теперь у нас есть простой веб-сервер примерно на 40 строках кода Rust, который отвечает на один запрос страницей с контентом и отвечает на все остальные запросы ответом 404.
+Awesome! We now have a simple web server in approximately 40 lines of Rust code that responds to one request with a page of content and responds to all other requests with a 404 response.
 
-В настоящее время наш сервер работает в одном потоке, что означает, что он может обслуживать только один запрос за раз. Давайте посмотрим, как это может быть проблемой, смоделировав несколько медленных запросов. Затем мы исправим это, чтобы наш сервер мог обрабатывать несколько запросов одновременно.
+Currently, our server runs in a single thread, meaning it can only serve one request at a time. Let’s examine how that can be a problem by simulating some slow requests. Then we’ll fix it so our server can handle multiple requests at once.
