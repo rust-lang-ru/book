@@ -1,10 +1,10 @@
 ## Дополнение Г - Средства разработки
 
-In this appendix, we talk about some useful development tools that the Rust project provides. We’ll look at automatic formatting, quick ways to apply warning fixes, a linter, and integrating with IDEs.
+В этом дополнении мы расскажем про часто используемые средства разработки, предоставляемые Rust. Мы рассмотрим автоматическое форматирование, быстрый путь исправления предупреждений, линтер, и интеграцию с IDE.
 
 ### Автоматическое форматирование с `rustfmt`
 
-The `rustfmt` tool reformats your code according to the community code style. Many collaborative projects use `rustfmt` to prevent arguments about which style to use when writing Rust: everyone formats their code using the tool.
+Инструмент `rustfmt` отформатирует Ваш код в соответствии с принятым в сообществе стилем. Многие совместные проекты используют `rustfmt` для предотвращения споров об используемом стиле для написания кода на Rust: каждый форматирует свой код с помощью этой утилиты.
 
 Для установки `rustfmt`, введите следующее:
 
@@ -12,17 +12,17 @@ The `rustfmt` tool reformats your code according to the community code style. M
 $ rustup component add rustfmt
 ```
 
-This command gives you `rustfmt` and `cargo-fmt`, similar to how Rust gives you both `rustc` and `cargo`. To format any Cargo project, enter the following:
+Эта команда установит `rustfmt` и `cargo-fmt`, также как Rust даёт Вам одновременно `rustc` и `cargo`. Для форматирования проекта, использующего Cargo, введите следующее:
 
 ```console
 $ cargo fmt
 ```
 
-Running this command reformats all the Rust code in the current crate. This should only change the code style, not the code semantics. For more information on `rustfmt`, see [its documentation](https://github.com/rust-lang/rustfmt).
+Эта команда отформатирует весь код на языке Rust в текущем крейте. Будет изменён только стиль кода, семантика останется прежней. Для большей информации о `rustfmt`, смотрите [документацию].
 
 ### Исправление кода с `rustfix`
 
-The rustfix tool is included with Rust installations and can automatically fix some compiler warnings. If you’ve written code in Rust, you’ve probably seen compiler warnings. For example, consider this code:
+Инструмент rustfix включён в Rust, и вам не нужно дополнительно его устанавливать. Эта утилита умеет автоматически исправлять некоторые предупреждения компиляции. Если Вы пишите код на Rust, Вы наверное встречали предупреждения компилятора. Например, рассмотрим следующий код:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -36,7 +36,7 @@ fn main() {
 }
 ```
 
-Here, we’re calling the `do_something` function 100 times, but we never use the variable `i` in the body of the `for` loop. Rust warns us about that:
+Мы вызываем функцию `do_something` 100 раз, но никогда не используем переменную `i` в теле цикла `for`. Rust предупреждает нас об этом:
 
 ```console
 $ cargo build
@@ -52,7 +52,7 @@ warning: unused variable: `i`
     Finished dev [unoptimized + debuginfo] target(s) in 0.50s
 ```
 
-The warning suggests that we use `_i` as a name instead: the underscore indicates that we intend for this variable to be unused. We can automatically apply that suggestion using the `rustfix` tool by running the command `cargo fix`:
+Предупреждение предлагает нам использовать `_i` как имя переменной: нижнее подчёркивание в начале идентификатора предполагает, что мы его не используем. Мы можем автоматически применить это предположение с помощью `rustfix`, запустив команду `cargo fix`:
 
 ```console
 $ cargo fix
@@ -61,7 +61,7 @@ $ cargo fix
     Finished dev [unoptimized + debuginfo] target(s) in 0.59s
 ```
 
-When we look at *src/main.rs* again, we’ll see that `cargo fix` has changed the code:
+Когда посмотрим в *src/main.rs* снова, мы увидим что `cargo fix` изменил наш код:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -77,11 +77,11 @@ fn main() {
 
 Переменная цикла `for` теперь носит имя `_i`, и предупреждение больше не появляется.
 
-You can also use the `cargo fix` command to transition your code between different Rust editions. Editions are covered in Appendix E.
+Также Вы можете использовать команду `cargo fix` для перемещения вашего кода между различными редакциями Rust. Редакции будут рассмотрены в дополнении Д.
 
 ### Больше проверок с Clippy
 
-The Clippy tool is a collection of lints to analyze your code so you can catch common mistakes and improve your Rust code.
+Инструмент Clippy является коллекцией проверок (lints) для анализа Вашего кода, поэтому Вы можете найти простые ошибки и улучшить ваш Rust код.
 
 Для установки Clippy, введите следующее:
 
@@ -95,7 +95,7 @@ $ rustup component add clippy
 $ cargo clippy
 ```
 
-For example, say you write a program that uses an approximation of a mathematical constant, such as pi, as this program does:
+Например, скажем что Вы хотите написать программу, в которой будет использоваться приближенная математическая константа, такая как число Пи, как в следующей программе:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -120,7 +120,7 @@ error: approximate value of `f{32, 64}::consts::PI` found. Consider using it dir
   = help: for further information visit https://rust-lang-nursery.github.io/rust-clippy/master/index.html#approx_constant
 ```
 
-This error lets you know that Rust has this constant defined more precisely and that your program would be more correct if you used the constant instead. You would then change your code to use the `PI` constant. The following code doesn’t result in any errors or warnings from Clippy:
+Эта ошибка сообщает Вам, что эта константа уже определена более точно в Rust, и используя её Ваша программа будет работать более правильно. Затем Вы бы изменили Ваш код, добавив константу `PI`. Следующий код не вызовет каких-либо ошибок или предупреждений от Clippy:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -136,7 +136,7 @@ fn main() {
 
 ### Интеграция с IDE используя Rust Language Server
 
-To help IDE integration, the Rust project distributes the *Rust Language Server* (`rls`). This tool speaks the [Language Server Protocol](http://langserver.org/), which is a specification for IDEs and programming languages to communicate with each other. Different clients can use the `rls`, such as [the Rust plug-in for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust).
+Для помощи в интеграции с IDE, Rust распространяет *Rust Language Server* (`rls`). Этот инструмент говорит на [Language Server Protocol], который является спецификацией для общения между IDE и языками программирования. Различные клиенты могут использовать `rls`, например [плагин Rust для Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust).
 
 Для установки `rls`, введите следующее:
 
@@ -144,6 +144,10 @@ To help IDE integration, the Rust project distributes the *Rust Language Server*
 $ rustup component add rls
 ```
 
-Then install the language server support in your particular IDE; you’ll gain abilities such as autocompletion, jump to definition, and inline errors.
+Затем установите поддержу языкового сервера в Вашей IDE. Вы получите такие вещи, как автодополнение, просмотр определения и подсветку ошибок.
 
 Для большей информации про `rls`, смотрите [документацию](https://github.com/rust-lang/rustfmt).
+
+
+[документацию]: https://github.com/rust-lang/rustfmt
+[Language Server Protocol]: https://github.com/rust-lang/rust-clippy
