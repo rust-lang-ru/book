@@ -1,26 +1,26 @@
 ## Продвинутые типажи
 
-Сначала мы рассмотрели типажи в разделе ["Типажи: Определение общего поведения"](ch10-02-traits.html#traits-defining-shared-behavior)<!--  --> главы 10, но как и со временами жизни, мы не обсудили более сложные детали. Сейчас что вы знаете о Rust больше и мы можем двинуться дальше.
+We first covered traits in the [“Traits: Defining Shared Behavior”](ch10-02-traits.html#traits-defining-shared-behavior)<!-- ignore --> section of Chapter 10, but as with lifetimes, we didn’t discuss the more advanced details. Now that you know more about Rust, we can get into the nitty-gritty.
 
 ### Указание заполнителей типов в определениях типажей с ассоциированными типами
 
-*Ассоциированные типы* (Associated types) связывают заполнитель типа с типажом, таким образом что объявления методов типажа могут использовать эти заполнители типов в своих сигнатурах. Реализация типажа будет указывать конкретный, используемый тип на месте заполнителя типа, при конкретной реализации. Таким образом, мы можем определить типаж пока он не реализован, который использует какие-то типы без необходимости знать, какими точно типами они будут.
+*Associated types* connect a type placeholder with a trait such that the trait method definitions can use these placeholder types in their signatures. The implementor of a trait will specify the concrete type to be used in this type’s place for the particular implementation. That way, we can define a trait that uses some types without needing to know exactly what those types are until the trait is implemented.
 
-Мы описали большинство расширенных возможностей в этой главе, как редко необходимые. Ассоциированные типы находятся где-то посередине: они используются реже чем возможности описанные в остальной части книги, но чаще чем многие другие возможности обсуждаемые в этой главе.
+We’ve described most of the advanced features in this chapter as being rarely needed. Associated types are somewhere in the middle: they’re used more rarely than features explained in the rest of the book but more commonly than many of the other features discussed in this chapter.
 
-Одним из примеров типажа с ассоциированным типом является типаж `Iterator`, который предоставляет стандартная библиотека. Ассоциированный тип называется `Item` и представляет тип для значений, которые перебирает тип реализующий типаж `Iterator`. В разделе <a href="ch13-02-iterators.html#the-iterator-trait-and-the-next-method" data-md-type="link">"Типаж `Iterator` и метод <code data-md-type="codespan">next</code>"</a><!--  --> главы 13, мы упоминали определение типажа `Iterator` показанное в листинге 19-12.
+One example of a trait with an associated type is the `Iterator` trait that the standard library provides. The associated type is named `Item` and stands in for the type of the values the type implementing the `Iterator` trait is iterating over. In <a href="ch13-02-iterators.html#the-iterator-trait-and-the-next-method" data-md-type="link">“The `Iterator` Trait and the <code data-md-type="codespan">next</code> Method”</a><!-- ignore --> section of Chapter 13, we mentioned that the definition of the `Iterator` trait is as shown in Listing 19-12.
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-12/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 19-12: Определение типажа <code>Iterator</code>, который имеет ассоциированный тип <code>Item</code></span>
+<span class="caption">Listing 19-12: The definition of the <code>Iterator</code> trait that has an associated type <code>Item</code></span>
 
-Тип `Item` является заполнителем и определение метода `next` показывает, что он будет возвращать значения типа `Option<Self::Item>`. Разработчики типажа `Iterator` определит конкретный тип для `Item`, а метод `next` вернёт `Option` содержащий значение этого конкретного типа.
+The type `Item` is a placeholder type, and the `next` method’s definition shows that it will return values of type `Option<Self::Item>`. Implementors of the `Iterator` trait will specify the concrete type for `Item`, and the `next` method will return an `Option` containing a value of that concrete type.
 
-Ассоциированные типы могли бы показаться концепцией похожей на обобщённые типы, в том смысле, что последние позволяют определить функцию, не указывая, какие типы она может обрабатывать. Так зачем использовать ассоциированные типы?
+Associated types might seem like a similar concept to generics, in that the latter allow us to define a function without specifying what types it can handle. So why use associated types?
 
-Давайте рассмотрим разницу между этими двумя понятиями на примере из главы 13, которая реализует типаж `Iterator` у структуры `Counter`. В листинге 13-21 мы указали, что тип для `Item` был `u32` :
+Let’s examine the difference between the two concepts with an example from Chapter 13 that implements the `Iterator` trait on the `Counter` struct. In Listing 13-21, we specified that the `Item` type was `u32`:
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -28,25 +28,25 @@
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-13-21-reproduced/src/lib.rs:ch19}}
 ```
 
-Этот синтаксис весьма напоминает обобщённые типы. Так почему же типаж `Iterator` не определён обобщённым типом, как показано в листинге 19-13?
+This syntax seems comparable to that of generics. So why not just define the `Iterator` trait with generics, as shown in Listing 19-13?
 
 ```rust
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-13/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 19-13: Гипотетическое определение типажа <code>Iterator</code> используя обобщённые типы</span>
+<span class="caption">Listing 19-13: A hypothetical definition of the <code>Iterator</code> trait using generics</span>
 
-Разница в том, что при использовании обобщений, как показано в листинге 19-13, мы должны аннотировать типы в каждой реализации; потому что мы также можем реализовать `Iterator<String> for Counter` или любого другого типа, мы могли бы иметь несколько реализации `Iterator` для `Counter`. Другими словами, когда типаж имеет обобщённый параметр, он может быть реализован для типа несколько раз, каждый раз меняя конкретные типы параметров обобщённого типа. Когда мы используем метод `next` у `Counter`, нам пришлось бы предоставить аннотации типа, указывая какую реализацию `Iterator` мы хотим использовать.
+The difference is that when using generics, as in Listing 19-13, we must annotate the types in each implementation; because we can also implement `Iterator<String> for Counter` or any other type, we could have multiple implementations of `Iterator` for `Counter`. In other words, when a trait has a generic parameter, it can be implemented for a type multiple times, changing the concrete types of the generic type parameters each time. When we use the `next` method on `Counter`, we would have to provide type annotations to indicate which implementation of `Iterator` we want to use.
 
-С ассоциированными типами не нужно аннотировать типы, потому что мы не можем реализовать типаж у типа несколько раз. В листинге 19-12 с определением, использующим ассоциированные типы можно выбрать только один тип `Item`, потому что может быть только одно объявление `impl Iterator for Counter`. Нам не нужно указывать, что нужен итератор значений типа `u32` везде, где мы вызываем `next` у `Counter`.
+With associated types, we don’t need to annotate types because we can’t implement a trait on a type multiple times. In Listing 19-12 with the definition that uses associated types, we can only choose what the type of `Item` will be once, because there can only be one `impl Iterator for Counter`. We don’t have to specify that we want an iterator of `u32` values everywhere that we call `next` on `Counter`.
 
 ### Параметры обобщённого типа по умолчанию и перегрузка операторов
 
-Когда мы используем параметры обобщённого типа, мы можем указать конкретный тип по умолчанию для обобщённого типа. Это устраняет необходимость разработчикам указывать конкретный тип, если работает тип по умолчанию. Синтаксис для указания типа по умолчанию в случае обобщённого типа выглядит как `<PlaceholderType=ConcreteType>`.
+When we use generic type parameters, we can specify a default concrete type for the generic type. This eliminates the need for implementors of the trait to specify a concrete type if the default type works. The syntax for specifying a default type for a generic type is `<PlaceholderType=ConcreteType>` when declaring the generic type.
 
-Отличным примером ситуации, где этот подход полезен, является перегрузка оператора. *Перегрузка оператора* (Operator overloading) реализует пользовательское поведение некоторого оператора (например, `+` ) в конкретных ситуациях.
+A great example of a situation where this technique is useful is with operator overloading. *Operator overloading* is customizing the behavior of an operator (such as `+`) in particular situations.
 
-Rust не позволяет создавать собственные операторы или перегружать произвольные операторы. Но можно перегрузить перечисленные операции и соответствующие им типажи из `std::ops` путём реализации типажей, связанных с этими операторами. Например, в листинге 19-14 мы перегружаем оператор `+`, чтобы складывать два экземпляра `Point`. Мы делаем это реализуя типаж `Add` для структуры `Point`:
+Rust doesn’t allow you to create your own operators or overload arbitrary operators. But you can overload the operations and corresponding traits listed in `std::ops` by implementing the traits associated with the operator. For example, in Listing 19-14 we overload the `+` operator to add two `Point` instances together. We do this by implementing the `Add` trait on a `Point` struct:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -54,25 +54,25 @@ Rust не позволяет создавать собственные опер�
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-14/src/main.rs}}
 ```
 
-<span class="caption">Листинг 19-14: Реализация типажа <code>Add</code> для перезагрузки оператора <code>+</code> у структуры <code>Point</code></span>
+<span class="caption">Listing 19-14: Implementing the <code>Add</code> trait to overload the <code>+</code> operator for <code>Point</code> instances</span>
 
-Метод `add` складывает значения `x` двух экземпляров `Point` и значения `y` у `Point` для создания нового экземпляра `Point`. Типаж `Add` имеет ассоциированный тип с именем `Output`, который определяет тип, возвращаемый из метода `add`.
+The `add` method adds the `x` values of two `Point` instances and the `y` values of two `Point` instances to create a new `Point`. The `Add` trait has an associated type named `Output` that determines the type returned from the `add` method.
 
-Обобщённый тип по умолчанию в этом коде находится в типаже `Add` . Вот его определение:
+The default generic type in this code is within the `Add` trait. Here is its definition:
 
 ```rust
-trait Add {
+trait Add<Rhs=Self> {
     type Output;
 
     fn add(self, rhs: Rhs) -> Self::Output;
 }
 ```
 
-Этот код должен выглядеть знакомым: типаж с одним методом и ассоциированным типом. Новый синтаксис это `RHS=Self`. Такой синтаксис называется *параметры типа по умолчанию* (default type parameters). Параметр обобщённого типа `RHS` (сокращённо “right hand side”) определяет тип параметра `rhs` в методе `add`. Если мы не укажем конкретный тип для `RHS` при реализации типажа `Add`, то типом для `RHS` по умолчанию будет `Self`, который будет типом для которого реализуется типаж `Add`.
+This code should look generally familiar: a trait with one method and an associated type. The new part is `Rhs=Self`: this syntax is called *default type parameters*. The `Rhs` generic type parameter (short for “right hand side”) defines the type of the `rhs` parameter in the `add` method. If we don’t specify a concrete type for `Rhs` when we implement the `Add` trait, the type of `Rhs` will default to `Self`, which will be the type we’re implementing `Add` on.
 
-Когда мы реализовали `Add` для структуры `Point`, мы использовали стандартное значение для `RHS`, потому что хотели сложить два экземпляра `Point`. Давайте посмотрим на пример реализации типажа `Add`, где мы хотим пользовательский тип `RHS` вместо использования типа по умолчанию.
+When we implemented `Add` for `Point`, we used the default for `Rhs` because we wanted to add two `Point` instances. Let’s look at an example of implementing the `Add` trait where we want to customize the `Rhs` type rather than using the default.
 
-У нас есть две разные структуры `Millimeters` и `Meters`, хранящие значения в разных единицах измерения. Мы хотим добавить значения в миллиметрах к значениям в метрах и хотим иметь реализацию типажа `Add`,  которая делает правильное преобразование единиц. Можно реализовать `Add` для `Millimeters` с типом `Meters` в качестве `RHS`, как показано в листинге 19-15.
+We have two structs, `Millimeters` and `Meters`, holding values in different units. We want to add values in millimeters to values in meters and have the implementation of `Add` do the conversion correctly. We can implement `Add` for `Millimeters` with `Meters` as the `Rhs`, as shown in Listing 19-15.
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -80,24 +80,24 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-15/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 19-15: Реализация типажа <code>Add</code> для структуры  <code>Millimeters</code>, чтобы прибавить <code>Millimeters</code> к <code>Meters</code></span>
+<span class="caption">Listing 19-15: Implementing the <code>Add</code> trait on <code>Millimeters</code> to add <code>Millimeters</code> to <code>Meters</code></span>
 
-Чтобы сложить `Millimeters` и `Meters`, мы указываем `impl Add<Meters>`, чтобы указать значение параметра типа `RHS` (Meters) вместо использования значения по умолчанию `Self` (Millimeters).
+To add `Millimeters` and `Meters`, we specify `impl Add<Meters>` to set the value of the `Rhs` type parameter instead of using the default of `Self`.
 
 Параметры типа по умолчанию используются в двух основных случаях:
 
 - Чтобы расширить тип без внесения изменений ломающих существующий код
 - Чтобы позволить пользовательское поведение в специальных случаях, которые не нужны большинству пользователей
 
-Типаж `Add` из стандартной библиотеки является примером второй цели: обычно вы складываете два одинаковых типа, но типаж `Add` позволяет сделать больше. Использование параметра типа по умолчанию в объявлении типажа `Add` означает, что не нужно указывать дополнительный параметр большую часть времени. Другими словами, большая часть кода реализации не нужна, что делает использование типажа проще.
+The standard library’s `Add` trait is an example of the second purpose: usually, you’ll add two like types, but the `Add` trait provides the ability to customize beyond that. Using a default type parameter in the `Add` trait definition means you don’t have to specify the extra parameter most of the time. In other words, a bit of implementation boilerplate isn’t needed, making it easier to use the trait.
 
-Первая цель похожа на вторую, но используется наоборот: если вы хотите добавить параметр типа к существующему типажу, можно дать ему значение по умолчанию, чтобы разрешить расширение функциональности типажа без нарушения кода существующей реализации.
+The first purpose is similar to the second but in reverse: if you want to add a type parameter to an existing trait, you can give it a default to allow extension of the functionality of the trait without breaking the existing implementation code.
 
 ### Полностью квалифицированный синтаксис для устранения неоднозначности: вызов методов с одинаковым именем
 
-В Rust ничего не мешает типажу иметь метод с одинаковым именем, таким же как метод другого типажа и Rust не мешает реализовывать оба таких типажа у одного типа. Также возможно реализовать метод с таким же именем непосредственно у типа, такой как и методы у типажей.
+Nothing in Rust prevents a trait from having a method with the same name as another trait’s method, nor does Rust prevent you from implementing both traits on one type. It’s also possible to implement a method directly on the type with the same name as methods from traits.
 
-При вызове методов с одинаковыми именами в Rust нужно указать, какой из трёх возможных вы хотите использовать. Рассмотрим код в листинге 19-16, где мы определили два типажа: `Pilot` и `Wizard`, у обоих есть метод `fly`. Затем мы реализуем оба типажа у типа `Human` в котором уже реализован метод с именем `fly`. Каждый метод `fly` делает что-то своё.
+When calling methods with the same name, you’ll need to tell Rust which one you want to use. Consider the code in Listing 19-16 where we’ve defined two traits, `Pilot` and `Wizard`, that both have a method called `fly`. We then implement both traits on a type `Human` that already has a method named `fly` implemented on it. Each `fly` method does something different.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -105,9 +105,9 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-16/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 19-16: Два типажа определены с методом <code>fly</code> и реализованы у типа <code>Human</code>, а также метод <code>fly</code> реализован непосредственно у <code>Human</code></span>
+<span class="caption">Listing 19-16: Two traits are defined to have a <code>fly</code> method and are implemented on the <code>Human</code> type, and a <code>fly</code> method is implemented on <code>Human</code> directly</span>
 
-Когда мы вызываем `fly` у экземпляра `Human`, то компилятор по умолчанию вызывает метод, который непосредственно реализован для типа, как показано в листинге 19-17.
+When we call `fly` on an instance of `Human`, the compiler defaults to calling the method that is directly implemented on the type, as shown in Listing 19-17.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -115,11 +115,11 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-17/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 19-17: Вызов <code>fly</code> у экземпляра <code>Human</code></span>
+<span class="caption">Listing 19-17: Calling <code>fly</code> on an instance of <code>Human</code></span>
 
-Запуск этого кода напечатает `*waving arms furiously*` , показывая, что Rust называется метод `fly` реализованный непосредственно у `Human`.
+Running this code will print `*waving arms furiously*`, showing that Rust called the `fly` method implemented on `Human` directly.
 
-Чтобы вызвать методы `fly` у типажа `Pilot` или типажа `Wizard` нужно использовать более явный синтаксис, указывая какой метод `fly` мы имеем в виду. Листинг 19-18 демонстрирует такой синтаксис.
+To call the `fly` methods from either the `Pilot` trait or the `Wizard` trait, we need to use more explicit syntax to specify which `fly` method we mean. Listing 19-18 demonstrates this syntax.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -127,9 +127,9 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-18/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 19-18: Указание какой метода <code>fly</code> мы хотим вызвать</span>
+<span class="caption">Listing 19-18: Specifying which trait’s <code>fly</code> method we want to call</span>
 
-Указание имени типажа перед именем метода проясняет компилятору Rust, какую именно реализацию `fly` мы хотим вызвать. Мы могли бы также написать `Human::fly(&person)`, что эквивалентно используемому нами `person.fly()` в листинге 19-18, но это писание немного длиннее, когда нужна неоднозначность.
+Specifying the trait name before the method name clarifies to Rust which implementation of `fly` we want to call. We could also write `Human::fly(&person)`, which is equivalent to the `person.fly()` that we used in Listing 19-18, but this is a bit longer to write if we don’t need to disambiguate.
 
 Выполнение этого кода выводит следующее:
 
@@ -137,9 +137,9 @@ trait Add {
 {{#include ../listings/ch19-advanced-features/listing-19-18/output.txt}}
 ```
 
-Поскольку метод `fly` принимает параметр `self`, если у нас было два *типа* оба реализующих один *типаж*, то Rust может понять, какую реализацию типажа использовать в зависимости от типа `self`.
+Because the `fly` method takes a `self` parameter, if we had two *types* that both implement one *trait*, Rust could figure out which implementation of a trait to use based on the type of `self`.
 
-Однако ассоциированные функции являющиеся частью типажей не имеют `self` параметра. Когда два типа в одной области видимости реализуют такой типаж, Rust не может выяснить, какой тип вы имеете в виду если вы не используете *полностью квалифицированный синтаксис* (fully qualified). Например, типаж `Animal` в листинге 19-19 имеет: ассоциированную функцию `baby_name`, реализацию типажа `Animal` для структуры `Dog` и ассоциированную функцию `baby_name`, объявленную напрямую у структуры `Dog`.
+However, associated functions that are part of traits don’t have a `self` parameter. When two types in the same scope implement that trait, Rust can’t figure out which type you mean unless you use *fully qualified syntax*. For example, the `Animal` trait in Listing 19-19 has the associated function `baby_name`, the implementation of `Animal` for the struct `Dog`, and the associated function `baby_name` defined on `Dog` directly.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -147,17 +147,17 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-19/src/main.rs}}
 ```
 
-<span class="caption">Листинг 19-19: Типаж с ассоциированной функцией и тип с ассоциированной функцией с тем же именем, которая тоже реализует типаж</span>
+<span class="caption">Listing 19-19: A trait with an associated function and a type with an associated function of the same name that also implements the trait</span>
 
-Этот код для приюта для животных, который хочет назвать всех щенков именем Spot, что реализовано в ассоциированной функции `baby_name`, которая определена для `Dog`. Тип `Dog` также реализует типаж `Animal`, который описывает характеристики, которые есть у всех животных. Маленьких собак называют щенками, и это выражается в реализации `Animal` у `Dog` в функции `baby_name` ассоциированной с типажом `Animal`.
+This code is for an animal shelter that wants to name all puppies Spot, which is implemented in the `baby_name` associated function that is defined on `Dog`. The `Dog` type also implements the trait `Animal`, which describes characteristics that all animals have. Baby dogs are called puppies, and that is expressed in the implementation of the `Animal` trait on `Dog` in the `baby_name` function associated with the `Animal` trait.
 
-В `main` мы вызываем функцию `Dog::baby_name`, которая вызывает ассоциированную функцию определённую напрямую у `Dog`. Этот код печатает следующее:
+In `main`, we call the `Dog::baby_name` function, which calls the associated function defined on `Dog` directly. This code prints the following:
 
 ```console
 {{#include ../listings/ch19-advanced-features/listing-19-19/output.txt}}
 ```
 
-Этот вывод является не тем, что мы хотели получить. Мы хотим вызвать функцию `baby_name`, которая является частью типажа `Animal` реализованного у `Dog`, так чтобы код печатал `A baby dog is called a puppy`. Техника указания имени типажа использованная в листинге 19-18 здесь не помогает; если мы изменим `main` код как в листинге 19-20, мы получим ошибку компиляции.
+This output isn’t what we wanted. We want to call the `baby_name` function that is part of the `Animal` trait that we implemented on `Dog` so the code prints `A baby dog is called a puppy`. The technique of specifying the trait name that we used in Listing 19-18 doesn’t help here; if we change `main` to the code in Listing 19-20, we’ll get a compilation error.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -165,15 +165,15 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-20/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 19-20. Попытка вызвать функцию <code>baby_name</code> из типажа <code>Animal</code>, но Rust не знает какую реализацию использовать</span>
+<span class="caption">Listing 19-20: Attempting to call the <code>baby_name</code> function from the <code>Animal</code> trait, but Rust doesn’t know which implementation to use</span>
 
-Так как `Animal::baby_name` является ассоциированной функцией не имеющей `self` параметра в сигнатуре, а не методом, то Rust не может понять, какую реализацию `Animal::baby_name` мы хотим вызвать. Мы получим эту ошибку компилятора:
+Because `Animal::baby_name` is an associated function rather than a method, and thus doesn’t have a `self` parameter, Rust can’t figure out which implementation of `Animal::baby_name` we want. We’ll get this compiler error:
 
 ```console
 {{#include ../listings/ch19-advanced-features/listing-19-20/output.txt}}
 ```
 
-Чтобы устранить неоднозначность и сказать Rust, что мы хотим использовать реализацию `Animal` для `Dog`, нужно использовать полный синтаксис. Листинг 19-21 демонстрирует, как использовать полный синтаксис.
+To disambiguate and tell Rust that we want to use the implementation of `Animal` for `Dog`, we need to use fully qualified syntax. Listing 19-21 demonstrates how to use fully qualified syntax.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -181,9 +181,9 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-21/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 19-21: Использование полностью квалифицированного синтаксиса для указания, что мы мы хотим вызвать функцию <code>baby_name</code> у типажа <code>Animal</code> реализованную в <code>Dog</code></span>
+<span class="caption">Listing 19-21: Using fully qualified syntax to specify that we want to call the <code>baby_name</code> function from the <code>Animal</code> trait as implemented on <code>Dog</code></span>
 
-Мы указываем аннотацию типа в угловых скобках, которая указывает на то что мы хотим вызвать метод `baby_name` из типажа `Animal` реализованный в `Dog`, также указывая что мы хотим рассматривать тип `Dog` в качестве `Animal` для вызова этой функции. Этот код теперь напечатает то, что мы хотим:
+We’re providing Rust with a type annotation within the angle brackets, which indicates we want to call the `baby_name` method from the `Animal` trait as implemented on `Dog` by saying that we want to treat the `Dog` type as an `Animal` for this function call. This code will now print what we want:
 
 ```console
 {{#include ../listings/ch19-advanced-features/listing-19-21/output.txt}}
@@ -195,13 +195,13 @@ trait Add {
 <Type as Trait>::function(receiver_if_method, next_arg, ...);
 ```
 
-Для ассоциированных функций при их вызове не будет `receiver` (объекта приёмника), а будет только список аргументов. Вы можете использовать полностью квалифицированный синтаксис везде, где вызываете функции или методы. Тем не менее, разрешается опустить любую часть этого синтаксиса, которую Rust может понять из другой информации в программе. Необходимость использования этого наиболее подробного синтаксиса возникает только в тех случаях, когда есть несколько реализаций, которые используют одинаковое имя и Rust нуждается в помощи для определения, какой вариант реализации вы хотите вызвать.
+For associated functions, there would not be a `receiver`: there would only be the list of other arguments. You could use fully qualified syntax everywhere that you call functions or methods. However, you’re allowed to omit any part of this syntax that Rust can figure out from other information in the program. You only need to use this more verbose syntax in cases where there are multiple implementations that use the same name and Rust needs help to identify which implementation you want to call.
 
 ### Использование супер типажей для требования функциональности одного типажа в рамках другого типажа
 
-Иногда вам может понадобиться, чтобы один типаж использовал функциональность другого типажа. В в этом случае нужно полагаться на зависимый типаж, который также реализуется. Типаж на который вы полагаетесь, является *супер типажом* типажа, который реализуете вы.
+Sometimes, you might need one trait to use another trait’s functionality. In this case, you need to rely on the dependent trait also being implemented. The trait you rely on is a *supertrait* of the trait you’re implementing.
 
-Например, мы хотим создать типаж `OutlinePrint` с методом `outline_print`, который будет печатать значение обрамлённое звёздочками. Мы хотим чтобы структура `Point` реализующая типаж `Display` вывела на печать `(x, y)` при вызове `outline_print` у экземпляра `Point`, который имеет значение `1` для `x` и значение `3` для `y`. Она должна напечатать следующее:
+For example, let’s say we want to make an `OutlinePrint` trait with an `outline_print` method that will print a value framed in asterisks. That is, given a `Point` struct that implements `Display` to result in `(x, y)`, when we call `outline_print` on a `Point` instance that has `1` for `x` and `3` for `y`, it should print the following:
 
 ```text
 **********
@@ -211,7 +211,7 @@ trait Add {
 **********
 ```
 
-В реализации `outline_print` мы хотим использовать функциональность типажа `Display`. Поэтому нам нужно указать, что типаж `OutlinePrint` будет работать только для типов, которые также реализуют `Display` и предоставляют функциональность, которая нужна в `OutlinePrint`. Мы можем сделать это в объявлении типажа, указав `OutlinePrint: Display`. Этот метод похож на добавление ограничения в типаж. В листинге 19-22 показана реализация типажа `OutlinePrint`.
+In the implementation of `outline_print`, we want to use the `Display` trait’s functionality. Therefore, we need to specify that the `OutlinePrint` trait will work only for types that also implement `Display` and provide the functionality that `OutlinePrint` needs. We can do that in the trait definition by specifying `OutlinePrint: Display`. This technique is similar to adding a trait bound to the trait. Listing 19-22 shows an implementation of the `OutlinePrint` trait.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -219,11 +219,11 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-22/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 19-22: Реализация типажа <code>OutlinePrint</code> которая требует функциональности типажа <code>Display</code></span>
+<span class="caption">Listing 19-22: Implementing the <code>OutlinePrint</code> trait that requires the functionality from <code>Display</code></span>
 
-Поскольку мы указали, что типаж `OutlinePrint` требует типажа `Display`, мы можем использовать функцию `to_string`, которая автоматически реализована для любого типа реализующего `Display`. Если бы мы попытались использовать `to_string` не добавляя двоеточие и не указывая типаж `Display` после имени типажа, мы получили бы сообщение о том, что метод с именем `to_string` не был найден у типа `&Self` в текущей области видимости.
+Because we’ve specified that `OutlinePrint` requires the `Display` trait, we can use the `to_string` function that is automatically implemented for any type that implements `Display`. If we tried to use `to_string` without adding a colon and specifying the `Display` trait after the trait name, we’d get an error saying that no method named `to_string` was found for the type `&Self` in the current scope.
 
-Давайте посмотрим что происходит, если мы пытаемся реализовать типаж `OutlinePrint` для типа, который не реализует `Display`, например структура `Point`:
+Let’s see what happens when we try to implement `OutlinePrint` on a type that doesn’t implement `Display`, such as the `Point` struct:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -237,7 +237,7 @@ trait Add {
 {{#include ../listings/ch19-advanced-features/no-listing-02-impl-outlineprint-for-point/output.txt}}
 ```
 
-Чтобы исправить, мы реализуем `Display` у структуры `Point` и выполняем требуемое ограничение `OutlinePrint`, вот так:
+To fix this, we implement `Display` on `Point` and satisfy the constraint that `OutlinePrint` requires, like so:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -245,13 +245,13 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-03-impl-display-for-point/src/main.rs:here}}
 ```
 
-Тогда реализация типажа `OutlinePrint` для структуры `Point` будет скомпилирована успешно и мы можем вызвать `outline_print` у экземпляра `Point` для отображения значения обрамлённое звёздочками.
+Then implementing the `OutlinePrint` trait on `Point` will compile successfully, and we can call `outline_print` on a `Point` instance to display it within an outline of asterisks.
 
 ### Шаблон Newtype для реализация внешних типажей у внешних типов
 
-В разделе ["Реализация типажа у типа"](ch10-02-traits.html#implementing-a-trait-on-a-type)<!--  --> главы 10, мы упоминали "правило сироты" (orphan rule), которое гласит, что разрешается реализовать типаж у типа, если либо типаж, либо тип являются локальными для нашего крейта. Можно обойти это ограничение, используя *шаблон нового типа* (newtype pattern), который включает в себя создание нового типа в кортежной структуре. (Мы рассмотрели кортежные структуры  в разделе ["Использование структур кортежей без именованных полей для создания различных типов"]<!--  --> главы 5.) Структура кортежа будет иметь одно поле и будет тонкой оболочкой для типа которому мы хотим реализовать типаж. Тогда тип оболочки является локальным для нашего крейта и мы можем реализовать типаж для локальной обёртки. *Newtype* это термин, который происходит от языка программирования Haskell. В нем нет ухудшения производительности времени выполнения при использовании этого шаблона и тип оболочки исключается во время компиляции.
+In Chapter 10 in the [“Implementing a Trait on a Type”](ch10-02-traits.html#implementing-a-trait-on-a-type)<!-- ignore --> section, we mentioned the orphan rule that states we’re allowed to implement a trait on a type as long as either the trait or the type are local to our crate. It’s possible to get around this restriction using the *newtype pattern*, which involves creating a new type in a tuple struct. (We covered tuple structs in the [“Using Tuple Structs without Named Fields to Create Different Types”](ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types)<!-- ignore --> section of Chapter 5.) The tuple struct will have one field and be a thin wrapper around the type we want to implement a trait for. Then the wrapper type is local to our crate, and we can implement the trait on the wrapper. *Newtype* is a term that originates from the Haskell programming language. There is no runtime performance penalty for using this pattern, and the wrapper type is elided at compile time.
 
-В качестве примера, мы хотим реализовать типаж `Display` для типа `Vec<T>`, где "правило сироты" (orphan rule) не позволяет нам этого делать напрямую, потому что типаж `Display` и тип `Vec<T>` объявлены вне нашего крейта. Мы можем сделать структуру `Wrapper`, которая содержит экземпляр `Vec<T>`; тогда мы можем реализовать `Display` у структуры `Wrapper` и использовать значение `Vec<T>` как показано в листинге 19-23.
+As an example, let’s say we want to implement `Display` on `Vec<T>`, which the orphan rule prevents us from doing directly because the `Display` trait and the `Vec<T>` type are defined outside our crate. We can make a `Wrapper` struct that holds an instance of `Vec<T>`; then we can implement `Display` on `Wrapper` and use the `Vec<T>` value, as shown in Listing 19-23.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -259,13 +259,10 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-23/src/main.rs}}
 ```
 
-<span class="caption">Листинг 19-23: Создание типа <code>Wrapper</code> вокруг типа <code>Vec<string data-md-type="raw_html"></string></code> для реализации типажа <code>Display</code></span>
+<span class="caption">Listing 19-23: Creating a <code>Wrapper</code> type around <code>Vec<String></code> to implement <code>Display</code></span>
 
-Реализация `Display` использует `self.0` для доступа к внутреннему `Vec<T>`, потому что `Wrapper` это структура кортежа, а `Vec<T>` это элемент с индексом 0 в кортеже. Затем мы можем использовать функциональные возможности типа `Display` у `Wrapper`.
+The implementation of `Display` uses `self.0` to access the inner `Vec<T>`, because `Wrapper` is a tuple struct and `Vec<T>` is the item at index 0 in the tuple. Then we can use the functionality of the `Display` type on `Wrapper`.
 
-Недостатком использования этой техники является то, что `Wrapper` является новым типом, поэтому он не имеет методов для значения, которое он держит в себе. Мы должны были бы реализовать все методы для `Vec<T>` непосредственно во `Wrapper`, так чтобы эти методы делегировались внутреннему `self.0`, что позволило бы нам обращаться с `Wrapper` точно так же, как с `Vec<T>`. Если бы мы хотели, чтобы новый тип имел каждый метод имеющийся у внутреннего типа, реализуя типаж `Deref` (обсуждается в разделе <a href="ch15-02-deref.html#treating-smart-pointers-like-regular-references-with-the-deref-trait" data-md-type="link">"Работа с умными указателями как с обычными ссылками с помощью `Deref` типажа"</a><!--  --> главы 15) у `Wrapper` для возвращения внутреннего типа, то это было бы решением. Если мы не хотим, чтобы тип `Wrapper` имел все методы внутреннего типа, например, для ограничения поведения типа `Wrapper`, то пришлось бы вручную реализовать только те методы, которые нам нужны.
+The downside of using this technique is that `Wrapper` is a new type, so it doesn’t have the methods of the value it’s holding. We would have to implement all the methods of `Vec<T>` directly on `Wrapper` such that the methods delegate to `self.0`, which would allow us to treat `Wrapper` exactly like a `Vec<T>`. If we wanted the new type to have every method the inner type has, implementing the `Deref` trait (discussed in Chapter 15 in the <a href="ch15-02-deref.html#treating-smart-pointers-like-regular-references-with-the-deref-trait" data-md-type="link">“Treating Smart Pointers Like Regular References with the `Deref` Trait”</a><!-- ignore --> section) on the `Wrapper` to return the inner type would be a solution. If we don’t want the `Wrapper` type to have all the methods of the inner type—for example, to restrict the `Wrapper` type’s behavior—we would have to implement just the methods we do want manually.
 
-Теперь вы знаете, как используется newtype шаблон по отношению к типажам; это также полезный шаблон, даже когда типажи не используются. Давайте переключимся и посмотрим на некоторые продвинутые способы взаимодействия с системой типов Rust.
-
-
-["Использование структур кортежей без именованных полей для создания различных типов"]: ch15-02-deref.html#treating-smart-pointers-like-regular-references-with-the-deref-trait
+Now you know how the newtype pattern is used in relation to traits; it’s also a useful pattern even when traits are not involved. Let’s switch focus and look at some advanced ways to interact with Rust’s type system.
