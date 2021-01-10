@@ -66,7 +66,7 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-07-define-message-enum/src/lib.rs:here}}
 ```
 
@@ -158,13 +158,13 @@ Shutting down worker 3
 <span class="filename">Файл: src/bin/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-25/src/bin/main.rs:all}}
+{{#rustdoc_include ../listings/ch20-web-server/no-listing-08-final-code/src/bin/main.rs}}
 ```
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-25/src/lib.rs:here}}
+```rust,noplayground
+{{#rustdoc_include ../listings/ch20-web-server/no-listing-08-final-code/src/lib.rs}}
 ```
 
 В коде можно сделать больше! Если вы хотите продолжить совершенствование этого проекта, вот несколько идей:
