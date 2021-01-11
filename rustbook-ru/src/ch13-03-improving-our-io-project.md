@@ -56,13 +56,15 @@
 
 Документация стандартной библиотеки для функции `env::args` показывает, что типом возвращаемого итератора является `std::env::Args`. Мы обновили сигнатуру функции `Config::new`, поэтому параметр `args ` имеет тип `std::env::Args` вместо `&[String]`. Поскольку мы забираем во владение `args` и будем изменять `args` перебирая его элементы, мы можем добавить ключевое слово `mut` в спецификацию параметра `args`, чтобы сделать его изменяемым.
 
+We also needed to specify that the string slice error type can now only have the `'static` lifetime. Because we’re only ever returning string literals, this was true before. However, when we had a reference in the parameters, there was the possibility that the reference in the return type could have had the same lifetime as the reference in the parameters. The rules that we discussed in the [“Lifetime Elision”] section of Chapter 10 applied, and we weren’t required to annotate the lifetime of `&str`. With the change to `args`, the lifetime elision rules no longer apply, and we must specify the `'static` lifetime.
+
 #### Использование методов типажа `Iterator` вместо индексов
 
 Далее мы вносим изменения в код тела `Config::new`. Стандартная библиотека документации также упоминает, что `std::env::Args` реализует типаж `Iterator`, поэтому мы знаем, что можем вызвать метод `next`! Листинг 13-27 обновляет код из листинга 12-23 с использованием метода `next`:
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-27/src/lib.rs:here}}
 ```
 
@@ -97,3 +99,6 @@
 Следующий логический вопрос - какой стиль вы должны выбрать в своём собственном коде и почему, тот что был в исходной реализации в листинге 13-28 или версию с использованием итераторов в листинге 13-29. Большинство программистов на Rust предпочитают использовать стиль с итератором. Поначалу немного сложнее освоиться, но как только вы изучите различные адаптерные методы итераторов и то, что они делают, итераторы будет легче понять. Вместо того, чтобы возиться с различными элементами цикла и создавать новые векторы, код фокусируется на высокоуровневом смысле цикла. Это абстрагирует часть обычного кода, поэтому легче увидеть концепции уникальные для этого кода, такие как условие фильтрации, которое должен пройти каждый элемент в итераторе.
 
 Но действительно ли эти две реализации эквивалентны? Интуитивное предположение может заключаться в том, что более низкоуровневый цикл будет быстрее. Поговорим о производительности.
+
+
+[“Lifetime Elision”]: ch10-03-lifetime-syntax.html#lifetime-elision
