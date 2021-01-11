@@ -56,7 +56,7 @@
 
 Документация стандартной библиотеки для функции `env::args` показывает, что типом возвращаемого итератора является `std::env::Args`. Мы обновили сигнатуру функции `Config::new`, поэтому параметр `args ` имеет тип `std::env::Args` вместо `&[String]`. Поскольку мы забираем во владение `args` и будем изменять `args` перебирая его элементы, мы можем добавить ключевое слово `mut` в спецификацию параметра `args`, чтобы сделать его изменяемым.
 
-We also needed to specify that the string slice error type can now only have the `'static` lifetime. Because we’re only ever returning string literals, this was true before. However, when we had a reference in the parameters, there was the possibility that the reference in the return type could have had the same lifetime as the reference in the parameters. The rules that we discussed in the [“Lifetime Elision”] section of Chapter 10 applied, and we weren’t required to annotate the lifetime of `&str`. With the change to `args`, the lifetime elision rules no longer apply, and we must specify the `'static` lifetime.
+Нам также нужно было указать, что тип ошибки среза строки теперь может иметь только `'static` время жизни. Так как раньше мы возвращали только строковые литералы, это было так. Однако, когда у нас была ссылка в параметрах, была вероятность того, что ссылка в возвращаемом типе могла иметь то же время жизни, что и ссылка в параметрах. Применялись правила, которые мы обсуждали в разделе [«Lifetime Elision»] главы 10, и от нас не требовалось аннотировать время жизни `&str`. С изменением `args` правила исключения времени жизни больше не применяются, и мы должны указать `'static` время жизни.
 
 #### Использование методов типажа `Iterator` вместо индексов
 
@@ -101,4 +101,4 @@ We also needed to specify that the string slice error type can now only have the
 Но действительно ли эти две реализации эквивалентны? Интуитивное предположение может заключаться в том, что более низкоуровневый цикл будет быстрее. Поговорим о производительности.
 
 
-[“Lifetime Elision”]: ch10-03-lifetime-syntax.html#lifetime-elision
+[«Lifetime Elision»]: ch10-03-lifetime-syntax.html#lifetime-elision
