@@ -248,7 +248,7 @@ The `can_hold` method returns a Boolean, which means it’s a perfect use case f
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-08/src/lib.rs}}
 ```
 
-<span class="caption">Listing 11-8: Testing that a condition will cause a <code>panic!</code></span>
+<span class="caption">Листинг 11-9: Тестирования случая, когда условие вызовет выполнение макроса <code>panic!</code> содержащего определённое сообщение об ошибке</span>
 
 Атрибут `#[should_panic]` следует после `#[test]` и до объявления текстовой функции. Посмотрим на вывод результата, когда тест проходит:
 
