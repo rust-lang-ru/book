@@ -1,6 +1,6 @@
 ## Приложение Е: Переводы книги
 
-Для ресурсов на различных языках. Большинство их в постоянном развитии. Пожалуйста, [сообщайте нам](https://github.com/rust-lang/book/issues?q=is%3Aopen+is%3Aissue+label%3ATranslations) о новых переводах!
+Для ресурсов на языках, отличных от английского. Большинство из них все ещё в разработке; см. [ярлык «Переводы»,](https://github.com/rust-lang/book/issues?q=is%3Aopen+is%3Aissue+label%3ATranslations) чтобы помочь или сообщить нам о новом переводе!
 
 - [Português](https://github.com/rust-br/rust-book-pt-br) (BR)
 - [Português](https://github.com/nunojesus/rust-book-pt-pt) (PT)
@@ -21,5 +21,5 @@
 - [Svenska](https://github.com/sebras/book)
 - [Farsi](https://github.com/pomokhtari/rust-book-fa)
 - [Deutsch](https://github.com/rust-lang-de/rustbook-de)
-
+- [Turkish](https://github.com/RustDili/dokuman/tree/master/ceviriler) , [online](https://rustdili.github.io/)
 
