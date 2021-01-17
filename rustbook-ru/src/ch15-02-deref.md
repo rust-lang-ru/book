@@ -38,23 +38,23 @@ We can rewrite the code in Listing 15-6 to use a `Box<T>` instead of a reference
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-07/src/main.rs}}
 ```
 
-<span class="caption">Listing 15-7: Using the dereference operator on a <code>Box&lt;i32&gt;</code></span>
+<span class="caption">Листинг 15-7: Использование оператора разыменования с типом <code>Box&lt;i32&gt;</code></span>
 
-The only difference between Listing 15-7 and Listing 15-6 is that here we set `y` to be an instance of a box pointing to a copied value of `x` rather than a reference pointing to the value of `x`. In the last assertion, we can use the dereference operator to follow the box’s pointer in the same way that we did when `y` was a reference. Next, we’ll explore what is special about `Box<T>` that enables us to use the dereference operator by defining our own box type.
+Единственная разница между листингом 15-7 и листингом 15-6 состоит в том, что здесь мы устанавливаем `y` на экземпляр box, указывающий на значение `x`, а не ссылкой, указывающей на значение `x` . В последнем утверждении мы можем использовать оператор разыменования, чтобы проследовать за указателем box-а так же, как мы это делали когда `y` была ссылкой. Далее мы рассмотрим, что особенного у типа `Box<T>`, что позволяет нам использовать оператор разыменования, определяя наш собственный тип `Box`.
 
 ### Определение собственного умного указателя
 
 Let’s build a smart pointer similar to the `Box<T>` type provided by the standard library to experience how smart pointers behave differently from references by default. Then we’ll look at how to add the ability to use the dereference operator.
 
-The `Box<T>` type is ultimately defined as a tuple struct with one element, so Listing 15-8 defines a `MyBox<T>` type in the same way. We’ll also define a `new` function to match the `new` function defined on `Box<T>`.
+Тип `Box<T>` в конечном итоге определяется как структура кортежа с одним элементом, поэтому в листинге 15-8 аналогичным образом определяется `MyBox<T>`. Мы также определим функцию `new`, чтобы она соответствовала функции `new`, определённой в `Box<T>`.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-08/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-8: Defining a <code>MyBox&lt;T&gt;</code> type</span>
+<span class="caption">Листинг 15-8: Определение типа <code>MyBox&lt;T&gt;</code></span>
 
 We define a struct named `MyBox` and declare a generic parameter `T`, because we want our type to hold values of any type. The `MyBox` type is a tuple struct with one element of type `T`. The `MyBox::new` function takes one parameter of type `T` and returns a `MyBox` instance that holds the value passed in.
 
@@ -66,7 +66,7 @@ Let’s try adding the `main` function in Listing 15-7 to Listing 15-8 and chang
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-09/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-9: Attempting to use <code>MyBox&lt;T&gt;</code> in the same way we used references and <code>Box&lt;T&gt;</code></span>
+<span class="caption">Листинг 15-9: Попытка использовать <code>MyBox&lt;T&gt;</code> таким же образом, как мы использовали ссылки и библиотечный <code>Box&lt;T&gt;</code></span>
 
 Вот результат ошибки компиляции:
 
@@ -86,7 +86,7 @@ As discussed in Chapter 10, to implement a trait, we need to provide implementat
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-10/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-10: Implementing <code>Deref</code> on <code>MyBox&lt;T&gt;</code></span>
+<span class="caption">Листинг 15-10: Реализация <code>Deref</code> для типа <code>MyBox&lt;T&gt;</code></span>
 
 The `type Target = T;` syntax defines an associated type for the `Deref` trait to use. Associated types are a slightly different way of declaring a generic parameter, but you don’t need to worry about them for now; we’ll cover them in more detail in Chapter 19.
 
@@ -122,29 +122,29 @@ To see deref coercion in action, let’s use the `MyBox<T>` type we defined in L
 
 <span class="caption">Listing 15-11: A <code>hello</code> function that has the parameter <code>name</code> of type <code>&amp;str</code></span>
 
-We can call the `hello` function with a string slice as an argument, such as `hello("Rust");` for example. Deref coercion makes it possible to call `hello` with a reference to a value of type `MyBox<String>`, as shown in Listing 15-12:
+Можно вызвать функцию `hello` со срезом строки в качестве аргумента, например `hello("Rust");`. Разыменованное приведение делает возможным вызов `hello` со ссылкой на значение типа `MyBox<String>`, как показано в листинге 15-12.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-12/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-12: Calling <code>hello</code> with a reference to a <code>MyBox&lt;String&gt;</code> value, which works because of deref coercion</span>
+<span class="caption">Листинг 15-12: Вызов <code>hello</code> со ссылкой на значение <code>MyBox&lt;String&gt;</code>, которое работает из-за разыменованного приведения</span>
 
 Here we’re calling the `hello` function with the argument `&m`, which is a reference to a `MyBox<String>` value. Because we implemented the `Deref` trait on `MyBox<T>` in Listing 15-10, Rust can turn `&MyBox<String>` into `&String` by calling `deref`. The standard library provides an implementation of `Deref` on `String` that returns a string slice, and this is in the API documentation for `Deref`. Rust calls `deref` again to turn the `&String` into `&str`, which matches the `hello` function’s definition.
 
-If Rust didn’t implement deref coercion, we would have to write the code in Listing 15-13 instead of the code in Listing 15-12 to call `hello` with a value of type `&MyBox<String>`.
+Если бы Rust не реализовал разыменованное приведение, мы должны были бы написать код в листинге 15-13 вместо кода в листинге 15-12 для вызова метода `hello` со значением типа `&MyBox<String>`.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-13/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-13: The code we would have to write if Rust didn’t have deref coercion</span>
+<span class="caption">Листинг 15-13: Код, который мы должны были бы написать, если бы в Rust не было разыменованного приведения.</span>
 
-The `(*m)` dereferences the `MyBox<String>` into a `String`. Then the `&` and `[..]` take a string slice of the `String` that is equal to the whole string to match the signature of `hello`. The code without deref coercions is harder to read, write, and understand with all of these symbols involved. Deref coercion allows Rust to handle these conversions for us automatically.
+Код `(*m)` разыменовывает `MyBox<String>` в `String`. Затем `&` и `[..]` принимают строковый срез `String`, равный всей строке, чтобы соответствовать сигнатуре `hello`. Код без разыменованного приведения сложнее читать, писать и понимать со всеми этими символами. Разыменованное приведение позволяет Rust обрабатывать эти преобразования для нас автоматически.
 
 When the `Deref` trait is defined for the types involved, Rust will analyze the types and use `Deref::deref` as many times as necessary to get a reference to match the parameter’s type. The number of times that `Deref::deref` needs to be inserted is resolved at compile time, so there is no runtime penalty for taking advantage of deref coercion!
 
