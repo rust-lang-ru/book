@@ -6,7 +6,7 @@ Let’s first look at how the dereference operator works with regular references
 
 > Note: there’s one big difference between the `MyBox<T>` type we’re about to build and the real `Box<T>`: our version will not store its data on the heap. We are focusing this example on `Deref`, so where the data is actually stored is less important than the pointer-like behavior.
 
-### Following the Pointer to the Value with the Dereference Operator
+### Следование по указателю к значению с помощью оператора разыменования
 
 A regular reference is a type of pointer, and one way to think of a pointer is as an arrow to a value stored somewhere else. In Listing 15-6, we create a reference to an `i32` value and then use the dereference operator to follow the reference to the data:
 
