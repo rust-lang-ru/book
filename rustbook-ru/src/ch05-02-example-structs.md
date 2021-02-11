@@ -10,7 +10,7 @@
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/src/main.rs:all}}
 ```
 
-<span class="caption">Листинг 5-8: Расчёт площади треугольника с помощью отдельных переменных ширины и высоты</span>
+<span class="caption">Листинг 5-8: Расчёт площади прямоугольника с помощью отдельных переменных ширины и высоты</span>
 
 Теперь, проверим её работу `cargo run`:
 
