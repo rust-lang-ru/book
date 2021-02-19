@@ -228,9 +228,9 @@ copy output below; the output updating script doesn't handle subdirectories in p
 ```console
 $ cargo build
     Updating crates.io index
-  Downloaded rand v0.5.5
+  Downloaded rand v0.8.3
    --snip--
-   Compiling rand v0.5.6
+   Compiling rand v0.8.3
    Compiling add-one v0.1.0 (file:///projects/add/add-one)
 warning: unused import: `rand`
  --> add-one/src/lib.rs:1:5
@@ -307,19 +307,19 @@ $ cargo test
 running 1 test
 test tests::it_works ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
      Running target/debug/deps/adder-49979ff40686fa8e
 
 running 0 tests
 
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
    Doc-tests add-one
 
 running 0 tests
 
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
 
 The first section of the output shows that the `it_works` test in the `add-one`
@@ -346,13 +346,13 @@ $ cargo test -p add-one
 running 1 test
 test tests::it_works ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
    Doc-tests add-one
 
 running 0 tests
 
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
 
 This output shows `cargo test` only ran the tests for the `add-one` crate and
