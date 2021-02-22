@@ -133,14 +133,14 @@ value is to a maximum value and warn when the value is at certain levels</span>
 
 One important part of this code is that the `Messenger` trait has one method
 called `send` that takes an immutable reference to `self` and the text of the
-message. This is the interface our mock object needs to have. The other
-important part is that we want to test the behavior of the `set_value` method
-on the `LimitTracker`. We can change what we pass in for the `value` parameter,
-but `set_value` doesn’t return anything for us to make assertions on. We want
-to be able to say that if we create a `LimitTracker` with something that
-implements the `Messenger` trait and a particular value for `max`, when we pass
-different numbers for `value`, the messenger is told to send the appropriate
-messages.
+message. This trait is the interface our mock object needs to implement so that
+the mock can be used in the same way a real object is. The other important part
+is that we want to test the behavior of the `set_value` method on the
+`LimitTracker`. We can change what we pass in for the `value` parameter, but
+`set_value` doesn’t return anything for us to make assertions on. We want to be
+able to say that if we create a `LimitTracker` with something that implements
+the `Messenger` trait and a particular value for `max`, when we pass different
+numbers for `value`, the messenger is told to send the appropriate messages.
 
 We need a mock object that, instead of sending an email or text message when we
 call `send`, will only keep track of the messages it’s told to send. We can
@@ -178,7 +178,7 @@ of should now have one message in it.
 
 However, there’s one problem with this test, as shown here:
 
-```text
+```console
 {{#include ../listings/ch15-smart-pointers/listing-15-21/output.txt}}
 ```
 
@@ -189,7 +189,7 @@ signature of `send` wouldn’t match the signature in the `Messenger` trait
 definition (feel free to try and see what error message you get).
 
 This is a situation in which interior mutability can help! We’ll store the
-`sent_messages` within a `RefCell<T>`, and then the `send` message will be
+`sent_messages` within a `RefCell<T>`, and then the `send` method will be
 able to modify `sent_messages` to store the messages we’ve seen. Listing 15-22
 shows what that looks like:
 
