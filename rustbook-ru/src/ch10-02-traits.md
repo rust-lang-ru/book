@@ -167,7 +167,7 @@ fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 {
 можно использовать предложение `where` , например так:
 
 ```rust,ignore
-fn some_function(t: &T, u: &U) -> i32
+fn some_function<T, U>(t: &T, u: &U) -> i32
     where T: Display + Clone,
           U: Clone + Debug
 {
