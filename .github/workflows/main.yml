@@ -24,7 +24,7 @@ jobs:
       with:
         fetch-depth: 200
     - uses: rust-lang-ru/simpleinfra/gitocalize-bug-checker@master
-    - uses: funkill/bug-check-action@master
+    - uses: rust-lang-ru/simpleinfra/gl-bugs-checker@master
       with:
         original_dir: rustbook-en/src
         translation_dir: rustbook-ru/src
