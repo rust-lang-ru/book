@@ -14,7 +14,7 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-12/src/lib.rs}}
 ```
 
@@ -32,7 +32,7 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-13/src/lib.rs:here}}
 ```
 
@@ -62,7 +62,7 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-14/src/lib.rs:here}}
 ```
 
@@ -82,7 +82,7 @@
 
 Реализации по умолчанию могут вызывать другие методы с том же типаже, даже если эти другие методы не имеют реализации по умолчанию. Таким образом, типаж может предоставить много полезной функциональности и только требует от разработчиков  указывать небольшую его часть. Например, мы могли бы определить типаж `Summary` имеющий метод `summarize_author`, реализация которого требуется, а затем определить метод `summarize` который имеет реализацию по умолчанию, которая внутри вызывает метод `summarize_author` :
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-03-default-impl-calls-other-methods/src/lib.rs:here}}
 ```
 
@@ -199,7 +199,7 @@ fn some_function(t: &T, u: &U) -> i32
 
 Теперь, когда вы знаете, как указать поведение, которое вы хотите использовать для ограничения параметра обобщённого типа, давайте вернёмся к листингу 10-5 и исправим определение функции `largest`. В прошлый раз мы пытались запустить этот код, но получили ошибку:
 
-```text
+```console
 {{#include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-05/output.txt}}
 ```
 
@@ -237,7 +237,7 @@ fn some_function(t: &T, u: &U) -> i32
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-16/src/lib.rs}}
 ```
 
