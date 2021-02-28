@@ -14,7 +14,7 @@ let guess: u32 = "42".parse().expect("Not a number!");
 {{#include ../listings/ch03-common-programming-concepts/output-only-01-no-type-annotations/output.txt}}
 ```
 
-В будущем вы увидите различные аннотации типов для разных типов данных.
+В будущем вы увидите различные аннотации для разных типов данных.
 
 ### Скалярные типы данных
 
