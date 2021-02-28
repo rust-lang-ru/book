@@ -36,7 +36,7 @@
 {{#include ../listings/ch15-smart-pointers/listing-15-26/output.txt}}
 ```
 
-The reference count of the `Rc<List>` instances in both `a` and `b` are 2 after we change the list in `a` to point to `b`. At the end of `main`, Rust drops the variable `b`, which decreases the reference count of the `Rc<List>` instance from 2 to 1. The memory that `Rc<List>` has on the heap won’t be dropped at this point, because its reference count is 1, not 0. Then Rust drops `a`, which decreases the reference count of the `a` `Rc<List>` instance from 2 to 1 as well. This instance's memory can’t be dropped either, because the other `Rc<List>` instance still refers to it. The memory allocated to the list will remain uncollected forever. To visualize this reference cycle, we’ve created a diagram in Figure 15-4.
+Счётчик ссылок экземпляров `Rc<List>` в обоих переменных `a` и `b` равен 2 после того, как мы изменяем список внутри `a`, чтобы он указывал на `b`. В конце `main` Rust сначала попытается удалить `b`, что уменьшит количество экземпляров `Rc<List>` с 2 на 1. Память, на которую `Rc<List>` указывает в куче, на этом этапе не будет удалена, потому что её счётчик ссылок равен 1, а не 0. Затем Rust удаляет <code>a</code>, что также уменьшает счётчик ссылок экземпляра <code>a</code> <code>Rc&lt;List&gt;</code> с 2 до 1. Память этого экземпляра также не может быть удалена, потому что другой экземпляр <code>Rc&lt;List&gt;</code> по-прежнему ссылается на неё. Память, выделенная для списка, навсегда останется не освобождённой. Чтобы наглядно представить этот эталонный цикл, мы создали диаграмму на Рисунке 15-4.
 
  <img alt="Reference cycle of lists" src="img/trpl15-04.svg?raw=true" class="">
 
@@ -157,3 +157,5 @@ children: RefCell { value: [] } }] } })
 Если эта глава вызвала у вас интерес и вы хотите реализовать свои собственные умные указатели, обратитесь к ["The Rustonomicon"](https://doc.rust-lang.org/nomicon/index.html) за более полезной информацией.
 
 Далее мы поговорим о параллелизме в Rust. Вы даже узнаете о нескольких новых умных указателях.
+
+
