@@ -119,7 +119,7 @@ Listing 12-6 shows the improvements to the `parse_config` function.
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,should_panic
+```rust,should_panic,noplayground
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-06/src/main.rs:here}}
 ```
 
@@ -187,7 +187,7 @@ shows the changes we need to make.
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,should_panic
+```rust,should_panic,noplayground
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-07/src/main.rs:here}}
 ```
 
@@ -306,7 +306,7 @@ program that the program exited with an error state.
 <span class="caption">Listing 12-10: Exiting with an error code if creating a
 new `Config` fails</span>
 
-In this listing, we’ve used a method we haven’t covered before:
+In this listing, we’ve used a method we haven’t covered in detail yet:
 `unwrap_or_else`, which is defined on `Result<T, E>` by the standard library.
 Using `unwrap_or_else` allows us to define some custom, non-`panic!` error
 handling. If the `Result` is an `Ok` value, this method’s behavior is similar
