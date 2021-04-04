@@ -28,7 +28,7 @@
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-12/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 8-13. Использование функции <code>String::from</code> для создания экземпляра типа <code>String</code> из строкового литерала</span>
+<span class="caption">Листинг 8-12. Использование метода <code>to_string</code> для создания экземпляра типа <code>String</code> из строкового литерала</span>
 
 Эти выражения создают строку с  `initial contents`.
 
@@ -38,7 +38,7 @@
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-13/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 8-12. Использование метода <code>to_string</code> для создания экземпляра типа <code>String</code> из строкового литерала</span>
+<span class="caption">Листинг 8-13. Использование функции <code>String::from</code> для создания экземпляра типа <code>String</code> из строкового литерала</span>
 
 Поскольку строки используются для очень многих вещей, можно использовать множество API для строк, предоставляющих множество возможностей. Некоторые из них могут показаться избыточными, но все они занимаются своим делом! В данном случае `String::from` и `to_string` делают одно и тоже, поэтому выбор зависит от стиля который вам больше импонирует.
 
