@@ -259,7 +259,7 @@ trait Add {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-23/src/main.rs}}
 ```
 
-<span class="caption">Листинг 19-23. Создание типа <code>Wrapper</code> <code>Vec&lt;String&gt;</code> для реализации <code>Display</code></span>
+<span class="caption">Листинг 19-23. Создание типа <code>Wrapper</code> <code>Vec<String></code> для реализации <code>Display</code></span>
 
 Реализация `Display` использует `self.0` для доступа к внутреннему `Vec<T>`, потому что `Wrapper` это структура кортежа, а `Vec<T>` это элемент с индексом 0 в кортеже. Затем мы можем использовать функциональные возможности типа `Display` у `Wrapper`.
 
