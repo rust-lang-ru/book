@@ -2,10 +2,6 @@
 
 [Язык программирования Rust](title-page.md)
 
-[Предисловие](foreword.md)
-
-[Введение](ch00-00-introduction.md)
-
 ## С чего начать
 
 - [Введение](ch01-00-getting-started.md)
@@ -124,7 +120,7 @@
     - [Использование типаж-объектов, допускающих значения разных типов](ch17-02-trait-objects.md)
     - [Реализация ООП шаблона проектирования](ch17-03-oo-design-patterns.md)
 
-## Расширенные темы
+## Продвинутые темы
 
 - [Шаблоны и сопоставление](ch18-00-patterns.md)
 
@@ -149,9 +145,9 @@
 - [Дополнения](appendix-00.md)
 
     - [Дополнение A - Ключевые слова](appendix-01-keywords.md)
-    - [Дополнение Б: Операторы и обозначения](appendix-02-operators.md)
-    - [Дополнение В: Выводимые типажи](appendix-03-derivable-traits.md)
+    - [Дополнение Б - Операторы и обозначения](appendix-02-operators.md)
+    - [Дополнение В - Выводимые типажи](appendix-03-derivable-traits.md)
     - [Дополнение Г - Средства разработки](appendix-04-useful-development-tools.md)
     - [Приложение Д - Редакции языка](appendix-05-editions.md)
-    - [Приложение Е: Переводы книги](appendix-06-translation.md)
+    - [Приложение Е - Переводы книги](appendix-06-translation.md)
     - [Дополнение Ё - Как создаётся Rust и "Nightly Rust"](appendix-07-nightly-rust.md)
