@@ -109,10 +109,10 @@ some sort of collection.
 > *not* include checks for integer overflow that cause panics. Instead, if
 > overflow occurs, Rust performs *two’s complement wrapping*. In short, values
 > greater than the maximum value the type can hold “wrap around” to the minimum
-> of the values the type can hold. In the case of a `u8`, 256 becomes 0, 257
-> becomes 1, and so on. The program won’t panic, but the variable will have a
-> value that probably isn’t what you were expecting it to have. Relying on
-> integer overflow’s wrapping behavior is considered an error.
+> of the values the type can hold. In the case of a `u8`, the value 256 becomes
+> 0, the value 257 becomes 1, and so on. The program won’t panic, but the
+> variable will have a value that probably isn’t what you were expecting it to
+> have. Relying on integer overflow’s wrapping behavior is considered an error.
 >
 > To explicitly handle the possibility of overflow, you can use these families
 > of methods that the standard library provides on primitive numeric types:
@@ -249,6 +249,11 @@ want to access. For example:
 This program creates a tuple, `x`, and then makes new variables for each
 element by using their respective indices. As with most programming languages,
 the first index in a tuple is 0.
+
+The tuple without any values, `()`, is a special type that has only one value,
+also written `()`. The type is called the *unit type* and the value is called
+the *unit value*. Expressions implicitly return the unit value if they don't
+return any other value.
 
 #### The Array Type
 
