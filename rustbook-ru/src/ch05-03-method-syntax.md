@@ -31,6 +31,7 @@
 > Вот как это работает: когда вы вызываете метод `object.something()`, Rust автоматически добавляет `&`, `&mut` или  `*`, таким образом, чтобы `object` соответствовал сигнатуре метода. Другими словами, это то же самое:
 >
 > <!-- CAN'T EXTRACT SEE BUG https://github.com/rust-lang/mdBook/issues/1127 -->
+>
 > ```rust
 > # #[derive(Debug,Copy,Clone)]
 > # struct Point {
