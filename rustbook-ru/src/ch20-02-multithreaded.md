@@ -178,7 +178,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
         T: Send + 'static,
 ```
 
-The `spawn` function returns a `JoinHandle<T>`, where `T` is the type that the closure returns. Let’s try using `JoinHandle` too and see what happens. In our case, the closures we’re passing to the thread pool will handle the connection and not return anything, so `T` will be the unit type `()`.
+Функция `spawn` возвращает тип `JoinHandle<T>`, где `T` является типом, который возвращает замыкание. Давайте попробуем использовать `JoinHandle` и посмотрим, что произойдёт. В нашем случае замыкания, которые мы передаём пулу потоков, будут обрабатывать соединение и ничего не будут возвращать, поэтому `T` будет единичным (unit) типом `()`.
 
 Листинг 20-14 скомпилируется, но пока не создаёт потоков. Мы изменили объявление `ThreadPool`, чтобы оно содержало вектор экземпляров `thread::JoinHandle<()>`, инициализировали вектор с размером `size`, установили цикл `for`, который будет запускать некоторый код для создания потоков и вернули экземпляр `ThreadPool` содержащий потоки.
 
@@ -200,18 +200,18 @@ The `spawn` function returns a `JoinHandle<T>`, where `T` is the type that the c
 
 Мы оставили комментарий относительно создания потоков в цикле `for` кода 20-14. Здесь мы рассмотрим, как мы на самом деле создаём потоки. Стандартная библиотека предоставляет `thread::spawn` как способ создания потоков, а `thread::spawn` ожидает получить некоторый код, который поток должен запустить как только поток создан. Однако в нашем случае мы хотим создать потоки и заставить их *ждать* код, который мы отправим им позже. Реализация потоков в стандартной библиотеке не имеет какого то способа это сделать, мы должны реализовать это вручную.
 
-We’ll implement this behavior by introducing a new data structure between the `ThreadPool` and the threads that will manage this new behavior. We’ll call this data structure `Worker`, which is a common term in pooling implementations. Think of people working in the kitchen at a restaurant: the workers wait until orders come in from customers, and then they’re responsible for taking those orders and filling them.
+Мы будем реализовывать это поведение с помощью новой структуры данных между `ThreadPool` и потоками, которая будет управлять этим новым поведением. Мы назовём эту структуру данных `Worker`, что является общим термином в реализации пулов. Подумайте о людях, работающих на кухне в ресторане: рабочие ждут пока не поступят заказы от клиентов, а затем они несут ответственность за принятие этих заказов и их выполнение.
 
-Instead of storing a vector of `JoinHandle<()>` instances in the thread pool, we’ll store instances of the `Worker` struct. Each `Worker` will store a single `JoinHandle<()>` instance. Then we’ll implement a method on `Worker` that will take a closure of code to run and send it to the already running thread for execution. We’ll also give each worker an `id` so we can distinguish between the different workers in the pool when logging or debugging.
+Вместо хранения вектора `JoinHandle<()>` в пуле потоков, мы будем сохранять экземпляры структуры `Worker`. Каждый `Worker` будет хранить один экземпляр `JoinHandle<()>`. Затем мы реализуем метод у `Worker`, который берет код замыкания для запуска и отправляет его в уже запущенный поток для выполнения. Мы также назначим каждому работнику `id`, чтобы мы могли различать разных работников в пуле при ведении журнала или отладке.
 
-Let’s make the following changes to what happens when we create a `ThreadPool`. We’ll implement the code that sends the closure to the thread after we have `Worker` set up in this way:
+Давайте внесём изменения в последовательность действий, которая выполняется при создании `ThreadPool`. Мы реализуем код, который отправляет замыкание в поток после того, как мы настроили `Worker` следующим образом:
 
 1. Определим структуру `Worker` (работник), которая содержит `id` и `JoinHandle<()>`.
 2. Изменим `ThreadPool`, чтобы он содержал вектор экземпляров `Worker`.
-3. Define a `Worker::new` function that takes an `id` number and returns a `Worker` instance that holds the `id` and a thread spawned with an empty closure.
-4. In `ThreadPool::new`, use the `for` loop counter to generate an `id`, create a new `Worker` with that `id`, and store the worker in the vector.
+3. Определим функцию `Worker::new`, которая принимает номер `id` и возвращает экземпляр `Worker`, который содержит `id` и поток, порождённый пустым замыканием.
+4. В `ThreadPool::new` используем счётчик цикла `for` для генерации `id`, создаём новый `Worker` с этим `id` и сохраняем экземпляр "работника" в вектор.
 
-If you’re up for a challenge, try implementing these changes on your own before looking at the code in Listing 20-15.
+Если вы готовы принять вызов, попробуйте реализовать эти изменения самостоятельно, прежде чем смотреть код листинге 20-15.
 
 Готовы? Вот листинг 20-15 с одним из способов сделать предыдущие модификации.
 
@@ -223,27 +223,27 @@ If you’re up for a challenge, try implementing these changes on your own befor
 
 <span class="caption">Листинг 20-15: Изменение <code>ThreadPool</code> для хранения экземпляров <code>Worker</code> вместо непосредственного хранения потоков</span>
 
-We’ve changed the name of the field on `ThreadPool` from `threads` to `workers` because it’s now holding `Worker` instances instead of `JoinHandle<()>` instances. We use the counter in the `for` loop as an argument to `Worker::new`, and we store each new `Worker` in the vector named `workers`.
+Мы изменили имя поля в `ThreadPool` с `threads` на `workers`, потому что теперь оно содержит экземпляры `Worker` вместо экземпляров `JoinHandle<()>`. Мы используем счётчик в цикле `for` в качестве аргумента для `Worker::new` и сохраняем каждый новый `Worker` в векторе с именем `workers`.
 
 Внешний код (вроде нашего сервера в *src/bin/main.rs*) не должен знать подробности реализации касательно использования структуры `Worker` внутри `ThreadPool`, поэтому мы делаем структуру `Worker` и её новую функцию `new` приватными. Функция `Worker::new` использует заданный нами `id` и сохраняет экземпляр `JoinHandle<()>`, который создаётся путём порождение нового потока с пустым замыканием.
 
-This code will compile and will store the number of `Worker` instances we specified as an argument to `ThreadPool::new`. But we’re *still* not processing the closure that we get in `execute`. Let’s look at how to do that next.
+Этот код скомпилируется и будет хранить количество экземпляров `Worker`, которое мы указали в качестве аргумента функции `ThreadPool::new`. Но мы все *ещё* не обрабатываем замыкание, которое мы получаем в методе `execute`. Давайте взглянем на то, как это сделать.
 
 #### Отправка запросов в потоки через каналы
 
-Now we’ll tackle the problem that the closures given to `thread::spawn` do absolutely nothing. Currently, we get the closure we want to execute in the `execute` method. But we need to give `thread::spawn` a closure to run when we create each `Worker` during the creation of the `ThreadPool`.
+Теперь мы рассмотрим проблему, заключающуюся в том, что замыкания переданные в `thread::spawn` абсолютно ничего не делают. Вот мы получаем замыкание, которое хотим выполнить в методе `execute`. Но для запуска нам необходимо передать замыкание в метод `thread::spawn`, где на каждый `ThreadPool` создается один `Worker`.
 
 Мы хотим, чтобы только что созданные структуры `Worker` извлекали код для запуска из очереди хранящейся в `ThreadPool` и отправляли этот код в свой поток для выполнения.
 
 В главе 16 вы узнали о *каналах* (channels) - простом способе связи между двумя потоками, который идеально подойдёт для этого сценария. Мы будем использовать канал в качестве очереди заданий, а команда `execute` отправит задание из `ThreadPool` экземплярам `Worker`, который отправит задание в свой поток. Вот план:
 
-1. The `ThreadPool` will create a channel and hold on to the sending side of the channel.
+1. `ThreadPool` создаст канал и будет удерживать его передающую сторону.
 2. Каждый `Worker` будет удерживать принимающую сторону канала.
 3. Мы создадим новую структуру `Job` которая будет содержать замыкания, которые мы хотим отправить в канал.
 4. Метод `execute` отправит задание, которое он хочет выполнить, в отправляющую сторону канала.
 5. В своём потоке `Worker` будет выполнять цикл с принимающей стороной канала и выполнит замыкание любого получаемого задания.
 
-Let’s start by creating a channel in `ThreadPool::new` and holding the sending side in the `ThreadPool` instance, as shown in Listing 20-16. The `Job` struct doesn’t hold anything for now but will be the type of item we’re sending down the channel.
+Давайте начнём с создания канала в `ThreadPool::new` и удержания отправляющей стороны в экземпляре `ThreadPool`, как показано в листинге 20-16. В структуре `Job` сейчас ничего не содержится, но это будет тип элемента который мы отправляем в канал.
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -285,7 +285,7 @@ Let’s start by creating a channel in `ThreadPool::new` and holding the sending
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-18/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 20-18: Sharing the receiving end of the channel among the workers using <code>Arc</code> and <code>Mutex</code></span>
+<span class="caption">Листинг 20-18: Совместное использование принимающей стороны канала среди "работников" используя <code>Arc</code> и <code>Mutex</code></span>
 
 В `ThreadPool::new` мы помещаем принимающую сторону канала внутрь `Arc` и `Mutex`. Для каждого нового "работника" мы клонируем `Arc`, чтобы увеличить счётчик ссылок так, что "работники" могут разделять владение принимающей стороны канала.
 
@@ -301,7 +301,7 @@ Let’s start by creating a channel in `ThreadPool::new` and holding the sending
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-19/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 20-19: Creating a <code>Job</code> type alias for a <code>Box</code> that holds each closure and then sending the job down the channel</span>
+<span class="caption">Листинг 20-19: Создание псевдонима типа <code>Job</code> для <code>Box</code>, содержащего каждое замыкание и затем отправляющее задание (job) в канал</span>
 
 После создания нового экземпляра `Job` с помощью замыкания, получаемого в метод `execute`, мы отправляем это задание в отправляющую часть канала. Мы вызываем `unwrap` для `send` в случае неудачной отправки. Это может произойти, если например, мы остановим выполнение всех наших потоков, что означает, что принимающая сторона прекратила получение новых сообщений. На данный момент мы не можем остановить выполнение наших потоков: наши потоки продолжают выполняться, пока существует пул. Причина, по которой мы используем `unwrap`, заключается в том, что мы знаем, что сбоя не произойдёт, но компилятор этого не знает.
 
