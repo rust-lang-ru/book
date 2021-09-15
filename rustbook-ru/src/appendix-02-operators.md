@@ -59,21 +59,10 @@
 `@` | `ident @ pat` | Pattern binding |
 `^` | `expr ^ expr` | Побитовое исключающее ИЛИ | `BitXor`
 `^=` | `var ^= expr` | Побитовое исключающее ИЛИ и присваивание | `BitXorAssign`
-<code>&lt;/td&gt;
-&lt;td data-md-type="table_cell"&gt;</code> | <code>pat&lt;/td&gt;
-&lt;td data-md-type="table_cell"&gt;pat</code> | Pattern alternatives |
-<code>&lt;/td&gt;
-&lt;td data-md-type="table_cell"&gt;</code> | <code>expr&lt;/td&gt;
-&lt;td data-md-type="table_cell"&gt;expr</code> | Bitwise OR | `BitOr`
-<code>&lt;/td&gt;
-&lt;td data-md-type="table_cell"&gt;=</code> | <code>var&lt;/td&gt;
-&lt;td data-md-type="table_cell"&gt;= expr</code> | Bitwise OR and assignment | `BitOrAssign`
-<code>&lt;/td&gt;
-&lt;td data-md-type="table_cell"&gt;&lt;/td&gt;
-&lt;td data-md-type="table_cell"&gt;</code> | <code>expr&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr data-md-type="table_row"&gt;
-&lt;td data-md-type="table_cell"&gt;&lt;code data-md-type="codespan"&gt;?</code> | Short-circuiting logical OR |
+<code>|</code> | <code>pat | pat</code> | Альтернативные шаблоны |
+<code>|</code> | <code>expr | expr</code> | Побитовое ИЛИ | `BitOr`
+<code>|=</code> | <code>var |= expr</code> | Побитовое ИЛИ и присваивание | `BitOrAssign`
+<code>||</code> | <code>expr || expr</code> | Короткое логическое ИЛИ |
 `?` | `expr?` | Возврат ошибки |
 
 ### Обозначения не-операторы
@@ -94,11 +83,7 @@
 `br"..."`, `br#"..."#`, `br##"..."##`, etc. | Необработанный строковый байтовый литерал, комбинация необработанного и байтового литерала
 `'...'` | Символьный литерал
 `b'...'` | ASCII байтовый литерал
-<code>&lt;/td&gt;
-&lt;td data-md-type="table_cell"&gt;...&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr data-md-type="table_row"&gt;
-&lt;td data-md-type="table_cell"&gt;&lt;code data-md-type="codespan"&gt;!</code> | Closure
+<code>|...| expr</code> | Closure
 `!` | Всегда пустой тип для расходящихся функций
 `_` | «Игнорируемое» связывание шаблонов; также используется для читабельности целочисленных литералов
 
