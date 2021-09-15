@@ -11,7 +11,7 @@
 Оператор | Пример | Объяснение | Перегружаемость
 --- | --- | --- | ---
 `!` | `ident!(...)`, `ident!{...}`, `ident![...]` | Вызов макроса |
-`!` | `!expr` | Побитовое или логическое отрицание | `Не`
+`!` | `!expr` | Побитовое или логическое отрицание | `Not`
 `!=` | `var != expr` | Сравнение "не равно" | `PartialEq`
 `%` | `expr % expr` | Остаток от деления | `Rem`
 `%=` | `var %= expr` | Остаток от деления и присваивание | `RemAssign`
@@ -22,7 +22,7 @@
 `&&` | `expr && expr` | Логическое И |
 `*` | `expr * expr` | Арифметическое умножение | `Mul`
 `*=` | `var *= expr` | Арифметическое умножение и присваивание | `MulAssign`
-`*` | `*expr` | Разыменование ссылки |
+`*` | `*expr` | Разыменование ссылки | `Deref`
 `*` | `*const type`, `*mut type` | Указывает, что данный тип является сырым указателем |
 `+` | `trait + trait`, `'a + trait` | Соединение ограничений типа |
 `+` | `expr + expr` | Арифметическое сложение | `Add`
@@ -31,13 +31,13 @@
 `-` | `- expr` | Арифметическое отрицание | `Neg`
 `-` | `expr - expr` | Арифметическое вычитание | `Sub`
 `-` | `var -= expr` | Арифметическое вычитание и присваивание | `SubAssign`
-`->` | `fn(...) -> type`, <code></code> | ... |
+`->` | `fn(...) -> type`, <code>|...| -&gt; type</code> | ... |
 `.` | `expr.ident` | Доступ к элементу |
-`..` | `..`, `expr..`, `..expr`, `expr..expr` | Указывает на диапазон чисел, исключая правый |
-`..=` | `..=expr`, `expr..=expr` | Указывает на диапазон чисел, включая правый |
+`..` | `..`, `expr..`, `..expr`, `expr..expr` | Указывает на диапазон чисел, исключая правый | `PartialOrd`
+`..=` | `..=expr`, `expr..=expr` | Указывает на диапазон чисел, включая правый | `PartialOrd`
 `..` | `..expr` | Синтаксис обновления структуры |
 `..` | `variant(x, ..)`, `struct_type { x, .. }` | Привязка «И все остальное» |
-`...` | `expr...expr` | В шаблоне: шаблон диапазона включая правый элемент |
+`...` | `expr...expr` | (Устарело, используйте новый синтаксис `..=`) Используется при определении инклюзивного диапазона |
 `/` | `expr / expr` | Арифметическое деление | `Div`
 `/=` | `var /= expr` | Арифметическое деление и присваивание | `DivAssign`
 `:` | `pat: type`, `ident: type` | Ограничения типов |
@@ -59,10 +59,21 @@
 `@` | `ident @ pat` | Pattern binding |
 `^` | `expr ^ expr` | Побитовое исключающее ИЛИ | `BitXor`
 `^=` | `var ^= expr` | Побитовое исключающее ИЛИ и присваивание | `BitXorAssign`
-<code>|</code> | <code>pat | pat</code> | Альтернативные шаблоны |
-<code>|</code> | <code>expr | expr</code> | Побитовое ИЛИ | `BitOr`
-<code>|=</code> | <code>var |= expr</code> | Побитовое ИЛИ и присваивание | `BitOrAssign`
-<code>||</code> | <code>expr || expr</code> | Короткое логическое ИЛИ |
+<code>&lt;/td&gt;
+&lt;td data-md-type="table_cell"&gt;</code> | <code>pat&lt;/td&gt;
+&lt;td data-md-type="table_cell"&gt;pat</code> | Pattern alternatives |
+<code>&lt;/td&gt;
+&lt;td data-md-type="table_cell"&gt;</code> | <code>expr&lt;/td&gt;
+&lt;td data-md-type="table_cell"&gt;expr</code> | Bitwise OR | `BitOr`
+<code>&lt;/td&gt;
+&lt;td data-md-type="table_cell"&gt;=</code> | <code>var&lt;/td&gt;
+&lt;td data-md-type="table_cell"&gt;= expr</code> | Bitwise OR and assignment | `BitOrAssign`
+<code>&lt;/td&gt;
+&lt;td data-md-type="table_cell"&gt;&lt;/td&gt;
+&lt;td data-md-type="table_cell"&gt;</code> | <code>expr&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr data-md-type="table_row"&gt;
+&lt;td data-md-type="table_cell"&gt;&lt;code data-md-type="codespan"&gt;?</code> | Short-circuiting logical OR |
 `?` | `expr?` | Возврат ошибки |
 
 ### Обозначения не-операторы
@@ -83,7 +94,11 @@
 `br"..."`, `br#"..."#`, `br##"..."##`, etc. | Необработанный строковый байтовый литерал, комбинация необработанного и байтового литерала
 `'...'` | Символьный литерал
 `b'...'` | ASCII байтовый литерал
-<code>|...| expr</code> | Замыкание
+<code>&lt;/td&gt;
+&lt;td data-md-type="table_cell"&gt;...&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr data-md-type="table_row"&gt;
+&lt;td data-md-type="table_cell"&gt;&lt;code data-md-type="codespan"&gt;!</code> | Closure
 `!` | Всегда пустой тип для расходящихся функций
 `_` | «Игнорируемое» связывание шаблонов; также используется для читабельности целочисленных литералов
 
