@@ -9,10 +9,10 @@
 - [Українська](https://github.com/pavloslav/rust-book-uk-ua)
 - [Español](https://github.com/thecodix/book), [alternate](https://github.com/ManRR/rust-book-es)
 - [Italiano](https://github.com/AgeOfWar/rust-book-it)
-- [Русский](https://github.com/rust-lang-ru/book)
+- [Русский](https://github.com/ruRust/rust_book_2ed)
 - [한국어](https://github.com/rinthel/rust-lang-book-ko)
-- [日本語](https://github.com/rust-lang-ja/book-ja)
-- [Français](https://github.com/Jimskapt/rust-book-fr)
+- [日本語](https://github.com/hazama-yuinyan/book)
+- [Français](https://github.com/quadrifoglio/rust-book-fr)
 - [Polski](https://github.com/paytchoo/book-pl)
 - [עברית](https://github.com/idanmel/rust-book-heb)
 - [Cebuano](https://github.com/agentzero1/book)
@@ -25,3 +25,5 @@
 - [Turkish](https://github.com/RustDili/dokuman/tree/master/ceviriler) , [online](https://rustdili.github.io/)
 - [हिंदी](https://github.com/venkatarun95/rust-book-hindi)
 - [ไทย](https://github.com/rust-lang-th/book-th)
+
+
