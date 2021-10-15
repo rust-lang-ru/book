@@ -2,7 +2,7 @@
 
 Первым шагом является установка Rust. Мы загрузим Rust, используя инструмент командной строки `rustup`, предназначенный для управлениями версиями Rust и другими связанными с ним инструментами. Вам понадобится интернет соединение для его загрузки.
 
-> Замечание: Если вы предпочтете не использовать `rustup` по какой-то причине, пожалуйста, ознакомьтесь с другими вариантами на с странице [the Rust installation page].
+> Замечание: Если вы предпочтёте не использовать `rustup` по какой-то причине, пожалуйста, ознакомьтесь с другими вариантами на с странице [the Rust installation page].
 
 Следующие шаги устанавливают последнюю стабильную версию компилятора Rust. Стабильность Rust гарантирует, что все примеры в книге, которые компилируются, будут продолжать компилироваться с более новыми версиями Rust. Вывод может немного отличаться между версиями, потому что Rust часто улучшает сообщения об ошибках и предупреждения. Другими словами, любая более новая стабильная версия Rust, которую вы устанавливаете с помощью этих шагов, должна работать должным образом с содержанием этой книги.
 
@@ -77,8 +77,8 @@ rustc x.y.z (abcabcabc yyyy-mm-dd)
 Каждый раз, когда тип или функция предоставляется из стандартной библиотеки и вы не знаете, что они делают или как их использовать, используйте документацию по интерфейсу прикладного программирования (API), чтобы узнать это!
 
 
-[the Rust installation page]: https://forge.rust-lang.org/infra/other-installation-methods.html
-[Build Tools for Visual Studio 2019]: https://www.rust-lang.org/tools/install
-[официального Rust Discord]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
-[пользовательский форум]: https://discord.gg/rust-lang
-[Stack Overflow]: https://users.rust-lang.org/
+[the Rust installation page]: https://www.rust-lang.org/tools/install
+[Build Tools for Visual Studio 2019]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+[официального Rust Discord]: https://discord.gg/rust-lang
+[пользовательский форум]: https://users.rust-lang.org/
+[Stack Overflow]: https://stackoverflow.com/questions/tagged/rust
