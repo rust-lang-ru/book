@@ -260,22 +260,24 @@ body that might fail: the `File::open` function and the `read_to_string`
 method.
 
 The body of the function starts by calling the `File::open` function. Then we
-handle the `Result` value returned with a `match` similar to the `match` in
-Listing 9-4, only instead of calling `panic!` in the `Err` case, we return
-early from this function and pass the error value from `File::open` back to the
-calling code as this function’s error value. If `File::open` succeeds, we store
-the file handle in the variable `f` and continue.
+handle the `Result` value with a `match` similar to the `match` in Listing 9-4.
+If `File::open` succeeds, the file handle in the pattern variable `file`
+becomes the value in the mutable variable `f` and the function continues. In
+the `Err` case, instead of calling `panic!`, we use the `return` keyword to
+return early out of the function entirely and pass the error value from
+`File::open`, now in the pattern variable `e`, back to the calling code as this
+function’s error value.
 
-Then we create a new `String` in variable `s` and call the `read_to_string`
-method on the file handle in `f` to read the contents of the file into `s`. The
-`read_to_string` method also returns a `Result` because it might fail, even
-though `File::open` succeeded. So we need another `match` to handle that
-`Result`: if `read_to_string` succeeds, then our function has succeeded, and we
-return the username from the file that’s now in `s` wrapped in an `Ok`. If
-`read_to_string` fails, we return the error value in the same way that we
-returned the error value in the `match` that handled the return value of
-`File::open`. However, we don’t need to explicitly say `return`, because this
-is the last expression in the function.
+So if we have a file handle in `f`, the function then creates a new `String` in
+variable `s` and calls the `read_to_string` method on the file handle in `f` to
+read the contents of the file into `s`. The `read_to_string` method also
+returns a `Result` because it might fail, even though `File::open` succeeded.
+So we need another `match` to handle that `Result`: if `read_to_string`
+succeeds, then our function has succeeded, and we return the username from the
+file that’s now in `s` wrapped in an `Ok`. If `read_to_string` fails, we return
+the error value in the same way that we returned the error value in the `match`
+that handled the return value of `File::open`. However, we don’t need to
+explicitly say `return`, because this is the last expression in the function.
 
 The code that calls this code will then handle getting either an `Ok` value
 that contains a username or an `Err` value that contains an `io::Error`. We
@@ -322,11 +324,11 @@ on them go through the `from` function, defined in the `From` trait in the
 standard library, which is used to convert errors from one type into another.
 When the `?` operator calls the `from` function, the error type received is
 converted into the error type defined in the return type of the current
-function. This is useful when a function returns one error type to represent all
-the ways a function might fail, even if parts might fail for many different
-reasons. As long as each error type implements the `from` function to define how
-to convert itself to the returned error type, the `?` operator takes care of the
-conversion automatically.
+function. This is useful when a function returns one error type to represent
+all the ways a function might fail, even if parts might fail for many different
+reasons. As long as there’s an `impl From<OtherError> for ReturnedError` to
+define the conversion in the trait’s `from` function, the `?` operator takes
+care of calling the `from` function automatically.
 
 In the context of Listing 9-7, the `?` at the end of the `File::open` call will
 return the value inside an `Ok` to the variable `f`. If an error occurs, the
