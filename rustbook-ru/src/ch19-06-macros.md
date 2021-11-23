@@ -36,7 +36,7 @@ let v: Vec<u32> = vec![1, 2, 3];
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-28/src/lib.rs}}
 ```
 
@@ -72,7 +72,7 @@ let v: Vec<u32> = vec![1, 2, 3];
 
 Мы определили макрос, который может принимать любое количество аргументов любого типа и может генерировать код для создания вектора, содержащего указанные элементы.
 
-Есть несколько странных краевых случаев у макроса `macro_rules!`. В будущем у Rust будет второй вид декларативного макроса, который будет работать аналогичным образом, но поправит некоторые из этих краевых случаев. После этого обновления `macro_rules!` будет фактически устаревшим. Имея это в виду, а также тот факт, что большинство Rust программистов будут *использовать* макросы больше, чем сами *писать* макросы, мы далее не будем обсуждать `macro_rules!`. Чтобы узнать больше о том, как писать макросы, обратитесь к электронной документации или другим ресурсам, таким как [The Little Book of Rust Macros”].
+Есть несколько странных краевых случаев у макроса `macro_rules!`. В будущем у Rust будет второй вид декларативного макроса, который будет работать аналогичным образом, но поправит некоторые из этих краевых случаев. После этого обновления `macro_rules!` будет фактически устаревшим. Имея это в виду, а также тот факт, что большинство Rust программистов будут *использовать* макросы больше, чем сами *писать* макросы, мы далее не будем обсуждать `macro_rules!`. Чтобы узнать больше о том, как писать макросы, обратитесь к электронной документации или другим ресурсам, таким как [“The Little Book of Rust Macros”].
 
 ### Процедурные макросы для генерации кода из атрибутов
 
@@ -120,7 +120,7 @@ $ cargo new hello_macro --lib
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-20-impl-hellomacro-for-pancakes/hello_macro/src/lib.rs}}
 ```
 
@@ -147,7 +147,7 @@ $ cargo new hello_macro_derive --lib
 <span class="filename">Файл: hello_macro_derive/Cargo.toml</span>
 
 ```toml
-{{#include ../listings/ch19-advanced-features/listing-19-31/hello_macro/hello_macro_derive/Cargo.toml:7:12}}
+{{#include ../listings/ch19-advanced-features/listing-19-31/hello_macro/hello_macro_derive/Cargo.toml:6:12}}
 ```
 
 Чтобы начать определение процедурного макроса, поместите код листинга 19-31 в ваш файл *src/lib.rs* крейта `hello_macro_derive`. Обратите внимание, что этот код не скомпилируется пока мы не добавим определение для функции `impl_hello_macro`.
@@ -273,7 +273,7 @@ pub fn sql(input: TokenStream) -> TokenStream {
 
 
 [в ссылке]: ../reference/macros-by-example.html
-[The Little Book of Rust Macros”]: https://danielkeep.github.io/tlborm/book/index.html
+[“The Little Book of Rust Macros”]: https://veykril.github.io/tlborm/
 [`syn`]: https://crates.io/crates/syn
 [`quote`]: https://crates.io/crates/quote
 [документацию `syn` о структуре `DeriveInput`]: https://docs.rs/syn/1.0/syn/struct.DeriveInput.html
