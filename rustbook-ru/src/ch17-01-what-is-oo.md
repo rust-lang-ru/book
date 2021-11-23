@@ -4,7 +4,7 @@
 
 ### Объекты содержат данные и поведение
 
-The book *Design Patterns: Elements of Reusable Object-Oriented Software* by Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides (Addison-Wesley Professional, 1994), colloquially referred to as *The Gang of Four* book, is a catalog of object-oriented design patterns. It defines OOP this way:
+Книга «Приёмы объектно-ориентированного проектирования. Шаблоны проектирования» (1994), называемая также «книгой банды четырёх», является каталогом объектно-ориентированных шаблонов проектирования. Объектно-ориентированные программы определяются в ней следующим образом:
 
 > Объектно-ориентированные программы состоят из объектов. *Объект* объединяет данные и процедуры, которые работают с этими данными. Эти процедуры обычно называются *методами* или *операциями*.
 
