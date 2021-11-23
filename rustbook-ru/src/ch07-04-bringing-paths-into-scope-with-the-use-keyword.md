@@ -22,7 +22,7 @@
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-12/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 7-12. Подключение модуля в область видимости с помощью <code>use</code></span> и относительного пути
+<span class="caption"><span class="caption">Листинг 7-12. Подключение модуля в область видимости с помощью <code>use</code></span> и относительного пути</span>
 
 ### Создание идиоматических путей с `use`
 
@@ -54,7 +54,7 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-15/src/lib.rs:here}}
 ```
 
@@ -68,7 +68,7 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-16/src/lib.rs:here}}
 ```
 
@@ -154,7 +154,7 @@ use std::collections::HashMap;
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-19/src/lib.rs}}
 ```
 
@@ -164,7 +164,7 @@ use std::collections::HashMap;
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-20/src/lib.rs}}
 ```
 
