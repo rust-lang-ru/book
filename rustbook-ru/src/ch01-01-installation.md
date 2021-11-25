@@ -42,7 +42,7 @@ Linux users should generally install GCC or Clang, according to their distributi
 
 ### Обновление и удаление
 
-After you’ve installed Rust via `rustup`, updating to the latest version is easy. From your shell, run the following update script:
+После установки Rust с помощью `rustup`, обновление на последние версии выполняется с помощью следующего простого скрипта командой:
 
 ```console
 $ rustup update
