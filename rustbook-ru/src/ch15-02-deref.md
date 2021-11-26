@@ -66,7 +66,7 @@
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-09/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 15-9: Попытка использовать <code>MyBox&lt;T data-md-type="raw_html"&gt;</code> таким же образом, как мы использовали ссылки и библиотечный <code>Box&lt;T data-md-type="raw_html"&gt;</code></span>
+<span class="caption">Листинг 15-9. Попытка использовать <code>MyBox&lt;T&gt;</code> таким же образом, как мы использовали ссылки и <code>Box&lt;T&gt;</code></span>
 
 Вот результат ошибки компиляции:
 
