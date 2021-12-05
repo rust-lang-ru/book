@@ -74,10 +74,9 @@ Rust для людей, которые жаждут скорости и стаб
 
 Ferris | Пояснения
 --- | ---
-<img src="img/ferris/does_not_compile.svg" class="ferris-explain"> | Этот код не компилируется!
-<img src="img/ferris/panics.svg" class="ferris-explain"> | Этот код вызывает состояние "panic"!
-<img src="img/ferris/unsafe.svg" class="ferris-explain"> | Этот блок содержит небезопасный код.
-<img src="img/ferris/not_desired_behavior.svg" class="ferris-explain"> | Этот код ведёт себя не так, как предполагается.
+<img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/does_not_compile.svg?raw=true" alt="Ferris with a question mark" class=""> | Этот код не компилируется!
+<img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/panics.svg?raw=true" class=""> | Этот код вызывает панику!
+<img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/not_desired_behavior.svg?raw=true" class=""> | Этот код не даёт желаемого поведения.
 
 В большинстве случаев мы приведём вас к правильной версии любого кода, который не компилируется.
 
@@ -88,4 +87,4 @@ Ferris | Пояснения
 
 [The Rust Programming Language]: https://nostarch.com/rust
 [No Starch Press]: https://nostarch.com/
-[GitHub]: https://github.com/rust-lang/book/tree/master/src
+[GitHub]: https://github.com/rust-lang/book/tree/main/src
