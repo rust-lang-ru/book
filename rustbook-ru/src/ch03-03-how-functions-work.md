@@ -66,9 +66,9 @@
 
 Тела функций состоят из ряда операторов, необязательно заканчивающихся выражением. До сих пор функции, которые мы рассматривали, не включали завершающее выражение, но вы видели выражение как часть оператора. Поскольку Rust является языком, основанным на выражениях, это важное различие необходимо понимать. В других языках таких различий нет, поэтому давайте рассмотрим, что такое операторы и выражения, и как их различия влияют на тела функций.
 
-*Statements* are instructions that perform some action and do not return a value. *Expressions* evaluate to a resulting value. Let’s look at some examples.
+*Операторы* - это инструкции, которые выполняют какое-либо действие и не возвращают значение. *Выражения* вычисляют результирующее значение. Давайте посмотрим на несколько примеров.
 
-We’ve actually already used statements and expressions. Creating a variable and assigning a value to it with the `let` keyword is a statement. In Listing 3-1, `let y = 6;` is a statement.
+Фактически мы уже использовали операторы и выражения. Создание переменной и присвоение ей значения с помощью `let` - это оператор. В листинге 3-1 `let y = 6;` это оператор.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -96,7 +96,7 @@ We’ve actually already used statements and expressions. Creating a variable an
 
 Оператор `let y = 6`не возвращает значения, так что нет ничего что можно было бы назначить переменной `x`. Такое поведение отлично от некоторых других языков, типа C и Ruby, где выражение присваивания возвращает присваиваемое значение. В таких языках можно писать код `x = y = 6` и обе переменные `x` и `y` будут иметь одинаковое значение `6`; но это не так в Rust.
 
-Expressions evaluate to a value and make up most of the rest of the code that you’ll write in Rust. Consider a math operation, such as `5 + 6`, which is an expression that evaluates to the value `11`. Expressions can be part of statements: in Listing 3-1, the `6` in the statement `let y = 6;` is an expression that evaluates to the value `6`. Calling a function is an expression. Calling a macro is an expression. A new scope block created with curly brackets is an expression, for example:
+Выражения вычисляют значение и составляют большую часть остального кода, который вы напишете на Rust. Рассмотрим математическую операцию, например `5 + 6`, которая является выражением, результатом которого является значение `11`. Выражения могут быть частью операторов: в листинге 3-1 цифра `6` в операторе `let y = 6;` - выражение, которое принимает значение `6`. Вызов функции - это выражение. Вызов макроса - это выражение. Новый блок области видимости, созданный с помощью фигурных скобок, представляет собой выражение, например:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -113,7 +113,7 @@ Expressions evaluate to a value and make up most of the rest of the code that yo
 }
 ```
 
-is a block that, in this case, evaluates to `4`. That value gets bound to `y` as part of the `let` statement. Note that the `x + 1` line doesn’t have a semicolon at the end, unlike most of the lines you’ve seen so far. Expressions do not include ending semicolons. If you add a semicolon to the end of an expression, you turn it into a statement, and it will then not return a value. Keep this in mind as you explore function return values and expressions next.
+Это блок, который в данном случае будет вычислен в `4`. Это значение привязывается к `y` как часть оператора `let`. Обратите внимание, что `x + 1` не имеет точки с запятой в конце, в отличие от большинства строк, которые вы видели до сих пор. Выражения не включают точку с запятой в конце. Если вы добавите точку с запятой в конец выражения, вы превратите его в оператор и тогда оно не вернёт значение. Помните об этом, когда будете изучать возвращаемые функцией значения и выражения.
 
 ### Функции возвращающие значения
 
@@ -161,4 +161,4 @@ let x = 5;
 {{#include ../listings/ch03-common-programming-concepts/no-listing-23-statements-dont-return-values/output.txt}}
 ```
 
-The main error message, “mismatched types,” reveals the core issue with this code. The definition of the function `plus_one` says that it will return an `i32`, but statements don’t evaluate to a value, which is expressed by `()`, the unit type. Therefore, nothing is returned, which contradicts the function definition and results in an error. In this output, Rust provides a message to possibly help rectify this issue: it suggests removing the semicolon, which would fix the error.
+Основное сообщение об ошибке «несовпадающие типы» раскрывает основную проблему с этим кодом. В определении функции `plus_one` говорится, что она вернёт `i32`, но операторы не вычисляют значение, которое выражается `()`. Следовательно, ничего не возвращается, что противоречит определению функции и приводит к ошибке. В этом выводе Rust предоставляет сообщение, которое, возможно, поможет исправить эту проблему: он предлагает удалить точку с запятой, что исправит ошибку.
