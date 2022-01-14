@@ -132,6 +132,6 @@ Rust должен знать, какие типы будут в векторе �
 
 
 ["Типы данных"]: ch03-02-data-types.html#data-types
-["The Rustonomicon"]: ../nomicon/vec/vec.html
+["The Rustonomicon"]: https://doc.rust-lang.org/nomicon/vec/vec.html
 [документацию по API]: ../std/vec/struct.Vec.html
 ["Следуя указателю на значение с помощью оператора разыменования"]: ch15-02-deref.html#following-the-pointer-to-the-value-with-the-dereference-operator
