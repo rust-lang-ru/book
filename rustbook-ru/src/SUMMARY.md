@@ -69,7 +69,7 @@
 - [Написание автоматических тестов](ch11-00-testing.md)
 
     - [Как писать тесты](ch11-01-writing-tests.md)
-    - [Управление ходом выполения тестов](ch11-02-running-tests.md)
+    - [Управление ходом выполнения тестов](ch11-02-running-tests.md)
     - [Организация испытаний](ch11-03-test-organization.md)
 
 - [Проект ввода-вывода: создание программы командной строки](ch12-00-an-io-project.md)
@@ -125,7 +125,7 @@
 - [Шаблоны и сопоставление](ch18-00-patterns.md)
 
     - [Все случаи, где могут быть использованы шаблоны](ch18-01-all-the-places-for-patterns.md)
-    - [Опровержимость: может ли образец не соответствовать](ch18-02-refutability.md)
+    - [Фальсифицируемость: может ли образец не соответствовать](ch18-02-refutability.md)
     - [Синтаксис шаблона](ch18-03-pattern-syntax.md)
 
 - [Расширенные возможности](ch19-00-advanced-features.md)
@@ -150,4 +150,4 @@
     - [D — Полезные инструменты разработки](appendix-04-useful-development-tools.md)
     - [E - Редакции](appendix-05-editions.md)
     - [F - Переводы книги](appendix-06-translation.md)
-    - [G — Как создается Rust и «Ночной Rust»](appendix-07-nightly-rust.md)
+    - [G — Как создаётся Rust и «Ночной Rust»](appendix-07-nightly-rust.md)
