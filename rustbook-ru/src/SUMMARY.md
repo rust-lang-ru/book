@@ -58,7 +58,7 @@
 
     - [Неисправимые ошибки с `panic!`](ch09-01-unrecoverable-errors-with-panic.md)
     - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-result.md)
-    - [To `panic!` or Not to `panic!`](ch09-03-to-panic-or-not-to-panic.md)
+    - [`panic!` или не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
 
 - [Обобщённые типы, типажи и времена жизни](ch10-00-generics.md)
 
