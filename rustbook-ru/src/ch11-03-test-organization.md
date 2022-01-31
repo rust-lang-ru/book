@@ -17,7 +17,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs}}
 ```
 
 Этот код является автоматически сгенерированным тестовым модулем. Атрибут `cfg` предназначен для *конфигурации* и говорит Rust, что следующий элемент должен быть включён только учитывая определённую опцию конфигурации. В этом случае опцией конфигурации является `test`, который предоставлен в Rust для компиляции и запуска текущих тестов. Используя атрибут `cfg`, Cargo компилирует только тестовый код при активном запуске тестов командой `cargo test`. Это включает в себя любые вспомогательные функции, которые могут быть в этом модуле в дополнение к функциям помеченным `#[test]`.
@@ -29,7 +29,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-12/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-12/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 11-12: Тестирование приватных функций</span>
