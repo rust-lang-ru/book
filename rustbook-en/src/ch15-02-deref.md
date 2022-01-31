@@ -67,7 +67,7 @@ reference; the dereference operator will work as shown in Listing 15-7:
 <span class="caption">Listing 15-7: Using the dereference operator on a
 `Box<i32>`</span>
 
-The only difference between Listing 15-7 and Listing 15-6 is that here we set
+The main difference between Listing 15-7 and Listing 15-6 is that here we set
 `y` to be an instance of a box pointing to a copied value of `x` rather than a
 reference pointing to the value of `x`. In the last assertion, we can use the
 dereference operator to follow the box’s pointer in the same way that we did
@@ -124,7 +124,8 @@ implement the `Deref` trait.
 
 ### Treating a Type Like a Reference by Implementing the `Deref` Trait
 
-As discussed in Chapter 10, to implement a trait, we need to provide
+As discussed in the [“Implementing a Trait on a Type”][impl-trait]<!-- ignore
+--> section of Chapter 10, to implement a trait, we need to provide
 implementations for the trait’s required methods. The `Deref` trait, provided
 by the standard library, requires us to implement one method named `deref` that
 borrows `self` and returns a reference to the inner data. Listing 15-10
@@ -144,9 +145,11 @@ parameter, but you don’t need to worry about them for now; we’ll cover them 
 more detail in Chapter 19.
 
 We fill in the body of the `deref` method with `&self.0` so `deref` returns a
-reference to the value we want to access with the `*` operator. The `main`
-function in Listing 15-9 that calls `*` on the `MyBox<T>` value now compiles,
-and the assertions pass!
+reference to the value we want to access with the `*` operator. Recall from the
+[“Using Tuple Structs without Named Fields to Create Different
+Types”][tuple-structs]<!-- ignore --> section of Chapter 5 that `.0` accesses
+the first value in a tuple struct. The `main` function in Listing 15-9 that
+calls `*` on the `MyBox<T>` value now compiles, and the assertions pass!
 
 Without the `Deref` trait, the compiler can only dereference `&` references.
 The `deref` method gives the compiler the ability to take a value of any type
@@ -285,3 +288,6 @@ initial immutable reference is the only immutable reference to that data, but
 the borrowing rules don’t guarantee that. Therefore, Rust can’t make the
 assumption that converting an immutable reference to a mutable reference is
 possible.
+
+[impl-trait]: ch10-02-traits.html#implementing-a-trait-on-a-type
+[tuple-structs]: ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types
