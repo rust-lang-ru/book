@@ -1,6 +1,6 @@
 ## Определение и инициализация структур
 
-Структуры похожи на кортежи, рассмотренные в разделе ["Тип Кортеж"](ch03-02-data-types.html#the-tuple-type), так как оба хранят несколько связанных значений. Как и кортежи, части структур могут быть разных типов. В отличие от кортежей, в структуре необходимо именовать каждую часть данных для понимания смысла значений. Добавление этих имён обеспечивает большую гибкость структур по сравнению с кортежами: не нужно полагаться на порядок данных для указания значений экземпляра или доступа к ним.
+Структуры похожи на кортежи, рассмотренные в разделе ["Тип Кортеж"], так как оба хранят несколько связанных значений. Как и кортежи, части структур могут быть разных типов. В отличие от кортежей, в структуре необходимо именовать каждую часть данных для понимания смысла значений. Добавление этих имён обеспечивает большую гибкость структур по сравнению с кортежами: не нужно полагаться на порядок данных для указания значений экземпляра или доступа к ним.
 
 Для определения структуры указывается ключевое слово `struct` и её название. Название должно описывать значение частей данных, сгруппированных вместе. Далее, в фигурных скобках для каждой новой части данных поочерёдно определяются имя части данных и её тип. Каждая пара <code>имя: тип</code> называется *полем*. Листинг 5-1 описывает структуру для хранения информации об учётной записи пользователя:
 
@@ -16,15 +16,15 @@
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-02/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 5-2: Creating an instance of the <code>User</code> struct</span>
+<span class="caption">Листинг 5-2: Создание экземпляра структуры <code>User</code></span>
 
-To get a specific value from a struct, we use dot notation. If we wanted just this user’s email address, we could use `user1.email` wherever we wanted to use this value. If the instance is mutable, we can change a value by using the dot notation and assigning into a particular field. Listing 5-3 shows how to change the value in the `email` field of a mutable `User` instance.
+Чтобы получить конкретное значение из структуры, используется точечная нотация. Если нужен только адрес электронной почты этого пользователя, мы можем использовать `user1.email` везде, где хотим использовать это значение. Если экземпляр является изменяемым, мы можем изменить значение, используя точечную нотацию и присваивая его конкретному полю. В листинге 5-3 показано, как изменить значение в поле `email` изменяемого экземпляра `User`.
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-03/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 5-3: Changing the value in the <code>email</code> field of a <code>User</code> instance</span>
+<span class="caption">Листинг 5-3: Изменение значения в поле <code>email</code> экземпляра <code>User</code></span>
 
 Заметим, что весь экземпляр структуры должен быть изменяемым; Rust не позволяет помечать изменяемыми отдельные поля. Как и для любого другого выражения, мы можем использовать выражение создания структуры в качестве последнего выражения тела функции для неявного возврата нового экземпляра.
 
@@ -34,7 +34,7 @@ To get a specific value from a struct, we use dot notation. If we wanted just th
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-04/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 5-4: A <code>build_user</code> function that takes an email and username and returns a <code>User</code> instance</span>
+<span class="caption">Листинг 5-4: Функция <code>build_user</code>, которая принимает email и имя пользователя и возвращает экземпляр <code>User</code></span>
 
 Имеет смысл называть параметры функции теми же именами, что и поля структуры, но необходимость повторять `email` и `username` для названий полей и переменных несколько утомительна. Если структура имеет много полей,  повторение каждого имени станет ещё более раздражающим. К счастью, есть удобное сокращение!
 
@@ -54,7 +54,7 @@ To get a specific value from a struct, we use dot notation. If we wanted just th
 
 ### Создание экземпляра структуры из экземпляра другой структуры с помощью синтаксиса обновления структуры
 
-It’s often useful to create a new instance of a struct that includes most of the values from another instance, but changes some. You can do this using *struct update syntax*.
+Часто бывает полезно создать новый экземпляр структуры, который включает большинство значений из другого экземпляра, но некоторые из них изменяет. Это можно сделать с помощью *синтаксиса обновления структуры*.
 
 Сначала в листинге 5-6 показано, как обычно создёется новый экземпляр `User` в `user2` без синтаксиса обновления. Мы задаём новое значение для `email`, но в остальном используем те же значения из `user1`, которые были заданы в листинге 5-2.
 
@@ -74,13 +74,13 @@ It’s often useful to create a new instance of a struct that includes most of t
 
 Код в листинге 5-7 также создаёт экземпляр в `user2`, который имеет другое значение для `email`, но с тем же значением для полей `username`, `active` и `sign_in_count` из `user1`. Оператор `..user1` должен стоять последним для указания на получение значений всех оставшихся полей из соответствующих полей в `user1`, но можно указать значения для любого количества полей в любом порядке, независимо от порядка полей в определении структуры.
 
-Заметим, что синтаксис обновления структуры использует `=` как присваивание. Это связано с перемещением данных, как мы видели в разделе ["Способы взаимодействия переменных и данных: перемещение"](ch04-01-what-is-ownership.html#ways-variables-and-data-interact-move). В этом примере мы больше не можем использовать `user1` после создания `user2`, потому что `String` в поле `username` из `user1` было перемещено в `user2`. Если бы мы задали `user2` новые значения `String` для `email` и `username`, и при этом использовать только значения `active` и `sign_in_count` из `user1`, то `user1` все ещё будет действительным после создания `user2`. Типы `active` и `sign_in_count` являются типами, реализующими типаж `Copy`, поэтому будет применяться поведение, о котором мы говорили в разделе ["Stack-Only Data: Copy"](ch04-01-what-is-ownership.html#stack-only-data-copy).
+Заметим, что синтаксис обновления структуры использует `=` как присваивание. Это связано с перемещением данных, как мы видели в разделе ["Способы взаимодействия переменных и данных: перемещение"]. В этом примере мы больше не можем использовать `user1` после создания `user2`, потому что `String` в поле `username` из `user1` было перемещено в `user2`. Если бы мы задали `user2` новые значения `String` для `email` и `username`, и при этом использовать только значения `active` и `sign_in_count` из `user1`, то `user1` все ещё будет действительным после создания `user2`. Типы `active` и `sign_in_count` являются типами, реализующими типаж `Copy`, поэтому будет применяться поведение, о котором мы говорили в разделе ["Stack-Only Data: Copy"].
 
 ### Кортежные структуры: структуры без именованных полей для создания разных типов
 
 Rust также поддерживает структуры, похожие на кортежи, которые называются *кортежные структуры*. Кортежные структуры обладают дополнительным смыслом, который даёт имя структуры, но при этом не имеют имён, связанных с их полями. Скорее, они просто хранят типы полей. Кортежные структуры полезны, когда вы хотите дать имя всему кортежу и сделать кортеж отличным от других кортежей, и когда именование каждого поля, как в обычной структуре, было бы многословным или избыточным.
 
-To define a tuple struct, start with the `struct` keyword and the struct name followed by the types in the tuple. For example, here we define and use two tuple structs named `Color` and `Point`:
+Чтобы определить кортежную структуру, начните с ключевого слова `struct` и имени структуры, за которым следуют типы в кортеже. Например, здесь мы определяем и используем две кортежные структуры с именами `Color` и `Point`:
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-01-tuple-structs/src/main.rs}}
@@ -96,15 +96,15 @@ To define a tuple struct, start with the `struct` keyword and the struct name fo
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-04-unit-like-structs/src/main.rs}}
 ```
 
-To define `AlwaysEqual`, we use the `struct` keyword, the name we want, then a semicolon. No need for curly brackets or parentheses! Then we can get an instance of `AlwaysEqual` in the `subject` variable in a similar way: using the name we defined, without any curly brackets or parentheses. Imagine that later we’ll implement behavior for this type such that every instance of `AlwaysEqual` is always equal to every instance of any other type, perhaps to have a known result for testing purposes. We wouldn’t need any data to implement that behavior! You’ll see in Chapter 10 how to define traits and implement them on any type, including unit-like structs.
+Чтобы определить `AlwaysEqual`, мы используем ключевое слово `struct`, желаемое имя, а затем точку с запятой. Нет необходимости в фигурных или круглых скобках! Затем мы можем получить экземпляр `AlwaysEqual` в переменной `subject` аналогичным образом: используя имя, которое мы определили, без фигурных и круглых скобок. Представим, что в дальнейшем мы реализуем поведение для этого типа таким образом, что каждый экземпляр `AlwaysEqual` всегда будет равен каждому экземпляру любого другого типа, возможно, с целью получения ожидаемого результата для тестирования. Для реализации такого поведения нам не нужны никакие данные! В главе 10 вы увидите, как определять черты и реализовывать их для любого типа, включая единично-подобные структуры.
 
 > ### Владение данными структуры
 >
-> In the `User` struct definition in Listing 5-1, we used the owned `String` type rather than the `&str` string slice type. This is a deliberate choice because we want each instance of this struct to own all of its data and for that data to be valid for as long as the entire struct is valid.
+> В определении структуры `User` в листинге 5-1 мы использовали владеющий тип `String` вместо типа строковой срез `&str`. Это осознанный выбор, поскольку мы хотим, чтобы каждый экземпляр этой структуры владел всеми своими данными и чтобы эти данные были действительны до тех пор, пока действительна вся структура.
 >
-> It’s also possible for structs to store references to data owned by something else, but to do so requires the use of *lifetimes*, a Rust feature that we’ll discuss in Chapter 10. Lifetimes ensure that the data referenced by a struct is valid for as long as the struct is. Let’s say you try to store a reference in a struct without specifying lifetimes, like the following; this won’t work:
+> Структуры также могут хранить ссылки на данные, принадлежащие кому-то другому, но для этого необходимо использовать возможность Rust *время жизни*, которую мы обсудим в главе 10. Время жизни гарантирует, что данные, на которые ссылается структура, будут действительны до тех пор, пока существует структура. Допустим, если попытаться сохранить ссылку в структуре без указания времени жизни, как в следующем примере; это не сработает:
 >
-> <span class="filename">Файл : src/main.rs</span>
+> <span class="filename">Имя файла: src/main.rs</span>
 >
 > <!-- CAN'T EXTRACT SEE https://github.com/rust-lang/mdBook/issues/1127 -->
 >
@@ -162,7 +162,7 @@ To define `AlwaysEqual`, we use the `struct` keyword, the name we want, then a s
 > error: could not compile `structs` due to 2 previous errors
 > ```
 >
-> In Chapter 10, we’ll discuss how to fix these errors so you can store references in structs, but for now, we’ll fix errors like these using owned types like `String` instead of references like `&str`.
+> В главе 10 мы обсудим, как исправить эти ошибки, чтобы иметь возможность хранить ссылки в структурах, а пока мы исправим подобные ошибки, используя владеющие типы вроде `String` вместо ссылок `&str`.
 
 <!-- manual-regeneration
 for the error above
@@ -170,3 +170,8 @@ after running update-rustc.sh:
 pbcopy < listings/ch05-using-structs-to-structure-related-data/no-listing-02-reference-in-struct/output.txt
 paste above
 add `> ` before every line -->
+
+
+["Тип Кортеж"]: ch03-02-data-types.html#the-tuple-type
+["Способы взаимодействия переменных и данных: перемещение"]: ch04-01-what-is-ownership.html#ways-variables-and-data-interact-move
+["Stack-Only Data: Copy"]: ch04-01-what-is-ownership.html#stack-only-data-copy
