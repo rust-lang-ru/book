@@ -1,10 +1,10 @@
 ## Поток управления
 
-The ability to run some code depending on if a condition is true, or run some code repeatedly while a condition is true, are basic building blocks in most programming languages. The most common constructs that let you control the flow of execution of Rust code are `if` expressions and loops.
+Способность запускать некоторый код в зависимости от истинности условия или выполнять некоторый код многократно, пока условие истинно, является базовым элементом большинства языков программирования. Наиболее распространёнными конструкциями, позволяющими управлять потоком выполнения кода в Rust, являются выражения `if` и циклы.
 
 ### Выражения `if`
 
-Выражение `if` позволяет разделить ваш код на ветви и выполнять ту или иную ветвь кода в зависимости от условий. Вы предоставляете условие и затем пишите утверждение вида "если это условие выполняется/верное, выполнить данный блок кода; если не выполняется, не выполнять этот блок кода".
+Выражение `if` позволяет разветвлять код в зависимости от условий. Вы задаёте условие, а затем объявляете: "Если это условие соблюдено, то выполнить этот блок кода. Если условие не соблюдается, не выполнять этот блок кода".
 
 Для изучения выражения `if` создайте новый проект под названием *branches* в каталоге *projects*. В файл <em>src/main.rs</em> поместите следующий код:
 
@@ -16,7 +16,7 @@ The ability to run some code depending on if a condition is true, or run some co
 
 Все выражения `if` начинаются с ключевого слова `if`, за которым следует условие. В данном случае условие проверяет, имеет ли переменная `number` значение меньше 5. Мы помещаем блок кода, который будет выполняться, если условие истинно, сразу после условия внутри фигурных скобок. Блоки кода, связанные с условиями в выражениях `if`, иногда называют *ветками*, так же как и ветки в выражениях `match`, которые мы обсуждали в разделе ["Сравнение догадки с секретным числом"](ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number) главы 2.
 
-Опционально можно включить выражение `else`, которое мы используем в данном примере, чтобы предоставить программе альтернативный блок выполнения кода, выполняющийся при ложном условии. Если не написать выражение `else` и условие будет ложным, то программа просто пропустит блок `if` и перейдёт к выполнению кода размещённого дальше.
+Опционально можно включить выражение `else`, которое мы используем в данном примере, чтобы предоставить программе альтернативный блок выполнения кода, выполняющийся при ложном условии. Если не указать выражение `else` и условие будет ложным, программа просто пропустит блок `if` и перейдёт к следующему фрагменту кода.
 
 Попробуйте запустить этот код. Появится следующий результат:
 
@@ -24,7 +24,7 @@ The ability to run some code depending on if a condition is true, or run some co
 {{#include ../listings/ch03-common-programming-concepts/no-listing-26-if-true/output.txt}}
 ```
 
-Попробуем поменять число `number` в значение, которое сделает условие `ложным (false)` и посмотрим, что будет:
+Попробуйте изменить значение `number` на значение, которое делает условие `false` и посмотрите, что произойдёт:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-27-if-false/src/main.rs:here}}
@@ -178,11 +178,11 @@ again!
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-33-return-value-from-loop/src/main.rs}}
 ```
 
-Перед циклом объявляется переменная с именем `counter` и её значение инициализируется в `0`. Затем объявляется переменная с именем `result` для хранения значения, возвращаемого из цикла. На каждом проходе цикла добавляется `1` к переменной `counter` и затем проверяется, равен ли этот счётчик значению `10`. Если равен, то используется ключевое слово `break` со значением `counter * 2`. После цикла мы используем точку с запятой чтобы завершить выражение которое назначает значение переменной  `result`. В итоге печатается значение из переменной `result`, которое в данном случае равно 20.
+Перед началом цикла объявляем переменную `counter` и инициализируем значением `0`. Затем объявляем переменную `result` для хранения значения, возвращаемого из цикла. На каждой итерации цикла прибавляем `1` к переменной `counter`, а затем проверяем, равен ли счётчик `10`. Если это так, то используем ключевое слово `break` со значением `counter * 2`. После цикла используем точку с запятой для завершения оператора для присвоения значения `result`. Наконец, распечатаем значение из `result`, которое в данном случае равно 20.
 
 #### Циклы с условием `while`
 
-A program will often need to evaluate a condition within a loop. While the condition is true, the loop runs. When the condition ceases to be true, the program calls `break`, stopping the loop. It’s possible to implement behavior like this using a combination of `loop`, `if`, `else`, and `break`; you could try that now in a program, if you’d like. However, this pattern is so common that Rust has a built-in language construct for it, called a `while` loop. In Listing 3-3, we use `while` to loop the program three times, counting down each time, and then, after the loop, print a message and exit.
+В программе часто требуется проверить состояние условия в цикле. Пока условие истинно, цикл выполняется. Когда условие перестаёт быть истинным, программа вызывает `break`, останавливая цикл. Такое поведение можно реализовать с помощью комбинации `loop`, `if`, `else` и `break`. При желании попробуйте сделать это в программе. Это настолько распространённый паттерн, что в Rust реализована встроенная языковая конструкция для него, называемая цикл `while`. В листинге 3-3 мы используем `while`, чтобы выполнить три цикла программы, производя каждый раз обратный отсчёт, а затем, после завершения цикла, печатаем сообщение и выходим.
 
 <span class="filename">Имя файла: src/main.rs</span>
 
@@ -226,13 +226,13 @@ A program will often need to evaluate a condition within a loop. While the condi
 
 <span class="caption">Листинг 3-5: Перебор каждого элемента коллекции с помощью цикла <code>for</code></span>
 
-When we run this code, we’ll see the same output as in Listing 3-4. More importantly, we’ve now increased the safety of the code and eliminated the chance of bugs that might result from going beyond the end of the array or not going far enough and missing some items.
+При выполнении этого кода мы увидим тот же результат, что и в листинге 3-4. Что важнее, теперь мы повысили безопасность кода и устранили вероятность ошибок, которые могут возникнуть в результате выхода за пределы массива или недостаточно далёкого перехода и пропуска некоторых элементов.
 
 При использовании цикла `for` не нужно помнить о внесении изменений в другой код, в случае изменения количества значений в массиве, как это было бы с методом, использованным в листинге 3-4.
 
-The safety and conciseness of `for` loops make them the most commonly used loop construct in Rust. Even in situations in which you want to run some code a certain number of times, as in the countdown example that used a `while` loop in Listing 3-3, most Rustaceans would use a `for` loop. The way to do that would be to use a `Range`, provided by the standard library, which generates all numbers in sequence starting from one number and ending before another number.
+Безопасность и компактность циклов `for` делают их наиболее часто используемой конструкцией цикла в Rust. Даже в ситуациях необходимости выполнения некоторого кода определённое количество раз, как в примере обратного отсчёта, в котором использовался цикл `while` из Листинга 3-3, большинство Rustaceans использовали бы цикл `for`. Для этого можно использовать `Range`, предоставляемый стандартной библиотекой, который генерирует числа по порядку, начиная с одного числа и заканчивая другим числом.
 
-Here’s what the countdown would look like using a `for` loop and another method we’ve not yet talked about, `rev`, to reverse the range:
+Вот как будет выглядеть обратный отсчёт с использованием цикла `for` и другого метода, о котором мы ещё не говорили, `rev`, для разворота диапазона:
 
 <span class="filename">Имя файла: src/main.rs</span>
 
@@ -244,7 +244,7 @@ Here’s what the countdown would look like using a `for` loop and another metho
 
 ## Итоги
 
-Это была обширная глава. Вы познакомились с переменными, скалярными и сложными типами данных, функциями, комментариями,  выражениями `if`  и циклами. Если хотите практиковаться с концепциями рассмотренными в данной главе, то попробуйте написать следующие программы:
+Вы справились! Это была объёмная глава: вы узнали о переменных, скалярных и составных типах данных, функциях, комментариях, выражениях `if` и циклах! Для практики работы с концепциями, обсуждаемыми в этой главе, попробуйте создать программы для выполнения следующих действий:
 
 - Конвертация температур между значениями по Фаренгейту к Цельсия.
 - Генерирование n-го числа Фибоначчи.
