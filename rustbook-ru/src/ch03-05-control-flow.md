@@ -226,7 +226,7 @@ again!
 
 <span class="caption">Листинг 3-5: Перебор каждого элемента коллекции с помощью цикла <code>for</code></span>
 
-When we run this code, we’ll see the same output as in Listing 3-4. More importantly, we’ve now increased the safety of the code and eliminated the chance of bugs that might result from going beyond the end of the array or not going far enough and missing some items.
+При выполнении этого кода мы увидим тот же результат, что и в листинге 3-4. Что важнее, теперь мы повысили безопасность кода и устранили вероятность ошибок, которые могут возникнуть в результате выхода за пределы массива или недостаточно далекого перехода и пропуска некоторых элементов.
 
 При использовании цикла `for` не нужно помнить о внесении изменений в другой код, в случае изменения количества значений в массиве, как это было бы с методом, использованным в листинге 3-4.
 
