@@ -9,11 +9,11 @@
 1. При создании сообщения публикации она создаётся как пустой черновик.
 2. Когда черновик готов, запрашивается его рецензия.
 3. После проверки происходит её публикация.
-4. Только опубликованные сообщения блога возвращают свой контент пользователям, поэтому не утверждённые сообщения не могут быть случайно опубликованы.
+4. Only published blog posts return content to print, so unapproved posts can’t accidentally be published.
 
 Любые другие изменения, сделанные в сообщении, не должны иметь никакого эффекта. Например, если мы попытаемся подтвердить черновик сообщения в блоге до того как запросим рецензию, то сообщение должно остаться неопубликованным черновиком.
 
-Листинг 17-11 показывает этот процесс в виде кода: это пример использования API, который мы реализуем в крейт библиотеке с названием `blog`. Код не компилируется, потому что мы ещё не реализовали этот крейт `blog`.
+В листинге 17-11 показан этот рабочий процесс в виде кода: это пример использования API, который мы реализуем в библиотеку с именем `blog`. Он ещё не компилируется, потому что мы ещё не реализовали крейт для `blog`.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -23,7 +23,7 @@
 
 <span class="caption">Листинг 17-11: Код, демонстрирующий желаемое поведение, которое мы хотим получить в крейте <code>blog</code></span>
 
-Мы хотим, чтобы пользователь мог создать новый черновик сообщения в блоге с помощью `Post::new`. Затем мы хотим разрешить добавление текста в сообщение блога, пока он находится в черновом состоянии. Если мы попытаемся получить содержание сообщения до его утверждения, ничего не произойдёт, потому что сообщение все ещё является черновиком. Мы добавили `assert_eq!` в коде для демонстрационных целей. Отличным модульным тестом для этого было бы утверждение, что черновик поста блога возвращает пустую строку из метода `content`, но мы не собираемся писать тесты для этого примера.
+We want to allow the user to create a new draft blog post with `Post::new`. We want to allow text to be added to the blog post. If we try to get the post’s content immediately, before approval, we shouldn't get any text because the post is still a draft. We’ve added `assert_eq!` in the code for demonstration purposes. An excellent unit test for this would be to assert that a draft blog post returns an empty string from the `content` method, but we’re not going to write tests for this example.
 
 Далее мы хотим разрешить сделать запрос на проверку публикации и хотим, чтобы `content` возвращал пустую строку в ожидании проверки. Когда сообщение получит одобрение, оно должно быть опубликовано, то есть текст сообщения будет возвращён при вызове `content`.
 
@@ -35,11 +35,11 @@
 
 <span class="filename">Листинг 17-12: Определение структуры <code>Post</code> и функции <code>new</code>, которая создаёт новый экземпляр <code>Post</code>, типаж <code>State</code> и структура <code>Draft</code></span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-12/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 17-12: Определение структуры <code>Post</code> и функции <code>new</code>, которая создаёт новый экземпляр <code>Post</code>, типаж <code>State</code> и структуру <code>Draft</code></span>
+<span class="caption">Листинг 17-12. Определение структуры <code>Post</code> и функции <code>new</code>, которая создаёт новый экземпляр <code>Post</code>, типаж <code>State</code> и структуру <code>Draft</code></span>
 
 Типаж `State` определяет поведение совместно используемое различными состояниями в сообщениях, все типы состояний вроде `Draft`, `PendingReview` и `Published` будут реализовывать типаж `State`. Пока у этого типажа нет никаких методов и мы начнём с определения только `Draft` состояния, потому что это то состояние, в котором мы хотим сделать появление публикации.
 
@@ -51,11 +51,11 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-13/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 17-13: Реализация метода <code>add_text</code> для добавления текста в <code>content</code> публикации</span>
+<span class="caption">Листинг 17-13. Реализация <code>add_text</code> для добавления текста к <code>content</code></span>
 
 Метод `add_text` принимает изменяемую ссылку на `self`, потому что мы меняем экземпляр `Post` для которого вызываем `add_text`. Затем мы вызываем `push_str` для `String` у `content` и передаём `text` аргументом для добавления к сохранённому `content`. Это поведение не зависит от состояния, в котором находится сообщение, поэтому оно не является частью шаблона состояния. Метод `add_text` вообще не взаимодействует с полем `state`, но это часть поведения, которое мы хотим поддерживать.
 
@@ -65,13 +65,13 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-14/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 17-14: Добавление пустой реализации метода <code>content</code> у структуры <code>Post</code>, который всегда возвращает пустой фрагмент строки</span>
+<span class="caption">Листинг 17-14. Добавление реализации заполнителя для метода <code>content</code> в <code>Post</code>, который всегда возвращает пустой фрагмент строки.</span>
 
-Благодаря этому добавленному методу `content` в листинге 17-11 все до строки 7 работает как и задумано.
+С этим дополнением `content` все в листинге 17-11 до строки 7 работает, как задумано.
 
 ### Запрос проверки публикации меняет её состояние
 
@@ -79,25 +79,25 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-15/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 17-15: Реализация методов <code>request_review</code> для <code>Post</code> и типажа <code>State</code></span>
+<span class="caption">Листинг 17-15. Реализация методов <code>request_review</code> в <code>Post</code> и <code>State</code></span>
 
 Мы предоставляем в `Post` публичный метод с именем `request_review`, который будет принимать изменяемую ссылку на `self`. Затем мы вызываем внутренний метод `request_review` у поля для текущего состояния `Post` и этот второй метод `request_review` поглощает текущее состояние и возвращает новое состояние.
 
-Мы добавили метод `request_review` к типажу `State`; все типы, которые реализуют этот типаж теперь должны будут реализовать метод `request_review`. Обратите внимание, что вместо того, чтобы указывать `self`, `&self` или `&mut self` в качестве первого параметра метода, у нас есть `self: Box<Self>`. Этот синтаксис означает, что метод действителен только при вызове у `Box` содержащем тип. Этот синтаксис становится владельцем `Box<Self>`, что делает недействительным старое состояние, чтобы значение состояния `Post` могло перейти в новое состояние.
+Мы добавили метод `request_review` `State`; все типы, реализующие этот типаж, теперь должны будут реализовать метод `request_review`. Обратите внимание, что вместо `self`, `&self` или `&mut self` в качестве первого параметра метода у нас `self: Box<Self>`. Этот синтаксис означает, что метод действителен только при вызове `Box` содержащего тип. Этот синтаксис становится владельцем `Box<Self>`, делая старое состояние недействительным, поэтому значение состояния `Post` может преобразоваться в новое состояние.
 
-Чтобы поглотить старое состояние, метод `request_review` должен стать владельцем значения состояния. Это место где `Option` для поля `state` публикации `Post` приходит на помощь: мы называем метод `take` чтобы забрать значение `Some` из поля `state` и оставить значение `None` в поле, потому что Rust не позволяет иметь не инициализированные поля в структурах. Это позволяет перемещать значение `state` из `Post`, а не заимствовать его. Затем мы установим новое значение `state` как результат этой операции.
+To consume the old state, the `request_review` method needs to take ownership of the state value. This is where the `Option` in the `state` field of `Post` comes in: we call the `take` method to take the `Some` value out of the `state` field and leave a `None` in its place, because Rust doesn’t let us have unpopulated fields in structs. This lets us move the `state` value out of `Post` rather than borrowing it. Then we’ll set the post’s `state` value to the result of this operation.
 
-Нам нужно временно установить `state` в `None`, а не устанавливать его напрямую с помощью кода вроде `self.state = self.state.request_review();` для получения владения значения поля `state`. Это гарантирует, что `Post` не сможет использовать старое значение `state` после того, как мы преобразовали его в новое состояние.
+We need to set `state` to `None` temporarily rather than setting it directly with code like `self.state = self.state.request_review();` to get ownership of the `state` value. This ensures `Post` can’t use the old `state` value after we’ve transformed it into a new state.
 
-Метод `request_review` в `Draft` должен вернуть новый "упакованный" экземпляр новой структуры `PendingReview`, которая предоставляет состояние, когда публикация ожидает рецензии. Структура `PendingReview` также реализует метод `request_review`, но не выполняет никаких преобразований. Она возвращает сам себя, потому что когда мы запрашиваем рецензию публикации, она уже в состоянии `PendingReview` и должна продолжать оставаться в состоянии `PendingReview`.
+The `request_review` method on `Draft` needs to return a new, boxed instance of a new `PendingReview` struct, which represents the state when a post is waiting for a review. The `PendingReview` struct also implements the `request_review` method but doesn’t do any transformations. Rather, it returns itself, because when we request a review on a post already in the `PendingReview` state, it should stay in the `PendingReview` state.
 
-Теперь мы можем увидеть преимущества шаблона состояния: метод `request_review` для `Post` одинаков независимо от значения его `state`. Каждое состояние несёт ответственность за свои правила.
+Now we can start seeing the advantages of the state pattern: the `request_review` method on `Post` is the same no matter its `state` value. Each state is responsible for its own rules.
 
-Мы оставим метод `content` у `Post` таким как он есть, возвращая пустой фрагмент строки. Теперь мы можем получить `Post` из состояния `PendingReview`, а также из состояния `Draft`, но нам нужно такое же поведение в состоянии `PendingReview`. Листинг 17-11 теперь работает до строки 10!
+We’ll leave the `content` method on `Post` as is, returning an empty string slice. We can now have a `Post` in the `PendingReview` state as well as in the `Draft` state, but we want the same behavior in the `PendingReview` state. Listing 17-11 now works up to line 10!
 
 ### Добавление метода `approve` который изменяет поведение `content`
 
@@ -105,17 +105,17 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-16/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 17-16: Реализация метода <code>approve</code> для <code>Post</code> и типажа <code>State</code></span>
+<span class="caption">Listing 17-16: Implementing the <code>approve</code> method on <code>Post</code> and the <code>State</code> trait</span>
 
 Мы добавляем метод `approve` в типаж `State`, добавляем новую структуру, которая реализует этот типаж `State` и структуру для состояния `Published`.
 
-Аналогично методу `request_review`, если мы вызовем метод `approve` для `Draft`, он не будет иметь никакого эффекта, поскольку вернёт `self`. Когда мы вызываем `approve` у `PendingReview`, оно возвращает новый "упакованный" экземпляр структуры `Published`. Структура `Published` реализует типаж `State` и подобно методам `request_review` и `approve`, она возвращает себя, потому что публикация должна оставаться в `Published` состояния в таких случаях.
+Similar to the way `request_review` on `PendingReview` works, if we call the `approve` method on a `Draft`, it will have no effect because `approve` will return `self`. When we call `approve` on `PendingReview`, it returns a new, boxed instance of the `Published` struct. The `Published` struct implements the `State` trait, and for both the `request_review` method and the `approve` method, it returns itself, because the post should stay in the `Published` state in those cases.
 
-Теперь нам нужно обновить метод `content` в экземпляре `Post`: мы хотим вернуть значение из поля `content`, если состояние публикации `Published`; в противном случае мы хотим вернуть пустой фрагмент строки, как показано в листинге 17-17:
+Now we need to update the `content` method on `Post`. We want the value returned from `content` to depend on the current state of the `Post`, so we're going to have the `Post` delegate to a `content` method defined on its `state`, as shown in Listing 17-17:
 
 <span class="filename">Файл: src/lib.rs</span>
 
@@ -123,27 +123,27 @@
 {{#rustdoc_include ../listings/ch17-oop/listing-17-17/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 17-17: Обновление метода <code>content</code> в структуре <code>Post</code> для делегирования вызова методу <code>content</code> у структуры <code>State</code></span>
+<span class="caption">Listing 17-17: Updating the <code>content</code> method on <code>Post</code> to delegate to a <code>content</code> method on <code>State</code></span>
 
 Поскольку цель состоит в том, чтобы сохранить все эти правила внутри структур, реализующих типаж `State`, мы вызываем метод `content` у значения в поле `state` и передаём экземпляр публикации (то есть `self` ) в качестве аргумента. Затем мы возвращаем значение, которое возвращается при использовании метода `content` у поля `state`.
 
-Мы вызываем метод `as_ref` у `Option` потому что нам нужна ссылка на значение внутри `Option`, а не владение значением. Поскольку `state` является типом `Option<Box<dyn State>>`, то при вызове метода `as_ref`, возвращается `Option<&Box<dyn State>>`. Если бы мы не вызывали `as_ref`, мы бы получили ошибку, потому что мы не можем переместить `state` из заимствованного `&self` параметра функции.
+We call the `as_ref` method on the `Option` because we want a reference to the value inside the `Option` rather than ownership of the value. Because `state` is an `Option<Box<dyn State>>`, when we call `as_ref`, an `Option<&Box<dyn State>>` is returned. If we didn’t call `as_ref`, we would get an error because we can’t move `state` out of the borrowed `&self` of the function parameter.
 
-Затем мы вызываем метод `unwrap` , который как мы знаем в данном месте никогда не паникует, потому что мы знаем, что методы `Post` гарантируют что в `state` будет всегда содержаться значение `Some`, после выполнения методов. Это один из случаев, о которых мы говорили в разделе ["Случаи, когда у вас больше информации, чем у компилятора"]<!--  --> главы 9, когда мы знаем, что значение `None` невозможно, даже если компилятор не может этого понять.
+Затем мы вызываем метод `unwrap` , который как мы знаем в данном месте никогда не паникует, потому что мы знаем, что методы `Post` гарантируют что в `state` будет всегда содержаться значение `Some`, после выполнения методов. Это один из случаев, о которых мы говорили в разделе ["Случаи, когда у вас больше информации, чем у компилятора"](ch09-03-to-panic-or-not-to-panic.html#cases-in-which-you-have-more-information-than-the-compiler)<!--  --> главы 9, когда мы знаем, что значение `None` невозможно, даже если компилятор не может этого понять.
 
-В этот момент, когда мы вызываем `content` у типа `&Box<dyn State>`, в действие вступает принудительное приведение (deref coercion) для `&` и `Box`, поэтому в конечном итоге метод `content` будет вызываться для типа, который реализует типаж `State`. Это означает, что нам нужно добавить метод `content` в определение типажа `State` и именно там мы поместим логику для того, какое содержание возвращать в зависимости от состояния, которое мы имеем как показано в листинге 17-18:
+At this point, when we call `content` on the `&Box<dyn State>`, deref coercion will take effect on the `&` and the `Box` so the `content` method will ultimately be called on the type that implements the `State` trait. That means we need to add `content` to the `State` trait definition, and that is where we’ll put the logic for what content to return depending on which state we have, as shown in Listing 17-18:
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-18/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 17-18: Добавление метода <code>content</code> в типаж <code>State</code></span>
+<span class="caption">Listing 17-18: Adding the <code>content</code> method to the <code>State</code> trait</span>
 
 Мы добавляем реализацию по умолчанию метода `content`, который возвращает пустой фрагмент строки. Это означает, что не нужно реализовывать `content` в структурах `Draft` и `PendingReview`.  Структура `Published` будет переопределять метод `content` и вернёт значение из `post.content`.
 
-Обратите внимание, как мы обсуждали в главе 10, нам нужны аннотации времени жизни у этого метода. Мы берём ссылку на `post` в качестве аргумента и возвращаем ссылку на часть `post`, поэтому время жизни возвращённой ссылки связано с временем жизни аргумента `post`.
+Note that we need lifetime annotations on this method, as we discussed in Chapter 10. We’re taking a reference to a `post` as an argument and returning a reference to part of that `post`, so the lifetime of the returned reference is related to the lifetime of the `post` argument.
 
 Мы закончили, теперь все из листинга 17-11 работает! Мы внедрили шаблон состояния с помощью правил процесса публикации блога. Логика, связанная с правилами, живёт в объектах состояний, а не разбросана по всей структуре `Post`.
 
@@ -151,23 +151,23 @@
 
 Мы показали, что Rust способен реализовать объектно-ориентированный шаблон состояние для инкапсуляции различных типов поведения, которые должна иметь публикация в каждом состоянии. Методы в `Post` ничего не знают о различных видах поведения. При такой организации кода, мы должны смотреть только в одном месте, чтобы узнать, как может вести себя опубликованная публикация: в реализации типажа `State` у структуры `Published`.
 
-Если бы нужно было создать альтернативную реализацию не используя шаблон состояние, то мы могли бы использовать выражения `match` в методах структуры `Post` или даже в коде `main`, который проверяет состояние публикации и изменяет поведение в этих местах. Это означало бы, что нам пришлось бы искать в нескольких местах, чтобы понять как сообщение попадает в опубликованное состояние! Это могло бы только увеличить число добавленных нами состояний: каждому из этих выражений `match` потребовались бы ещё внутренние рукава.
+If we were to create an alternative implementation that didn’t use the state pattern, we might instead use `match` expressions in the methods on `Post` or even in the `main` code that checks the state of the post and changes behavior in those places. That would mean we would have to look in several places to understand all the implications of a post being in the published state! This would only increase the more states we added: each of those `match` expressions would need another arm.
 
-С помощью шаблона состояние, методы `Post` и места в которых мы используем `Post` не требуют использования `match` выражения, а для добавления нового состояния нужно было бы только добавить новую структуру и реализовать методы типажа у этой одной структуры.
+With the state pattern, the `Post` methods and the places we use `Post` don’t need `match` expressions, and to add a new state, we would only need to add a new struct and implement the trait methods on that one struct.
 
-Реализация с использованием шаблона состояние легко расширяется с добавлением функциональности. Чтобы увидеть простоту поддержки кода, который использует данный шаблон состояния, попробуйте выполнить предложения:
+The implementation using the state pattern is easy to extend to add more functionality. To see the simplicity of maintaining code that uses the state pattern, try a few of these suggestions:
 
-- Добавьте метод `reject`, который изменяет состояние публикации из `PendingReview` обратно в `Draft`.
+- Add a `reject` method that changes the post’s state from `PendingReview` back to `Draft`.
 - Потребуйте два вызова метода `approve` прежде чем состояние можно изменить в `Published`.
-- Разрешите пользователям добавлять текстовое содержимое только тогда, когда публикация находится в состоянии `Draft`. Подсказка: наличие объекта состояния, отвечающего за то, может ли измениться содержимое, но не отвечающего за изменение `Post`.
+- Allow users to add text content only when a post is in the `Draft` state. Hint: have the state object responsible for what might change about the content but not responsible for modifying the `Post`.
 
-Одним из недостатков шаблона состояния является то, что поскольку состояния реализуют переходы между ними, некоторые из состояний связаны друг с другом. Если мы добавим другое состояние между `PendingReview` и `Published`, такое как например `Scheduled`, то придётся изменить код в `PendingReview`, чтобы оно переходило в `Scheduled`. Было бы меньше работы, если бы не нужно было менять `PendingReview` при добавлением нового состояния, но это означало бы переключение на другой шаблон проектирования.
+One downside of the state pattern is that, because the states implement the transitions between states, some of the states are coupled to each other. If we add another state between `PendingReview` and `Published`, such as `Scheduled`, we would have to change the code in `PendingReview` to transition to `Scheduled` instead. It would be less work if `PendingReview` didn’t need to change with the addition of a new state, but that would mean switching to another design pattern.
 
-Другим недостатком является то, что мы продублировали некоторую логику. Чтобы устранить некоторое дублирование, мы могли бы попытаться сделать реализации по умолчанию для методов `request_review` и `approve` типажа `State`, которые возвращают `self`; однако это нарушило бы безопасность объекта, потому что типаж не знает, какой конкретно будет `self`. Мы хотим иметь возможность использовать `State` в качестве типаж-объекта, поэтому нам нужно, чтобы его методы были безопасны для объекта.
+Another downside is that we’ve duplicated some logic. To eliminate some of the duplication, we might try to make default implementations for the `request_review` and `approve` methods on the `State` trait that return `self`; however, this would violate object safety, because the trait doesn’t know what the concrete `self` will be exactly. We want to be able to use `State` as a trait object, so we need its methods to be object safe.
 
-Другое дублирование включает в себя аналогичные реализации методов `request_review` и `approve` у  `Post`. Оба метода делегируют реализации одного и того же метода значению поля `state` типа `Option` и устанавливают результатом новое значение поля `state`. Если бы у `Post` было много методов, которые следовали этому шаблону, мы могли бы рассмотреть определение макроса для устранения повторения (смотри раздел ["Макросы"]<!--  --> в главе 19).
+Другое дублирование включает в себя аналогичные реализации методов `request_review` и `approve` у  `Post`. Оба метода делегируют реализации одного и того же метода значению поля `state` типа `Option` и устанавливают результатом новое значение поля `state`. Если бы у `Post` было много методов, которые следовали этому шаблону, мы могли бы рассмотреть определение макроса для устранения повторения (смотри раздел ["Макросы"](ch19-06-macros.html#macros)<!--  --> в главе 19).
 
-Реализуя шаблон состояния точно так, как он определён для объектно-ориентированных языков, мы не в полной мере используем преимущества Rust, как можно было бы. Давайте посмотрим на некоторые изменения, которые мы можем внести в крейт `blog`, которые могут превратить недопустимые состояния и переходы в ошибки времени компиляции.
+By implementing the state pattern exactly as it’s defined for object-oriented languages, we’re not taking as full advantage of Rust’s strengths as we could. Let’s look at some changes we can make to the `blog` crate that can make invalid states and transitions into compile time errors.
 
 #### Кодирование состояний и поведения как типы
 
@@ -181,17 +181,17 @@
 {{#rustdoc_include ../listings/ch17-oop/listing-17-11/src/main.rs:here}}
 ```
 
-Мы по-прежнему разрешаем создание новых сообщений в состоянии черновик используя метод `Post::new` и возможность добавлять текст к содержимому публикации. Но вместо того, чтобы иметь метод `content` у чернового сообщении, которое возвращает пустую строку мы сделаем так, что у черновых сообщений вообще не было метода `content`. Таким образом, если мы попытаемся получить содержимое черновика, мы получим ошибку компилятора, сообщающую, что метод не существует. В результате мы не сможем случайно отобразить черновик содержимого публикации, потому что этот код даже не скомпилируется. В листинге 17-19 показано определение структур `Post` и `DraftPost`, а также методов для каждой из них:
+We still enable the creation of new posts in the draft state using `Post::new` and the ability to add text to the post’s content. But instead of having a `content` method on a draft post that returns an empty string, we’ll make it so draft posts don’t have the `content` method at all. That way, if we try to get a draft post’s content, we’ll get a compiler error telling us the method doesn’t exist. As a result, it will be impossible for us to accidentally display draft post content in production, because that code won’t even compile. Listing 17-19 shows the definition of a `Post` struct and a `DraftPost` struct, as well as methods on each:
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-19/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 17-19: Структура <code>Post</code> с методом <code>content</code> и структура <code>DraftPost</code> без метода <code>content</code></span>
+<span class="caption">Listing 17-19: A <code>Post</code> with a <code>content</code> method and a <code>DraftPost</code> without a <code>content</code> method</span>
 
-Обе структуры `Post` и `DraftPost` имеют приватное поле `content` в котором хранится текст сообщения блога. Структуры больше не имеют поля `state`, потому что мы перемещаем функционал состояния в типы структур. Структура `Post` будет представлять опубликованную публикацию и у неё есть метод `content`, который возвращает `content`.
+Both the `Post` and `DraftPost` structs have a private `content` field that stores the blog post text. The structs no longer have the `state` field because we’re moving the encoding of the state to the types of the structs. The `Post` struct will represent a published post, and it has a `content` method that returns the `content`.
 
 У нас все ещё есть функция `Post::new`, но вместо возврата экземпляра `Post` она возвращает экземпляр `DraftPost`. Поскольку метод `content` является приватным и нет никаких функций, которые возвращают `Post`, то невозможно сразу создать экземпляр `Post`.
 
@@ -203,15 +203,15 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-20/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 17-20: Тип <code>PendingReviewPost</code> который создаётся путём вызова <code>request_review</code> экземпляра <code>DraftPost</code> и метод <code>approve</code>, который превращает <code>PendingReviewPost</code> в опубликованный <code>Post</code>.</span>
+<span class="caption">Listing 17-20: A <code>PendingReviewPost</code> that gets created by calling <code>request_review</code> on <code>DraftPost</code> and an <code>approve</code> method that turns a <code>PendingReviewPost</code> into a published <code>Post</code></span>
 
 Методы `request_review` и `approve` забирают во владение `self`, таким образом поглощая экземпляры `DraftPost` и `PendingReviewPost`, которые потом преобразуются в `PendingReviewPost` и опубликованное `Post` соответственно. Таким образом, у нас не будет никаких длительных экземпляров `DraftPost` после того, как мы вызвали у них `request_review` и так далее. В структуре `PendingReviewPost` не определён метод `content`, поэтому попытка прочитать его содержимое приводит к ошибке компилятора, как в случае с `DraftPost`. Так как единственным способом получить опубликованный экземпляр `Post` у которого действительно есть объявленный метод `content`, является вызов метода `approve` у экземпляра `PendingReviewPost`, то единственный способ получить `PendingReviewPost` это вызвать метод `request_review` у экземпляра `DraftPost`. Так мы реализовали процесс публикации блога с помощью системы типов.
 
-Но мы также должны внести небольшие изменения в `main`. Методы `request_review` и `approve` возвращают новые экземпляры, а не изменяют структуру к которой они обращаются, поэтому нам нужно добавить больше выражений `let post =` затеняя  присваивания для сохранения возвращаемых экземпляров. Мы также не можем использовать утверждения для черновика и ожидающей рецензии публикации сравнивая содержимое с пустыми строками, сейчас они нам не нужны: мы больше не сможем скомпилировать код, который пытается использовать содержимое сообщений в этих состояниях. Обновлённый код в `main` показан в листинге 17-21:
+But we also have to make some small changes to `main`. The `request_review` and `approve` methods return new instances rather than modifying the struct they’re called on, so we need to add more `let post =` shadowing assignments to save the returned instances. We also can’t have the assertions about the draft and pending review posts’ contents be empty strings, nor do we need them: we can’t compile code that tries to use the content of posts in those states any longer. The updated code in `main` is shown in Listing 17-21:
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -221,18 +221,14 @@
 
 <span class="caption">Листинг 17-21: Изменения в <code>main</code> для использования новой реализации процесса публикации блога</span>
 
-Изменения, которые нам нужно было внести в `main` чтобы переназначить `post` означают, что эта реализация не совсем следует объектно-ориентированному шаблону состояний: преобразования между состояниями больше не инкапсулированы полностью внутри реализации `Post`. Тем не менее выгода в том, что недопустимые состояния теперь невозможны из-за системы типов и проверки типов, которая происходит во время компиляции! Это гарантирует, что определённые ошибки, такие как отображение содержимого неопубликованной публикации, будут обнаружены до того, как они поступят в производство.
+The changes we needed to make to `main` to reassign `post` mean that this implementation doesn’t quite follow the object-oriented state pattern anymore: the transformations between the states are no longer encapsulated entirely within the `Post` implementation. However, our gain is that invalid states are now impossible because of the type system and the type checking that happens at compile time! This ensures that certain bugs, such as display of the content of an unpublished post, will be discovered before they make it to production.
 
 Попробуйте в крейте `blog` сделать предложенные задачи с дополнительными требованиями, которые мы упомянули в начале этого раздела, как это происходит после листинга 17-20, чтобы увидеть и подумать о дизайне версии этого кода. Обратите внимание, что некоторые задачи могут быть выполнены уже в этом проекте.
 
-Мы видели, что хотя Rust и способен реализовывать объектно-ориентированные шаблоны проектирования, но в нем также доступны другие шаблоны, такие как кодирование состояния с помощью системы типов. Эти модели имеют различные компромиссы. Хотя вы, возможно, очень хорошо знакомы с объектно-ориентированными шаблонами, переосмысление проблем для использования преимуществ и возможностей Rust может дать такие выгоды, как предотвращение некоторых ошибок во время компиляции. Объектно-ориентированные шаблоны не всегда будут лучшим решением в Rust из-за наличия определённых возможностей, такого как владение, которого нет у объектно-ориентированных языков.
+We’ve seen that even though Rust is capable of implementing object-oriented design patterns, other patterns, such as encoding state into the type system, are also available in Rust. These patterns have different trade-offs. Although you might be very familiar with object-oriented patterns, rethinking the problem to take advantage of Rust’s features can provide benefits, such as preventing some bugs at compile time. Object-oriented patterns won’t always be the best solution in Rust due to certain features, like ownership, that object-oriented languages don’t have.
 
 ## Итоги
 
-Независимо от того, что вы думаете о принадлежности Rust к объектно-ориентированным языкам после прочтения этой главы, вы теперь знаете, что можете использовать типаж-объекты, чтобы получить некоторые объектно-ориентированные функции в Rust. Динамическая диспетчеризация может дать вашему коду некоторую гибкость в обмен на небольшое ухудшение производительности во время выполнения. Вы можете использовать эту гибкость для реализации объектно-ориентированных шаблонов, которые могут помочь в поддержке вашего кода. В Rust также есть другие функции, такие как владение, которых нет у объектно-ориентированных языков. Объектно-ориентированный шаблон не всегда является лучшим способом использовать преимущества Rust, но является доступной опцией.
+No matter whether or not you think Rust is an object-oriented language after reading this chapter, you now know that you can use trait objects to get some object-oriented features in Rust. Dynamic dispatch can give your code some flexibility in exchange for a bit of runtime performance. You can use this flexibility to implement object-oriented patterns that can help your code’s maintainability. Rust also has other features, like ownership, that object-oriented languages don’t have. An object-oriented pattern won’t always be the best way to take advantage of Rust’s strengths, but is an available option.
 
-Далее мы рассмотрим шаблоны, которые являются ещё одной возможностью языка Rust, обеспечивающей больше гибкости. Мы кратко рассмотрели их на протяжении всей книги, но ещё не увидели всех этих возможностей. Приступим!
-
-
-["Случаи, когда у вас больше информации, чем у компилятора"]: ch09-03-to-panic-or-not-to-panic.html#cases-in-which-you-have-more-information-than-the-compiler
-["Макросы"]: ch19-06-macros.html#macros
+Next, we’ll look at patterns, which are another of Rust’s features that enable lots of flexibility. We’ve looked at them briefly throughout the book but haven’t seen their full capability yet. Let’s go!
