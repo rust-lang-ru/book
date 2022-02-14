@@ -24,7 +24,7 @@ match VALUE {
 
 В листинге 18-1 показано, что можно также смешивать и сопоставлять выражения `if let`, `else if` и `else if let`. Это даёт больше гибкости, чем `match` выражение, в котором можно выразить только одно значение для сравнения с шаблонами. Кроме того, условия в серии `if let`, `else if`, `else if let` не обязаны относиться друг к другу.
 
-The code in Listing 18-1 shows a series of checks for several conditions that decide what the background color should be. For this example, we’ve created variables with hardcoded values that a real program might receive from user input.
+Код в листинге 18-1 показывает последовательность проверок нескольких условий, определяющих каким должен быть цвет фона. В данном примере, мы создали переменные с предопределёнными значениями, которые в реальной программе могли получить из пользовательского ввода.
 
 <span class="filename">Файл: src/main.rs</span>
 
