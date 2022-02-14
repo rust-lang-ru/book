@@ -76,7 +76,7 @@
 
 Создайте файл *src/lib.rs*, который содержит следующее, что является простейшим определением структуры `ThreadPool`, которую мы можем иметь в данный момент:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/lib.rs}}
@@ -188,7 +188,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-14/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 20-14: Creating a vector for <code>ThreadPool</code> to hold the threads</span>
+<span class="caption">Листинг 20-14: Создание вектора в <code>ThreadPool</code> для хранения потоков</span>
 
 Мы добавили `std::thread` в область видимости библиотечного крейта, потому что мы используем `thread::JoinHandle` в качестве типа элементов вектора в `ThreadPool`.
 
