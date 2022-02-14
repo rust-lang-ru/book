@@ -26,21 +26,10 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::sync::Mutex;
-
-fn main() {
-    let m = Mutex::new(5);
-
-    {
-        let mut num = m.lock().unwrap();
-        *num = 6;
-    }
-
-    println!("m = {:?}", m);
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-12/src/main.rs}}
 ```
 
-<span class="caption">Листинг 16-12: Изучение API <code>Mutex<T></code> для простоты в однопоточном контексте.</span>
+<span class="caption">Листинг 16-12: Изучение API <code>Mutex&lt;T data-md-type="raw_html"&gt;</code> для простоты в однопоточном контексте.</span>
 
 Как и во многих типах, мы создаём `Mutex<T>` используя ассоциированную функцию `new`. Чтобы получить доступ к данным внутри мьютекса, мы используем метод `lock` для получения блокировки. Этот вызов блокирует текущий поток, поэтому он не может выполнять какую-либо другую работу, пока не наступит наша очередь получить блокировку.
 
@@ -59,31 +48,10 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-use std::sync::Mutex;
-use std::thread;
-
-fn main() {
-    let counter = Mutex::new(0);
-    let mut handles = vec![];
-
-    for _ in 0..10 {
-        let handle = thread::spawn(move || {
-            let mut num = counter.lock().unwrap();
-
-            *num += 1;
-        });
-        handles.push(handle);
-    }
-
-    for handle in handles {
-        handle.join().unwrap();
-    }
-
-    println!("Result: {}", *counter.lock().unwrap());
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-13/src/main.rs}}
 ```
 
-<span class="caption">Листинг 16-13. Десять потоков каждый из которых увеличивает счётчик, защищённый <code>Mutex<T></code></span>
+<span class="caption">Листинг 16-13. Десять потоков каждый из которых увеличивает счётчик, защищённый <code>Mutex&lt;T data-md-type="raw_html"&gt;</code></span>
 
 Мы создаём переменную счётчик `counter` для хранения `i32` внутри `Mutex<T>`, как мы это делали в листинге 16-12. Далее мы создаём 10 потоков, перебирая диапазон чисел. Мы используем `thread::spawn` и передаём всем этим потокам одинаковое замыкание, которое перемещает счётчик в поток, запрашивает блокировку на `Mutex<T>`, вызывая метод `lock`, а затем добавляет 1 к значению в мьютексе. Когда поток завершит выполнение своего замыкания, `num` выйдет из области видимости и освободит блокировку, чтобы другой поток мог её получить.
 
@@ -104,61 +72,24 @@ fn main() {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-use std::rc::Rc;
-use std::sync::Mutex;
-use std::thread;
-
-fn main() {
-    let counter = Rc::new(Mutex::new(0));
-    let mut handles = vec![];
-
-    for _ in 0..10 {
-        let counter = Rc::clone(&counter);
-        let handle = thread::spawn(move || {
-            let mut num = counter.lock().unwrap();
-
-            *num += 1;
-        });
-        handles.push(handle);
-    }
-
-    for handle in handles {
-        handle.join().unwrap();
-    }
-
-    println!("Result: {}", *counter.lock().unwrap());
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-14/src/main.rs}}
 ```
 
-<span class="caption">Листинг 16-14: Попытка использования <code>Rc<T></code>, чтобы позволить нескольким потокам владение <code>Mutex<T></code></span>
+<span class="caption">Листинг 16-14: Попытка использования <code>Rc&lt;T data-md-type="raw_html"&gt;</code>, чтобы позволить нескольким потокам владение <code>Mutex&lt;T data-md-type="raw_html"&gt;</code></span>
 
 Ещё раз, мы компилируем и получаем ... другие ошибки! Компилятор  учит нас.
 
 ```console
-error[E0277]: the trait bound `std::rc::Rc<std::sync::Mutex<i32>>:
-std::marker::Send` is not satisfied in `[closure@src/main.rs:11:36:
-15:10 counter:std::rc::Rc<std::sync::Mutex<i32>>]`
-  --> src/main.rs:11:22
-   |
-11 |         let handle = thread::spawn(move || {
-   |                      ^^^^^^^^^^^^^ `std::rc::Rc<std::sync::Mutex<i32>>`
-cannot be sent between threads safely
-   |
-   = help: within `[closure@src/main.rs:11:36: 15:10
-counter:std::rc::Rc<std::sync::Mutex<i32>>]`, the trait `std::marker::Send` is
-not implemented for `std::rc::Rc<std::sync::Mutex<i32>>`
-   = note: required because it appears within the type
-`[closure@src/main.rs:11:36: 15:10 counter:std::rc::Rc<std::sync::Mutex<i32>>]`
-   = note: required by `std::thread::spawn`
+{{#include ../listings/ch16-fearless-concurrency/listing-16-14/output.txt}}
 ```
 
-Вау, сообщение об ошибке очень многословное! Вот некоторые важные части, на которых нужно сосредоточить внимание: первая встроенная ошибка говорит о том, что ``std::rc::Rc<std::sync::Mutex<i32>><code data-md-type="raw_html"> cannot be sent between threads safely</code>. Причиной этого является следующая важная часть сообщения об ошибке. Сообщение об ошибке говорит, <code data-md-type="codespan">the trait bound </code>Send` is not satisfied`. Мы поговорим про типаж `Send` в следующем разделе: это один из типажей гарантирующих что типы, используемые потоками, предназначены для использования в многопоточных ситуациях.</i32>
+Вау, сообщение об ошибке очень многословное! Вот некоторые важные части, на которых нужно сосредоточить внимание: первая встроенная ошибка говорит о том, что ``std::rc::Rc&lt;std::sync::Mutex<i32>&gt;<code data-md-type="raw_html"> cannot be sent between threads safely</code>. Причиной этого является следующая важная часть сообщения об ошибке. Сообщение об ошибке говорит, <code data-md-type="raw_html">the trait bound </code>Send<code data-md-type="codespan"> is not satisfied</code>. Мы поговорим про типаж `Send` в следующем разделе: это один из типажей гарантирующих что типы, используемые потоками, предназначены для использования в многопоточных ситуациях.</i32>
 
 К сожалению, `Rc<T>` небезопасен для совместного использования между потоками. Когда `Rc<T>` управляет счётчиком ссылок, он добавляется значение к счётчику для каждого вызова `clone` и вычитается значение из счётчика, когда каждое клонированное значение удаляется при выходе из области видимости. Но он не использует примитивы многопоточности, чтобы гарантировать, что изменения в подсчёте не могут быть прерваны другим потоком. Это может привести к неправильным подсчётам - незначительным ошибкам, которые в свою очередь, могут привести к утечкам памяти или удалению значения до того, как мы отработали с ним. Нам нужен тип точно такой же как `Rc<T>`, но который позволяет изменять счётчик ссылок безопасно из разных потоков.
 
 #### Атомарный счётчик ссылок `Arc<T>`
 
-К счастью, `Arc<T>` *является* типом аналогичным типу `Rc<T>`, который безопасен для использования в ситуациях многопоточности. Буква *А* означает *атомарное*, что означает тип *ссылка подсчитываемая атомарно*. Atomics - это дополнительный вид примитивов для многопоточности, который мы не будем здесь подробно описывать: дополнительную информацию смотрите в документации стандартной библиотеки для `std::sync::atomic`. На данный момент вам просто нужно знать, что atomics работают как примитивные типы, но безопасны для совместного использования между потоками.
+К счастью, `Arc<T>` *является* типом аналогичным типу `Rc<T>`, который безопасен для использования в ситуациях многопоточности. Буква *А* означает *атомарное*, что означает тип *ссылка подсчитываемая атомарно*. Atomics - это дополнительный вид примитивов для многопоточности, который мы не будем здесь подробно описывать: дополнительную информацию смотрите в документации стандартной библиотеки для <code>std::sync::atomic</code>. На данный момент вам просто нужно знать, что atomics работают как примитивные типы, но безопасны для совместного использования между потоками.
 
 Вы можете спросить, почему все примитивные типы не являются атомарными и почему стандартные типы библиотек не реализованы для использования вместе с типом `Arc<T>` по умолчанию. Причина в том, что безопасность потоков сопровождается снижением производительности, которое вы хотите платить только тогда, когда вам это действительно нужно. Если вы просто выполняете операции со значениями в одном потоке, то ваш код может работать быстрее, если он не должен обеспечивать гарантии предоставляемые atomics.
 
@@ -167,32 +98,10 @@ not implemented for `std::rc::Rc<std::sync::Mutex<i32>>`
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-use std::sync::{Mutex, Arc};
-use std::thread;
-
-fn main() {
-    let counter = Arc::new(Mutex::new(0));
-    let mut handles = vec![];
-
-    for _ in 0..10 {
-        let counter = Arc::clone(&counter);
-        let handle = thread::spawn(move || {
-            let mut num = counter.lock().unwrap();
-
-            *num += 1;
-        });
-        handles.push(handle);
-    }
-
-    for handle in handles {
-        handle.join().unwrap();
-    }
-
-    println!("Result: {}", *counter.lock().unwrap());
-}
+{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-15/src/main.rs}}
 ```
 
-<span class="caption">Листинг 16-15: Использование типа <code>Arc<T></code> для обёртывания <code>Mutex<T></code> для возможности совместного владения несколькими потоками</span>
+<span class="caption">Листинг 16-15: Использование типа <code>Arc&lt;T data-md-type="raw_html"&gt;</code> для обёртывания <code>Mutex&lt;T data-md-type="raw_html"&gt;</code> для возможности совместного владения несколькими потоками</span>
 
 Код напечатает следующее:
 
