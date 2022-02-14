@@ -40,7 +40,7 @@
 
 <img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl15-04.svg?raw=true" class="" alt="Reference cycle of lists">
 
-<span class="caption">Figure 15-4: A reference cycle of lists <code>a</code> and <code>b</code> pointing to each other</span>
+<span class="caption">Рисунок 15-4: Ссылочная зацикленность списков <code>a</code> и <code>b</code> указывающих друг на друга</span>
 
 Если вы удалите последний комментарий с `println!` и запустите программу, Rust будет пытаться печатать зацикленность в `a`, указывающей на `b`, указывающей на `a` и так далее, пока не переполниться стек.
 
@@ -80,7 +80,7 @@
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:there}}
 ```
 
-<span class="caption">Listing 15-27: Creating a <code>leaf</code> node with no children and a <code>branch</code> node with <code>leaf</code> as one of its children</span>
+<span class="caption">Листинг 15-27. Создание узла <code>leaf</code> без дочерних узлов и узла <code>branch</code> с <code>leaf</code> как одним дочерним узлом</span>
 
 Мы клонируем  содержимое `Rc<Node>` из переменной  `leaf` и сохраняем его в переменной `branch`, что означает, что `Node` в  `leaf` теперь имеет двух владельцев: `leaf` и `branch`. Мы можем получить доступ из `branch` к `leaf` через обращение `branch.children`, но нет способа добраться из  `leaf` к `branch`. Причина в том, что `leaf` не имеет ссылки на `branch` и не знает, что они связаны. Мы хотим, чтобы `leaf` знал, что `branch` является его родителем. Мы сделаем это далее.
 
@@ -138,7 +138,7 @@ children: RefCell { value: [] } }] } })
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-29/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-29: Creating <code>branch</code> in an inner scope and examining strong and weak reference counts</span>
+<span class="caption">Листинг 15-29: Создание <code>branch</code> во внутренней области и проверка сильных и слабых ссылок</span>
 
 После того, как `leaf` создан его `Rc<Node>` имеет значения strong count равное 1 и weak count равное 0. Во внутренней области мы создаём `branch` и связываем её с `leaf`, после чего при печати значений счётчиков `Rc<Node>` в `branch` они будет иметь strong count 1 и weak count 1 (для `leaf.parent` указывающего на `branch` с `Weak<Node>` ). Когда мы распечатаем счётчики из `leaf`, мы увидим, что они будут иметь strong count 2, потому что `branch` теперь имеет клон `Rc<Node>` переменной `leaf` хранящийся в `branch.children`, но все равно будет иметь weak count 0.
 
@@ -157,3 +157,5 @@ children: RefCell { value: [] } }] } })
 Если эта глава вызвала у вас интерес и вы хотите реализовать свои собственные умные указатели, обратитесь к ["The Rustonomicon"](https://doc.rust-lang.org/nomicon/index.html) за более полезной информацией.
 
 Далее мы поговорим о параллелизме в Rust. Вы даже узнаете о нескольких новых умных указателях.
+
+
