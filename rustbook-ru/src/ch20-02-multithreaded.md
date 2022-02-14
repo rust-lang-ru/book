@@ -188,7 +188,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-14/src/lib.rs:here}}
 ```
 
-<span class="caption">Листинг 20-14: Создание вектора в <code>ThreadPool</code> для сохранения потоков</span>
+<span class="caption">Листинг 20-14: Создание вектора в <code>ThreadPool</code> для хранения потоков</span>
 
 Мы добавили `std::thread` в область видимости библиотечного крейта, потому что мы используем `thread::JoinHandle` в качестве типа элементов вектора в `ThreadPool`.
 
