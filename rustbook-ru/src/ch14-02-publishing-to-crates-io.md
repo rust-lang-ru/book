@@ -22,7 +22,7 @@
 
 Для удобства, запустив `cargo doc --open`, мы создадим HTML для документации вашей текущей библиотеки (а также документацию для всех зависимостей вашей библиотеки) и откроем результат в веб-браузере. Перейдите к функции `add_one` и вы увидите, как отображается текст в комментариях к документации, что показано на рисунке 14-1:
 
- <img alt="HTML-документация для функции `add_one`` my_crate`" src="img/trpl14-01.png" class="center" >
+ <img alt="HTML-документация для функции `add_one`` my_crate`" src="img/trpl14-01.png" class="center">
 
 <span class="caption">Рисунок 14-1: HTML документация для функции <code>add_one</code></span>
 
@@ -52,7 +52,7 @@ copy just the doc-tests section below
 running 1 test
 test src/lib.rs - add_one (line 5) ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s
 ```
 
 Теперь, если мы изменим либо функцию, либо пример, так что `assert_eq!` в примере паникует, и снова запустим `cargo test`, мы увидим, что тесты документации обнаруживают, что пример и код не синхронизированы друг с другом!
@@ -75,7 +75,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 Когда мы запускаем `cargo doc --open`, эти комментарии будут отображаться на первой странице документации для `my_crate` над списком публичных элементов в библиотеке, как показано на рисунке 14-2:
 
- <img alt="Документация для библиотеки `art`, в которой перечислены модули `types` и `utils`" src="img/trpl14-02.png" class="center" >
+ <img alt="Документация для библиотеки `art`, в которой перечислены модули `types` и `utils`" src="img/trpl14-02.png" class="center">
 
 <span class="caption">Рисунок 14-2: Предоставленная документация для <code>my_crate</code>, включая комментарий, описывающие крейт в целом</span>
 
@@ -93,7 +93,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground,test_harness
 {{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-03/src/lib.rs:here}}
 ```
 
@@ -101,7 +101,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 На рисунке 14-3 показано, как будет выглядеть титульная страница документации для этого крейта, сгенерированный `cargo doc`:
 
- <img alt="Предоставлена Документация для библиотеки `art` с реэкспортом на первой странице" src="img/trpl14-03.png" class="center" >
+ <img alt="Предоставлена Документация для библиотеки `art` с реэкспортом на первой странице" src="img/trpl14-03.png" class="center">
 
 <span class="caption">Рисунок 14-3: Первая страница документации для <code>art</code>, в которой перечислены модули <code>kinds</code> и <code>utils</code></span>
 
@@ -131,7 +131,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 Документация API, которую `cargo doc` генерирует для этой библиотеки, теперь будет перечислять и связывать реэкспорты на главной странице, как показано на рисунке 14-4, упрощая поиск типов `PrimaryColor`, `SecondaryColor` и функции `mix`.
 
- <img alt="HTML-документация с комментарием для библиотеки в целом" src="img/trpl14-04.png" class="center" >
+ <img alt="HTML-документация с комментарием для библиотеки в целом" src="img/trpl14-04.png" class="center">
 
 <span class="caption">Рисунок 14-4: Первая страница документации для <code>art</code>,  которая перечисляет реэкспорт</span>
 
@@ -186,7 +186,10 @@ $ cargo publish
 warning: manifest has no description, license, license-file, documentation, homepage or repository.
 See https://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info.
 --snip--
-error: api errors (status 200 OK): missing or empty metadata fields: description, license. Please see https://doc.rust-lang.org/cargo/reference/manifest.html for how to upload metadata
+error: failed to publish to registry at https://crates.io
+
+Caused by:
+  the remote server responded with an error: missing or empty metadata fields: description, license. Please see https://doc.rust-lang.org/cargo/reference/manifest.html for how to upload metadata
 ```
 
 Причина в том, что вам не хватает важной информации: требуется описание и лицензия, чтобы люди знали, что делает ваша библиотека, и на каких условиях они могут её использовать. Чтобы исправить эту ошибку, вам нужно включить эту информацию в файл *Cargo.toml*.
@@ -205,7 +208,7 @@ license = "MIT"
 
 Руководство по выбору лицензии для вашего проекта выходит за рамки этой книги. Многие люди в сообществе Rust лицензируют свои проекты так же, как и Rust, используя двойную лицензию `MIT OR Apache 2.0`. Эта практика демонстрирует, что вы также можете указать несколько идентификаторов лицензий, разделённых `OR`, чтобы иметь несколько лицензий для вашего проекта.
 
-С уникальным именем, версией, подробностями об авторе, что `cargo new` добавил при создании крейта, вашим описанием и добавленной лицензией, файл *Cargo.toml* для проекта, который готов к публикации, может выглядеть следующим образом:
+С добавлением уникального имени, версии, вашего описания и лицензии, файл *Cargo.toml* для проекта, который готов к публикации может выглядеть следующим образом:
 
 <span class="filename">Файл: Cargo.toml</span>
 
@@ -213,8 +216,7 @@ license = "MIT"
 [package]
 name = "guessing_game"
 version = "0.1.0"
-authors = ["Your Name <you@example.com>"]
-edition = "2018"
+edition = "2021"
 description = "A fun game where you guess what number the computer has chosen."
 license = "MIT OR Apache-2.0"
 
