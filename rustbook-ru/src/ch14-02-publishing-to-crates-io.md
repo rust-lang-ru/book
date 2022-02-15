@@ -16,7 +16,7 @@
 {{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-01/src/lib.rs}}
 ```
 
-<span class="caption">Listing 14-1: A documentation comment for a function</span>
+<span class="caption">Листинг 14-1: Комментарий к документации для функции</span>
 
 Здесь мы даём описание того, что делает функция `add_one`, начинаем раздел с заголовка `Examples`, а затем предоставляем код, который демонстрирует, как использовать функцию `add_one`. Мы можем сгенерировать документацию HTML из этого комментария к документации, запустив `cargo doc`. Эта команда запускает инструмент `rustdoc`, поставляемый с Rust, и помещает сгенерированную HTML-документацию в каталог *target/doc*.
 
@@ -30,7 +30,7 @@
 
 Мы использовали Markdown заголовок `# Examples` в листинге 14-1 для создания раздела в HTML с заголовком "Examples". Вот некоторые другие разделы, которые авторы библиотек обычно используют в своей документации:
 
-- **Panics**: The scenarios in which the function being documented could panic. Callers of the function who don’t want their programs to panic should make sure they don’t call the function in these situations.
+- **Panics**: Сценарии, в которых документированная функция может вызывать панику. Вызывающие функцию, которые не хотят, чтобы их программы паниковали, должны убедиться, что они не вызывают функцию в этих ситуациях.
 - **Ошибки**: Если функция возвращает `Result`, описание типов ошибок, которые могут произойти и какие условия могут привести к тому, что эти ошибки могут быть возвращены, может быть полезным для вызывающих, так что они могут написать код для обработки различных типов ошибок разными способами.
 - **Безопасность**: Если функция является `unsafe` для вызова (мы обсуждаем безопасность в главе 19), должен быть раздел, объясняющий, почему функция небезопасна и охватывающий инварианты, которые функция ожидает от вызывающих сторон.
 
@@ -69,7 +69,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 {{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-02/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 14-2: Documentation for the <code>my_crate</code> crate as a whole</span>
+<span class="caption">Листинг 14-2: Документация для крейта <code>my_crate</code> в целом</span>
 
 Обратите внимание, что нет кода после последней строки, начинающейся с `//!`. Поскольку мы начинали комментарии с `//!` вместо `///`, мы документируем элемент, который содержит этот комментарий, а не элемент, следующий за этим комментарием. В этом случае элементом, содержащим этот комментарий, является файл *src/lib.rs*, который является корнем крейта. Эти комментарии описывают всю крейт.
 
@@ -77,7 +77,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
  <img alt="Документация для библиотеки `art`, в которой перечислены модули `types` и `utils`" src="img/trpl14-02.png" class="center">
 
-<span class="caption">Figure 14-2: Rendered documentation for <code>my_crate</code>, including the comment describing the crate as a whole</span>
+<span class="caption">Рисунок 14-2: Предоставленная документация для <code>my_crate</code>, включая комментарий, описывающие крейт в целом</span>
 
 Комментарии к документации внутри элементов полезны для описания крейтов и модулей особенно. Используйте их, чтобы объяснить общую цель контейнера, чтобы помочь вашим пользователям понять организацию крейта.
 
@@ -97,13 +97,13 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 {{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-03/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 14-3: An <code>art</code> library with items organized into <code>kinds</code> and <code>utils</code> modules</span>
+<span class="caption">Листинг 14-3: Библиотека <code>art</code> с элементами, организованными в модули <code>kinds</code> и <code>utils</code></span>
 
 На рисунке 14-3 показано, как будет выглядеть титульная страница документации для этого крейта, сгенерированный `cargo doc`:
 
  <img alt="Предоставлена Документация для библиотеки `art` с реэкспортом на первой странице" src="img/trpl14-03.png" class="center">
 
-<span class="caption">Figure 14-3: Front page of the documentation for <code>art</code> that lists the <code>kinds</code> and <code>utils</code> modules</span>
+<span class="caption">Рисунок 14-3: Первая страница документации для <code>art</code>, в которой перечислены модули <code>kinds</code> и <code>utils</code></span>
 
 Обратите внимание, что типы `PrimaryColor` и `SecondaryColor` не указаны на главной странице, равно как и функция `mix`. Мы должны нажать `kinds` и `utils`, чтобы увидеть их.
 
@@ -127,13 +127,13 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 {{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-05/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 14-5: Adding <code>pub use</code> statements to re-export items</span>
+<span class="caption">Листинг 14-5: Добавление операторов <code>pub use</code> для реэкспорта элементов</span>
 
 Документация API, которую `cargo doc` генерирует для этой библиотеки, теперь будет перечислять и связывать реэкспорты на главной странице, как показано на рисунке 14-4, упрощая поиск типов `PrimaryColor`, `SecondaryColor` и функции `mix`.
 
  <img alt="HTML-документация с комментарием для библиотеки в целом" src="img/trpl14-04.png" class="center">
 
-<span class="caption">Figure 14-4: The front page of the documentation for <code>art</code> that lists the re-exports</span>
+<span class="caption">Рисунок 14-4: Первая страница документации для <code>art</code>,  которая перечисляет реэкспорт</span>
 
 Пользователи крейта `art` могут по-прежнему видеть и использовать внутреннюю структуру из листинга 14-3, как показано в листинге 14-4, или они могут использовать более удобную структуру в листинге 14-5, как показано в листинге 14-6:
 
@@ -143,7 +143,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 {{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-06/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 14-6: A program using the re-exported items from the <code>art</code> crate</span>
+<span class="caption">Листинг 14-6: Программа, использующая реэкспортированные элементы из крейта <code>art</code></span>
 
 В тех случаях, когда имеется много вложенных модулей, реэкспорт типов на верхнем уровне с помощью `pub use` может существенно изменить опыт людей, использующих библиотеку.
 
@@ -194,7 +194,7 @@ Caused by:
 
 Причина в том, что вам не хватает важной информации: требуется описание и лицензия, чтобы люди знали, что делает ваша библиотека, и на каких условиях они могут её использовать. Чтобы исправить эту ошибку, вам нужно включить эту информацию в файл *Cargo.toml*.
 
-Добавьте описание, которое из себя представляет одно или два предложения, потому что оно будет отображаться вместе с вашим крейтом в результатах поиска. В поле `license` необходимо указать *значение идентификатора лицензии*. В [Linux Foundation’s Software Package Data Exchange (SPDX)](http://spdx.org/licenses/) перечислены идентификаторы, которые можно использовать для этого значения. Например, чтобы указать, что вы лицензировали свою библиотеку с использованием лицензии MIT, добавьте идентификатор `MIT`:
+Добавьте описание, которое из себя представляет одно или два предложения, потому что оно будет отображаться вместе с вашим крейтом в результатах поиска. В поле `license` необходимо указать *значение идентификатора лицензии*. В [Linux Foundation’s Software Package Data Exchange (SPDX)] перечислены идентификаторы, которые можно использовать для этого значения. Например, чтобы указать, что вы лицензировали свою библиотеку с использованием лицензии MIT, добавьте идентификатор `MIT`:
 
 <span class="filename">Файл: Cargo.toml</span>
 
@@ -254,7 +254,7 @@ $ cargo publish
 
 ### Публикация новой версии существующей библиотеки
 
-Когда вы внесли изменения в свой крейт и готовы выпустить новую версию, измените значение `version`, указанное в вашем файле *Cargo.toml* и повторите публикацию. Воспользуйтесь [Semantic Versioning rules](http://semver.org/), чтобы решить, какой номер следующей версии подходит для ваших изменений. Затем запустите `cargo publish`, чтобы загрузить новую версию.
+Когда вы внесли изменения в свой крейт и готовы выпустить новую версию, измените значение `version`, указанное в вашем файле *Cargo.toml* и повторите публикацию. Воспользуйтесь [Semantic Versioning rules], чтобы решить, какой номер следующей версии подходит для ваших изменений. Затем запустите `cargo publish`, чтобы загрузить новую версию.
 
 ### Удаление версий из Crates.io с помощью `cargo yank`
 
@@ -275,3 +275,7 @@ $ cargo yank --vers 1.0.1 --undo
 ```
 
 Выламывание *не* удаляет код. Например, функция выламывания не предназначена для удаления случайно загруженных секретов. Если это произойдёт, вы должны немедленно сбросить эти секреты.
+
+
+[Linux Foundation’s Software Package Data Exchange (SPDX)]: http://spdx.org/licenses/
+[Semantic Versioning rules]: http://semver.org/
