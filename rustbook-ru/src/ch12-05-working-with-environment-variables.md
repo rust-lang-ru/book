@@ -8,7 +8,7 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-20/src/lib.rs:here}}
 ```
 
@@ -24,7 +24,7 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-21/src/lib.rs:here}}
 ```
 
@@ -64,7 +64,7 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-23/src/lib.rs:here}}
 ```
 
