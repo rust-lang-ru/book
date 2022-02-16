@@ -264,6 +264,5 @@ Rust говорит, что наш код проигнорировал `Result` 
 [Главе 13]: ch13-00-functional-features.html
 [функцию `Guess::new` написанную в листинге 9-13]: ch09-03-to-panic-or-not-to-panic.html#creating-custom-types-for-validation
 [как обсуждалось в главе 9]: ch09-03-to-panic-or-not-to-panic.html#guidelines-for-error-handling
-[возвращая `Result`]: ch09-02-recoverable-errors-with-result.html
 [главе 17]: ch17-00-oop.html
 [главе 9]: ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator
