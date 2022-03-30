@@ -6,8 +6,9 @@ we need to know its path.
 
 A path can take two forms:
 
-* An *absolute path* starts from a crate root by using a crate name or a
-  literal `crate`.
+* An *absolute path* starts from a crate root by using a crate name (for code
+  from an external crate) or a literal `crate` (for code from the current
+  crate).
 * A *relative path* starts from the current module and uses `self`, `super`, or
   an identifier in the current module.
 
@@ -16,11 +17,11 @@ separated by double colons (`::`).
 
 Let’s return to the example in Listing 7-1. How do we call the
 `add_to_waitlist` function? This is the same as asking, what’s the path of the
-`add_to_waitlist` function? In Listing 7-3, we simplified our code a bit by
-removing some of the modules and functions. We’ll show two ways to call the
+`add_to_waitlist` function? Listing 7-3 contains Listing 7-1 with some of the
+modules and functions removed. We’ll show two ways to call the
 `add_to_waitlist` function from a new function `eat_at_restaurant` defined in
 the crate root. The `eat_at_restaurant` function is part of our library crate’s
-public API, so we mark it with the `pub` keyword. In the [”Exposing Paths with
+public API, so we mark it with the `pub` keyword. In the [“Exposing Paths with
 the `pub` Keyword”][pub]<!-- ignore --> section, we’ll go into more detail
 about `pub`. Note that this example won’t compile just yet; we’ll explain why
 in a bit.
@@ -62,7 +63,8 @@ would still be valid. However, if we moved the `eat_at_restaurant` function
 separately into a module named `dining`, the absolute path to the
 `add_to_waitlist` call would stay the same, but the relative path would need to
 be updated. Our preference is to specify absolute paths because it’s more
-likely to move code definitions and item calls independently of each other.
+likely we’ll want to move code definitions and item calls independently of each
+other.
 
 Let’s try to compile Listing 7-3 and find out why it won’t compile yet! The
 error we get is shown in Listing 7-4.
@@ -171,6 +173,34 @@ as `eat_at_restaurant`, so the relative path starting from the module in which
 `add_to_waitlist` are marked with `pub`, the rest of the path works, and this
 function call is valid!
 
+If you plan on sharing your library crate so other projects can use your code,
+your public API is your contract with users of your crate about how they
+interact with your code. There are many considerations around managing changes
+to your public API to make it easier for people to depend on your crate. These
+considerations are out of the scope of this book; if you’re interested in this
+topic, see [The Rust API Guidelines][api-guidelines].
+
+> #### Best Practices for Packages with a Binary and a Library
+>
+> We mentioned a package can contain both a *src/main.rs* binary crate root as
+> well as a *src/lib.rs* library crate root, and both crates will have the
+> package name by default. Typically, packages with this pattern will have just
+> enough code in the binary crate to start an executable that calls code with
+> the library crate. This lets other projects benefit from the most
+> functionality that the package provides, because the library crate’s code can
+> be shared.
+>
+> The module tree should be defined in *src/lib.rs*. Then, any public items can
+> be used in the binary crate by starting paths with the name of the package.
+> The binary crate becomes a user of the library crate just like a completely
+> external crate would use the library crate: it can only use the public API.
+> This helps you design a good API; not only are you the author, you’re also a
+> client!
+>
+> In [Chapter 12][ch12]<!-- ignore -->, we’ll demonstrate this organizational
+> practice with a command-line program that will contain both a binary crate
+> and a library crate.
+
 ### Starting Relative Paths with `super`
 
 We can also construct relative paths that begin in the parent module by using
@@ -179,8 +209,9 @@ the `..` syntax. Why would we want to do this?
 
 Consider the code in Listing 7-8 that models the situation in which a chef
 fixes an incorrect order and personally brings it out to the customer. The
-function `fix_incorrect_order` calls the function `serve_order` by specifying
-the path to `serve_order` starting with `super`:
+function `fix_incorrect_order` defined in the `back_of_house` module calls the
+function `deliver_order` defined in the parent module by specifying the path to
+`deliver_order` starting with `super`:
 
 <span class="filename">Filename: src/lib.rs</span>
 
@@ -193,12 +224,12 @@ starting with `super`</span>
 
 The `fix_incorrect_order` function is in the `back_of_house` module, so we can
 use `super` to go to the parent module of `back_of_house`, which in this case
-is `crate`, the root. From there, we look for `serve_order` and find it.
-Success! We think the `back_of_house` module and the `serve_order` function are
-likely to stay in the same relationship to each other and get moved together
-should we decide to reorganize the crate’s module tree. Therefore, we used
-`super` so we’ll have fewer places to update code in the future if this code
-gets moved to a different module.
+is `crate`, the root. From there, we look for `deliver_order` and find it.
+Success! We think the `back_of_house` module and the `deliver_order` function
+are likely to stay in the same relationship to each other and get moved
+together should we decide to reorganize the crate’s module tree. Therefore, we
+used `super` so we’ll have fewer places to update code in the future if this
+code gets moved to a different module.
 
 ### Making Structs and Enums Public
 
@@ -259,3 +290,5 @@ our last module system feature: the `use` keyword. We’ll cover `use` by itself
 first, and then we’ll show how to combine `pub` and `use`.
 
 [pub]: ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword
+[api-guidelines]: https://rust-lang.github.io/api-guidelines/
+[ch12]: ch12-00-an-io-project.html
