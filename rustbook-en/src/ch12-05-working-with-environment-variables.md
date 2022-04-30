@@ -3,16 +3,16 @@
 We’ll improve `minigrep` by adding an extra feature: an option for
 case-insensitive searching that the user can turn on via an environment
 variable. We could make this feature a command line option and require that
-users enter it each time they want it to apply, but instead we’ll use an
-environment variable. Doing so allows our users to set the environment variable
-once and have all their searches be case insensitive in that terminal session.
+users enter it each time they want it to apply, but by instead making it an
+environment variable, we allow our users to set the environment variable once
+and have all their searches be case insensitive in that terminal session.
 
 ### Writing a Failing Test for the Case-Insensitive `search` Function
 
-We want to add a new `search_case_insensitive` function that we’ll call when
-the environment variable is on. We’ll continue to follow the TDD process, so
-the first step is again to write a failing test. We’ll add a new test for the
-new `search_case_insensitive` function and rename our old test from
+We first add a new `search_case_insensitive` function that will be called when
+the environment variable has a value. We’ll continue to follow the TDD process,
+so the first step is again to write a failing test. We’ll add a new test for
+the new `search_case_insensitive` function and rename our old test from
 `one_result` to `case_sensitive` to clarify the differences between the two
 tests, as shown in Listing 12-20.
 
@@ -58,12 +58,13 @@ they’ll be the same case when we check whether the line contains the query.
 function to lowercase the query and the line before comparing them</span>
 
 First, we lowercase the `query` string and store it in a shadowed variable with
-the same name. Calling `to_lowercase` on the query is necessary so no matter
-whether the user’s query is `"rust"`, `"RUST"`, `"Rust"`, or `"rUsT"`, we’ll
-treat the query as if it were `"rust"` and be insensitive to the case. While
-`to_lowercase` will handle basic Unicode, it won’t be 100% accurate. If we were
-writing a real application, we’d want to do a bit more work here, but this section
-is about environment variables, not Unicode, so we’ll leave it at that here.
+the same name. Calling `to_lowercase` on the query is necessary so no
+matter whether the user’s query is `"rust"`, `"RUST"`, `"Rust"`, or `"rUsT"`,
+we’ll treat the query as if it were `"rust"` and be insensitive to the case.
+While `to_lowercase` will handle basic Unicode, it won’t be 100% accurate. If
+we were writing a real application, we’d want to do a bit more work here, but
+this section is about environment variables, not Unicode, so we’ll leave it at
+that here.
 
 Note that `query` is now a `String` rather than a string slice, because calling
 `to_lowercase` creates new data rather than referencing existing data. Say the
@@ -73,10 +74,9 @@ query is `"rUsT"`, as an example: that string slice doesn’t contain a lowercas
 need to add an ampersand because the signature of `contains` is defined to take
 a string slice.
 
-Next, we add a call to `to_lowercase` on each `line` before we check whether it
-contains `query` to lowercase all characters. Now that we’ve converted `line`
-and `query` to lowercase, we’ll find matches no matter what the case of the
-query is.
+Next, we add a call to `to_lowercase` on each `line` to lowercase all
+characters. Now that we’ve converted `line` and `query` to lowercase, we’ll
+find matches no matter what the case of the query is.
 
 Let’s see if this implementation passes the tests:
 
@@ -96,11 +96,10 @@ this field anywhere yet:
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-22/src/lib.rs:here}}
 ```
 
-Note that we added the `case_sensitive` field that holds a Boolean. Next, we
-need the `run` function to check the `case_sensitive` field’s value and use
-that to decide whether to call the `search` function or the
-`search_case_insensitive` function, as shown in Listing 12-22. Note this still
-won’t compile yet.
+We added the `ignore_case` field that holds a Boolean. Next, we need the `run`
+function to check the `ignore_case` field’s value and use that to decide
+whether to call the `search` function or the `search_case_insensitive`
+function, as shown in Listing 12-22. This still won’t compile yet.
 
 <span class="filename">Filename: src/lib.rs</span>
 
@@ -109,14 +108,14 @@ won’t compile yet.
 ```
 
 <span class="caption">Listing 12-22: Calling either `search` or
-`search_case_insensitive` based on the value in `config.case_sensitive`</span>
+`search_case_insensitive` based on the value in `config.ignore_case`</span>
 
 Finally, we need to check for the environment variable. The functions for
 working with environment variables are in the `env` module in the standard
-library, so we want to bring that module into scope with a `use std::env;` line
-at the top of *src/lib.rs*. Then we’ll use the `var` function from the `env`
-module to check for an environment variable named `CASE_INSENSITIVE`, as shown
-in Listing 12-23.
+library, so we bring that module into scope at the top of *src/lib.rs*. Then
+we’ll use the `var` function from the `env` module to check to see if any value
+has been set for an environment variable named `IGNORE_CASE`, as shown in
+Listing 12-23.
 
 <span class="filename">Filename: src/lib.rs</span>
 
@@ -124,27 +123,27 @@ in Listing 12-23.
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-23/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 12-23: Checking for an environment variable named
-`CASE_INSENSITIVE`</span>
+<span class="caption">Listing 12-23: Checking for any value in an environment
+variable named `IGNORE_CASE`</span>
 
-Here, we create a new variable `case_sensitive`. To set its value, we call the
-`env::var` function and pass it the name of the `CASE_INSENSITIVE` environment
-variable. The `env::var` function returns a `Result` that will be the successful
-`Ok` variant that contains the value of the environment variable if the
-environment variable is set. It will return the `Err` variant if the
-environment variable is not set.
+Here, we create a new variable `ignore_case`. To set its value, we call the
+`env::var` function and pass it the name of the `IGNORE_CASE` environment
+variable. The `env::var` function returns a `Result` that will be the
+successful `Ok` variant that contains the value of the environment variable if
+the environment variable is set to any value. It will return the `Err` variant
+if the environment variable is not set.
 
-We’re using the `is_err` method on the `Result` to check whether it’s an error
-and therefore unset, which means it *should* do a case-sensitive search. If the
-`CASE_INSENSITIVE` environment variable is set to anything, `is_err` will
-return false and the program will perform a case-insensitive search. We don’t
+We’re using the `is_ok` method on the `Result` to check whether the environment
+variable is set, which means the program should do a case-insensitive search.
+If the `IGNORE_CASE` environment variable isn’t set to anything, `is_ok` will
+return false and the program will perform a case-sensitive search. We don’t
 care about the *value* of the environment variable, just whether it’s set or
-unset, so we’re checking `is_err` rather than using `unwrap`, `expect`, or any
+unset, so we’re checking `is_ok` rather than using `unwrap`, `expect`, or any
 of the other methods we’ve seen on `Result`.
 
-We pass the value in the `case_sensitive` variable to the `Config` instance so
-the `run` function can read that value and decide whether to call `search` or
-`search_case_insensitive`, as we implemented in Listing 12-22.
+We pass the value in the `ignore_case` variable to the `Config` instance so the
+`run` function can read that value and decide whether to call
+`search_case_insensitive` or `search`, as we implemented in Listing 12-22.
 
 Let’s give it a try! First, we’ll run our program without the environment
 variable set and with the query `to`, which should match any line that contains
@@ -154,35 +153,36 @@ the word “to” in all lowercase:
 {{#include ../listings/ch12-an-io-project/listing-12-23/output.txt}}
 ```
 
-Looks like that still works! Now, let’s run the program with `CASE_INSENSITIVE`
+Looks like that still works! Now, let’s run the program with `IGNORE_CASE`
 set to `1` but with the same query `to`.
 
-If you’re using PowerShell, you will need to set the environment
-variable and run the program as separate commands:
-
 ```console
-PS> $Env:CASE_INSENSITIVE=1; cargo run to poem.txt
+$ IGNORE_CASE=1 cargo run to poem.txt
 ```
 
-This will make `CASE_INSENSITIVE` persist for the remainder of your shell
+If you’re using PowerShell, you will need to set the environment variable and
+run the program as separate commands:
+
+```console
+PS> $Env:IGNORE_CASE=1; cargo run to poem.txt
+```
+
+This will make `IGNORE_CASE` persist for the remainder of your shell
 session. It can be unset with the `Remove-Item` cmdlet:
 
 ```console
-PS> Remove-Item Env:CASE_INSENSITIVE
+PS> Remove-Item Env:IGNORE_CASE
 ```
 
 We should get lines that contain “to” that might have uppercase letters:
 
 <!-- manual-regeneration
 cd listings/ch12-an-io-project/listing-12-23
-CASE_INSENSITIVE=1 cargo run to poem.txt
+IGNORE_CASE=1 cargo run to poem.txt
 can't extract because of the environment variable
 -->
 
 ```console
-$ CASE_INSENSITIVE=1 cargo run to poem.txt
-    Finished dev [unoptimized + debuginfo] target(s) in 0.0s
-     Running `target/debug/minigrep to poem.txt`
 Are you nobody, too?
 How dreary to be somebody!
 To tell your name the livelong day
@@ -196,11 +196,11 @@ variables.
 
 Some programs allow arguments *and* environment variables for the same
 configuration. In those cases, the programs decide that one or the other takes
-precedence. For another exercise on your own, try controlling case
-insensitivity through either a command line argument or an environment
-variable. Decide whether the command line argument or the environment variable
-should take precedence if the program is run with one set to case sensitive and
-one set to case insensitive.
+precedence. For another exercise on your own, try controlling case sensitivity
+through either a command line argument or an environment variable. Decide
+whether the command line argument or the environment variable should take
+precedence if the program is run with one set to case sensitive and one set to
+ignore case.
 
 The `std::env` module contains many more useful features for dealing with
 environment variables: check out its documentation to see what is available.
