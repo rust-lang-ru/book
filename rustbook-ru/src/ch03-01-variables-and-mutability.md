@@ -106,5 +106,4 @@ const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
 
 [“Сохранение значений в переменных”]: ch02-00-guessing-game-tutorial.html#storing-values-with-variables
 [раздел справочника Rust, посвящённый вычислению констант]: ../reference/const_eval.html
-[“Типы данных”]:
-ch03-02-data-types
+[“Типы данных”]: ch03-02-data-types.html
