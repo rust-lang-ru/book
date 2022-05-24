@@ -43,7 +43,7 @@
 После того, как мы реализовали типаж, можно вызвать его методы у экземпляров `NewsArticle` и `Tweet` тем же способом, что и вызов обычных методов, например так:
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-01-calling-trait-method/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-01-calling-trait-method/src/main.rs}}
 ```
 
 Данный код напечатает: `1 new tweet: horse_ebooks: of course, as you probably already know, people`.
