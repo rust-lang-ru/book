@@ -107,7 +107,7 @@ tests to fail lol -->
 > }
 > ```
 >
-> Although this code has the same behavior as Listing 9-5, it doesn’t contain any `match` expressions and is cleaner to read. Come back to this example after you’ve read Chapter 13, and look up the `unwrap_or_else` method in the standard library documentation. Many more of these methods can clean up huge nested `match` expressions when you’re dealing with errors.
+> Несмотря на то, что данный код имеет такое же поведение как в листинге 9-5, он не содержит ни одного выражения `match` и проще для чтения. Рекомендуем вам вернуться к примеру этого раздела после того как вы прочитаете Главу 13 и изучите метод `unwrap_or_else` по документации стандартной библиотеки. Многие из методов о которых вы узнаете в документации и Главе 13 могут очистить код от больших, вложенных выражений `match` при обработке ошибок.
 
 ### Лаконичные способы обработки ошибок - `unwrap` и `expect`
 
