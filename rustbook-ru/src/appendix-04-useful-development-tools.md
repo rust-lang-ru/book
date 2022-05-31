@@ -44,7 +44,7 @@ $ cargo build
 warning: unused variable: `i`
  --> src/main.rs:4:9
   |
-4 |     for i in 1..100 {
+4 |     for i in 0..100 {
   |         ^ help: consider using `_i` instead
   |
   = note: #[warn(unused_variables)] on by default
@@ -134,20 +134,13 @@ fn main() {
 
 Для большей информации о Clippy смотрите [документацию](https://github.com/rust-lang/rustfmt).
 
-### Интеграция с IDE используя Rust Language Server
+### Интеграция с IDE с помощью `rust-analyzer`
 
-Для помощи в интеграции с IDE, Rust распространяет *Rust Language Server* (`rls`). Этот инструмент говорит на [Language Server Protocol], который является спецификацией для общения между IDE и языками программирования. Различные клиенты могут использовать `rls`, например [плагин Rust для Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust).
+Чтобы облегчить интеграцию с IDE, сообщество Rust рекомендует использовать [`rust-analyzer`]<!-- игнорировать -->. Этот инструмент представляет собой набор ориентированных на компилятор утилит, которые используют [Language Server Protocol]<!-- игнорировать -->, который является спецификацией для взаимодействия IDE и языков программирования друг с другом. Разные клиенты могут использовать `rust-analyzer`, например [подключаемый модуль анализатора Rust для Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
 
-Для установки `rls`, введите следующее:
-
-```console
-$ rustup component add rls
-```
-
-Затем установите поддержу языкового сервера в Вашей IDE. Вы получите такие вещи, как автодополнение, просмотр определения и подсветку ошибок.
-
-Для большей информации про `rls`, смотрите [документацию](https://github.com/rust-lang/rustfmt).
+Посетите <a>домашнюю страницу</a> проекта <code>rust-analyzer</code> для получения инструкций по установке, а затем установите поддержку языкового сервера в вашей конкретной среде IDE. Ваша IDE получит такие возможности, как автодополнение, переход к определению и встроенные ошибки.
 
 
 [документацию]: https://github.com/rust-lang/rustfmt
-[Language Server Protocol]: https://github.com/rust-lang/rust-clippy
+[Language Server Protocol]: http://langserver.org/
+[`rust-analyzer`]: https://rust-analyzer.github.io
