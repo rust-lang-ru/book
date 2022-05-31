@@ -1,6 +1,6 @@
 # Введение
 
-> Примечание: это издание книги так же, как и [The Rust Programming Language] доступно в печатном и электронном виде от [No Starch Press].
+> Примечание: это издание книги так же, как и [The Rust Programming Language](https://nostarch.com/rust) доступно в печатном и электронном виде от [No Starch Press](https://nostarch.com/).
 
 Добро пожаловать в *The Rust Programming Language*, вводную книгу о Rust. Язык программирования Rust помогает создавать быстрые, более надёжные приложения. Хорошая эргономика и низкоуровневый контроль часто являются противоречивыми требованиями для дизайна языков программирования; Rust бросает вызов этому конфликту. Благодаря сбалансированности мощных технических возможностей c большим удобством разработки, Rust предоставляет возможности управления низкоуровневыми элементами (например, использование памяти) без трудностей, традиционно связанными с таким контролем.
 
@@ -18,7 +18,7 @@ Rust также предлагает современные инструмент
 - Rustfmt обеспечивает согласованный стиль кодирования для всех разработчиков.
 - Rust Language Server поддерживает интегрированную среду разработки (IDE) с автодополнением кода и встроенными сообщениями об ошибках.
 
-Эти и другие инструменты экосистемы Rust, обеспечивают  разработчикам продуктивность при написании кода системного уровня.
+Эти и другие инструменты экосистемы Rust обеспечивают  разработчикам продуктивность при написании кода системного уровня.
 
 ### Студенты
 
@@ -74,7 +74,7 @@ Rust для людей, которые жаждут скорости и стаб
 
 Ferris | Пояснения
 --- | ---
-<img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/does_not_compile.svg?raw=true" alt="Ferris with a question mark" class=""> | Этот код не компилируется!
+<img src="img/ferris/does_not_compile.svg" class="ferris-explain" alt="Ferris with a question mark"> | Этот код не компилируется!
 <img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/panics.svg?raw=true" class=""> | Этот код вызывает панику!
 <img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/not_desired_behavior.svg?raw=true" class=""> | Этот код не даёт желаемого поведения.
 
@@ -82,9 +82,4 @@ Ferris | Пояснения
 
 ## Исходные коды
 
-Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub].
-
-
-[The Rust Programming Language]: https://nostarch.com/rust
-[No Starch Press]: https://nostarch.com/
-[GitHub]: https://github.com/rust-lang/book/tree/main/src
+Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub](https://github.com/rust-lang/book/tree/main/src).
