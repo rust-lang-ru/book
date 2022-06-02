@@ -12,7 +12,7 @@
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-13/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-13: Defining an <code>area</code> method on the <code>Rectangle</code> struct</span>
+<span class="caption">Листинг 5-13: Определение метода <code>area</code> в структуре <code>Rectangle</code></span>
 
 Чтобы определить функцию в контексте `Rectangle`, мы запускаем блок `impl` (implementation - реализация) для `Rectangle`. Все в `impl` будет связано с типом `Rectangle`. Затем мы перемещаем функцию `area` внутрь фигурных скобок `impl` и меняем первый (и в данном случае единственный) параметр на `self` в сигнатуре и в теле. В `main`, где мы вызвали функцию `area` и передали `rect1` в качестве аргумента, теперь мы можем использовать *синтаксис метода* для вызова метода `area` нашего экземпляра `Rectangle`. Синтаксис метода идет после экземпляра: мы добавляем точку, за которой следует имя метода, круглые скобки и любые аргументы.
 
