@@ -33,7 +33,7 @@ cargo run
 
 Как вы уже видели в Главе 1, `cargo new` создаёт программу "Hello, world!". Посмотрите файл *src/main.rs*:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/src/main.rs}}
@@ -53,7 +53,7 @@ cargo run
 
 Первая часть программы игры угадывания запрашивает ввод данных пользователем, обрабатывает их и проверяет, что вводимые данные имеют ожидаемую форму. Для начала мы позволим игроку ввести отгадку. Введите код из Листинга 2-1 в *src/main.rs*.
 
-<span class="filename">Имя файла: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:all}}
