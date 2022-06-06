@@ -369,7 +369,7 @@ Please input your guess.
 You guessed: 5
 ```
 
-You should get different random numbers, and they should all be numbers between 1 and 100. Great job!
+Вы должны получить разные случайные числа, и все они должны быть числами от 1 до 100. Отличная работа!
 
 ## Сравнение догадки с секретным числом
 
