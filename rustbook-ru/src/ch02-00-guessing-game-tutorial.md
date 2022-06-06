@@ -328,7 +328,7 @@ rand = "0.9.0"
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-03/src/main.rs:all}}
 ```
 
-<span class="caption">Listing 2-3: Adding code to generate a random number</span>
+<span class="caption">Листинг 2-3: Добавление кода для генерации случайного числа</span>
 
 Сначала мы добавляем строку `use rand::Rng`. Типаж `Rng` определяет методы, реализующие генераторы случайных чисел, и этот типаж должен быть в области видимости, чтобы можно было использовать эти методы. В главе 10 мы подробно рассмотрим типажи.
 
