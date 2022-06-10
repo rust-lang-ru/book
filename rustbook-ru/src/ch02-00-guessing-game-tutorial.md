@@ -562,7 +562,7 @@ You win!
 
 Потрясающе! С помощью одной маленькой последней правки мы закончим игру в угадывание. Напомним, что программа все ещё печатает секретное число. Это хорошо подходило для тестирования, но это портит игру. Давайте удалим `println!`, который выводит секретное число. В Листинге 2-6 показан окончательный вариант кода.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-06/src/main.rs}}
