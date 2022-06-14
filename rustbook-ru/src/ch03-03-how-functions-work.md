@@ -12,7 +12,7 @@
 
 Для определения функции в Rust необходимо указать `fn`, за которым следует имя функции и набор круглых скобок. Фигурные скобки указывают компилятору, где начинается и заканчивается тело функции.
 
-We can call any function we’ve defined by entering its name followed by a set of parentheses. Because `another_function` is defined in the program, it can be called from inside the `main` function. Note that we defined `another_function` *after* the `main` function in the source code; we could have defined it before as well. Rust doesn’t care where you define your functions, only that they’re defined somewhere in a scope that can be seen by the caller.
+Мы можем вызвать любую функцию, которую мы определили ранее, введя её имя и набор скобок следом. Поскольку в программе определена `another_function`, её можно вызвать из функции `main`. Обратите внимание, что `another_function` определена *после* функции `main` в исходном коде; мы могли бы определить её и раньше. Rust не важно, где вы определяете свои функции, главное, чтобы они были определены где-то в той области видимости, которую может видеть вызывающий их код.
 
 Создадим новый бинарный проект с названием *functions* для дальнейшего изучения функций. Поместите пример `another_function` в файл *src/main.rs* и запустите его. Вы должны увидеть следующий вывод:
 
@@ -40,9 +40,9 @@ We can call any function we’ve defined by entering its name followed by a set 
 {{#include ../listings/ch03-common-programming-concepts/no-listing-17-functions-with-parameters/output.txt}}
 ```
 
-The declaration of `another_function` has one parameter named `x`. The type of `x` is specified as `i32`. When we pass `5` in to `another_function`, the `println!` macro puts `5` where the pair of curly brackets containing `x` was in the format string.
+Объявление `another_function` имеет один параметр с именем `x`. Тип `x` указан как `i32`. Когда мы передаём `5` в `another_function`, `println!` макрос помещает `5` в пару фигурных скобок формата строки.
 
-In function signatures, you *must* declare the type of each parameter. This is a deliberate decision in Rust’s design: requiring type annotations in function definitions means the compiler almost never needs you to use them elsewhere in the code to figure out what type you mean. The compiler is also able to give more helpful error messages if it knows what types the function expects.
+Вы *обязаны* объявить тип каждого параметра сигнатуры функции. Это преднамеренное решение в дизайне Rust: требование аннотаций типов в определениях функций означает, что компилятору почти никогда не нужно, чтобы вы использовали их где-либо ещё в коде для уточнения, какой тип вы имеете в виду. Компилятор также может выдавать более полезные сообщения об ошибках, если он знает, какие типы ожидает функция.
 
 При определении нескольких параметров, разделяйте объявления параметров запятыми, как показано ниже:
 
@@ -117,7 +117,7 @@ In function signatures, you *must* declare the type of each parameter. This is a
 
 ### Функции с возвращаемыми значениями
 
-Functions can return values to the code that calls them. We don’t name return values, but we must declare their type after an arrow (`->`). In Rust, the return value of the function is synonymous with the value of the final expression in the block of the body of a function. You can return early from a function by using the `return` keyword and specifying a value, but most functions return the last expression implicitly. Here’s an example of a function that returns a value:
+Функции могут возвращать значения коду, который их вызывает. Мы не называем возвращаемые значения, но мы должны объявить их тип после стрелки ( `->` ). В Rust возвращаемое значение функции является синонимом значения конечного выражения в блоке тела функции. Вы можете раньше выйти из функции и вернуть значение, используя ключевое слово `return` и указав значение, но большинство функций неявно возвращают последнее выражение. Вот пример такой функции:
 
 <span class="filename">Имя файла: src/main.rs</span>
 
