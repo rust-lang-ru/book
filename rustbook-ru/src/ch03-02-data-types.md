@@ -26,13 +26,13 @@ let guess: u32 = "42".parse().expect("Not a number!");
 
 <span class="caption">Таблица 3-1: Целочисленные типы в Rust</span>
 
-Length | Signed | Unsigned
+Длина | Знаковый | Беззнаковый
 --- | --- | ---
-8-bit | `i8` | `u8`
-16-bit | `i16` | `u16`
-32-bit | `i32` | `u32`
-64-bit | `i64` | `u64`
-128-bit | `i128` | `u128`
+8-бит | `i8` | `u8`
+16-бит | `i16` | `u16`
+32-бит | `i32` | `u32`
+64-бит | `i64` | `u64`
+128-бит | `i128` | `u128`
 arch | `isize` | `usize`
 
 Каждый вариант может быть как со знаком, так и без знака и имеет явный размер. Характеристика типа как *знаковый* и *без знаковый* определяет возможность числа быть отрицательным, другими словами, должно ли число иметь знак (знаковое) или оно всегда будет только положительным и, следовательно, может быть представлено без знака (беззнаковое). Это похоже на написание чисел на бумаге: когда знак имеет значение, число отображается со знаком плюс или со знаком минус; однако, когда можно с уверенностью предположить, что число положительное, оно отображается без знака. Числа со знаком хранятся с использованием [дополнительного кода](https://en.wikipedia.org/wiki/Two%27s_complement)<!-- игнорировать -->.
@@ -50,7 +50,7 @@ Number literals | Example
 Decimal | `98_222`
 Hex | `0xff`
 Octal | `0o77`
-Binary | `0b1111_0000`
+Двоичный | `0b1111_0000`
 Байт (только `u8`) | `b'A'`
 
 Как же узнать, какой тип целого числа использовать? Если вы не уверены, значения по умолчанию в Rust, как правило, подходят для начала: целочисленные типы по умолчанию `i32`. Основной случай, в котором вы должны использовать `isize` или `usize`, — это индексация какой-либо коллекции.
@@ -74,7 +74,7 @@ Binary | `0b1111_0000`
 
 Вот пример, демонстрирующий числа с плавающей запятой в действии:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-06-floating-point/src/main.rs}}
@@ -86,7 +86,7 @@ Binary | `0b1111_0000`
 
 Rust поддерживает основные математические операции, которые вы ожидаете иметь для всех типов чисел: сложение, вычитание, умножение, деление и остаток. Целочисленное деление округляется до ближайшего целого числа. В следующем коде показано, как использовать каждую числовую операцию в выражении `let`:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-07-numeric-operations/src/main.rs}}
@@ -98,7 +98,7 @@ Rust поддерживает основные математические оп
 
 Как и в большинстве языков программирования, логический тип в Rust может иметь два значения: `true` и `false`, и занимает в памяти один байт. Логический тип в Rust аннотируется при помощи `bool`. Например:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-08-boolean/src/main.rs}}
@@ -110,7 +110,7 @@ Rust поддерживает основные математические оп
 
 Тип `char` в Rust — самый примитивный алфавитный тип языка. Вот несколько примеров объявления значений `char`:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-09-char/src/main.rs}}
@@ -128,7 +128,7 @@ Rust поддерживает основные математические оп
 
 Кортеж создаётся при помощи записи списка значений, перечисленных через запятую внутри круглых скобок. Каждая позиция в кортеже имеет тип. Типы различных значений в кортеже могут не быть одинаковыми. В примере мы добавили не обязательные аннотации типов:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-10-tuples/src/main.rs}}
@@ -136,7 +136,7 @@ Rust поддерживает основные математические оп
 
 Переменной с именем `tup` привязывается весь кортеж, потому что кортеж является единым комбинированным элементом. Чтобы получить отдельные значения из кортежа, можно использовать сопоставление с образцом для деструктурирования значений кортежа, как в примере:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-11-destructuring-tuples/src/main.rs}}
@@ -146,7 +146,7 @@ Rust поддерживает основные математические оп
 
 Мы также можем напрямую обращаться к элементу кортежа, используя точку ( `.` ), за которой следует индекс значения, к которому мы хотим получить доступ. Например:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-12-tuple-indexing/src/main.rs}}
@@ -162,7 +162,7 @@ Rust поддерживает основные математические оп
 
 Мы записываем значения в массиве в виде списка, разделённого запятыми, внутри квадратных скобок:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-13-arrays/src/main.rs}}
@@ -197,7 +197,7 @@ let a = [3; 5];
 
 Массив — это единый фрагмент памяти известного фиксированного размера, который может быть размещён в стеке. Вы можете получить доступ к элементам массива с помощью индексации, например:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-14-array-indexing/src/main.rs}}
@@ -209,7 +209,7 @@ let a = [3; 5];
 
 Давайте посмотрим, что произойдёт, если вы попытаетесь получить доступ к элементу массива, находящемуся за его концом. Допустим, вы запускаете код, похожий на игру в угадывание из Главы 2, чтобы получить индекс массива от пользователя:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,panics
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-15-invalid-array-access/src/main.rs}}
