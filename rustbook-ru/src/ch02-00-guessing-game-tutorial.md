@@ -500,7 +500,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 Давайте запрограммируем игру на выход при выигрыше пользователя, добавив оператор `break`:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-05-quitting/src/main.rs:here}}
