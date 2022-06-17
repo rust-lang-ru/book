@@ -512,7 +512,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 Чтобы ещё улучшить поведение игры, вместо аварийного завершения программы, когда пользователь вводит не число, давайте заставим игру проигрывать этот случай, позволяя пользователю продолжить угадывание. Для этого необходимо изменить строку, в которой `guess` преобразуется из `String` в `u32`, как показано в Листинге 2-5.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-05/src/main.rs:here}}
