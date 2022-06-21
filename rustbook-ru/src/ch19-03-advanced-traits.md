@@ -25,7 +25,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-13-21-reproduced/src/lib.rs:ch19}}
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-22-iterator-on-counter/src/lib.rs:ch19}}
 ```
 
 Этот синтаксис весьма напоминает обобщённые типы. Так почему же типаж `Iterator` не определён обобщённым типом, как показано в листинге 19-13?
