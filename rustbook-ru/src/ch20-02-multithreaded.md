@@ -84,10 +84,10 @@
 
 Затем создайте новый каталог *src/bin* и переместите двоичный крейт с корнем в *src/main.rs* в *src/bin/main.rs*. Это сделает библиотечный крейт основным крейтом в каталоге *hello*; мы все ещё можем запустить двоичный файл из *src/bin/main.rs*, используя `cargo run`. Переместив файл *main.rs*, отредактируйте его, чтобы подключить крейт библиотеки и добавить тип `ThreadPool` в область видимости, добавив следующий код в начало *src/bin/main.rs*:
 
-<span class="filename">Файл: src/bin/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/bin/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/main.rs:here}}
 ```
 
 Этот код по-прежнему не будет работать, но давайте проверим его ещё раз, чтобы получить следующую ошибку, которую нам нужно устранить:
