@@ -32,7 +32,7 @@
 {{#rustdoc_include ../listings/ch13-functional-features/listing-12-24-reproduced/src/main.rs:ch13}}
 ```
 
-Мы изменим начало функции `main`, которая была в  листинге 12-24, на код из листинга 13-18. Он не компилируется, пока мы не обновим`Config::build`.
+Мы изменим начало функции `main`, которая была в  листинге 12-24, на код из листинга 13-18. Он не компилируется, пока мы не обновим `Config::build`.
 
 <span class="filename">Файл: src/main.rs</span>
 
