@@ -66,9 +66,12 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-07-define-message-enum/src/lib.rs:here}}
+```rust,noplayground,not_desired_behavior
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-23/src/lib.rs:here}}
 ```
+
+<span class="caption">Listing 20-23: Explicitly drop `sender` before joining
+the worker threads</span>
 
 Это перечисление `Message` будет либо вариантом `NewJob`, который внутри держит `Job` с потоком для выполнения, или это будет вариант `Terminate`, который сделает так, чтобы поток вышел из цикла и остановился.
 
@@ -105,7 +108,7 @@
 <span class="filename">Файл: src/bin/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-25/src/bin/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-25/src/main.rs:here}}
 ```
 
 <span class="caption">Код 20-25. Выключение сервера после обслуживания двух запросов с помощью выхода из цикла</span>
@@ -158,13 +161,13 @@ Shutting down worker 3
 <span class="filename">Файл: src/bin/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-08-final-code/src/bin/main.rs}}
+{{#rustdoc_include ../listings/ch20-web-server/no-listing-07-final-code/src/main.rs}}
 ```
 
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-08-final-code/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-web-server/no-listing-07-final-code/src/lib.rs}}
 ```
 
 В коде можно сделать больше! Если вы хотите продолжить совершенствование этого проекта, вот несколько идей:

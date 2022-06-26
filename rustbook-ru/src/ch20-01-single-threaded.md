@@ -159,7 +159,7 @@ HTTP/1.1 200 OK\r\n\r\n
 <span class="filename">Файл: hello.html</span>
 
 ```html
-{{#include ../listings/ch20-web-server/listing-20-04/hello.html}}
+{{#include ../listings/ch20-web-server/listing-20-05/hello.html}}
 ```
 
 <span class="caption">Листинг 20-4. Образец HTML-файла для возврата в ответ</span>
@@ -215,7 +215,7 @@ HTTP/1.1 200 OK\r\n\r\n
 <span class="filename">Файл: 404.html</span>
 
 ```html
-{{#include ../listings/ch20-web-server/listing-20-08/404.html}}
+{{#include ../listings/ch20-web-server/listing-20-07/404.html}}
 ```
 
 <span class="caption">Листинг 20-8. Пример содержимого страницы для отправки с любым ответом 404</span>
