@@ -1,0 +1,19 @@
+name: Symbols counting
+on:
+  workflow_dispatch:
+  
+jobs:
+  syms-count:
+    name: Symbols counting
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.2.0
+      with:
+        submodules: recursive
+        fetch-depth: 200
+    - uses: rust-lang-ru/simpleinfra/syms-counter@master
+      env:
+        RUST_BACKTRACE: full
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tagged_users: "@funkill @ava57r @TelegaOvoshey"
