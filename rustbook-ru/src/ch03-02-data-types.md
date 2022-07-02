@@ -30,7 +30,7 @@ let guess: u32 = "42".parse().expect("Not a number!");
 --- | --- | ---
 8 бит | `i8` | `u8`
 16 бит | `i16` | `u16`
-32-bit | `i32` | `u32`
+32 бита | `i32` | `u32`
 64 бит | `i64` | `u64`
 128 бит | `i128` | `u128`
 arch | `isize` | `usize`
@@ -59,11 +59,11 @@ arch | `isize` | `usize`
 >
 > Допустим, у вас есть переменная типа `u8`, которая может содержать значения от 0 до 255. Если вы попытаетесь изменить переменную на значение вне этого диапазона, например 256, произойдёт *целочисленное переполнение*, что может привести к одному из двух вариантов поведения. Когда вы компилируете в режиме отладки, Rust включает проверки целочисленного переполнения, которые вызывают *панику* вашей программы во время работы, если происходит переполнение. Rust использует термин «паника», когда программа завершает работу с ошибкой; мы обсудим паники более подробно в разделе [«Неисправимые ошибки с `panic!`»](ch09-01-unrecoverable-errors-with-panic.html)<!-- ignore --> в главе 9.
 >
-> When you’re compiling in release mode with the `--release` flag, Rust does *not* include checks for integer overflow that cause panics. Instead, if overflow occurs, Rust performs *two’s complement wrapping*. In short, values greater than the maximum value the type can hold “wrap around” to the minimum of the values the type can hold. In the case of a `u8`, the value 256 becomes 0, the value 257 becomes 1, and so on. The program won’t panic, but the variable will have a value that probably isn’t what you were expecting it to have. Relying on integer overflow’s wrapping behavior is considered an error.
+> Когда вы компилируете финальную версию программы с флагом `--release`, Rust *не* включает проверки целочисленного переполнения, вызывающего панику. Вместо этого, если происходит переполнение, Rust выполняет *оборачивание дополнительного кода (two's complement)*. Если описывать в двух словах, то значения, превышающие максимальное значение, которое может содержать тип, «переходят» к минимуму значений. В случае `u8` значение 256 становится равным 0, значение 257 становится равным 1 — и так далее. Программа не будет паниковать, но переменная будет иметь значение, которое, вероятно, будет не таким, как вы ожидали. Полагаться на такое поведение считается ошибкой.
 >
 > Чтобы явно обрабатывать возможность переполнения, вы можете использовать эти семейства методов, предоставляемых стандартной библиотекой для примитивных числовых типов:
 >
-> - Wrap in all modes with the `wrapping_*` methods, such as `wrapping_add`
+> - Обернуть все режимы с помощью методов `wrapping_*`, например `wrapping_add`
 > - Return the `None` value if there is overflow with the `checked_*` methods
 > - Return the value and a boolean indicating whether there was overflow with the `overflowing_*` methods
 > - Насыщать при минимальном или максимальном значениях с помощью методов `saturating_*`
