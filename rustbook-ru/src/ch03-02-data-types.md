@@ -43,7 +43,7 @@ arch | `isize` | `usize`
 
 Целочисленные литералы можно записывать в любой из форм, показанных в таблице 3-2. Обратите внимание, что числовые литералы, которые могут быть несколькими числовыми типами, позволяют использовать суффикс типа, например `57u8`, для обозначения типа. Числовые литералы также могут использовать `_` в качестве визуального разделителя, чтобы число было легче читать, например `1_000`, которое будет иметь то же значение, как если бы вы указали `1000`.
 
-<span class="caption">Table 3-2: Integer Literals in Rust</span>
+<span class="caption">Таблица 3-2: целочисленные литералы в Rust</span>
 
 Number literals | Example
 --- | ---
@@ -57,7 +57,7 @@ Octal | `0o77`
 
 > ##### Integer Overflow
 >
-> Let’s say you have a variable of type `u8` that can hold values between 0 and 255. If you try to change the variable to a value outside of that range, such as 256, *integer overflow* will occur, which can result in one of two behaviors. When you’re compiling in debug mode, Rust includes checks for integer overflow that cause your program to *panic* at runtime if this behavior occurs. Rust uses the term panicking when a program exits with an error; we’ll discuss panics in more depth in the [“Unrecoverable Errors with `panic!`”](ch09-01-unrecoverable-errors-with-panic.html)<!-- ignore --> section in Chapter 9.
+> Допустим, у вас есть переменная типа `u8`, которая может содержать значения от 0 до 255. Если вы попытаетесь изменить переменную на значение вне этого диапазона, например 256, произойдёт *целочисленное переполнение*, что может привести к одному из двух вариантов поведения. Когда вы компилируете в режиме отладки, Rust включает проверки целочисленного переполнения, которые вызывают *панику* вашей программы во время работы, если происходит переполнение. Rust использует термин «паника», когда программа завершает работу с ошибкой; мы обсудим паники более подробно в разделе [«Неисправимые ошибки с `panic!`»](ch09-01-unrecoverable-errors-with-panic.html)<!-- ignore --> в главе 9.
 >
 > When you’re compiling in release mode with the `--release` flag, Rust does *not* include checks for integer overflow that cause panics. Instead, if overflow occurs, Rust performs *two’s complement wrapping*. In short, values greater than the maximum value the type can hold “wrap around” to the minimum of the values the type can hold. In the case of a `u8`, the value 256 becomes 0, the value 257 becomes 1, and so on. The program won’t panic, but the variable will have a value that probably isn’t what you were expecting it to have. Relying on integer overflow’s wrapping behavior is considered an error.
 >
