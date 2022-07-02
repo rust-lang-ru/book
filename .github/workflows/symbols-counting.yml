@@ -1,6 +1,7 @@
 name: Symbols counting
 on:
-  workflow_dispatch:
+  pull_request:
+    types: [closed]
   
 jobs:
   syms-count:
