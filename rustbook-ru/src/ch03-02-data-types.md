@@ -64,7 +64,7 @@ arch | `isize` | `usize`
 > Чтобы явно обрабатывать возможность переполнения, вы можете использовать эти семейства методов, предоставляемых стандартной библиотекой для примитивных числовых типов:
 >
 > - Обернуть все режимы с помощью методов `wrapping_*`, например `wrapping_add`
-> - Return the `None` value if there is overflow with the `checked_*` methods
+> - Вернуть значение `None` в случае переполнения при помощи методов `checked_*`
 > - Return the value and a boolean indicating whether there was overflow with the `overflowing_*` methods
 > - Насыщать при минимальном или максимальном значениях с помощью методов `saturating_*`
 
