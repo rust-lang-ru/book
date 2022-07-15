@@ -31,7 +31,7 @@ enum called `ShirtColor` that has the variants `Red` and `Blue` (limiting the
 number of colors available for simplicity). We represent the company’s
 inventory with an `Inventory` struct that has a field named `shirts` that
 contains a `Vec<ShirtColor>` representing the shirt colors currently in stock.
-The method `shirt_giveaway` defined on `Inventory` gets the optional shirt
+The method `giveaway` defined on `Inventory` gets the optional shirt
 color preference of the free shirt winner, and returns the shirt color the
 person will get. This setup is shown in Listing 13-1:
 
@@ -241,7 +241,7 @@ to print the vector in a new thread rather than in the main thread:
 <span class="filename">Filename: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch13-functional-features/listing-13-05/src/main.rs}}
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-06/src/main.rs}}
 ```
 
 <span class="caption">Listing 13-6: Using `move` to force the closure for the
