@@ -20,9 +20,9 @@ $ cargo build --release
     Finished release [optimized] target(s) in 0.0s
 ```
 
-The `dev` and `release` are these different profiles used by the compiler.
+`dev` и `release` — это разные профили, используемые компилятором.
 
-Cargo has default settings for each of the profiles that apply when you haven't explicitly added any `[profile.*]` sections in the project’s *Cargo.toml* file. By adding `[profile.*]` sections for any profile you want to customize, you override any subset of the default settings. For example, here are the default values for the `opt-level` setting for the `dev` and `release` profiles:
+Cargo содержит настройки по умолчанию для каждого профиля, которые применяются, если вы явно не указали секции `[profile.*]` в файле проекта *Cargo.toml*. Добавляя секции `[profile.*]` для любого профиля, который вы хотите настроить, вы переопределяете любое подмножество параметров по умолчанию. Например, вот значения по умолчанию для параметра `opt-level` для профилей `dev` и `release`:
 
 <span class="filename">Файл: Cargo.toml</span>
 
@@ -36,7 +36,7 @@ opt-level = 3
 
 Параметр `opt-level` управляет количеством оптимизаций, которые Rust будет применять к вашему коду, в диапазоне от 0 до 3. Использование большего количества оптимизаций увеличивает время компиляции, поэтому если вы находитесь в процессе разработки и часто компилируете свой код, целесообразно использовать меньшее количество оптимизаций, чтобы компиляция происходила быстрее, даже если в результате код будет работать медленнее. Поэтому `opt-level` по умолчанию для `dev` установлен в `0`. Когда вы готовы опубликовать свой код, то лучше потратить больше времени на компиляцию. Вы скомпилируете программу в режиме релиза только один раз, но выполняться она будет многократно, так что использование режима релиза позволяет увеличить скорость выполнения кода за счёт времени компиляции. Вот почему по умолчанию `opt-level` для профиля `release` равен `3`.
 
-You can override a default setting by adding a different value for it in *Cargo.toml*. For example, if we want to use optimization level 1 in the development profile, we can add these two lines to our project’s *Cargo.toml* file:
+Вы можете переопределить настройки по умолчанию, добавив другое значение для них в *Cargo.toml*. Например, если мы хотим использовать уровень оптимизации 1 в профиле разработки, мы можем добавить эти две строки в файл *Cargo.toml* нашего проекта:
 
 <span class="filename">Файл: Cargo.toml</span>
 
