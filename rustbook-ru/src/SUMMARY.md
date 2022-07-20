@@ -12,7 +12,7 @@
     - [Hello, World!](ch01-02-hello-world.md)
     - [Hello, Cargo!](ch01-03-hello-cargo.md)
 
-- [Programming a Guessing Game](ch02-00-guessing-game-tutorial.md)
+- [Программирование игры в загадки](ch02-00-guessing-game-tutorial.md)
 
 - [Common Programming Concepts](ch03-00-common-programming-concepts.md)
 
@@ -98,7 +98,7 @@
     - [Publishing a Crate to Crates.io](ch14-02-publishing-to-crates-io.md)
     - [Cargo Workspaces](ch14-03-cargo-workspaces.md)
     - [Installing Binaries from Crates.io with `cargo install`](ch14-04-installing-binaries.md)
-    - [Extending Cargo with Custom Commands](ch14-05-extending-cargo.md)
+    - [Расширение возможностей Cargo путём добавления пользовательских команд](ch14-05-extending-cargo.md)
 
 - [Smart Pointers](ch15-00-smart-pointers.md)
 
@@ -133,9 +133,9 @@
 - [Advanced Features](ch19-00-advanced-features.md)
 
     - [Unsafe Rust](ch19-01-unsafe-rust.md)
-    - [Advanced Traits](ch19-03-advanced-traits.md)
-    - [Advanced Types](ch19-04-advanced-types.md)
-    - [Advanced Functions and Closures](ch19-05-advanced-functions-and-closures.md)
+    - [Трейты — дополнительно](ch19-03-advanced-traits.md)
+    - [Типы — дополнительно](ch19-04-advanced-types.md)
+    - [Функции и замыкания — дополнительно](ch19-05-advanced-functions-and-closures.md)
     - [Macros](ch19-06-macros.md)
 
 - [Final Project: Building a Multithreaded Web Server](ch20-00-final-project-a-web-server.md)
@@ -146,10 +146,10 @@
 
 - [Appendix](appendix-00.md)
 
-    - [A - Keywords](appendix-01-keywords.md)
-    - [B - Operators and Symbols](appendix-02-operators.md)
-    - [C - Derivable Traits](appendix-03-derivable-traits.md)
+    - [А — Ключевые слова](appendix-01-keywords.md)
+    - [B — Операторы и символы](appendix-02-operators.md)
+    - [C — Выводимые трейты](appendix-03-derivable-traits.md)
     - [D - Useful Development Tools](appendix-04-useful-development-tools.md)
-    - [E - Editions](appendix-05-editions.md)
-    - [F - Translations of the Book](appendix-06-translation.md)
+    - [E — Редакции](appendix-05-editions.md)
+    - [F — Переводы книги](appendix-06-translation.md)
     - [G - How Rust is Made and “Nightly Rust”](appendix-07-nightly-rust.md)
