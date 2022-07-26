@@ -3,9 +3,9 @@
 До сих пор мы использовали только самые основные возможности Cargo для сборки, запуска и тестирования нашего кода, но он может гораздо больше. В этой главе мы обсудим некоторые другие, более продвинутые возможности, чтобы показать вам, как делать следующее:
 
 - Настройте свою сборку с помощью профилей выпуска
-- Publish libraries on [crates.io](https://crates.io/)<!-- ignore -->
+- Публиковать библиотеки на [crates.io](https://crates.io/)<!-- ignore -->
 - Organize large projects with workspaces
-- Install binaries from [crates.io](https://crates.io/)<!-- ignore -->
+- Устанавливать бинарные файлы из [crates.io](https://crates.io/)<!-- ignore -->
 - Extend Cargo using custom commands
 
 Cargo может делать даже больше того, что мы рассматриваем в этой главе, поэтому полное описание всех его функций см. в [документации](https://doc.rust-lang.org/cargo/).
