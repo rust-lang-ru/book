@@ -58,7 +58,27 @@ $ rustc --version
 rustc x.y.z (abcabcabc yyyy-mm-dd)
 ```
 
-Если вы видите данную информацию, то вы установили всё успешно! Если вы не видите этой информации и используете Windows, проверьте, что путь к Rust находится в системной переменной `%PATH%`. Если он корректный, но Rust все ещё не работает, то есть множество мест, где можно получить помощь. Самое простое это канал #beginners [официального Rust Discord] сервера. Там вы можете пообщаться с другими Rustaceans (это наше шуточное прозвище), которые смогут вам помочь. Другие замечательные ресурсы включают [Пользовательский форум] и [Stack Overflow].
+Если вы видите эту информацию, вы успешно установили Rust! Если вы не видите эту информацию, убедитесь, что Rust находится в вашей системной переменной `%PATH%` следующим образом:
+
+В Windows CMD:
+
+```console
+> echo %PATH%
+```
+
+В PowerShell:
+
+```console
+> echo $env:Path
+```
+
+В Linux и macOS:
+
+```console
+echo $PATH
+```
+
+Если все правильно, а Rust по-прежнему не работает, есть несколько мест, где вы можете получить помощь. Самый простой — это канал #beginners на [официальном канале Rust в Discord] . Там вы можете пообщаться с другими rustaceans (глупое прозвище, которым мы называем себя), которые могут вам помочь. Другие замечательные ресурсы включают [форум пользователей] и [Stack Overflow] .
 
 ### Обновление и удаление
 
@@ -84,6 +104,6 @@ $ rustup self uninstall
 [страницу «Другие методы установки Rust»]: https://forge.rust-lang.org/infra/other-installation-methods.html
 [https://www.rust-lang.org/tools/install]: https://www.rust-lang.org/tools/install
 [Visual Studio 2022]: https://visualstudio.microsoft.com/downloads/
-[официального Rust Discord]: https://discord.gg/rust-lang
-[Пользовательский форум]: https://users.rust-lang.org/
+[официальном канале Rust в Discord]: https://discord.gg/rust-lang
+[форум пользователей]: https://users.rust-lang.org/
 [Stack Overflow]: https://stackoverflow.com/questions/tagged/rust
