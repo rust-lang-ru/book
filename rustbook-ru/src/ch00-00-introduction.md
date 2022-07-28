@@ -74,7 +74,7 @@ Finally, some appendices contain useful information about the language in a more
 
 Ferris | Пояснения
 --- | ---
-<img src="img/ferris/does_not_compile.svg" class="ferris-explain" alt="Ferris with a question mark"> | Этот код не компилируется!
+<img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/does_not_compile.svg?raw=true" alt="Ferris with a question mark" class=""> | Этот код не компилируется!
 <img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/panics.svg?raw=true" class=""> | Этот код вызывает панику!
 <img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/not_desired_behavior.svg?raw=true" class=""> | Этот код не даёт желаемого поведения.
 
