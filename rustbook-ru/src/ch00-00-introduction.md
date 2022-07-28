@@ -1,6 +1,6 @@
 # Введение
 
-> Примечание: это издание книги так же, как и [The Rust Programming Language](https://nostarch.com/rust), доступно в печатном и электронном виде от [No Starch Press](https://nostarch.com/).
+> Примечание: это издание книги так же, как и [The Rust Programming Language], доступно в печатном и электронном виде от [No Starch Press].
 
 Добро пожаловать в *The Rust Programming Language*, вводную книгу о Rust. Язык программирования Rust помогает создавать быстрые, более надёжные приложения. Хорошая эргономика и низкоуровневый контроль часто являются противоречивыми требованиями для дизайна языков программирования; Rust бросает вызов этому конфликту. Благодаря сбалансированности мощных технических возможностей c большим удобством разработки, Rust предоставляет возможности управления низкоуровневыми элементами (например, использование памяти) без трудностей, традиционно связанными с таким контролем.
 
@@ -64,7 +64,7 @@ Rust для людей, которые жаждут скорости и стаб
 
 В главе 20 мы завершим проект, в котором мы реализуем низкоуровневый многопоточный веб-сервер!
 
-Finally, some appendices contain useful information about the language in a more reference-like format. Appendix A covers Rust’s keywords, Appendix B covers Rust’s operators and symbols, Appendix C covers derivable traits provided by the standard library, Appendix D covers some useful development tools, and Appendix E explains Rust editions. In Appendix F, you can find translations of the book, and in Appendix G we’ll cover how Rust is made and what nightly Rust is.
+Наконец, некоторые приложения содержат полезную информацию о языке в более справочном формате. В приложении A рассматриваются ключевые слова Rust, в приложении B - операторы и символы Rust, в приложении C - производные характеристики, предоставляемые стандартной библиотекой, в приложении D - некоторые полезные инструменты разработки, а в приложении E - издания Rust. В приложении F вы найдете переводы книги, а в приложении G мы расскажем о том, как создается Rust и что такое nightly Rust.
 
 Нет способа читать эту книгу неправильно: если вы хотите пропустить что-то и пройти вперёд, делайте это! Возможно, вам придётся вернуться к предыдущим главам, если у вас появятся какие-либо затруднения. Делайте так, как считаете удобным для себя.
 
@@ -82,4 +82,9 @@ Ferris | Пояснения
 
 ## Исходные коды
 
-Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub](https://github.com/rust-lang/book/tree/main/src).
+Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub].
+
+
+[The Rust Programming Language]: https://nostarch.com/rust
+[No Starch Press]: https://nostarch.com/
+[GitHub]: https://github.com/rust-lang/book/tree/main/src
