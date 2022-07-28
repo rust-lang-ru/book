@@ -1,6 +1,6 @@
 # Введение
 
-> Примечание: это издание книги так же, как и [The Rust Programming Language] доступно в печатном и электронном виде от [No Starch Press].
+> Примечание: это издание книги так же, как и [The Rust Programming Language](https://nostarch.com/rust), доступно в печатном и электронном виде от [No Starch Press](https://nostarch.com/).
 
 Добро пожаловать в *The Rust Programming Language*, вводную книгу о Rust. Язык программирования Rust помогает создавать быстрые, более надёжные приложения. Хорошая эргономика и низкоуровневый контроль часто являются противоречивыми требованиями для дизайна языков программирования; Rust бросает вызов этому конфликту. Благодаря сбалансированности мощных технических возможностей c большим удобством разработки, Rust предоставляет возможности управления низкоуровневыми элементами (например, использование памяти) без трудностей, традиционно связанными с таким контролем.
 
@@ -64,7 +64,7 @@ Rust для людей, которые жаждут скорости и стаб
 
 В главе 20 мы завершим проект, в котором мы реализуем низкоуровневый многопоточный веб-сервер!
 
-Наконец, некоторые приложения содержат полезную информацию о языке в формате, более похожем на справочник. В приложении A описаны ключевые слова Rust, в приложении B описаны операторы и символы Rust, в приложении C описаны производные свойства, предоставляемые стандартной библиотекой, в приложении D описаны некоторые полезные инструменты разработки, а в приложении E описаны редакции Rust.
+Finally, some appendices contain useful information about the language in a more reference-like format. Appendix A covers Rust’s keywords, Appendix B covers Rust’s operators and symbols, Appendix C covers derivable traits provided by the standard library, Appendix D covers some useful development tools, and Appendix E explains Rust editions. In Appendix F, you can find translations of the book, and in Appendix G we’ll cover how Rust is made and what nightly Rust is.
 
 Нет способа читать эту книгу неправильно: если вы хотите пропустить что-то и пройти вперёд, делайте это! Возможно, вам придётся вернуться к предыдущим главам, если у вас появятся какие-либо затруднения. Делайте так, как считаете удобным для себя.
 
@@ -74,7 +74,7 @@ Rust для людей, которые жаждут скорости и стаб
 
 Ferris | Пояснения
 --- | ---
-<img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/does_not_compile.svg?raw=true" alt="Ferris with a question mark" class=""> | Этот код не компилируется!
+<img src="img/ferris/does_not_compile.svg" class="ferris-explain" alt="Ferris with a question mark"> | Этот код не компилируется!
 <img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/panics.svg?raw=true" class=""> | Этот код вызывает панику!
 <img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/not_desired_behavior.svg?raw=true" class=""> | Этот код не даёт желаемого поведения.
 
@@ -82,9 +82,4 @@ Ferris | Пояснения
 
 ## Исходные коды
 
-Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub].
-
-
-[The Rust Programming Language]: https://nostarch.com/rust
-[No Starch Press]: https://nostarch.com/
-[GitHub]: https://github.com/rust-lang/book/tree/main/src
+Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub](https://github.com/rust-lang/book/tree/main/src).
