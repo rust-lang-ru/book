@@ -26,7 +26,7 @@ let guess: u32 = "42".parse().expect("Not a number!");
 
 <span class="caption">Таблица 3-1: целочисленные типы в Rust</span>
 
-Длина | Со знаком | Unsigned
+Длина | Со знаком | Без знака
 --- | --- | ---
 8 бит | `i8` | `u8`
 16-bit | `i16` | `u16`
@@ -49,24 +49,24 @@ arch | `isize` | `usize`
 --- | ---
 Десятичный | `98_222`
 Шестнадцатеричный | `0xff`
-Octal | `0o77`
+восьмеричный | `0o77`
 Двоичный | `0b1111_0000`
 Байт (только `u8`) | `b'A'`
 
 Как же узнать, какой тип целого числа использовать? Если вы не уверены, значения по умолчанию в Rust, как правило, подходят для начала: целочисленные типы по умолчанию `i32`. Основной случай, в котором вы должны использовать `isize` или `usize`, — это индексация какой-либо коллекции.
 
-> ##### Integer Overflow
+> ##### Переполнение целых чисел
 >
-> Let’s say you have a variable of type `u8` that can hold values between 0 and 255. If you try to change the variable to a value outside of that range, such as 256, *integer overflow* will occur, which can result in one of two behaviors. When you’re compiling in debug mode, Rust includes checks for integer overflow that cause your program to *panic* at runtime if this behavior occurs. Rust uses the term panicking when a program exits with an error; we’ll discuss panics in more depth in the [“Unrecoverable Errors with `panic!`”](ch09-01-unrecoverable-errors-with-panic.html)<!-- ignore --> section in Chapter 9.
+> Допустим, у вас есть переменная типа `u8`, которая может хранить значения от 0 до 255. Если вы попытаетесь изменить переменную на значение вне этого диапазона, например, 256, произойдет *переполнение целого числа*, что может привести к одному из двух вариантов поведения. Когда вы компилируете в режиме отладки, Rust включает проверки на переполнение целых чисел, которые заставляют вашу программу *паниковать* во время выполнения, если возникает такое поведение. Rust использует термин паника, когда программа завершается с ошибкой; мы обсудим панику более подробно в разделе ["Неисправимые ошибки с `panic!`"](ch09-01-unrecoverable-errors-with-panic.html)<!-- ignore --> в главе 9.
 >
-> When you’re compiling in release mode with the `--release` flag, Rust does *not* include checks for integer overflow that cause panics. Instead, if overflow occurs, Rust performs *two’s complement wrapping*. In short, values greater than the maximum value the type can hold “wrap around” to the minimum of the values the type can hold. In the case of a `u8`, the value 256 becomes 0, the value 257 becomes 1, and so on. The program won’t panic, but the variable will have a value that probably isn’t what you were expecting it to have. Relying on integer overflow’s wrapping behavior is considered an error.
+> Когда вы компилируете в режиме release с флагом `--release`, Rust *не* включает проверки на переполнение целых чисел, которые вызывают панику. Вместо этого, если происходит переполнение, Rust осуществляет *двойное свертывание*. Короче говоря, значения, превышающие максимальное значение, которое может хранить тип, " обёртываются" к минимальному из значений, которые может хранить тип. В случае `u8`, значение 256 становится 0, значение 257 становится 1, и так далее. Программа не запаникует, но переменная будет иметь значение, которое, вероятно, не соответствует вашим ожиданиям. Полагаться на поведение обертывания при переполнении целых чисел считается ошибкой.
 >
-> To explicitly handle the possibility of overflow, you can use these families of methods provided by the standard library for primitive numeric types:
+> Чтобы явно обрабатывать возможность переполнения, вы можете использовать эти семейства методов, предоставляемые стандартной библиотекой для примитивных числовых типов:
 >
-> - Wrap in all modes with the `wrapping_*` methods, such as `wrapping_add`
-> - Return the `None` value if there is overflow with the `checked_*` methods
-> - Return the value and a boolean indicating whether there was overflow with the `overflowing_*` methods
-> - Saturate at the value’s minimum or maximum values with `saturating_*` methods
+> - Обертывание во всех режимах с помощью методов `wrapping_*`, например `wrapping_add`
+> - Возвращает значение `None`, если произошло переполнение при использовании методов `checked_*`
+> - Возвращает значение и булево число, указывающее, имело ли место переполнение с помощью методов `overflowing_*`
+> - Насыщать при минимальном или максимальном значениях значения с помощью методов `saturating_*`
 
 #### Числа с плавающей запятой
 
@@ -74,7 +74,7 @@ Octal | `0o77`
 
 Вот пример, демонстрирующий числа с плавающей запятой в действии:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-06-floating-point/src/main.rs}}
@@ -86,7 +86,7 @@ Octal | `0o77`
 
 Rust поддерживает основные математические операции, которые ожидаются для всех типов чисел: сложение, вычитание, умножение, деление и остаток. Целочисленное деление округляется до ближайшего целого числа. В следующем коде показано, как использовать каждую числовую операцию в выражении `let`:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-07-numeric-operations/src/main.rs}}
@@ -98,7 +98,7 @@ Rust поддерживает основные математические оп
 
 Как и в большинстве языков программирования, логический тип в Rust может иметь два значения: `true` и `false` и занимает в памяти один байт. Логический тип в Rust аннотируется при помощи `bool`. Например:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-08-boolean/src/main.rs}}
@@ -110,7 +110,7 @@ Rust поддерживает основные математические оп
 
 Тип `char` в Rust — самый примитивный алфавитный тип языка. Вот несколько примеров объявления значений `char`:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-09-char/src/main.rs}}
@@ -128,7 +128,7 @@ Rust поддерживает основные математические оп
 
 Кортеж создаётся при помощи записи списка значений, перечисленных через запятую внутри круглых скобок. Каждая позиция в кортеже имеет тип. Типы различных значений в кортеже могут не быть одинаковыми. В примере мы добавили необязательные аннотации типов:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-10-tuples/src/main.rs}}
@@ -136,7 +136,7 @@ Rust поддерживает основные математические оп
 
 К переменной с именем `tup` привязывается весь кортеж, потому что кортеж является единым комбинированным элементом. Чтобы получить отдельные значения из кортежа, можно использовать сопоставление с образцом для деструктурирования значений кортежа, как в примере:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-11-destructuring-tuples/src/main.rs}}
@@ -146,7 +146,7 @@ Rust поддерживает основные математические оп
 
 Мы также можем напрямую обращаться к элементу кортежа, используя точку (`.`), за которой следует индекс значения, к которому мы хотим получить доступ. Например:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-12-tuple-indexing/src/main.rs}}
@@ -162,7 +162,7 @@ Rust поддерживает основные математические оп
 
 Мы записываем значения в массиве в виде списка, разделённого запятыми, внутри квадратных скобок:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-13-arrays/src/main.rs}}
@@ -197,7 +197,7 @@ let a = [3; 5];
 
 Массив — это единый фрагмент памяти известного фиксированного размера, который может быть размещён в стеке. Вы можете получить доступ к элементам массива с помощью индексации, например:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-14-array-indexing/src/main.rs}}
@@ -209,7 +209,7 @@ let a = [3; 5];
 
 Давайте посмотрим, что произойдёт, если вы попытаетесь получить доступ к элементу массива, находящемуся за его пределами. Допустим, вы запускаете код, похожий на игру в угадывание из главы 2, чтобы получить индекс массива от пользователя:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust,ignore,panics
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-15-invalid-array-access/src/main.rs}}
