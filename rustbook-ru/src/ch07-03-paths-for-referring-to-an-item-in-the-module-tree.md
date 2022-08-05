@@ -21,7 +21,7 @@
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-03/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 7-3. Вызов функции <code>add_to_waitlist</code> с использованием абсолютного и относительного пути</span>
+<span class="caption">Листинг 7-3. Вызов функции `add_to_waitlist` с использованием абсолютного и относительного пути</span>
 
 При первом вызове функции `add_to_waitlist` из `eat_at_restaurant` мы используем абсолютный путь. Функция `add_to_waitlist` определена в том же крейте, что и `eat_at_restaurant`, и это означает, что мы можем использовать ключевое слово `crate` в начале абсолютного пути. Затем мы добавляем каждый из последующих дочерних модулей, пока не составим путь до `add_to_waitlist`. Вы можете представить себе файловую систему с такой же структурой: мы указываем путь `/front_of_house/hosting/add_to_waitlist` для запуска программы `add_to_waitlist`; использование имени `crate` в качестве корневого модуля крейта аналогично использованию `/` для указания корня файловой системы в вашей оболочке.
 
@@ -53,7 +53,7 @@
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-05/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 7-5. Объявление модуля <code>hosting</code> как <code>pub</code> для его использования из <code>eat_at_restaurant</code></span>
+<span class="caption">Листинг 7-5. Объявление модуля `hosting` как `pub` для его использования из `eat_at_restaurant`</span>
 
 К сожалению, код в листинге 7-5 всё ещё приводит к ошибке, как показано в листинге 7-6.
 
@@ -75,7 +75,7 @@
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-07/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 7-7. Добавление ключевого слова <code>pub</code> к <code>mod hosting</code> и к <code>fn add_to_waitlist</code> позволяет нам вызывать функцию из <code>eat_at_restaurant</code></span>
+<span class="caption">Листинг 7-7. Добавление ключевого слова `pub` к `mod hosting` и к `fn add_to_waitlist` позволяет нам вызывать функцию из `eat_at_restaurant`</span>
 
 Теперь код компилируется! Чтобы понять, почему добавление ключевого слова `pub` позволяет нам использовать эти пути для `add_to_waitlist` в соответствии с правилами приватности, давайте рассмотрим абсолютный и относительный пути.
 
@@ -105,7 +105,7 @@
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-08/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 7-8: Вызов функции с использованием относительного пути, начинающегося с <code>super</code></span>
+<span class="caption">Листинг 7-8: Вызов функции с использованием относительного пути, начинающегося с `super`</span>
 
 Функция `fix_incorrect_order` находится в модуле `back_of_house`, поэтому мы можем использовать `super` для перехода к родительскому модулю модуля `back_of_house`, который в этом случае является `crate`, корневым модулем. В этом модуле мы ищем `deliver_order` и находим его. Успех! Мы думаем, что модуль `back_of_house` и функция `deliver_order`, скорее всего, останутся в тех же родственных отношениях друг с другом, и должны будут перемещены вместе, если мы решим реорганизовать дерево модулей крейта. Поэтому мы использовали `super`, чтобы в будущем у нас было меньше мест для обновления кода, если этот код будет перемещён в другой модуль.
 
