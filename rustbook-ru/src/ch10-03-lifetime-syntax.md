@@ -54,7 +54,7 @@
 
 Напишем функцию, которая возвращает более длинный из двух срезов строки. Эта функция принимает два среза строки и возвращает один срез строки. После того как мы реализовали функцию `longest`, код в листинге 10-19 должен вывести `The longest string is abcd`.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-19/src/main.rs}}
@@ -66,7 +66,7 @@
 
 Если мы попробуем реализовать функцию `longest` так, как это показано в листинге 10-20, программа не скомпилируется:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-20/src/main.rs:here}}
@@ -162,7 +162,7 @@ The error shows that for `result` to be valid for the `println!` statement, `str
 
 В зависимости от того, что делает ваша функция, следует использовать разные способы указания параметров времени жизни. Например, если мы изменим реализацию функции `longest` таким образом, чтобы она всегда возвращала свой первый аргумент вместо самого длинного среза строки, то время жизни для параметра `y` можно совсем не указывать. Этот код скомпилируется:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-08-only-one-reference-with-lifetime/src/main.rs:here}}
@@ -192,7 +192,7 @@ The error shows that for `result` to be valid for the `println!` statement, `str
 
 До сих пор мы объявляли структуры, которые всегда содержали владеющие типы данных. Структуры могут содержать и ссылки, но при этом необходимо добавить аннотацию времени жизни для каждой ссылки в определении структуры. Листинг 10-24 описывает структуру `ImportantExcerpt`, содержащую срез строки:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-24/src/main.rs}}
