@@ -42,9 +42,9 @@
 
 #### Каталог *tests*
 
-We create a *tests* directory at the top level of our project directory, next to *src*. Cargo knows to look for integration test files in this directory. We can then make as many test files as we want, and Cargo will compile each of the files as an individual crate.
+Мы создаём папку *tests* в корневой папке вашего проекта, рядом с папкой *src*. Cargo знает, что искать файлы с интеграционными тестами нужно в этой директории. После этого мы можем создать столько тестовых файлов, сколько захотим, и Cargo скомпилирует каждый из файлов в отдельный крейт.
 
-Let’s create an integration test. With the code in Listing 11-12 still in the *src/lib.rs* file, make a *tests* directory, and create a new file named *tests/integration_test.rs*. Your directory structure should look like this:
+Давайте создадим интеграционный тест. Рядом с кодом из листинга 11-12, который всё ещё в файле *src/lib.rs*, создайте каталог *tests*, создайте новый файл с именем *tests/integration_test.rs*. Структура директорий должна выглядеть так:
 
 ```text
 adder
@@ -56,7 +56,7 @@ adder
     └── integration_test.rs
 ```
 
-Enter the code in Listing 11-13 into the *tests/integration_test.rs* file:
+Введите код из листинга 11-13 в файл *tests/integration_test.rs* file:
 
 <span class="filename">Файл: tests/integration_test.rs</span>
 
@@ -66,7 +66,7 @@ Enter the code in Listing 11-13 into the *tests/integration_test.rs* file:
 
 <span class="caption">Листинг 11-13: Интеграционная тест функция из крейта <code>adder</code></span>
 
-Each file in the `tests` directory is a separate crate, so we need to bring our library into each test crate’s scope. For that reason we add `use adder` at the top of the code, which we didn’t need in the unit tests.
+Каждый файл в каталоге `tests` представляет собой отдельный крейт, поэтому нам нужно подключить нашу библиотеку в область видимости каждого тестового крейта. По этой причине мы добавляем `use adder` в верхней части кода, что не нужно нам делать в модульных тестах.
 
 Нам не нужно комментировать код в *tests/integration_test.rs* с помощью `#[cfg(test)]`. Cargo специальным образом обрабатывает каталог `tests` и компилирует файлы в этом каталоге только тогда, когда мы запускаем команду `cargo test`. Запустите `cargo test` сейчас:
 
@@ -76,11 +76,11 @@ Each file in the `tests` directory is a separate crate, so we need to bring our 
 
 The three sections of output include the unit tests, the integration test, and the doc tests. Note that if any test in a section fails, the following sections will not be run. For example, if a unit test fails, there won’t be any output for integration and doc tests because those tests will only be run if all unit tests are passing.
 
-The first section for the unit tests is the same as we’ve been seeing: one line for each unit test (one named `internal` that we added in Listing 11-12) and then a summary line for the unit tests.
+Первый раздел для модульных тестов такой же, как мы видели: одна строка для каждого модульного теста (один с именем `internal`, который мы добавили в листинге 11-12), а затем сводная строка для модульных тестов.
 
-The integration tests section starts with the line `Running tests/integration_test.rs`. Next, there is a line for each test function in that integration test and a summary line for the results of the integration test just before the `Doc-tests adder` section starts.
+Раздел интеграционных тестов начинается со строки {код 0}Running tests/integration_test.rs{/код 0}. Далее идёт строка для каждой тестовой функции в этом интеграционном тесте и итоговая строка для результатов интеграционного теста непосредственно перед началом раздела `Doc-tests adder`.
 
-Each integration test file has its own section, so if we add more files in the *tests* directory, there will be more integration test sections.
+Каждый файл интеграционного теста имеет свой собственный раздел, поэтому, если мы добавим больше файлов в каталог *tests*, то здесь будет больше разделов интеграционного теста.
 
 Мы всё ещё можем запустить определённую функцию в интеграционных тестах, указав имя тест функции в качестве аргумента в `cargo test`. Чтобы запустить все тесты в конкретном файле интеграционных тестов, используйте аргумент `--test` сопровождаемый именем файла у команды `cargo test`:
 
@@ -92,7 +92,7 @@ Each integration test file has its own section, so if we add more files in the *
 
 #### Подмодули в интеграционных тестах
 
-As you add more integration tests, you might want to make more files in the *tests* directory to help organize them; for example, you can group the test functions by the functionality they’re testing. As mentioned earlier, each file in the *tests* directory is compiled as its own separate crate, which is useful for creating separate scopes to more closely imitate the way end users will be using your crate. However, this means files in the *tests* directory don’t share the same behavior as files in *src* do, as you learned in Chapter 7 regarding how to separate code into modules and files.
+По мере добавления большего количества интеграционных тестов, можно создать более одного файла в каталоге  *tests*, чтобы легче организовывать их; например, вы можете сгруппировать функции тестирования по функциональности, которую они проверяют. Как упоминалось ранее, каждый файл в каталоге *tests*скомпилирован как отдельный крейт, что полезно для создания отдельных областей видимости, чтобы более точно имитировать то, как конечные пользователи будут использовать ваш крейт. Однако это означает, что файлы в каталоге *tests* ведут себя не так, как файлы в *src*, как вы узнали в Главе 7 относительно того как разделить код на модули и файлы.
 
 Различное поведение файлов в каталоге *tests* наиболее заметно, когда у вас есть набор вспомогательных функций, которые будут полезны в нескольких интеграционных тест файлах. Представим, что вы пытаетесь выполнить действия, описанные в разделе [«Разделение модулей в разные файлы»](ch07-05-separating-modules-into-different-files.html)<!--  --> главы 7, чтобы извлечь их в общий модуль. Например, вы создали файл *tests/common.rs* и поместили в него функцию `setup`, содержащую некоторый код, который вы будете вызывать из разных тестовых функций в нескольких тестовых файлах
 
