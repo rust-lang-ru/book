@@ -64,7 +64,7 @@ Enter the code in Listing 11-13 into the *tests/integration_test.rs* file:
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-13/tests/integration_test.rs}}
 ```
 
-<span class="caption">Listing 11-13: An integration test of a function in the <code>adder</code> crate</span>
+<span class="caption">Листинг 11-13: Интеграционная тест функция из крейта <code>adder</code></span>
 
 Each file in the `tests` directory is a separate crate, so we need to bring our library into each test crate’s scope. For that reason we add `use adder` at the top of the code, which we didn’t need in the unit tests.
 
