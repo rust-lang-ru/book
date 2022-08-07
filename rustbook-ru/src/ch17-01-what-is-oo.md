@@ -22,7 +22,7 @@
 {{#rustdoc_include ../listings/ch17-oop/listing-17-01/src/lib.rs}}
 ```
 
-<span class="caption">Listing 17-1: An <code>AveragedCollection</code> struct that maintains a list of integers and the average of the items in the collection</span>
+<span class="caption">Листинг 17-1: структура <code>AveragedCollection</code> содержит список целых чисел и среднее значение элементов в коллекции.</span>
 
 Обратите внимание, что структура помечена ключевым словом `pub`, что позволяет другому коду её использовать, однако, поля внутри структуры остаются недоступными. Это важно, потому что мы хотим гарантировать обновление среднего значения при добавлении или удалении элемента из списка. Мы можем получить нужное поведение, определив в структуре методы `add`, `remove` и `average`, как показано в примере 17-2:
 
