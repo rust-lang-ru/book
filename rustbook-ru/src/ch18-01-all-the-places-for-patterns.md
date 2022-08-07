@@ -14,7 +14,7 @@ match VALUE {
 }
 ```
 
-For example, here's the `match` expression from Listing 6-5 that matches on an `Option<i32>` value in the variable `x`:
+Например, вот выражение `match` из листинга 6-5, которое соответствует значению `Option<i32>` в переменной `x` :
 
 ```rust,ignore
 match x {
@@ -23,19 +23,19 @@ match x {
 }
 ```
 
-The patterns in this `match` expression are the `None` and `Some(i)` on the left of each arrow.
+Шаблонами в этом выражении `match` являются `None` и `Some(i)` слева от каждой стрелки.
 
 Одно из требований к выражениям `match` состоит в том, что они должны быть *исчерпывающими* (exhaustive) в том смысле, что они должны учитывать все возможности для значения в выражении `match`. Один из способов убедиться, что вы рассмотрели каждую возможность - это иметь шаблон перехвата всех вариантов в последней ветке выражения: например, имя переменной, совпадающее с любым значением, никогда не может потерпеть неудачу и таким образом, охватывает каждый оставшийся случай.
 
-The particular pattern `_` will match anything, but it never binds to a variable, so it’s often used in the last match arm. The `_` pattern can be useful when you want to ignore any value not specified, for example. We’ll cover the `_` pattern in more detail in the [“Ignoring Values in a Pattern”](ch18-03-pattern-syntax.html#ignoring-values-in-a-pattern)<!-- ignore --> section later in this chapter.
+Специальный шаблон `_` будет соответствовать чему угодно, но он никогда не привязывается к переменной, поэтому он часто используется в последней ветке. Шаблон `_` может быть полезен, если вы, например, хотите игнорировать любое не указанное значение. Мы рассмотрим шаблон `_` более подробно в разделе ["Игнорирование значений в шаблоне](ch18-03-pattern-syntax.html#ignoring-values-in-a-pattern)<!--  --> позже в этой главе.
 
 ### Условные выражения `if let`
 
 В главе 6 мы обсуждали, как использовать выражения `if let` как правило в качестве более короткого способа записи эквивалента `match`, которое обрабатывает только один случай. Дополнительно `if let` может иметь соответствующий `else`, содержащий код для выполнения, если шаблон выражения `if let` не совпадает.
 
-Listing 18-1 shows that it’s also possible to mix and match `if let`, `else if`, and `else if let` expressions. Doing so gives us more flexibility than a `match` expression in which we can express only one value to compare with the patterns. Also, Rust doesn't require that the conditions in a series of `if let`, `else if`, `else if let` arms relate to each other.
+В листинге 18-1 показано, что можно также смешивать и сопоставлять выражения `if let`, `else if` и `else if let`. Это даёт больше гибкости, чем `match` выражение, в котором можно выразить только одно значение для сравнения с шаблонами. Кроме того, условия в серии `if let`, `else if`, `else if let` не обязаны соотноситься друг с другом.
 
-The code in Listing 18-1 determines what color to make your background based on a series of checks for several conditions. For this example, we’ve created variables with hardcoded values that a real program might receive from user input.
+Код в листинге 18-1 показывает последовательность проверок нескольких условий, определяющих каким должен быть цвет фона. В данном примере мы создали переменные с предопределёнными значениями, которые в реальной программе могли бы быть получены из пользовательского ввода.
 
 <span class="filename">Файл: src/main.rs</span>
 
@@ -45,17 +45,17 @@ The code in Listing 18-1 determines what color to make your background based on 
 
 <span class="caption">Листинг 18-1: Использование условных конструкций <code>if let</code>, <code>else if</code>, <code>else if let</code>, и <code>else</code></span>
 
-If the user specifies a favorite color, that color is used as the background. If no favorite color is specified and today is Tuesday, the background color is green. Otherwise, if the user specifies their age as a string and we can parse it as a number successfully, the color is either purple or orange depending on the value of the number. If none of these conditions apply, the background color is blue.
+Если пользователь указывает любимый цвет, то этот цвет используется в качестве цвета фона. Если любимый цвет не указан, и сегодня вторник, то цвет фона - зелёный. Иначе, если пользователь указывает свой возраст в виде строки, и мы можем успешно проанализировать её и представить в виде числа, то цвет будет либо фиолетовым, либо оранжевым, в зависимости от значения числа. Если ни одно из этих условий не выполняется, то цвет фона будет синим.
 
 Эта условная структура позволяет поддерживать сложные требования. С жёстко закодированными значениями, которые у нас здесь есть, этот пример напечатает `Using purple as the background color`.
 
 Можно увидеть, что `if let` может также вводить затенённые переменные, как это можно сделать в `match` ветках: строка `if let Ok(age) = age` вводит новую затенённую переменную `age`, которая содержит значение внутри варианта `Ok`. Это означает, что нам нужно поместить условие `if age > 30` внутри этого блок: мы не можем объединить эти два условия в `if let Ok(age) = age && age > 30`. Затенённый `age`, который мы хотим сравнить с 30, не является действительным, пока не начнётся новая область видимости с фигурной скобки.
 
-The downside of using `if let` expressions is that the compiler doesn’t check for exhaustiveness, whereas with `match` expressions it does. If we omitted the last `else` block and therefore missed handling some cases, the compiler would not alert us to the possible logic bug.
+Недостатком использования `if let` выражений является то, что компилятор не проверяет полноту (exhaustiveness) всех вариантов, в то время как с помощью выражения `match` это происходит. Если мы не напишем последний блок `else` и, благодаря этому, пропустим обработку некоторых случаев, компилятор не предупредит нас о возможной логической ошибке.
 
 ### Условные циклы `while let`
 
-Similar in construction to `if let`, the `while let` conditional loop allows a `while` loop to run for as long as a pattern continues to match. In Listing 18-2 we code a `while let` loop that uses a vector as a stack and prints the values in the vector in the opposite order in which they were pushed.
+Аналогично конструкции `if let`, конструкция условного цикла `while let` позволяет повторять цикл `while` до тех пор, пока шаблон продолжает совпадать. Пример в листинге 18-2 демонстрирует цикл `while let`, который использует вектор в качестве стека и печатает значения вектора в порядке, обратном тому, в котором они были помещены.
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-02/src/main.rs:here}}
@@ -67,7 +67,7 @@ Similar in construction to `if let`, the `while let` conditional loop allows a `
 
 ### Цикл `for`
 
-In a `for` loop, the value that directly follows the keyword `for` is a pattern. For example, in `for x in y` the `x` is the pattern. Listing 18-3 demonstrates how to use a pattern in a `for` loop to destructure, or break apart, a tuple as part of the `for` loop.
+В цикле `for` значение, которое следует непосредственно за ключевым словом `for` , является шаблоном. Например, в `for x in y`  выражение `x` является шаблоном. В листинге 18-3 показано, как использовать шаблон в цикле `for` , чтобы деструктурировать или разбить кортеж как часть цикла `for` .
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-03/src/main.rs:here}}
@@ -81,7 +81,7 @@ In a `for` loop, the value that directly follows the keyword `for` is a pattern.
 {{#include ../listings/ch18-patterns-and-matching/listing-18-03/output.txt}}
 ```
 
-We adapt an iterator using the `enumerate` method so it produces a value and the index for that value, placed into a tuple. The first value produced is the tuple `(0, 'a')`. When this value is matched to the pattern `(index, value)`, `index` will be `0` and `value` will be `'a'`, printing the first line of the output.
+Мы адаптируем итератор с помощью метода `enumerate`, чтобы он генерировал кортеж, состоящий из значения и индекса этого значения. Первым сгенерированным значением будет кортеж `(0, 'a')`. Когда это значение сопоставляется с шаблоном `(index, value)`, `index` будет равен `0`, а `value` будет равно `'a'` и будет напечатана первая строка выходных данных.
 
 ### Оператор `let`
 
@@ -91,7 +91,7 @@ We adapt an iterator using the `enumerate` method so it produces a value and the
 let x = 5;
 ```
 
-Every time you've used a `let` statement like this you've been using patterns, although you might not have realized it! More formally, a `let` statement looks like this:
+Каждый раз, когда вы использовали подобным образом оператор `let` , вы использовали шаблоны, хотя могли и не осознавать этого! Более формально оператор `let` выглядит так:
 
 ```text
 let PATTERN = EXPRESSION;
@@ -123,7 +123,7 @@ let PATTERN = EXPRESSION;
 {{#include ../listings/ch18-patterns-and-matching/listing-18-05/output.txt}}
 ```
 
-To fix the error, we could ignore one or more of the values in the tuple using `_` or `..`, as you’ll see in the [“Ignoring Values in a Pattern”](ch18-03-pattern-syntax.html#ignoring-values-in-a-pattern)<!-- ignore --> section. If the problem is that we have too many variables in the pattern, the solution is to make the types match by removing variables so the number of variables equals the number of elements in the tuple.
+Чтобы исправить ошибку, мы могли бы игнорировать одно или несколько значений в кортеже, используя `_` или `..`, как вы увидите в разделе [“Игнорирование значений в Шаблоне”](ch18-03-pattern-syntax.html#ignoring-values-in-a-pattern) <!--  -->. Если шаблон содержит слишком много переменных в шаблоне, можно решить проблему, сделав типы совпадающими, удалив некоторые переменные таким образом, чтобы число переменных равнялось числу элементов в кортеже.
 
 ### Параметры функции
 
