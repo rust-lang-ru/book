@@ -1,26 +1,26 @@
 ## Типажи: определение общего поведения
 
-A *trait* defines functionality a particular type has and can share with other types. We can use traits to define shared behavior in an abstract way. We can use *trait bounds* to specify that a generic type can be any type that has certain behavior.
+*Типаж* сообщает компилятору Rust о функциональности, которой обладает определённый тип и которой он может поделиться с другими типами. Можно использовать типажи, чтобы определять общее поведение абстрактным способом. Мы можем использовать *ограничение типажа* (trait bounds) чтобы указать, что общим типом может быть любой тип, который имеет определенное поведение.
 
-> Note: Traits are similar to a feature often called *interfaces* in other languages, although with some differences.
+> Примечание: Типажи похожи на функциональность часто называемую *интерфейсами* в других языках программирования, хотя и с некоторыми отличиями.
 
 ### Определение типажа
 
 Поведение типа определяется теми методами, которые мы можем вызвать у данного типа. Различные типы разделяют одинаковое поведение, если мы можем вызвать одни и те же методы у этих типов. Определение типажей - это способ сгруппировать сигнатуры методов вместе для того, чтобы описать общее поведение, необходимое для достижения определённой цели.
 
-Например, скажем есть несколько структур, которые имеют различный тип и различное количество текста: структура `NewsArticle`, которая содержит новости, напечатанные в различных местах в мире; структура `Tweet`, которая содержит 280 символьную строку твита и мета-данные, обозначающие является ли твит новым или ответом на другой твит.
+Например, пусть есть несколько структур, которые имеют различный тип и различный размер текста: структура `NewsArticle`, которая содержит которая содержит новость, напечатанную в каком-то месте мира; структура `Tweet`, которая содержит 280 символьную строку твита и мета-данные, обозначающие является ли твит новым или ответом на другой твит.
 
-We want to make a media aggregator library crate named `aggregator` that can display summaries of data that might be stored in a `NewsArticle` or `Tweet` instance. To do this, we need a summary from each type, and we’ll request that summary by calling a `summarize` method on an instance. Listing 10-12 shows the definition of a public `Summary` trait that expresses this behavior.
+Мы хотим создать крейт библиотеки медиа-агрегатора `aggregator`, которая может отображать сводку данных сохранённых в экземплярах структур `NewsArticle` или `Tweet`. Чтобы этого достичь, нам необходимо иметь возможность для каждой структуры получить короткую сводку на основе имеющихся данных, и для этого мы запросим сводку вызвав метод `summarize`. Листинг 10-12 показывает определение типажа `Summary`, который выражает это поведение.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-12/src/lib.rs}}
 ```
 
-<span class="caption">Listing 10-12: A <code>Summary</code> trait that consists of the behavior provided by a <code>summarize</code> method</span>
+<span class="caption">Листинг 10-12: Определение типажа <code>Summary</code> , который содержит поведение предоставленное методом <code>summarize</code></span>
 
-Here, we declare a trait using the `trait` keyword and then the trait’s name, which is `Summary` in this case. We’ve also declared the trait as `pub` so that crates depending on this crate can make use of this trait too, as we’ll see in a few examples. Inside the curly brackets, we declare the method signatures that describe the behaviors of the types that implement this trait, which in this case is `fn summarize(&self) -> String`.
+Здесь мы объявляем типаж с использованием ключевого слова `trait`, а затем его название, которым в нашем случае является `Summary`. Также мы объявляем крейт как `pub` что позволяет крейтам, зависящим от нашего крейта, тоже использовать наш крейт, что мы увидим в последующих примерах. Внутри фигурных скобок объявляются сигнатуры методов, которые описывают поведения типов, реализующих данный типаж, в данном случае поведение определяется только одной сигнатурой метода `fn summarize(&self) -> String`.
 
 После сигнатуры метода, вместо предоставления реализации в фигурных в скобках, мы используем точку с запятой. Каждый тип, реализующий данный типаж, должен предоставить своё собственное поведение для данного метода. Компилятор обеспечит, что любой тип содержащий типаж `Summary`, будет также иметь и метод `summarize` объявленный с точно такой же сигнатурой.
 
@@ -28,19 +28,19 @@ Here, we declare a trait using the `trait` keyword and then the trait’s name, 
 
 ### Реализация типажа у типа
 
-Now that we’ve defined the desired signatures of the `Summary` trait’s methods, we can implement it on the types in our media aggregator. Listing 10-13 shows an implementation of the `Summary` trait on the `NewsArticle` struct that uses the headline, the author, and the location to create the return value of `summarize`. For the `Tweet` struct, we define `summarize` as the username followed by the entire text of the tweet, assuming that tweet content is already limited to 280 characters.
+Теперь, после того как мы определили желаемое поведение используя типаж `Summary`, можно реализовать его у типов в нашем медиа-агрегаторе. Листинг 10-13 показывает реализацию типажа `Summary` у структуры `NewsArticle`, которая использует для создания сводки в методе `summarize` заголовок, автора и место публикации статьи. Для структуры `Tweet` мы определяем реализацию `summarize` используя имя пользователя и следующий за ним полный текст твита, полагая что содержание твита уже ограниченно 280 символами.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-13/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 10-13: Implementing the <code>Summary</code> trait on the <code>NewsArticle</code> and <code>Tweet</code> types</span>
+<span class="caption">Листинг 10-13: Реализация типажа <code>Summary</code> для структур <code>NewsArticle</code> и <code>Tweet</code></span>
 
-Implementing a trait on a type is similar to implementing regular methods. The difference is that after `impl`, we put the trait name we want to implement, then use the `for` keyword, and then specify the name of the type we want to implement the trait for. Within the `impl` block, we put the method signatures that the trait definition has defined. Instead of adding a semicolon after each signature, we use curly brackets and fill in the method body with the specific behavior that we want the methods of the trait to have for the particular type.
+Реализация типажа у типа аналогична реализации обычных методов. Разница в том что после `impl` мы ставим имя типажа, который мы хотим реализовать, затем используем ключевое словоe `for` , а затем указываем имя типа, для которого мы хотим сделать реализацию типажа. Внутри блока `impl` мы помещаем сигнатуру метода объявленную в типаже. Вместо добавления точки с запятой в конце, после каждой сигнатуры используются фигурные скобки и тело метода заполняется конкретным поведением, которое мы хотим получить у методов типажа для конкретного типа.
 
-Now that the library has implemented the `Summary` trait on `NewsArticle` and `Tweet`, users of the crate can call the trait methods on instances of `NewsArticle` and `Tweet` in the same way we call regular methods. The only difference is that the user must bring the trait into scope as well as the types. Here’s an example of how a binary crate could use our `aggregator` library crate:
+Теперь когда библиотека реализовала типаж `Summary` для `NewsArticle` и `Tweet`, программисты использующие крейт могут вызывать методы типажа у экземпляров типов `NewsArticle` и `Tweet` точно так же как если бы это были обычные методы. Единственное отличие состоит в том, что программист должен ввести типаж в область видимости точно так же как и типы. Здесь пример того как бинарный крейт может использовать наш `aggregator`:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-01-calling-trait-method/src/main.rs}}
@@ -48,25 +48,25 @@ Now that the library has implemented the `Summary` trait on `NewsArticle` and `T
 
 Данный код напечатает: `1 new tweet: horse_ebooks: of course, as you probably already know, people`.
 
-Other crates that depend on the `aggregator` crate can also bring the `Summary` trait into scope to implement `Summary` on their own types. One restriction to note is that we can implement a trait on a type only if at least one of the trait or the type is local to our crate. For example, we can implement standard library traits like `Display` on a custom type like `Tweet` as part of our `aggregator` crate functionality, because the type `Tweet` is local to our `aggregator` crate. We can also implement `Summary` on `Vec<T>` in our `aggregator` crate, because the trait `Summary` is local to our `aggregator` crate.
+Другие крейты, которые зависят от `aggregator`, тоже могу включить типаж `Summary` в область видимости для реализации `Summary` в их собственных типах. Одно ограничение, на которое следует обратить внимание, заключается в том, что мы можем реализовать типаж для типа только в том случае, если хотя бы один из типажей типа является локальным для нашего крейта. Например, мы можем реализовать стандартный библиотечный типаж `Display` на собственном типе `Tweet` как часть функциональности нашего крейта `aggregator` потому что тип `Tweet` является локальным для крейта `aggregator`. Также мы можем реализовать `Summary` для `Vec<T>` в нашем крейте `aggregator`, потому что типаж `Summary` является локальным для нашего крейта `aggregator`.
 
-But we can’t implement external traits on external types. For example, we can’t implement the `Display` trait on `Vec<T>` within our `aggregator` crate, because `Display` and `Vec<T>` are both defined in the standard library and aren’t local to our `aggregator` crate. This restriction is part of a property called *coherence*, and more specifically the *orphan rule*, so named because the parent type is not present. This rule ensures that other people’s code can’t break your code and vice versa. Without the rule, two crates could implement the same trait for the same type, and Rust wouldn’t know which implementation to use.
+Но мы не можем реализовать внешние типажи для внешних типов. Например, мы не можем реализовать типаж `Display` для `Vec<T>` внутри нашего крейта `aggregator`, потому что `Display` и `Vec<T>` оба определены в стандартной библиотеке а не локально в нашем крейте `aggregator`. Это ограничение является частью свойства называемого *согласованность* (coherence), а ещё точнее *сиротское правило* (orphan rule), которое называется так потому что не представлен родительский тип. Это правило гарантирует, что код других людей не может сломать ваш код и наоборот. Без этого правила два крейта могли бы реализовать один типаж для одинакового типа и Rust не сможет понять, какой реализацией нужно пользоваться.
 
 ### Реализация поведения по умолчанию
 
 Иногда полезно иметь поведение по умолчанию для некоторых или всех методов в типаже вместо того, чтобы требовать реализации всех методов в каждом типе, реализующим данный типаж. Затем, когда мы реализуем типаж для определённого типа, можно сохранить или переопределить поведение каждого метода по умолчанию уже внутри типов.
 
-In Listing 10-14 we specify a default string for the `summarize` method of the `Summary` trait instead of only defining the method signature, as we did in Listing 10-12.
+В примере 10-14 показано, как указать строку по умолчанию для метода `summarize` из типажа `Summary` вместо определения только сигнатуры метода, как мы сделали в примере 10-12.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-14/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 10-14: Defining a <code>Summary</code> trait with a default implementation of the <code>summarize</code> method</span>
+<span class="caption">Листинг 10-14: Определение типажа <code>Summary</code> с реализацией метода <code>summarize</code> по умолчанию</span>
 
-To use a default implementation to summarize instances of `NewsArticle`, we specify an empty `impl` block with `impl Summary for NewsArticle {}`.
+Для использования реализации по умолчанию при создании сводки у экземпляров `NewsArticle` вместо определения пользовательской реализации, мы указываем пустой блок `impl` с `impl Summary for NewsArticle {}`.
 
 Хотя мы больше не определяем метод `summarize` непосредственно в `NewsArticle`, мы предоставили реализацию по умолчанию и указали, что `NewsArticle` реализует типаж `Summary`. В результате мы всё ещё можем вызвать метод `summarize` у экземпляра `NewsArticle`, например так:
 
@@ -76,7 +76,7 @@ To use a default implementation to summarize instances of `NewsArticle`, we spec
 
 Этот код печатает `New article available! (Read more...)` .
 
-Creating a default implementation doesn’t require us to change anything about the implementation of `Summary` on `Tweet` in Listing 10-13. The reason is that the syntax for overriding a default implementation is the same as the syntax for implementing a trait method that doesn’t have a default implementation.
+Создание реализации по умолчанию не требует от нас изменений чего-либо в реализации `Summary` для `Tweet` в листинге 10-13. Причина заключается в том, что синтаксис для переопределения реализации по умолчанию является таким же, как синтаксис для реализации метода типажа, который не имеет реализации по умолчанию.
 
 Реализации по умолчанию могут вызывать другие методы в том же типаже, даже если эти другие методы не имеют реализации по умолчанию. Таким образом, типаж может предоставить много полезной функциональности и только требует от разработчиков  указывать небольшую его часть. Например, мы могли бы определить типаж `Summary` имеющий метод `summarize_author`, реализация которого требуется, а затем определить метод `summarize` который имеет реализацию по умолчанию, которая внутри вызывает метод `summarize_author` :
 
@@ -102,13 +102,13 @@ Creating a default implementation doesn’t require us to change anything about 
 
 ### Типажи как параметры
 
-Now that you know how to define and implement traits, we can explore how to use traits to define functions that accept many different types. We'll use the `Summary` trait we implemented on the `NewsArticle` and `Tweet` types in Listing 10-13 to define a `notify` function that calls the `summarize` method on its `item` parameter, which is of some type that implements the `Summary` trait. To do this, we use the `impl Trait` syntax, like this:
+Теперь, когда вы знаете, как определять и реализовывать типажи, можно изучить, как использовать типажи, чтобы определить функции, которые принимают много различных типов. Мы будем использовать типаж `Summary`,  реализованный для типов `NewsArticle` и `Tweet` в листинге 10-13, чтобы определить функцию `notify`, которая вызывает метод `summarize` для его параметра `item`, который имеет некоторый тип, реализующий типаж `Summary`. Для этого мы используем синтаксис `impl Trait` примерно так:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-04-traits-as-parameters/src/lib.rs:here}}
 ```
 
-Instead of a concrete type for the `item` parameter, we specify the `impl` keyword and the trait name. This parameter accepts any type that implements the specified trait. In the body of `notify`, we can call any methods on `item` that come from the `Summary` trait, such as `summarize`. We can call `notify` and pass in any instance of `NewsArticle` or `Tweet`. Code that calls the function with any other type, such as a `String` or an `i32`, won’t compile because those types don’t implement `Summary`.
+Вместо конкретного типа у параметра `item` указывается ключевое слово `impl` и имя типажа. Этот параметр принимает любой тип, который реализует указанный типаж. В теле `notify` мы можем вызывать любые методы у экземпляра `item` , которые приходят с типажом `Summary`, такие как метод `summarize`. Мы можем вызвать `notify` и передать в него любой экземпляр `NewsArticle` или `Tweet`. Код, который вызывает данную функцию с любым другим типом, таким как `String` или `i32`, не будет компилироваться, потому что эти типы не реализуют типаж `Summary`.
 
 <!-- Old headings. Do not remove or links may break. -->
 
@@ -116,7 +116,7 @@ Instead of a concrete type for the `item` parameter, we specify the `impl` keywo
 
 #### Синтаксис ограничения типажа
 
-The `impl Trait` syntax works for straightforward cases but is actually syntax sugar for a longer form known as a *trait bound*; it looks like this:
+Синтаксис `impl Trait` работает для простых случаев, но на самом деле является синтаксическим сахаром для более длинной формы, которая называется *ограничением типажа* (trait bound); это выглядит так:
 
 ```rust,ignore
 pub fn notify<T: Summary>(item: &T) {
@@ -126,45 +126,45 @@ pub fn notify<T: Summary>(item: &T) {
 
 This longer form is equivalent to the example in the previous section but is more verbose. We place trait bounds with the declaration of the generic type parameter after a colon and inside angle brackets.
 
-The `impl Trait` syntax is convenient and makes for more concise code in simple cases, while the fuller trait bound syntax can express more complexity in other cases. For example, we can have two parameters that implement `Summary`. Doing so with the `impl Trait` syntax looks like this:
+Синтаксис `impl Trait` удобен и делает код более сжатым в простых случаях, в то время как более полный синтаксис с ограничением типажа в других случаях может выразить большую сложность. Например, у нас может быть два параметра, которые реализуют типаж  `Summary`. Использование синтаксиса  `impl Trait` выглядит так:
 
 ```rust,ignore
 pub fn notify(item1: &impl Summary, item2: &impl Summary) {
 ```
 
-Using `impl Trait` is appropriate if we want this function to allow `item1` and `item2` to have different types (as long as both types implement `Summary`). If we want to force both parameters to have the same type, however, we must use a trait bound, like this:
+Использовать `impl Trait` удобнее если мы хотим разрешить функции иметь разные типы для `item1` и `item2` (но оба типа должны реализовывать `Summary`). Если же мы хотим заставить оба параметра иметь один и тот же тип, то мы должны использовать ограничение типажа так:
 
 ```rust,ignore
 pub fn notify<T: Summary>(item1: &T, item2: &T) {
 ```
 
-The generic type `T` specified as the type of the `item1` and `item2` parameters constrains the function such that the concrete type of the value passed as an argument for `item1` and `item2` must be the same.
+Обобщённый тип `T` указан для типов параметров `item1` и `item2` и ограничивает функцию так, что конкретные значения типов переданные аргументами для `item1` и `item2` должны быть одинаковыми.
 
 #### Задание нескольких границ типажей с помощью синтаксиса `+`
 
-We can also specify more than one trait bound. Say we wanted `notify` to use display formatting as well as `summarize` on `item`: we specify in the `notify` definition that `item` must implement both `Display` and `Summary`. We can do so using the `+` syntax:
+Также можно указать более одного ограничения типажа. Допустим, мы хотели бы чтобы `notify` использовал как форматирование вывода так и  `summarize` для параметра `item`: <br>тогда мы указываем что в `notify` параметр `item` должен реализовывать оба типажа `Display` и `Summary`. Мы можем сделать это используя синтаксис `+`:
 
 ```rust,ignore
 pub fn notify(item: &(impl Summary + Display)) {
 ```
 
-The `+` syntax is also valid with trait bounds on generic types:
+Синтаксис `+` также допустим с ограничениями типажа для обобщённых типов:
 
 ```rust,ignore
 pub fn notify<T: Summary + Display>(item: &T) {
 ```
 
-With the two trait bounds specified, the body of `notify` can call `summarize` and use `{}` to format `item`.
+При наличии двух ограничений типажа, тело метода `notify` может вызывать `summarize` и использовать `{}` для форматирования `item` при его печати.
 
 #### Более ясные границы типажа с помощью `where`
 
-Using too many trait bounds has its downsides. Each generic has its own trait bounds, so functions with multiple generic type parameters can contain lots of trait bound information between the function’s name and its parameter list, making the function signature hard to read. For this reason, Rust has alternate syntax for specifying trait bounds inside a `where` clause after the function signature. So instead of writing this:
+Использование слишком большого количества ограничений типажа имеет свои недостатки. Каждый обобщённый тип имеет свои границы типажа, поэтому функции с несколькими параметрами обобщённого типа могут содержать много информации об ограничениях между названием функции и списком её параметров затрудняющих чтение сигнатуры. По этой причине в Rust есть альтернативный синтаксис для определения ограничений типажа внутри предложения `where` после сигнатуры функции. Поэтому вместо того, чтобы писать так:
 
 ```rust,ignore
 fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 {
 ```
 
-we can use a `where` clause, like this:
+можно использовать `where` таким образом:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-07-where-clause/src/lib.rs:here}}
@@ -174,17 +174,17 @@ This function’s signature is less cluttered: the function name, parameter list
 
 ### Возврат значений типа реализующего определённый типаж
 
-We can also use the `impl Trait` syntax in the return position to return a value of some type that implements a trait, as shown here:
+Также можно использовать синтаксис `impl Trait` в возвращаемой позиции, чтобы вернуть значение некоторого типа реализующего типаж, как показано здесь:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-05-returning-impl-trait/src/lib.rs:here}}
 ```
 
-By using `impl Summary` for the return type, we specify that the `returns_summarizable` function returns some type that implements the `Summary` trait without naming the concrete type. In this case, `returns_summarizable` returns a `Tweet`, but the code calling this function doesn’t need to know that.
+Используя `impl Summary` для возвращаемого типа, мы указываем, что функция `returns_summarizable` возвращает некоторый тип, который реализует типаж `Summary` без обозначения конкретного типа. В этом случае `returns_summarizable` возвращает `Tweet`, но код, вызывающий эту функцию, этого не знает.
 
-The ability to specify a return type only by the trait it implements is especially useful in the context of closures and iterators, which we cover in Chapter 13. Closures and iterators create types that only the compiler knows or types that are very long to specify. The `impl Trait` syntax lets you concisely specify that a function returns some type that implements the `Iterator` trait without needing to write out a very long type.
+Возможность возвращать тип, который определяется только реализуемым им признаком, особенно полезна в контексте замыканий и итераторов, которые мы рассмотрим в Главе 13. Замыкания и итераторы создают типы, которые знает только компилятор или типы, которые очень долго указывать. Синтаксис `impl Trait` позволяет кратко указать, что функция возвращает некоторый тип, который реализует типаж `Iterator` без необходимости писать очень длинный тип.
 
-However, you can only use `impl Trait` if you’re returning a single type. For example, this code that returns either a `NewsArticle` or a `Tweet` with the return type specified as `impl Summary` wouldn’t work:
+Однако, `impl Trait` возможно использовать, если возвращаете только один тип. Например, данный код, который возвращает значения или типа `NewsArticle` или типа `Tweet`, но в качестве возвращаемого типа объявляет `impl Summary` , не будет работать:
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-06-impl-trait-returns-one-type/src/lib.rs:here}}
@@ -194,17 +194,17 @@ However, you can only use `impl Trait` if you’re returning a single type. For 
 
 ### Использование ограничений типажа для условной реализации методов
 
-By using a trait bound with an `impl` block that uses generic type parameters, we can implement methods conditionally for types that implement the specified traits. For example, the type `Pair<T>` in Listing 10-15 always implements the `new` function to return a new instance of `Pair<T>` (recall from the [“Defining Methods”](ch05-03-method-syntax.html#defining-methods)<!-- ignore --> section of Chapter 5 that `Self` is a type alias for the type of the `impl` block, which in this case is `Pair<T>`). But in the next `impl` block, `Pair<T>` only implements the `cmp_display` method if its inner type `T` implements the `PartialOrd` trait that enables comparison *and* the `Display` trait that enables printing.
+Используя ограничение типажа с блоком `impl`, который использует параметры обобщённого типа, можно реализовать методы условно, для тех типов, которые реализуют указанный типаж. Например, тип `Pair<T>`  в листинге 10-16 всегда реализует функцию  `new` для возврата нового экземпляра `Pair<T>` (вспомните раздел [“Определение методов”](ch05-03-method-syntax.html#defining-methods)<!-- ignore --> Главы 5 где `Self` является псевдонимом типа для типа блока `impl`, который в данном случае является `Pair<T>`). Но в следующем блоке `impl` тип `Pair<T>` реализует метод  `cmp_display` только если его внутренний тип `T` реализует типаж `PartialOrd` (позволяющий сравнивать) *и* типаж `Display` (позволяющий выводить на печать).
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-15/src/lib.rs}}
 ```
 
-<span class="caption">Listing 10-15: Conditionally implementing methods on a generic type depending on trait bounds</span>
+<span class="caption">Листинг 10-15: Условная реализация методов у обобщённых типов в зависимости от ограничений типажа</span>
 
-We can also conditionally implement a trait for any type that implements another trait. Implementations of a trait on any type that satisfies the trait bounds are called *blanket implementations* and are extensively used in the Rust standard library. For example, the standard library implements the `ToString` trait on any type that implements the `Display` trait. The `impl` block in the standard library looks similar to this code:
+Мы также можем условно реализовать типаж для любого типа, который реализует другой типаж. Реализации типажа для любого типа, который удовлетворяет ограничениям типажа, называются *общими реализациями* и широко используются в стандартной библиотеке Rust. Например, стандартная библиотека реализует типаж `ToString` для любого типа, который реализует типаж `Display`. Блок `impl` в стандартной библиотеке выглядит примерно так:
 
 ```rust,ignore
 impl<T: Display> ToString for T {
@@ -218,6 +218,6 @@ Because the standard library has this blanket implementation, we can call the `t
 let s = 3.to_string();
 ```
 
-Blanket implementations appear in the documentation for the trait in the “Implementors” section.
+Общие реализации приведены в документации к типажу в разделе "Implementors".
 
-Traits and trait bounds let us write code that uses generic type parameters to reduce duplication but also specify to the compiler that we want the generic type to have particular behavior. The compiler can then use the trait bound information to check that all the concrete types used with our code provide the correct behavior. In dynamically typed languages, we would get an error at runtime if we called a method on a type which didn’t define the method. But Rust moves these errors to compile time so we’re forced to fix the problems before our code is even able to run. Additionally, we don’t have to write code that checks for behavior at runtime because we’ve already checked at compile time. Doing so improves performance without having to give up the flexibility of generics.
+Типажи и ограничения типажей позволяют писать код, который использует параметры обобщённого типа для уменьшения дублирования кода, а также указывая компилятору, что мы хотим обобщённый тип, чтобы иметь определённое поведение.  Затем компилятор может использовать информацию про ограничения типажа, чтобы проверить, что все конкретные типы, используемые с нашим кодом, обеспечивают правильное поведение.  В динамически типизированных языках мы получили бы ошибку во время выполнения, если бы вызвали метод для типа, который не реализует тип определяемый методом. Но Rust перемещает эти ошибки на время компиляции, поэтому мы вынуждены исправить проблемы, прежде чем наш код начнёт работать. Кроме того, мы не должны писать код, который проверяет своё поведение во время выполнения, потому что это уже проверено во время компиляции. Это повышает производительность без необходимости отказываться от гибкости обобщённых типов.
