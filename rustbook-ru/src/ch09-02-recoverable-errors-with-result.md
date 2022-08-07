@@ -127,7 +127,7 @@ src/main.rs:4:49
 {{#rustdoc_include ../listings/ch09-error-handling/no-listing-05-expect/src/main.rs}}
 ```
 
-We use `expect` in the same way as `unwrap`: to return the file handle or call the `panic!` macro. The error message used by `expect` in its call to `panic!` will be the parameter that we pass to `expect`, rather than the default `panic!` message that `unwrap` uses. Here’s what it looks like:
+`expect` используется так же как и `unwrap`: либо возвращается дескриптор файла либо вызывается макрос `panic!`.<br>Наше сообщение об ошибке в `expect` будет передано в `panic!` и заменит стандартное используемое сообщение.<br>Вот как это выглядит:
 
 <!-- manual-regeneration
 cd listings/ch09-error-handling/no-listing-05-expect
@@ -141,7 +141,7 @@ code: 2, kind: NotFound, message: "No such file or directory" }',
 src/main.rs:5:10
 ```
 
-In production-quality code, most Rustaceans choose `expect` rather than `unwrap` and give more context about why the operation is expected to always succeed. That way, if your assumptions are ever proven wrong, you have more information to use in debugging.
+В продакшн-коде, большинство выбирает `expect` в угоду `unwrap` и добавляет описание, почему операция должна закончиться успешно. Но даже если предположение оказалось неверным, информации для отладки будет больше.
 
 ### Проброс ошибок
 
