@@ -1,6 +1,6 @@
 ## Синтаксис шаблонов
 
-In this section, we gather all the syntax valid in patterns and discuss why and when you might want to use each one.
+В этом разделе мы рассмотрим все допустимые выражения в шаблонах и обсудим, зачем и когда они могут пригодиться.
 
 ### Сопоставление с литералом
 
@@ -22,7 +22,7 @@ In this section, we gather all the syntax valid in patterns and discuss why and 
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-11/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 18-11: A <code>match</code> expression with an arm that introduces a shadowed variable <code>y</code></span>
+<span class="caption">Листинг 18-11: Выражение <code>match</code> с веткой, которая добавляет затенённую переменную <code>y</code></span>
 
 Давайте рассмотрим, что происходит, когда выполняется выражение `match`. Шаблон в первой ветке не соответствует определённому значению `x`, поэтому выполнение продолжается.
 
@@ -36,7 +36,7 @@ In this section, we gather all the syntax valid in patterns and discuss why and 
 
 ### Группа шаблонов
 
-In `match` expressions, you can match multiple patterns using the `|` syntax, which is the pattern *or* operator. For example, in the following code we match the value of `x` against the match arms, the first of which has an *or* option, meaning if the value of `x` matches either of the values in that arm, that arm’s code will run:
+В выражениях `match` можно сравнивать сразу с несколькими шаблонами, используя синтаксис `|`, который является оператором паттерна *or*. Например, в следующем примере мы сопоставляем значение `x` с ветвями match, первая из которых содержит оператор *or*, так что если значение `x` совпадет с любым из значений в этой ветви, то будет выполнен её код:
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-02-multiple-patterns/src/main.rs:here}}
@@ -46,15 +46,15 @@ In `match` expressions, you can match multiple patterns using the `|` syntax, wh
 
 ### Сопоставление диапазонов с помощью `..=`
 
-The `..=` syntax allows us to match to an inclusive range of values. In the following code, when a pattern matches any of the values within the given range, that arm will execute:
+Синтаксис `..=` позволяет нам выполнять сравнение с диапазоном значений. В следующем коде, когда в шаблоне найдется совпадение с любым из значений заданного диапазона, будет выполнена эта ветка:
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-03-ranges/src/main.rs:here}}
 ```
 
-If `x` is 1, 2, 3, 4, or 5, the first arm will match. This syntax is more convenient for multiple match values than using the `|` operator to express the same idea; if we were to use `|` we would have to specify `1 | 2 | 3 | 4 | 5`. Specifying a range is much shorter, especially if we want to match, say, any number between 1 and 1,000!
+Если `x` равен 1, 2, 3, 4 или 5, то совпадение будет достигнуто в первой ветке. Этот синтаксис более удобен при указании нескольких значений для сравнения, чем использование оператора `|` для определения этой же идеи; если бы мы решили использовать `|`, нам пришлось бы написать `1 | 2 | 3 | 4 | 5`. Указание диапазона намного короче, особенно если мы хотим подобрать, скажем, любое число от 1 до 1 000!
 
-The compiler checks that the range isn’t empty at compile time, and because the only types for which Rust can tell if a range is empty or not are `char` and numeric values, ranges are only allowed with numeric or `char` values.
+Компилятор проверяет, что диапазон не является пустым во время компиляции, и поскольку единственными типами, для которых Rust может определить, пуст диапазон или нет, являются `char` и числовые значения, диапазоны допускаются только с числовыми или `char` значениями.
 
 Вот пример использования диапазонов значений `char`:
 
@@ -62,7 +62,7 @@ The compiler checks that the range isn’t empty at compile time, and because th
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-04-ranges-of-char/src/main.rs:here}}
 ```
 
-Rust can tell that `'c'` is within the first pattern’s range and prints `early ASCII letter`.
+Rust может сообщить, что `'c'` находится в диапазоне первого шаблона и напечатать `начальную букву ASCII `.
 
 ### Деструктуризация для получения значений
 
@@ -78,7 +78,7 @@ Rust can tell that `'c'` is within the first pattern’s range and prints `early
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-12/src/main.rs}}
 ```
 
-<span class="caption">Listing 18-12: Destructuring a struct’s fields into separate variables</span>
+<span class="caption">Листинг 18-12: Разбиение полей структуры в отдельные переменные</span>
 
 Этот код создает переменные `a` и `b` , которые сопоставляются значениям полей `x` и `y` структуры `p` . Этот пример показывает, что имена переменных в шаблоне не обязательно должны совпадать с именами полей структуры. Однако обычно имена переменных сопоставляются с именами полей, чтобы было легче запомнить, какие переменные взяты из каких полей. Из-за этого, а также из-за того, что строчка `let Point { x: x, y: y } = p;` содержит много дублирования, в Rust ввели специальное сокращение для шаблонов, соответствующих полям структуры: вам нужно только указать имя поля структуры, и тогда переменные, созданные из шаблона, будут иметь те же имена. Код в листинге 18-13 аналогичен коду в Листинге 18-12, но в шаблоне `let` создаются переменные `x` и `y`, вместо `a` и `b` .
 
