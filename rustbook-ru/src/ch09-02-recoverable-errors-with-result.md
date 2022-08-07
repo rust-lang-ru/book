@@ -231,7 +231,7 @@ don't want to include it for rustdoc testing purposes. -->
 
 #### Где можно использовать оператор `?`
 
-The `?` operator can only be used in functions whose return type is compatible with the value the `?` is used on. This is because the `?` operator is defined to perform an early return of a value out of the function, in the same manner as the `match` expression we defined in Listing 9-6. In Listing 9-6, the `match` was using a `Result` value, and the early return arm returned an `Err(e)` value. The return type of the function has to be a `Result` so that it’s compatible with this `return`.
+`?` может использоваться только в функциях, тип возвращаемого значения которых совместим со значением `?` используется на. Это потому, что `?` оператор определен для выполнения раннего возврата значения из функции таким же образом, как и выражение `match`, которое мы определили в листинге 9-6. В листинге 9-6 `match` использовало значение `Result`, а ответвление с ранним возвратом вернуло значение `Err(e)`. Тип возвращаемого значения функции должен быть `Result`, чтобы он был совместим с этим `return`.
 
 В листинге 9-10 давайте посмотрим на ошибку, которую мы получим, если воспользуемся `?` оператор в `main` функции с типом возвращаемого значения, несовместимым с типом используемого нами значения `?` на:
 
@@ -241,9 +241,9 @@ The `?` operator can only be used in functions whose return type is compatible w
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-10/src/main.rs}}
 ```
 
-<span class="caption">Listing 9-10: Attempting to use the <code>?</code> in the <code>main</code> function that returns <code>()</code> won’t compile</span>
+<span class="caption">Листинг 9-10: Попытка использовать <code>?</code> в <code>main</code> функции, которая возвращает <code>()</code> , не будет компилироваться</span>
 
-This code opens a file, which might fail. The `?` operator follows the `Result` value returned by `File::open`, but this `main` function has the return type of `()`, not `Result`. When we compile this code, we get the following error message:
+Этот код открывает файл, что может привести к сбою. `?` оператор следует за значением `Result` , возвращаемым `File::open` , но эта `main` функция имеет возвращаемый тип `()` , а не `Result` . Когда мы компилируем этот код, мы получаем следующее сообщение об ошибке:
 
 ```console
 {{#include ../listings/ch09-error-handling/listing-09-10/output.txt}}
@@ -261,11 +261,11 @@ This code opens a file, which might fail. The `?` operator follows the `Result` 
 
 <span class="caption">Listing 9-11: Using the <code>?</code> operator on an <code>Option&lt;T&gt;</code> value</span>
 
-This function returns `Option<char>` because it’s possible that there is a character there, but it’s also possible that there isn’t. This code takes the `text` string slice argument and calls the `lines` method on it, which returns an iterator over the lines in the string. Because this function wants to examine the first line, it calls `next` on the iterator to get the first value from the iterator. If `text` is the empty string, this call to `next` will return `None`, in which case we use `?` to stop and return `None` from `last_char_of_first_line`. If `text` is not the empty string, `next` will return a `Some` value containing a string slice of the first line in `text`.
+Эта функция возвращает `Option<char>` , потому что возможно, что там есть символ, но также возможно, что его нет. Этот код принимает аргумент среза `text` строки и вызывает для него метод `lines` , который возвращает итератор для строк в строке. Поскольку эта функция хочет проверить первую строку, она вызывает `next` у итератора, чтобы получить первое значение от итератора. Если `text` является пустой строкой, этот вызов `next` вернет `None` , и в этом случае мы используем `?` чтобы остановить и вернуть `None` из `last_char_of_first_line` . Если `text` не является пустой строкой, `next` вернет значение `Some` , содержащее фрагмент строки первой строки в `text` .
 
 Символ `?` извлекает фрагмент строки, и мы можем вызвать `chars` для этого фрагмента строки. чтобы получить итератор символов. Нас интересует последний символ в первой строке, поэтому мы вызываем `last`, чтобы вернуть последний элемент в итераторе. Вернётся `Option`, потому что возможно, что первая строка пустая - например, если `text` начинается с пустой строки, но имеет символы в других строках, как в `"\nhi"`. Однако, если в первой строке есть последний символ, он будет возвращён в варианте `Some`. Оператор `?` в середине даёт нам лаконичный способ выразить эту логику, позволяя реализовать функцию в одной строке. Если бы мы не могли использовать оператор `?` в `Option`, нам пришлось бы пришлось бы реализовать эту логику, используя больше вызовов методов или выражение `match`.
 
-Note that you can use the `?` operator on a `Result` in a function that returns `Result`, and you can use the `?` operator on an `Option` in a function that returns `Option`, but you can’t mix and match. The `?` operator won’t automatically convert a `Result` to an `Option` or vice versa; in those cases, you can use methods like the `ok` method on `Result` or the `ok_or` method on `Option` to do the conversion explicitly.
+Обратите внимание, что вы можете использовать `?` оператор `Result` в функции, которая возвращает `Result` , и вы можете использовать оператор `?` оператор на `Option` в функции, которая возвращает `Option` , но вы не можете смешивать и сопоставлять. `?` оператор не будет автоматически преобразовывать `Result` в `Option` или наоборот; в этих случаях вы можете использовать такие методы, как метод `ok` для `Result` или метод `ok_or` для `Option` , чтобы выполнить преобразование явно.
 
 Обратите внимание, что вы можете использовать оператор `?` на `Result` в функции, которая возвращает `Result`, и вы можете использовать оператор `?` на `Option` в функции, которая возвращает `Option`, но вы не можете смешивать и сочетать их. Оператор `?` не будет автоматически преобразовывать `Result` в `Option` или наоборот; в этих случаях, вы можете использовать такие методы, как `ok` из `Result` или `ok_or` из `Option` для явного преобразования.
 
@@ -277,10 +277,14 @@ Note that you can use the `?` operator on a `Result` in a function that returns 
 
 <span class="caption">Листинг 9-12: Замена <code>main</code> на return <code>Result&lt;(), E&gt;</code> позволяет использовать оператор <code>?</code> оператор над значениями <code>Result</code></span>
 
-Тип `Box<dyn Error>` является *трейт-объектом*, о котором мы поговорим в разделе ["Использование трейт-объектов, допускающих значения разных типов"](ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types)<!-- ignore --> в главе 17. Пока что вы можете считать, что `Box<dyn Error>` означает "любой вид ошибки". Использование `?` для значения `Result` в функции `main` с типом ошибки `Box<dyn Error>` разрешено, так как позволяет вернуть любое значение `Err` раньше времени. Даже если тело этой функции `main` будет возвращать только ошибки типа `std::io::Error`, указав `Box<dyn Error>`, эта сигнатура останется корректной, даже если в тело `main` будет добавлен код, возвращающий другие ошибки.
+Тип `Box<dyn Error>` является *трейт-объектом*, о котором мы поговорим в разделе ["Использование трейт-объектов, допускающих значения разных типов"]<!-- ignore --> в главе 17. Пока что вы можете считать, что `Box<dyn Error>` означает "любой вид ошибки". Использование `?` для значения `Result` в функции `main` с типом ошибки `Box<dyn Error>` разрешено, так как позволяет вернуть любое значение `Err` раньше времени. Даже если тело этой функции `main` будет возвращать только ошибки типа `std::io::Error`, указав `Box<dyn Error>`, эта сигнатура останется корректной, даже если в тело `main` будет добавлен код, возвращающий другие ошибки.
 
-When a `main` function returns a `Result<(), E>`, the executable will exit with a value of `0` if `main` returns `Ok(())` and will exit with a nonzero value if `main` returns an `Err` value. Executables written in C return integers when they exit: programs that exit successfully return the integer `0`, and programs that error return some integer other than `0`. Rust also returns integers from executables to be compatible with this convention.
+Когда `main` функция возвращает `Result<(), E>` , исполняемый файл завершится со значением `0` , если `main` вернет `Ok(())` , и выйдет с ненулевым значением, если `main` вернет значение `Err` . Исполняемые файлы, написанные на C, при выходе возвращают целые числа: успешно завершенные программы возвращают целое число `0` , а программы с ошибкой возвращают целое число, отличное от `0` . Rust также возвращает целые числа из исполняемых файлов, чтобы быть совместимым с этим соглашением.
 
-Функция `main` может возвращать любые типы, реализующие [трейт `std::process::Termination`](../std/process/trait.Termination.html)<!-- ignore -->, в которых имеется функция `report`, возвращающая `ExitCode`. Обратитесь к документации стандартной библиотеки за дополнительной информацией о порядке реализации трейта `Termination` для ваших собственных типов.
+Функция `main` может возвращать любые типы, реализующие [трейт `std::process::Termination`]<!-- ignore -->, в которых имеется функция `report`, возвращающая `ExitCode`. Обратитесь к документации стандартной библиотеки за дополнительной информацией о порядке реализации трейта `Termination` для ваших собственных типов.
 
 Теперь, когда мы обсудили детали вызова `panic!` или возврата `Result`, давайте вернёмся к тому, как решить, какой из случаев подходит для какой ситуации.
+
+
+["Использование трейт-объектов, допускающих значения разных типов"]: ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types
+[трейт `std::process::Termination`]: ../std/process/trait.Termination.html
