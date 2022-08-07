@@ -6,25 +6,25 @@
 
 Давайте посмотрим, как может произойти ситуация ссылочного зацикливания и как её предотвратить, начиная с определения перечисления `List` и метода `tail` в листинге 15-25:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-25/src/main.rs}}
 ```
 
-<span class="caption">Листинг 15-25: Определение списка cons, который содержит <code>RefCell</code>, так что можно изменять то, на что ссылается вариант <code>Cons</code></span>
+<span class="caption">Listing 15-25: A cons list definition that holds a <code>RefCell&lt;T&gt;</code> so we can modify what a <code>Cons</code> variant is referring to</span>
 
-Мы используем другой вариант определения `List` из листинга 15-5. Второй элемент в варианте `Cons` теперь типа `RefCell<Rc<List>>`, что означает, что вместо возможности изменять значение `i32` как мы делали в листинге 15-24, мы хотим изменить значение у типа `List` на которое указывает вариант `Cons`. Мы также добавляем метод `tail`, чтобы было удобно получить доступ ко второму элементу, если у нас есть вариант `Cons`.
+We’re using another variation of the `List` definition from Listing 15-5. The second element in the `Cons` variant is now `RefCell<Rc<List>>`, meaning that instead of having the ability to modify the `i32` value as we did in Listing 15-24, we want to modify the `List` value a `Cons` variant is pointing to. We’re also adding a `tail` method to make it convenient for us to access the second item if we have a `Cons` variant.
 
 В листинге 15-26 мы добавляем `main` функцию, которая использует определения листинга 15-25. Этот код создаёт список в переменной `a` и список `b`, который указывает на список `a`. Затем он изменяет список внутри `a` так, чтобы он указывал на `b`, создавая ссылочное зацикливание. В коде есть  инструкции `println!`, чтобы показать значения счётчиков ссылок в различных точках этого процесса.
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-26/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 15-26: Создание ссылочного зацикливания из двух значений <code>List</code> указывающих друг на друга</span>
+<span class="caption">Listing 15-26: Creating a reference cycle of two <code>List</code> values pointing to each other</span>
 
 Мы создаём экземпляр `Rc<List>` содержащий значение `List` в переменной `a` с начальным списком `5, Nil`. Затем мы создаём экземпляр `Rc<List>` содержащий другое значение `List` в переменной `b`, которое содержит значение 10 и указывает на список в `a`.
 
@@ -36,15 +36,15 @@
 {{#include ../listings/ch15-smart-pointers/listing-15-26/output.txt}}
 ```
 
-Счётчик ссылок экземпляров `Rc<List>` в обоих переменных `a` и `b` равен 2 после того, как мы изменяем список внутри `a`, чтобы он указывал на `b`. В конце `main` Rust сначала попытается удалить `b`, что уменьшит количество экземпляров `Rc<List>` с 2 на 1. Память, на которую `Rc<List>` указывает в куче, на этом этапе не будет удалена, потому что её счётчик ссылок равен 1, а не 0. Затем Rust удаляет `a`, что также уменьшает счётчик ссылок экземпляра `a` `Rc<List>` с 2 до 1. Память этого экземпляра также не может быть удалена, потому что другой экземпляр `Rc<List>` по-прежнему ссылается на неё. Память, выделенная для списка, навсегда останется не освобождённой. Чтобы наглядно представить этот эталонный цикл, мы создали диаграмму на Рисунке 15-4.
+The reference count of the `Rc<List>` instances in both `a` and `b` are 2 after we change the list in `a` to point to `b`. At the end of `main`, Rust drops the variable `b`, which decreases the reference count of the `b` `Rc<List>` instance from 2 to 1. The memory that `Rc<List>` has on the heap won’t be dropped at this point, because its reference count is 1, not 0. Then Rust drops `a`, which decreases the reference count of the `a` `Rc<List>` instance from 2 to 1 as well. This instance’s memory can’t be dropped either, because the other `Rc<List>` instance still refers to it. The memory allocated to the list will remain uncollected forever. To visualize this reference cycle, we’ve created a diagram in Figure 15-4.
 
-<img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl15-04.svg?raw=true" alt="Reference cycle of lists" class="">
+<img alt="Reference cycle of lists" src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl15-04.svg?raw=true" class="">
 
-<span class="caption">Рисунок 15-4: Ссылочная зацикленность списков <code>a</code> и <code>b</code> указывающих друг на друга</span>
+<span class="caption">Figure 15-4: A reference cycle of lists <code>a</code> and <code>b</code> pointing to each other</span>
 
 Если вы удалите последний комментарий с `println!` и запустите программу, Rust будет пытаться печатать зацикленность в `a`, указывающей на `b`, указывающей на `a` и так далее, пока не переполниться стек.
 
-В этом случае, сразу после создания ссылочной зацикленности, программа завершается. Последствия зацикленности не очень страшны. Однако, если более сложная программа выделяет много памяти в цикле и удерживает её в течение длительного времени, программа использует больше памяти, чем необходимо, что может перегрузить систему вызывая утечки памяти.
+Compared to a real-world program, the consequences creating a reference cycle in this example aren’t very dire: right after we create the reference cycle, the program ends. However, if a more complex program allocated lots of memory in a cycle and held onto it for a long time, the program would use more memory than it needed and might overwhelm the system, causing it to run out of available memory.
 
 Вызвать образование ссылочной зацикленности не просто, но и не невозможно. Если у вас есть значения `RefCell<T>` которые содержат значения `Rc<T>` или аналогичные вложенные комбинации типов с внутренней изменчивостью и подсчётом ссылок, вы должны убедиться, что вы не создаёте зацикленность; Вы не можете полагаться на то, что Rust их обнаружит. Создание ссылочной зацикленности являлось бы логической ошибкой в программе, для которой вы должны использовать автоматические тесты, проверку кода и другие практики разработки программного обеспечения для её минимизации.
 
@@ -52,9 +52,9 @@
 
 ### Предотвращение ссылочной зацикленности: замена умного указателя `Rc<T>` на `Weak<T>`
 
-До сих пор мы демонстрировали, что вызов `Rc::clone` увеличивает значение `strong_count` экземпляра типа `Rc<T>`, а экземпляр `Rc<T>` очищается только в том случае, если его значение `strong_count` равно 0. Вы также можете создать *слабую ссылку* (weak reference) на значение внутри экземпляра `Rc<T>` путём вызова `Rc::downgrade` и передачи ссылки на `Rc<T>`. Когда вы вызываете `Rc::downgrade`, вы получаете умный указатель типа `Weak<T>`. Вместо увеличения значения `strong_count` в экземпляре `Rc<T>` на 1, вызов `Rc::downgrade` увеличивает значение `weak_count` на 1. Тип `Rc<T>` использует `weak_count` для отслеживания того, сколько существует `Weak<T>` ссылок, аналогично `strong_count`. Разница заключается в том, что `weak_count` не должно быть равно 0, чтобы очистить такой экземпляр типа `Rc<T>`.
+So far, we’ve demonstrated that calling `Rc::clone` increases the `strong_count` of an `Rc<T>` instance, and an `Rc<T>` instance is only cleaned up if its `strong_count` is 0. You can also create a *weak reference* to the value within an `Rc<T>` instance by calling `Rc::downgrade` and passing a reference to the `Rc<T>`. Strong references are how you can share ownership of an `Rc<T>` instance. Weak references don’t express an ownership relationship, and their count doesn't affect when an `Rc<T>` instance is cleaned up. They won’t cause a reference cycle because any cycle involving some weak references will be broken once the strong reference count of values involved is 0.
 
-Сильные ссылки - это способ, которым вы можете делиться владением экземпляра `Rc<T>`. Слабые ссылки не выражают отношения владения. Они не будут вызывать ссылочную зацикленность, потому что любой цикл, включающий некоторые слабые ссылки, будет прерван, как только счётчик сильных ссылок вовлечённых значений будет равен 0.
+When you call `Rc::downgrade`, you get a smart pointer of type `Weak<T>`. Instead of increasing the `strong_count` in the `Rc<T>` instance by 1, calling `Rc::downgrade` increases the `weak_count` by 1. The `Rc<T>` type uses `weak_count` to keep track of how many `Weak<T>` references exist, similar to `strong_count`. The difference is the `weak_count` doesn’t need to be 0 for the `Rc<T>` instance to be cleaned up.
 
 Поскольку значение, на которое ссылается `Weak<T>` могло быть удалено, то необходимо убедиться, что это значение все ещё существует, чтобы сделать что-либо со значением на которое указывает `Weak<T>`. Делайте это вызывая метод `upgrade` у экземпляра типа `Weak<T>`, который вернёт `Option<Rc<T>>`. Вы получите результат `Some`, если значение `Rc<T>` ещё не было удалено и результат `None`, если значение `Rc<T>` было удалено. Поскольку `upgrade` возвращает тип `Option<T>`, Rust обеспечит обработку обоих случаев `Some` и `None` и не будет некорректного указателя.
 
@@ -64,7 +64,7 @@
 
 Для начала мы построим дерево с узлами, которые знают о своих дочерних узлах. Мы создадим структуру с именем `Node`, которая будет содержать собственное значение `i32`, а также ссылки на его дочерние значения `Node`:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:here}}
@@ -74,13 +74,13 @@
 
 Далее мы будем использовать наше определение структуры и создадим один экземпляр `Node` с именем `leaf` со значением 3 и без дочерних элементов, а другой экземпляр с именем `branch` со значением 5 и `leaf` в качестве одного из его дочерних элементов, как показано в листинге 15-27:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:there}}
 ```
 
-<span class="caption">Листинг 15-27. Создание узла <code>leaf</code> без дочерних узлов и узла <code>branch</code> с <code>leaf</code> как одним дочерним узлом</span>
+<span class="caption">Listing 15-27: Creating a <code>leaf</code> node with no children and a <code>branch</code> node with <code>leaf</code> as one of its children</span>
 
 Мы клонируем  содержимое `Rc<Node>` из переменной  `leaf` и сохраняем его в переменной `branch`, что означает, что `Node` в  `leaf` теперь имеет двух владельцев: `leaf` и `branch`. Мы можем получить доступ из `branch` к `leaf` через обращение `branch.children`, но нет способа добраться из  `leaf` к `branch`. Причина в том, что `leaf` не имеет ссылки на `branch` и не знает, что они связаны. Мы хотим, чтобы `leaf` знал, что `branch` является его родителем. Мы сделаем это далее.
 
@@ -92,7 +92,7 @@
 
 Поэтому вместо `Rc<T>` мы сделаем так, чтобы поле `parent` использовало тип `Weak<T>`, а именно `RefCell<Weak<Node>>`. Теперь наше определение структуры `Node` выглядит так:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-28/src/main.rs:here}}
@@ -100,15 +100,15 @@
 
 Узел сможет ссылаться на свой родительский узел, но не владеет своим родителем. В листинге 15-28 мы обновляем `main` на использование нового определения так, чтобы у узла `leaf` был бы способ ссылаться на его родительский узел `branch`:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-28/src/main.rs:there}}
 ```
 
-<span class="caption">Листинг 15-28: Узел <code>leaf</code> со слабой ссылкой на свой родительский узел <code>branch</code>.</span>
+<span class="caption">Listing 15-28: A <code>leaf</code> node with a weak reference to its parent node <code>branch</code></span>
 
-Создание узла `leaf` выглядит так же, как при создании узла `leaf` в листинге 15-27, за исключением поля `parent`: узел `leaf` начинается без родителя, поэтому мы создаём новый пустой ссылочный экземпляр `Weak<Node>`.
+Creating the `leaf` node looks similar to Listing 15-27 with the exception of the `parent` field: `leaf` starts out without a parent, so we create a new, empty `Weak<Node>` reference instance.
 
 На этом этапе, когда мы пытаемся получить ссылку на родительский узел у узла `leaf` с помощью метода `upgrade`, мы получаем значение `None`. Мы видим это в выводе первого `println!` выражения:
 
@@ -132,13 +132,13 @@ children: RefCell { value: [] } }] } })
 
 Давайте посмотрим, как изменяются значения `strong_count` и `weak_count` экземпляров типа `Rc<Node>` с помощью создания новой внутренней области видимости и перемещая создания экземпляра `branch` в эту область. Таким образом можно увидеть, что происходит, когда `branch` создаётся и затем удаляется при выходе из области видимости. Изменения показаны в листинге 15-29:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-29/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 15-29: Создание <code>branch</code> во внутренней области и проверка сильных и слабых ссылок</span>
+<span class="caption">Listing 15-29: Creating <code>branch</code> in an inner scope and examining strong and weak reference counts</span>
 
 После того, как `leaf` создан его `Rc<Node>` имеет значения strong count равное 1 и weak count равное 0. Во внутренней области мы создаём `branch` и связываем её с `leaf`, после чего при печати значений счётчиков `Rc<Node>` в `branch` они будет иметь strong count 1 и weak count 1 (для `leaf.parent` указывающего на `branch` с `Weak<Node>` ). Когда мы распечатаем счётчики из `leaf`, мы увидим, что они будут иметь strong count 2, потому что `branch` теперь имеет клон `Rc<Node>` переменной `leaf` хранящийся в `branch.children`, но все равно будет иметь weak count 0.
 
@@ -157,5 +157,3 @@ children: RefCell { value: [] } }] } })
 Если эта глава вызвала у вас интерес и вы хотите реализовать свои собственные умные указатели, обратитесь к ["The Rustonomicon"](https://doc.rust-lang.org/nomicon/index.html) за более полезной информацией.
 
 Далее мы поговорим о параллелизме в Rust. Вы даже узнаете о нескольких новых умных указателях.
-
-
