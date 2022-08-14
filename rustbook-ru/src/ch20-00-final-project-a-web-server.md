@@ -8,7 +8,7 @@
 
 <span class="caption">Рисунок 20-1: Наш последний совместный проект</span>
 
-Вот план по созданию веб-сервера:
+Вот наш план для создания веб-сервера:
 
 1. Узнать немного о протоколах TCP и HTTP.
 2. Прослушивать TCP соединения у сокета.
@@ -16,6 +16,4 @@
 4. Создать правильный HTTP ответ.
 5. Улучшите пропускную способность нашего сервера с помощью пула потоков.
 
-Но прежде чем мы начнём, мы должны упомянуть одну деталь. Способ который мы будем использовать не является лучшим способом построения веб-сервер в Rust. Несколько готовых к использованию крейтов доступны на [crates.io,](https://crates.io/) и способны обеспечить более полную реализацию веб-сервера и пула потоков, чем сделаем мы сами.
-
-Однако в этой главе мы хотим помочь вам научиться, а не выбирать лёгкий путь. Поскольку Rust является языком системного программирования, мы можем выбрать тот уровень абстракции на котором мы хотим работать и можем перейти на более низкий уровень, чем возможно или практично для использования в других языках. Мы напишем базовый HTTP сервер и пул потоков вручную, чтобы вы могли изучить общие идеи и техники из крейтов, которые вы могли бы использовать в будущем.
+Before we get started, we should mention one detail: the method we’ll use won’t be the best way to build a web server with Rust. Community members have published a number of production-ready crates available on [crates.io](https://crates.io/) that provide more complete web server and thread pool implementations than we’ll build. However, our intention in this chapter is to help you learn, not to take the easy route. Because Rust is a systems programming language, we can choose the level of abstraction we want to work with and can go to a lower level than is possible or practical in other languages. We’ll therefore write the basic HTTP server and thread pool manually so you can learn the general ideas and techniques behind the crates you might use in the future.
