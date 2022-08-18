@@ -8,12 +8,12 @@
 
 - `as` - perform primitive casting, disambiguate the specific trait containing an item, or rename items in `use` statements
 - `async` -  return a `Future` instead of blocking the current thread
-- `await` - suspend execution until the result of a `Future` is ready
+- `await` — приостановить выполнение до тех пор, пока не будет готов результат `Future`
 - `break` — немедленно завершить цикл
 - `const` — определить константу или неизменяемый указатель
 - `continue` — досрочно перейти к следующей итерации цикла
 - `crate` — в пути модуля ссылается на корень пакета
-- `dyn` - dynamic dispatch to a trait object
+- `dyn` — динамическая отсылка к объекту характеристики
 - `else` — ветвь для конструкций потока управления `if` и `if let` в случае, если никакая другая ветвь не была исполнена
 - `enum` — определить перечисление
 - `extern` — подключить внешнюю функцию или переменную
@@ -29,7 +29,7 @@
 - `mod` — определить модуль
 - `move` — заставить замыкание принять на себя владение всеми своими захватами
 - `mut` — обозначить изменяемость для ссылок, сырых указателей или привязок к шаблонам
-- `pub` - denote public visibility in struct fields, `impl` blocks, or modules
+- `pub` — обозначить публичную доступность полей структур, блоков `impl` или модулей
 - `ref` — привязка по ссылке
 - `return` — возврат из функции
 - `Self` — псевдоним для типа, который мы определяем или реализуем
