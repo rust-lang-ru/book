@@ -142,7 +142,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 
 Параметр типа `F` также имеет ограничение типажа `Send` и ограничение времени жизни `'static`, которые полезны в нашей ситуации: нам нужен `Send` для передачи замыкания из одного потока в другой и `'static`, потому что мы не знаем, сколько времени поток будет выполняться. Давайте создадим метод `execute` для `ThreadPool`, который будет принимать обобщённый параметр типа `F` со следующими ограничениями:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-03-define-execute/src/lib.rs:here}}
