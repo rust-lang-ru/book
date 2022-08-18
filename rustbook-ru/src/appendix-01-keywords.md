@@ -7,7 +7,7 @@
 Ниже приведён список используемых в настоящее время ключевых слов с описанием их функций.
 
 - `as` - perform primitive casting, disambiguate the specific trait containing an item, or rename items in `use` statements
-- `async` -  return a `Future` instead of blocking the current thread
+- `async` —  вернуть `Future` вместо блокирования текущего потока
 - `await` — приостановить выполнение до тех пор, пока не будет готов результат `Future`
 - `break` — немедленно завершить цикл
 - `const` — определить константу или неизменяемый указатель
@@ -19,10 +19,10 @@
 - `extern` — подключить внешнюю функцию или переменную
 - `false` — логический литерал «ложь»
 - `fn` — определить функцию или тип указателя на функцию
-- `for` - loop over items from an iterator, implement a trait, or specify a higher-ranked lifetime
+- `for` — перебор элементов итератора, реализация типажа или указание срока жизни более продолжительного периода
 - `if` — ветвление на основе результата условного выражения
-- `impl` - implement inherent or trait functionality
-- `in` - part of `for` loop syntax
+- `impl` — реализовать функциональность непосредственно или через типаж
+- `in` — часть синтаксиса определения цикла  `for`
 - `let` — объявить переменную
 - `loop` — безусловный (бесконечный) цикл
 - `match` — сопоставить значение с образцами
@@ -33,16 +33,16 @@
 - `ref` — привязка по ссылке
 - `return` — возврат из функции
 - `Self` — псевдоним для типа, который мы определяем или реализуем
-- `self` - method subject or current module
+- `self` — объект, содержащий этот метод, или текущий модуль
 - `static` — глобальная переменная или время жизни на протяжении всего выполнения программы
 - `struct` — определить структуру
 - `super` — родительский модуль текущего модуля
-- `trait` - define a trait
+- `trait` — определить типаж
 - `true` - Boolean true literal
 - `type` — определить псевдоним типа или ассоциированный тип
-- `union` - define a [union](../reference/items/unions.html)<!-- ignore -->; is only a keyword when used in a union declaration
-- `unsafe` - denote unsafe code, functions, traits, or implementations
-- `use` - bring symbols into scope
+- `union` — определение [union](../reference/items/unions.html)<!-- ignore --> (объединения); является ключевым словом только при использовании в объявлении объединения
+- `unsafe` — обозначить небезопасный код, функции, типажа или реализации
+- `use` — ввести объекты в область видимости
 - `where` — обозначить утверждения, которые ограничивают тип
 - `while` — цикл, работающий относительно результата условного выражения
 
