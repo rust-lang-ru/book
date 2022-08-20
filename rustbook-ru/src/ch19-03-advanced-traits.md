@@ -1,10 +1,10 @@
 ## Продвинутые типажи
 
-We first covered traits in the [“Traits: Defining Shared Behavior”](ch10-02-traits.html#traits-defining-shared-behavior)<!-- ignore --> section of Chapter 10, but we didn’t discuss the more advanced details. Now that you know more about Rust, we can get into the nitty-gritty.
+Сначала мы рассмотрели типажи в разделе ["Типажи: Определение общего поведения"](ch10-02-traits.html#traits-defining-shared-behavior)<!--  --> главы 10, но мы не обсудили более сложные детали. Теперь вы знаете о Rust больше, и мы можем перейти к подробностям.
 
 ### Указание заполнителей типов в определениях типажей с ассоциированными типами
 
-*Associated types* connect a type placeholder with a trait such that the trait method definitions can use these placeholder types in their signatures. The implementor of a trait will specify the concrete type to be used instead of the placeholder type for the particular implementation. That way, we can define a trait that uses some types without needing to know exactly what those types are until the trait is implemented.
+*Ассоциированные типы* (Associated types) связывают заполнитель типа с типажом, таким образом, что объявления методов типажа могут использовать эти заполнители типов в своих сигнатурах. Реализация типажа будет указывать конкретный используемый тип вместо заполнителя типа, при конкретной реализации. Таким образом, мы можем задать типаж, использующий какие-либо типы, не зная точно, какие типы это будут, до момента реализации типажа.
 
 Мы описали большинство расширенных возможностей в этой главе, как редко необходимые. Ассоциированные типы находятся где-то посередине: они используются реже чем возможности описанные в остальной части книги, но чаще чем многие другие возможности обсуждаемые в этой главе.
 
