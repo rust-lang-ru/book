@@ -86,7 +86,7 @@
 
 Чтобы увидеть этот код в действии, давайте изменим `main`, чтобы принимать только два запроса, прежде чем корректно завершить работу сервера как показано в листинге 20-25.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-25/src/main.rs:here}}
@@ -137,7 +137,7 @@ Shutting down worker 3
 
 Вот полный код для справки:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-07-final-code/src/main.rs}}
