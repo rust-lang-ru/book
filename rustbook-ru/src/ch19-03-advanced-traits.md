@@ -105,7 +105,7 @@ trait Add<Rhs = Self> {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-16/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 19-16: Two traits are defined to have a <code>fly</code> method and are implemented on the <code>Human</code> type, and a <code>fly</code> method is implemented on <code>Human</code> directly</span>
+<span class="caption">Листинг 19-16: Два типажа определены с методом <code>fly</code> и реализованы у типа <code>Human</code>, а также метод <code>fly</code> реализован непосредственно у <code>Human</code></span>
 
 Когда мы вызываем `fly` у экземпляра `Human`, то компилятор по умолчанию вызывает метод, который непосредственно реализован для типа, как показано в листинге 19-17.
 
@@ -115,7 +115,7 @@ trait Add<Rhs = Self> {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-17/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 19-17: Calling <code>fly</code> on an instance of <code>Human</code></span>
+<span class="caption">Листинг 19-17: Вызов <code>fly</code> у экземпляра <code>Human</code></span>
 
 Запуск этого кода напечатает `*waving arms furiously*` , показывая, что Rust называется метод `fly` реализованный непосредственно у `Human`.
 
@@ -127,7 +127,7 @@ trait Add<Rhs = Self> {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-18/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 19-18: Specifying which trait’s <code>fly</code> method we want to call</span>
+<span class="caption">Листинг 19-18: Указание какой метода <code>fly</code> мы хотим вызвать</span>
 
 Указание имени типажа перед именем метода проясняет компилятору Rust, какую именно реализацию `fly` мы хотим вызвать. Мы могли бы также написать `Human::fly(&person)`, что эквивалентно используемому нами `person.fly()` в листинге 19-18, но это писание немного длиннее, когда нужна неоднозначность.
 
@@ -147,7 +147,7 @@ trait Add<Rhs = Self> {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-19/src/main.rs}}
 ```
 
-<span class="caption">Listing 19-19: A trait with an associated function and a type with an associated function of the same name that also implements the trait</span>
+<span class="caption">Листинг 19-19: Типаж с ассоциированной функцией и тип с ассоциированной функцией с тем же именем, которая тоже реализует типаж</span>
 
 Мы реализовали код для приюта для животных, который хочет назвать всех щенков именем Spot, в ассоциированной функции `baby_name`, которая определена для `Dog`. Тип `Dog` также реализует типаж `Animal`, который описывает характеристики, которые есть у всех животных. Маленьких собак называют щенками, и это выражается в реализации `Animal` у `Dog` в функции `baby_name` ассоциированной с типажом `Animal`.
 
@@ -165,7 +165,7 @@ trait Add<Rhs = Self> {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-20/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 19-20: Attempting to call the <code>baby_name</code> function from the <code>Animal</code> trait, but Rust doesn’t know which implementation to use</span>
+<span class="caption">Листинг 19-20. Попытка вызвать функцию <code>baby_name</code> из типажа <code>Animal</code>, но Rust не знает какую реализацию использовать</span>
 
 Поскольку `Animal::baby_name` не имеет параметра `self`, и могут быть другие типы, реализующие трейт `Animal`, Rust не может понять, какую реализацию `Animal::baby_name` мы хотим использовать. Мы получим эту ошибку компилятора:
 
@@ -219,7 +219,7 @@ trait Add<Rhs = Self> {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-22/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 19-22: Implementing the <code>OutlinePrint</code> trait that requires the functionality from <code>Display</code></span>
+<span class="caption">Листинг 19-22: Реализация типажа <code>OutlinePrint</code> которая требует функциональности типажа <code>Display</code></span>
 
 Поскольку мы указали, что типаж `OutlinePrint` требует типажа `Display`, мы можем использовать функцию `to_string`, которая автоматически реализована для любого типа реализующего `Display`. Если бы мы попытались использовать `to_string` не добавляя двоеточие и не указывая типаж `Display` после имени типажа, мы получили бы сообщение о том, что метод с именем `to_string` не был найден у типа `&Self` в текущей области видимости.
 
@@ -259,7 +259,7 @@ trait Add<Rhs = Self> {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-23/src/main.rs}}
 ```
 
-<span class="caption">Listing 19-23: Creating a <code>Wrapper</code> type around <code>Vec&lt;String&gt;</code> to implement <code>Display</code></span>
+<span class="caption">Листинг 19-23. Создание типа <code>Wrapper</code> <code>Vec&lt;String&gt;</code> для реализации <code>Display</code></span>
 
 Реализация `Display` использует `self.0` для доступа к внутреннему `Vec<T>`, потому что `Wrapper` это структура кортежа, а `Vec<T>` это элемент с индексом 0 в кортеже. Затем мы можем использовать функциональные возможности типа `Display` у `Wrapper`.
 
