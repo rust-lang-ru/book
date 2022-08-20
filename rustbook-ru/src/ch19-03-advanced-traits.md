@@ -80,7 +80,7 @@ trait Add<Rhs = Self> {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-15/src/lib.rs}}
 ```
 
-<span class="caption">Listing 19-15: Implementing the <code>Add</code> trait on <code>Millimeters</code> to add <code>Millimeters</code> to <code>Meters</code></span>
+<span class="caption">Листинг 19-15: Реализация типажа <code>Add</code> для структуры  <code>Millimeters</code>, чтобы складывать <code>Millimeters</code> и <code>Meters</code></span>
 
 Чтобы сложить `Millimeters` и `Meters`, мы указываем `impl Add<Meters>`, чтобы указать значение параметра типа `RHS` (Meters) вместо использования значения по умолчанию `Self` (Millimeters).
 
