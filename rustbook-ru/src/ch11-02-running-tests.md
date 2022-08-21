@@ -1,14 +1,14 @@
 ## Контролирование хода выполнения тестов
 
-Подобно тому, как `cargo run` компилирует ваш код и затем запускает полученный двоичный файл, `cargo test` компилирует ваш код в тестовом режиме и запускает полученный тестовый двоичный файл. Вы можете указать параметры командной строки, чтобы изменить поведение `cargo test` по умолчанию. Например, по умолчанию двоичный файл, созданный с помощью `cargo test` запускает все тесты параллельно и фиксирует выходные данные, созданные во время тестовых запусков, предотвращая отображение выходных данных и упрощая чтение выходных данных, связанных с результатами тестирования.
+Just as `cargo run` compiles your code and then runs the resulting binary, `cargo test` compiles your code in test mode and runs the resulting test binary. The default behavior of the binary produced by `cargo test` is to run all the tests in parallel and capture output generated during test runs, preventing the output from being displayed and making it easier to read the output related to the test results. You can, however, specify command line options to change this default behavior.
 
-Опции команды `cargo test`  могут быть добавлены после, опции для тестов должны устанавливаться дополнительно (следовать далее). Для разделения этих двух типов аргументов используется разделитель `--`. Чтобы узнать подробнее о доступных опциях команды `cargo test` - используйте опцию `--help`. Для того, чтобы узнать о доступных опциях, непосредственно для тестов, используйте команду `cargo test -- --help`. Обратите внимание, что данную команду необходимо запускать внутри cargo-проекта (пакета).
+Some command line options go to `cargo test`, and some go to the resulting test binary. To separate these two types of arguments, you list the arguments that go to `cargo test` followed by the separator `--` and then the ones that go to the test binary. Running `cargo test --help` displays the options you can use with `cargo test`, and running `cargo test -- --help` displays the options you can use after the separator.
 
 ### Выполнение тестов параллельно или последовательно
 
-Когда вы запускаете несколько тестов, по умолчанию они выполняются параллельно с использованием потоков. Это означает, что тесты завершатся быстрее, и вы сможете быстрее получить обратную связь о том, работает ли ваш код. Поскольку тесты выполняются одновременно, убедитесь, что ваши тесты не зависят друг от друга или от какого-либо общего состояния, включая общую среду, такую как текущий рабочий каталог или переменные среды.
+When you run multiple tests, by default they run in parallel using threads, meaning they finish running faster and you get feedback quicker. Because the tests are running at the same time, you must make sure your tests don’t depend on each other or on any shared state, including a shared environment, such as the current working directory or environment variables.
 
-Например, когда тесты создают в одном и том же месте  на диске файл с одним и тем же названием, читают из него данные, записывают их - вероятность ошибки в работе таких тестов (из-за конкурирования доступа к ресурсу, некорректных данных в файле) весьма высока. Решением будет использование уникальных имён создаваемых и используемых файлов каждым тестом в отдельности, либо выполнение таких тестов последовательно.
+For example, say each of your tests runs some code that creates a file on disk named *test-output.txt* and writes some data to that file. Then each test reads the data in that file and asserts that the file contains a particular value, which is different in each test. Because the tests run at the same time, one test might overwrite the file in the time between another test writing and reading the file. The second test will then fail, not because the code is incorrect but because the tests have interfered with each other while running in parallel. One solution is to make sure each test writes to a different file; another solution is to run the tests one at a time.
 
 Если вы не хотите запускать тесты параллельно или хотите более детальный контроль над количеством используемых потоков, можно установить флаг `--test-threads` и то количество потоков, которое вы хотите использовать для теста. Взгляните на следующий пример:
 
@@ -30,7 +30,7 @@ $ cargo test -- --test-threads=1
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-10/src/lib.rs}}
 ```
 
-<span class="caption">Listing 11-10: Тест функции, которая использует макрос <code>println!</code></span>
+<span class="caption">Листинг 11-10: Тест функции, которая использует макрос println!</span>
 
 Результат вывода на консоль команды `cargo test`:
 
@@ -40,7 +40,7 @@ $ cargo test -- --test-threads=1
 
 Обратите внимание, что нигде в этом выводе мы не видим сообщения `I got the value 4` , которое печатается при выполнении пройденного теста. Этот вывод был записан. Результат неудачного теста, `I got the value 8` , появляется в разделе итоговых результатов теста, который также показывает причину неудачного теста.
 
-Для того, чтобы всегда видеть вывод на консоль корректно работающих программ, используйте флаг `--show-output`:
+Если мы хотим видеть напечатанные результаты прохождения тестов, мы можем сказать Rust, чтобы он также показывал результаты успешных тестов с помощью `--show-output`.
 
 ```console
 $ cargo test -- --show-output
@@ -56,15 +56,15 @@ $ cargo test -- --show-output
 
 Бывают случаи, когда в запуске всех тестов нет необходимости и нужно запустить только несколько тестов. Если вы работаете над функцией и хотите запустить тесты, которые исследуют её работу - это было бы удобно. Вы можете это сделать, используя команду `cargo test`, передав в качестве аргумента имена тестов.
 
-Для демонстрации, как запустить группу тестов, мы создадим группу тестов для функции `add_two` (код программы 11-11) и постараемся выбрать интересующие нас тесты при их запуске:
+Для демонстрации, как запустить группу тестов, мы создадим группу тестов для функции `add_two` function, как показано в Листинге 11-11, и постараемся выбрать какие из них запускать.
 
 <span class="filename">Filename: src/lib.rs</span>
 
-```rust
+```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-11/src/lib.rs}}
 ```
 
-<span class="caption">Код программы 11-11: Три теста с различными именами</span>
+<span class="caption">Листинг 11-11: Три теста с различными именами</span>
 
 Если вы выполните команду `cargo test` без уточняющих аргументов, все тесты выполнятся параллельно:
 
@@ -80,7 +80,7 @@ $ cargo test -- --show-output
 {{#include ../listings/ch11-writing-automated-tests/output-only-02-single-test/output.txt}}
 ```
 
-Был запущен только тест с названием `one_hundred`; имена остальных тестов отличались. Строка `2 filtered out` в конце тестового вывода позволяет нам понять, что были ещё и другие тесты.
+Был запущен только тест с названием `one_hundred`; два других теста не соответствовали этому названию. Результаты теста с помощью вывода `2 filtered out` дают нам понять, что у нас было больше тестов, но они не были запущены.
 
 Таким образом мы не можем указать имена нескольких тестов; будет использоваться только первое значение, указанное для `cargo test` . Но есть способ запустить несколько тестов.
 
@@ -116,4 +116,4 @@ $ cargo test -- --show-output
 {{#include ../listings/ch11-writing-automated-tests/output-only-04-running-ignored/output.txt}}
 ```
 
-Управляя тем, какие тесты запускать, вы можете быть уверены, что результаты вашего `cargo test` будут быстрыми. Вы можете фильтровать тесты по имени при запуске. Вы также можете указать какие тесты должны быть проигнорированы при помощи `ignored`, а также отдельно запускать проигнорированные тесты при помощи `cargo test -- --ignored`.
+Управляя тем, какие тесты запускать, вы можете быть уверены, что результаты вашего `cargo test` будут быстрыми. Когда вы дойдёте до момента, где имеет смысл проверить результаты тестов `ignored`, и у вас есть время дождаться их результатов, вы можете запустить их с помощью `cargo test -- --ignored`. Если вы хотите запустить все тесты независимо от того, игнорируются они или нет, выполните `cargo test -- --include-ignored`.
