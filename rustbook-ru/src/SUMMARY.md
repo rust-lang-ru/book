@@ -18,7 +18,7 @@
     - [Типы данных](ch03-02-data-types.md)
     - [Функции](ch03-03-how-functions-work.md)
     - [Комментарии](ch03-04-comments.md)
-    - [Поток управления](ch03-05-control-flow.md)
+    - [Управляющие конструкции](ch03-05-control-flow.md)
 
 - [Понимание владения](ch04-00-understanding-ownership.md)
 
