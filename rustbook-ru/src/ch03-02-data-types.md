@@ -55,18 +55,18 @@ Octal | `0o77`
 
 Как же узнать, какой тип целого числа использовать? Если вы не уверены, значения по умолчанию в Rust, как правило, подходят для начала: целочисленные типы по умолчанию `i32`. Основной случай, в котором вы должны использовать `isize` или `usize`, — это индексация какой-либо коллекции.
 
-> ##### Integer Overflow
+> ##### Переполнение целых чисел
 >
 > Let’s say you have a variable of type `u8` that can hold values between 0 and 255. If you try to change the variable to a value outside of that range, such as 256, *integer overflow* will occur, which can result in one of two behaviors. When you’re compiling in debug mode, Rust includes checks for integer overflow that cause your program to *panic* at runtime if this behavior occurs. Rust uses the term panicking when a program exits with an error; we’ll discuss panics in more depth in the [“Unrecoverable Errors with `panic!`”](ch09-01-unrecoverable-errors-with-panic.html)<!-- ignore --> section in Chapter 9.
 >
 > When you’re compiling in release mode with the `--release` flag, Rust does *not* include checks for integer overflow that cause panics. Instead, if overflow occurs, Rust performs *two’s complement wrapping*. In short, values greater than the maximum value the type can hold “wrap around” to the minimum of the values the type can hold. In the case of a `u8`, the value 256 becomes 0, the value 257 becomes 1, and so on. The program won’t panic, but the variable will have a value that probably isn’t what you were expecting it to have. Relying on integer overflow’s wrapping behavior is considered an error.
 >
-> To explicitly handle the possibility of overflow, you can use these families of methods provided by the standard library for primitive numeric types:
+> Чтобы явно обработать возможность переполнения, вы можете использовать следующие группы методов, предоставляемые стандартной библиотекой для примитивных числовых типов:
 >
 > - Wrap in all modes with the `wrapping_*` methods, such as `wrapping_add`
-> - Return the `None` value if there is overflow with the `checked_*` methods
-> - Return the value and a boolean indicating whether there was overflow with the `overflowing_*` methods
-> - Saturate at the value’s minimum or maximum values with `saturating_*` methods
+> - Верните значение `None`, если произошло переполнение при использовании методов `checked_*`
+> - Верните число и логическое значение, указывающее, имело ли место переполнение с помощью методов `overflowing_*`
+> - Считать корректным установку минимального или максимального значения, используя метод `saturating_*`
 
 #### Числа с плавающей запятой
 
