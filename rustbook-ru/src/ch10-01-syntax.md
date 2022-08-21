@@ -124,7 +124,7 @@ enum Result<T, E> {
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-09/src/main.rs}}
 ```
 
-<span class="caption">Листинг 10-9: реализация метода с именем <code>x</code> у структуры <code>Point&lt;T&gt;</code>, которая будет возвращать ссылку на поле <code>x</code> типа <code>T</code></span>
+<span class="caption">Листинг 10-9: Реализация метода с именем <code>x</code> у структуры <code>Point&lt;T&gt;</code>, которая будет возвращать ссылку на поле <code>x</code> типа <code>T</code></span>
 
 Здесь мы определили метод с именем `x` у структуры `Point<T>`, который возвращает ссылку на данные в поле `x`.
 
