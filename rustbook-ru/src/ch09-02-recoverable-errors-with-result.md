@@ -53,7 +53,7 @@ enum Result<T, E> {
 
 Код в листинге 9-4 будет вызывать `panic!` независимо от того, почему вызов `File::open` не удался. Однако мы хотим предпринять различные действия для разных причин сбоя. Если открытие `File::open` не удалось из-за отсутствия файла, мы хотим создать файл и вернуть его дескриптор. Если вызов `File::open` не удался по любой другой причине - например, потому что у нас не было прав на открытие файла, то все равно мы хотим вызвать `panic!` как у нас сделано в листинге 9-4. Для этого мы добавляем выражение внутреннего `match`, показанное в листинге 9-5.
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 <!-- ignore this test because otherwise it creates hello.txt which causes other
 tests to fail lol -->
@@ -235,7 +235,7 @@ don't want to include it for rustdoc testing purposes. -->
 
 В листинге 9-10 давайте посмотрим на ошибку, которую мы получим, если воспользуемся `?` оператор в `main` функции с типом возвращаемого значения, несовместимым с типом используемого нами значения `?` на:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-10/src/main.rs}}
