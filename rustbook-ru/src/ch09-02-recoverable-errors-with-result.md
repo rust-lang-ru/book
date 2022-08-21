@@ -235,7 +235,7 @@ don't want to include it for rustdoc testing purposes. -->
 
 В листинге 9-10 давайте посмотрим на ошибку, которую мы получим, если воспользуемся `?` оператор в `main` функции с типом возвращаемого значения, несовместимым с типом используемого нами значения `?` на:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch09-error-handling/listing-09-10/src/main.rs}}
