@@ -36,7 +36,7 @@ Problem parsing arguments: not enough arguments
 
 <span class="caption">Запись сообщений об ошибках в Standard Error вместо Standard Output используя <code>eprintln!</code></span>
 
-Давайте снова запустим программу таким же образом, без каких-либо аргументов и перенаправим стандартный вывод с помощью `>` :
+Давайте снова запустим программу таким же образом, без каких-либо аргументов и перенаправим стандартный вывод с помощью `>`:
 
 ```console
 $ cargo run > output.txt

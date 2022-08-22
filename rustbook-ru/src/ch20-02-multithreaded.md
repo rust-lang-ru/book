@@ -96,9 +96,9 @@
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/lib.rs}}
 ```
 
-Затем отредактируйте файл *main.rs*, чтобы внести `ThreadPool`  из библиотечного крейта в текущую область видимости, добавив следующий код в начало *src/main.rs* :
+Затем отредактируйте файл *main.rs*, чтобы внести `ThreadPool`  из библиотечного крейта в текущую область видимости, добавив следующий код в начало *src/main.rs*:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/main.rs:here}}
