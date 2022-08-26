@@ -126,7 +126,7 @@
 
 Давайте посмотрим, как аннотации времени жизни ограничивают функцию `longest` путём передачи в неё ссылок, которые имеют разные конкретные времена жизни. Листинг 10-22 является очевидным примером.
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-22/src/main.rs:here}}
