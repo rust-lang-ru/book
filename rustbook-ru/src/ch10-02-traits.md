@@ -12,13 +12,13 @@
 
 Мы хотим создать крейт библиотеки медиа-агрегатора `aggregator`, которая может отображать сводку данных сохранённых в экземплярах структур `NewsArticle` или `Tweet`. Чтобы этого достичь, нам необходимо иметь возможность для каждой структуры получить короткую сводку на основе имеющихся данных, и для этого мы запросим сводку вызвав метод `summarize`. Листинг 10-12 показывает определение типажа `Summary`, который выражает это поведение.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл : src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-12/src/lib.rs}}
 ```
 
-<span class="caption">Listing 10-12: A <code>Summary</code> trait that consists of the behavior provided by a <code>summarize</code> method</span>
+<span class="caption">Листинг 10-12: Определение типажа <code>Summary</code>, который содержит поведение предоставленное методом <code>summarize</code></span>
 
 Здесь мы объявляем типаж с использованием ключевого слова `trait`, а затем его название, которым в нашем случае является `Summary`. Также мы объявляем крейт как `pub` что позволяет крейтам, зависящим от нашего крейта, тоже использовать наш крейт, что мы увидим в последующих примерах. Внутри фигурных скобок объявляются сигнатуры методов, которые описывают поведения типов, реализующих данный типаж, в данном случае поведение определяется только одной сигнатурой метода `fn summarize(&self) -> String`.
 
@@ -30,7 +30,7 @@
 
 Теперь, после того как мы определили желаемое поведение используя типаж `Summary`, можно реализовать его у типов в нашем медиа-агрегаторе. Листинг 10-13 показывает реализацию типажа `Summary` у структуры `NewsArticle`, которая использует для создания сводки в методе `summarize` заголовок, автора и место публикации статьи. Для структуры `Tweet` мы определяем реализацию `summarize` используя имя пользователя и следующий за ним полный текст твита, полагая что содержание твита уже ограниченно 280 символами.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл : src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-13/src/lib.rs:here}}
@@ -58,7 +58,7 @@
 
 В примере 10-14 показано, как указать строку по умолчанию для метода `summarize` из типажа `Summary` вместо определения только сигнатуры метода, как мы сделали в примере 10-12.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл : src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-14/src/lib.rs:here}}
