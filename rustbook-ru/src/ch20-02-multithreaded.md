@@ -90,7 +90,7 @@
 
 Создайте файл *src/lib.rs*, который содержит следующий код, который является простейшим определением структуры `ThreadPool`, которое мы можем иметь на данный момент:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/lib.rs}}
@@ -98,7 +98,7 @@
 
 Затем отредактируйте файл *main.rs*, чтобы внести `ThreadPool`  из библиотечного крейта в текущую область видимости, добавив следующий код в начало *src/main.rs* :
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/main.rs:here}}
