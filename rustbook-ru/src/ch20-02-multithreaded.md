@@ -274,7 +274,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 
 Давайте попробуем передавать принимающую сторону канала каждому "работнику" (структуре Worker), когда пул потоков создаёт канал. Мы знаем, что хотим использовать получающую часть канала в потоке, порождаемым "работником", поэтому мы будем ссылаться на параметр `receiver` в замыкании. Код 20-17 пока не компилируется.
 
-<span class="filename">Файл: src/lib.rs</span>
+<span class="filename">Файл : src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-17/src/lib.rs:here}}
@@ -296,7 +296,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 
 Вспомните умные указатели, которые обсуждались в главе 16: чтобы делиться владением между несколькими потоками и разрешать потокам изменять значение, нам нужно использовать тип `Arc<Mutex<T>>`. Тип `Arc` позволит нескольким "работникам" владеть получателем (receiver), а `Mutex` гарантирует что только один "работник" сможет получить задание (job) от получателя за раз. Листинг 20-18 показывает изменения, которые мы должны сделать.
 
-<span class="filename">Файл: src/lib.rs</span>
+<span class="filename">Файл : src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-18/src/lib.rs:here}}
