@@ -32,7 +32,7 @@
 {{#rustdoc_include ../listings/ch17-oop/listing-17-02/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 17-2: Implementations of the public methods <code>add</code>, <code>remove</code>, and <code>average</code> on <code>AveragedCollection</code></span>
+<span class="caption">Листинг 17-2: Реализация публичных методов <code>add</code>, <code>remove</code>, и  <code>average</code> для <code>AveragedCollection</code></span>
 
 Публичные методы `add`, `remove` и `average` являются единственным способом получить или изменить данные в экземпляре `AveragedCollection`. Когда элемент добавляется в `list` методом `add`, или удаляется с помощью метода `remove`, код реализации каждого из этих методов вызывает приватный метод `update_average`, который позаботится об обновлении поля `average`.
 
