@@ -285,6 +285,6 @@ don't want to include it for rustdoc testing purposes. -->
 
 Теперь, когда мы обсудили детали вызова `panic!` или возврата `Result`, давайте вернёмся к тому, как решить, какой из случаев подходит для какой ситуации.
 
-
+[handle_failure]: ch02-00-guessing-game-tutorial.html#handling-potential-failure-with-the-result-type
 ["Использование трейт-объектов, допускающих значения разных типов"]: ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types
 [трейт `std::process::Termination`]: ../std/process/trait.Termination.html
