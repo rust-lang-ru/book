@@ -90,7 +90,7 @@
 
 Создайте файл *src/lib.rs*, который содержит следующий код, который является простейшим определением структуры `ThreadPool`, которое мы можем иметь на данный момент:
 
-<span class="filename">Файл : src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/lib.rs}}
