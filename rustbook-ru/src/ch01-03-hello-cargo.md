@@ -27,7 +27,7 @@ $ cd hello_cargo
 
 Кроме того, cargo инициализировал новый репозиторий Git вместе с файлом *.gitignore*. Файлы Git не будут сгенерированы, если вы запустите `cargo new` в существующем репозитории Git; вы можете изменить это поведение, используя `cargo new --vcs=git`.
 
-> Примечание: Git - это распространённая система контроля версий. Вы можете изменить `cargo new` на использование другой системы контроля версий или не использовать никакой системы контроля версий с помощью флага `--vcs`. Выполните команду `cargo new --help`, чтобы увидеть доступные опции.
+> Примечание: Git - это распространённая система контроля версий. Вы можете заставить `cargo new` использовать другую систему контроля версий или вообще отказаться от неё, используя флаг `--vcs`. Запустите `cargo new --help`, чтобы увидеть доступные параметры.
 
 Откройте файл *Cargo.toml* в любом текстовом редакторе. Он должен выглядеть как код в листинге 1-2.
 
@@ -39,10 +39,12 @@ name = "hello_cargo"
 version = "0.1.0"
 edition = "2021"
 
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
 [dependencies]
 ```
 
-<span class="caption">Листинг 1-2: Содержимое файла <em>Cargo.toml</em>, сгенерированного командой <code>cargo new</code></span>
+<span class="caption">Листинг 1-2: Содержимое файла <em>Cargo.toml</em>, сгенерированное командой <code>cargo new</code></span>
 
 Это файл в формате [*TOML*](https://github.com/toml-lang/toml)<!--  --> (*Tom’s Obvious, Minimal Language*), который является форматом конфигураций Cargo.
 
@@ -54,7 +56,7 @@ edition = "2021"
 
 Откройте файл *src/main.rs* и загляните в него:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 fn main() {
