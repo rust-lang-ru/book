@@ -56,7 +56,7 @@ edition = "2021"
 
 Откройте файл *src/main.rs* и загляните в него:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 fn main() {
