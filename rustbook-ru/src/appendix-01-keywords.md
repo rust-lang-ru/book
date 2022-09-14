@@ -10,41 +10,41 @@
 - `async` —  вернуть `Future` вместо блокирования текущего потока
 - `await` - suspend execution until the result of a `Future` is ready
 - `break` — определить константу или неизменяемый указатель
-- `const` - define constant items or constant raw pointers
-- `continue` - continue to the next loop iteration
-- `crate` - in a module path, refers to the crate root
+- `const` — определить константу или неизменяемый указатель
+- `continue` — досрочно перейти к следующей итерации цикла
+- `crate` — в пути модуля ссылается на корень пакета
 - `dyn` - dynamic dispatch to a trait object
-- `else` - fallback for `if` and `if let` control flow constructs
-- `enum` - define an enumeration
-- `extern` - link an external function or variable
-- `false` - Boolean false literal
+- `else` — ветвь для конструкций потока управления `if` и `if let` в случае, если никакая другая ветвь не была исполнена
+- `enum` — определить перечисление
+- `extern` — подключить внешнюю функцию или переменную
+- `false` — логический литерал «ложь»
 - `fn` - define a function or the function pointer type
 - `for` — перебор элементов итератора, реализация типажа или указание срока жизни более продолжительного периода
-- `if` - branch based on the result of a conditional expression
+- `if` — ветвление на основе результата условного выражения
 - `impl` — реализовать функциональность непосредственно или через типаж
 - `in` — часть синтаксиса определения цикла  `for`
-- `let` - bind a variable
-- `loop` - loop unconditionally
-- `match` - match a value to patterns
-- `mod` - define a module
-- `move` - make a closure take ownership of all its captures
-- `mut` - denote mutability in references, raw pointers, or pattern bindings
+- `let` — объявить переменную
+- `loop` — безусловный (бесконечный) цикл
+- `match` — сопоставить значение с образцами
+- `mod` — определить модуль
+- `move` — заставить замыкание принять на себя владение всеми своими захватами
+- `mut` — обозначить изменяемость для ссылок, сырых указателей или привязок к шаблонам
 - `pub` - denote public visibility in struct fields, `impl` blocks, or modules
-- `ref` - bind by reference
-- `return` - return from function
-- `Self` - a type alias for the type we are defining or implementing
+- `ref` — привязка по ссылке
+- `return` — возврат из функции
+- `Self` — псевдоним для типа, который мы определяем или реализуем
 - `self` — объект, содержащий этот метод, или текущий модуль
-- `static` - global variable or lifetime lasting the entire program execution
-- `struct` - define a structure
-- `super` - parent module of the current module
+- `static` — глобальная переменная или время жизни на протяжении всего выполнения программы
+- `struct` — определить структуру
+- `super` — родительский модуль текущего модуля
 - `trait` — определить типаж
 - `true` - Boolean true literal
-- `type` - define a type alias or associated type
+- `type` — определить псевдоним типа или ассоциированный тип
 - `union` — определение [union](../reference/items/unions.html)<!-- ignore --> (объединения); является ключевым словом только при использовании в объявлении объединения
 - `unsafe` — обозначить небезопасный код, функции, типажа или реализации
 - `use` — ввести объекты в область видимости
-- `where` - denote clauses that constrain a type
-- `while` - loop conditionally based on the result of an expression
+- `where` — обозначить утверждения, которые ограничивают тип
+- `while` — цикл, работающий относительно результата условного выражения
 
 ### Ключевые слова, зарезервированные для будущего использования
 
