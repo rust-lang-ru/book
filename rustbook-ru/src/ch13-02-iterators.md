@@ -76,7 +76,7 @@ pub trait Iterator {
 
 *Адаптеры итераторов* - это методы, определённые для трейта `Iterator`, которые не потребляют итератор. Вместо этого они создают различные итераторы, изменяя некоторые аспекты исходного итератора.
 
-Listing 13-14 shows an example of calling the iterator adaptor method `map`, which takes a closure to call on each item as the items are iterated through. The `map` method returns a new iterator that produces the modified items. The closure here creates a new iterator in which each item from the vector will be incremented by 1:
+В листинге 13-14 показан пример вызова метода адаптера итератора `map`, который принимает замыкание и вызывает его для каждого элемента по мере итерации элементов. Метод `map` возвращает новый итератор, который создаёт изменённые элементы. Замыкание здесь создаёт новый итератор, в котором каждый элемент из вектора будет увеличен на 1:
 
 <span class="filename">Файл: src/main.rs</span>
 
