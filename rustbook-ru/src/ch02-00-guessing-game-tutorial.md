@@ -185,7 +185,7 @@ println!("x = {} and y = {}", x, y);
 
 ### Тестирование первой части
 
-Давайте протестирует первую часть игры. Запустите её используя `cargo run`:
+Давайте протестируем первую часть игры. Запустите её используя `cargo run`:
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/listing-02-01/
