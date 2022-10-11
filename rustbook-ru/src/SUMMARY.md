@@ -18,7 +18,7 @@
     - [Типы данных](ch03-02-data-types.md)
     - [Функции](ch03-03-how-functions-work.md)
     - [Комментарии](ch03-04-comments.md)
-    - [Поток управления](ch03-05-control-flow.md)
+    - [Управляющие конструкции](ch03-05-control-flow.md)
 
 - [Понимание владения](ch04-00-understanding-ownership.md)
 
@@ -70,7 +70,7 @@
 
     - [Как писать тесты](ch11-01-writing-tests.md)
     - [Управление ходом выполнения тестов](ch11-02-running-tests.md)
-    - [Организация испытаний](ch11-03-test-organization.md)
+    - [Организация тестов](ch11-03-test-organization.md)
 
 - [Проект ввода-вывода: создание программы командной строки](ch12-00-an-io-project.md)
 

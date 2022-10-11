@@ -110,14 +110,15 @@ fn main() {
 Запуск `cargo clippy` для этого проекта вызовет следующую ошибку:
 
 ```text
-error: approximate value of `f{32, 64}::consts::PI` found. Consider using it directly
+error: approximate value of `f{32, 64}::consts::PI` found
  --> src/main.rs:2:13
   |
 2 |     let x = 3.1415;
   |             ^^^^^^
   |
-  = note: #[deny(clippy::approx_constant)] on by default
-  = help: for further information visit https://rust-lang-nursery.github.io/rust-clippy/master/index.html#approx_constant
+  = note: `#[deny(clippy::approx_constant)]` on by default
+  = help: consider using the constant directly
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#approx_constant
 ```
 
 Эта ошибка сообщает вам, что в Rust уже определена более точная константа `PI`, и что ваша программа будет более корректной, если вы вместо неё будете использовать эту константу. Затем вы должны изменить свой код, чтобы использовать константу `PI`. Следующий код не приводит к ошибкам или предупреждениям от Clippy:
@@ -136,7 +137,7 @@ fn main() {
 
 ### Интеграция с IDE с помощью `rust-analyzer`
 
-Чтобы облегчить интеграцию с IDE, сообщество Rust рекомендует использовать [`rust-analyzer`]<!-- игнорировать -->. Этот инструмент представляет собой набор ориентированных на компилятор утилит, которые используют [Language Server Protocol]<!-- игнорировать -->, который является спецификацией для взаимодействия IDE и языков программирования друг с другом. Разные клиенты могут использовать `rust-analyzer`, например [подключаемый модуль анализатора Rust для Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+Чтобы облегчить интеграцию с IDE, сообщество Rust рекомендует использовать [`rust-analyzer`]<!-- ignore -->. Этот инструмент представляет собой набор ориентированных на компилятор утилит, которые используют [Language Server Protocol]<!-- ignore -->, который является спецификацией для взаимодействия IDE и языков программирования друг с другом. Разные клиенты могут использовать `rust-analyzer`, например [подключаемый модуль анализатора Rust для Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
 
 Посетите <a>домашнюю страницу</a> проекта <code>rust-analyzer</code> для получения инструкций по установке, а затем установите поддержку языкового сервера в вашей конкретной среде IDE. Ваша IDE получит такие возможности, как автодополнение, переход к определению и встроенные ошибки.
 
