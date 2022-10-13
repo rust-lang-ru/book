@@ -79,7 +79,7 @@
     - [Рефакторинг для обеспечения модульности и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
     - [Разработка функциональности библиотеки с помощью разработки через тестирование](ch12-04-testing-the-librarys-functionality.md)
     - [Работа с переменными среды](ch12-05-working-with-environment-variables.md)
-    - [Запись сообщений об ошибках в стандартную ошибку вместо стандартного вывода](ch12-06-writing-to-stderr-instead-of-stdout.md)
+    - [Запись сообщений об ошибках в stderr вместо stdout](ch12-06-writing-to-stderr-instead-of-stdout.md)
 
 ## Думать на Rust
 
@@ -104,7 +104,7 @@
     - [Работа с умными указателями как с обычными ссылками с помощью трейта `Deref`](ch15-02-deref.md)
     - [Выполнение кода при очистке с помощью трейта `Drop`](ch15-03-drop.md)
     - [`Rc<T>`, умный указатель с подсчётом ссылок](ch15-04-rc.md)
-    - [`RefCell<T>` и паттерн внутренней изменяемости](ch15-05-interior-mutability.md)
+    - [`RefCell<T>` и внутренняя изменяемость](ch15-05-interior-mutability.md)
     - [Ссылочные циклы могут привести к утечке памяти](ch15-06-reference-cycles.md)
 
 - [Безбоязненный параллелизм](ch16-00-concurrency.md)
@@ -131,9 +131,9 @@
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
     - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
-    - [Трейты — дополнительно](ch19-03-advanced-traits.md)
-    - [Типы — дополнительно](ch19-04-advanced-types.md)
-    - [Функции и замыкания — дополнительно](ch19-05-advanced-functions-and-closures.md)
+    - [Трейты для продвинутых](ch19-03-advanced-traits.md)
+    - [Типы для продвинутых](ch19-04-advanced-types.md)
+    - [Функции и замыкания для продвинутых](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
 
 - [Финальный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
