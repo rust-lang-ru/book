@@ -171,7 +171,7 @@ let s = "Hello, world!";
 fn first_word(s: &String) -> &str {
 ```
 
-Более опытные разработчики Rust написали бы сигнатуру из листинга  4-9, потому что она позволяет использовать одну функцию для значений обоих типов &amp;String и &amp;str.
+Более опытные разработчики Rust написали бы сигнатуру из листинга  4-9, потому что она позволяет использовать одну функцию для значений обоих типов `&String` и `&str`.
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:here}}
