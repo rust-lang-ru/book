@@ -6,7 +6,7 @@
 
 Давайте посмотрим, как может произойти ситуация ссылочного зацикливания и как её предотвратить, начиная с определения перечисления `List` и метода `tail` в листинге 15-25:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-25/src/main.rs}}
@@ -18,7 +18,7 @@
 
 В листинге 15-26 мы добавляем `main` функцию, которая использует определения листинга 15-25. Этот код создаёт список в переменной `a` и список `b`, который указывает на список `a`. Затем он изменяет список внутри `a` так, чтобы он указывал на `b`, создавая ссылочное зацикливание. В коде есть  инструкции `println!`, чтобы показать значения счётчиков ссылок в различных точках этого процесса.
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-26/src/main.rs:here}}
@@ -52,7 +52,7 @@
 
 ### Предотвращение ссылочной зацикленности: замена умного указателя `Rc<T>` на `Weak<T>`
 
-До сих пор мы демонстрировали, что вызов `Rc::clone` увеличивает `strong_count` экземпляра `Rc<T>`, а экземпляр `Rc<T>` удаляется, только если его `strong_count` равен 0. Вы также можете создать *слабую ссылку* на значение внутри экземпляра `Rc<T>`, вызвав `Rc::downgrade` и передав ссылку на `Rc<T>`. Сильные ссылки - это то с помощью чего вы можете поделиться владением экземпляра `Rc<T>`. Слабые ссылки не отражают связи владения, и их подсчёт не влияет на то, когда экземпляр `Rc<T>` будет очищен. Они не приведут к ссылочному циклу, потому что любой цикл, включающий несколько слабых ссылок, будет разорван, как только количество сильных ссылок для задействованных значений станет равным 0.
+So far, we’ve demonstrated that calling `Rc::clone` increases the `strong_count` of an `Rc<T>` instance, and an `Rc<T>` instance is only cleaned up if its `strong_count` is 0. You can also create a *weak reference* to the value within an `Rc<T>` instance by calling `Rc::downgrade` and passing a reference to the `Rc<T>`. Strong references are how you can share ownership of an `Rc<T>` instance. Weak references don’t express an ownership relationship, and their count doesn’t affect when an `Rc<T>` instance is cleaned up. They won’t cause a reference cycle because any cycle involving some weak references will be broken once the strong reference count of values involved is 0.
 
 Когда вы вызываете `Rc::downgrade`, вы получаете умный указатель типа `Weak<T>`. Вместо того чтобы увеличить `strong_count` в экземпляре `Rc<T>` на 1, вызов `Rc::downgrade` увеличивает `weak_count` на 1. Тип `Rc<T>` использует `weak_count` для отслеживания количества существующих ссылок `Weak<T>`, аналогично `strong_count`. Разница в том, что `weak_count` не должен быть равен 0, чтобы экземпляр `Rc<T>` мог быть удалён.
 
@@ -64,7 +64,7 @@
 
 Для начала мы построим дерево с узлами, которые знают о своих дочерних узлах. Мы создадим структуру с именем `Node`, которая будет содержать собственное значение `i32`, а также ссылки на его дочерние значения `Node`:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:here}}
@@ -74,7 +74,7 @@
 
 Далее мы будем использовать наше определение структуры и создадим один экземпляр `Node` с именем `leaf` со значением 3 и без дочерних элементов, а другой экземпляр с именем `branch` со значением 5 и `leaf` в качестве одного из его дочерних элементов, как показано в листинге 15-27:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:there}}
@@ -92,7 +92,7 @@
 
 Поэтому вместо `Rc<T>` мы сделаем так, чтобы поле `parent` использовало тип `Weak<T>`, а именно `RefCell<Weak<Node>>`. Теперь наше определение структуры `Node` выглядит так:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-28/src/main.rs:here}}
@@ -100,7 +100,7 @@
 
 Узел сможет ссылаться на свой родительский узел, но не владеет своим родителем. В листинге 15-28 мы обновляем `main` на использование нового определения так, чтобы у узла `leaf` был бы способ ссылаться на его родительский узел `branch`:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-28/src/main.rs:there}}
@@ -132,7 +132,7 @@ children: RefCell { value: [] } }] } })
 
 Давайте посмотрим, как изменяются значения `strong_count` и `weak_count` экземпляров типа `Rc<Node>` с помощью создания новой внутренней области видимости и перемещая создания экземпляра `branch` в эту область. Таким образом можно увидеть, что происходит, когда `branch` создаётся и затем удаляется при выходе из области видимости. Изменения показаны в листинге 15-29:
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-29/src/main.rs:here}}
@@ -157,5 +157,3 @@ children: RefCell { value: [] } }] } })
 Если эта глава вызвала у вас интерес и вы хотите реализовать свои собственные умные указатели, обратитесь к ["The Rustonomicon"](https://doc.rust-lang.org/nomicon/index.html) за более полезной информацией.
 
 Далее мы поговорим о параллелизме в Rust. Вы даже узнаете о нескольких новых умных указателях.
-
-
