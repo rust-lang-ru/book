@@ -12,3 +12,7 @@
 ## GitLocalize
 
 Проект на GitLocalize: https://gitlocalize.com/repo/4579
+
+## Правила участия в переводе
+
+Правила участия в переводе описаны в [этом документе](https://github.com/rust-lang-ru/book/blob/master/CONTRIBUTING.md).
