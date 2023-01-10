@@ -1,6 +1,6 @@
 # Введение
 
-> Примечание: это издание книги так же, как и [The Rust Programming Language](https://nostarch.com/rust), доступно в печатном и электронном виде от [No Starch Press](https://nostarch.com/).
+> Примечание: это издание книги так же, как и [The Rust Programming Language], доступно в печатном и электронном виде от [No Starch Press].
 
 Добро пожаловать в *The Rust Programming Language*, вводную книгу о Rust. Язык программирования Rust помогает создавать быстрые, более надёжные приложения. Высокоуровневая эргономичность и низкоуровневый контроль часто противоречат друг другу при разработке языков программирования. Rust бросает вызов этому противоречию. Благодаря балансу между мощным техническим потенциалом и отличным удобством для разработки, Rust дает вам возможность контроля низкоуровневых деталей (таких как использование памяти) без всех хлопот, традиционно связанных с таким контролем.
 
@@ -74,7 +74,7 @@ Rust предназначен для любителей скорости и ст
 
 Ferris | Пояснения
 --- | ---
-<img src="img/ferris/does_not_compile.svg" class="ferris-explain" alt="Ferris with a question mark"> | Этот код не компилируется!
+<img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/does_not_compile.svg?raw=true" alt="Ferris with a question mark" class=""> | Этот код не компилируется!
 <img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/panics.svg?raw=true" class=""> | Этот код вызывает панику!
 <img src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/ferris/not_desired_behavior.svg?raw=true" class=""> | Этот код не приводит к желаемому поведению.
 
@@ -82,4 +82,9 @@ Ferris | Пояснения
 
 ## Исходные коды
 
-Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub](https://github.com/rust-lang/book/tree/main/src).
+Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub].
+
+
+[The Rust Programming Language]: https://nostarch.com/rust
+[No Starch Press]: https://nostarch.com/
+[GitHub]: https://github.com/rust-lang/book/tree/main/src
