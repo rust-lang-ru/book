@@ -8,7 +8,7 @@
 
 Давайте начнём с реализации `Drop` у нашего пула потоков. Когда пул удаляется, все наши потоки должны объединиться (join), чтобы убедиться, что они завершают свою работу. В листинге 20-22 показана первая попытка реализации `Drop`, код пока не будет работать.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл : src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-22/src/lib.rs:here}}
