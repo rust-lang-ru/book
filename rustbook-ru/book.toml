@@ -1,6 +1,7 @@
 [book]
 title = "Язык программирования Rust"
 author = "Стив Клабник, Кэрол Николс и другие участники сообщества Rust"
+language = "ru-RU"
 
 [output.html]
 additional-css = ["ferris.css", "theme/2018-edition.css"]
