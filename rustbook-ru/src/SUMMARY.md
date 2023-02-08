@@ -132,8 +132,8 @@
 
     - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
     - [Трейты - дополнительно](ch19-03-advanced-traits.md)
-    - [Advanced Types](ch19-04-advanced-types.md)
-    - [Advanced Functions and Closures](ch19-05-advanced-functions-and-closures.md)
+    - [Типы — дополнительно](ch19-04-advanced-types.md)
+    - [Функции и замыкания — дополнительно](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
 
 - [Финальный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
