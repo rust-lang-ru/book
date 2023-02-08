@@ -48,42 +48,42 @@
 - `while` — цикл, работающий относительно результата условного выражения
 - `async` -  return a `Future` instead of blocking the current thread
 - `await` - suspend execution until the result of a `Future` is ready
-- `break` - exit a loop immediately
-- `const` - define constant items or constant raw pointers
-- `continue` - continue to the next loop iteration
-- `crate` - in a module path, refers to the crate root
+- <code>break</code> — немедленно завершить цикл
+- <code>const</code> — определить константу или неизменяемый указатель
+- <code>continue</code> — досрочно перейти к следующей итерации цикла
+- <code>crate</code> — в пути модуля ссылается на корень пакета
 - `dyn` - dynamic dispatch to a trait object
-- `else` - fallback for `if` and `if let` control flow constructs
-- `enum` - define an enumeration
-- `extern` - link an external function or variable
-- `false` - Boolean false literal
-- `fn` - define a function or the function pointer type
+- <code>else</code> — ветвь для конструкций потока управления <code>if</code> и <code>if let</code> в случае, если никакая другая ветвь не была исполнена
+- <code>enum</code> — определить перечисление
+- <code>extern</code> — подключить внешнюю функцию или переменную
+- <code>false</code> — логический литерал «ложь»
+- <code>fn</code> — определить функцию или тип указателя на функцию
 - `for` - loop over items from an iterator, implement a trait, or specify a higher-ranked lifetime
-- `if` - branch based on the result of a conditional expression
+- <code>if</code> — ветвление на основе результата условного выражения
 - `impl` - implement inherent or trait functionality
 - `in` - part of `for` loop syntax
-- `let` - bind a variable
-- `loop` - loop unconditionally
-- `match` - match a value to patterns
-- `mod` - define a module
-- `move` - make a closure take ownership of all its captures
-- `mut` - denote mutability in references, raw pointers, or pattern bindings
+- <code>let</code> — объявить переменную
+- <code>loop</code> — безусловный (бесконечный) цикл
+- <code>match</code> — сопоставить значение с образцами
+- <code>mod</code> — определить модуль
+- <code>move</code> — заставить замыкание принять на себя владение всеми своими захватами
+- <code>mut</code> — обозначить изменяемость для ссылок, сырых указателей или привязок к шаблонам
 - `pub` - denote public visibility in struct fields, `impl` blocks, or modules
-- `ref` - bind by reference
-- `return` - return from function
-- `Self` - a type alias for the type we are defining or implementing
+- <code>ref</code> — привязка по ссылке
+- <code>return</code> — возврат из функции
+- <code>Self</code> — псевдоним для типа, который мы определяем или реализуем
 - `self` - method subject or current module
-- `static` - global variable or lifetime lasting the entire program execution
-- `struct` - define a structure
-- `super` - parent module of the current module
+- <code>static</code> — глобальная переменная или время жизни на протяжении всего выполнения программы
+- <code>struct</code> — определить структуру
+- <code>super</code> — родительский модуль текущего модуля
 - `trait` - define a trait
 - `true` - Boolean true literal
-- `type` - define a type alias or associated type
+- <code>type</code> — определить псевдоним типа или ассоциированный тип
 - `union` - define a [union](../reference/items/unions.html)<!-- ignore -->; is only a keyword when used in a union declaration
 - `unsafe` - denote unsafe code, functions, traits, or implementations
 - `use` - bring symbols into scope
-- `where` - denote clauses that constrain a type
-- `while` - loop conditionally based on the result of an expression
+- <code>where</code> — обозначить утверждения, которые ограничивают тип
+- <code>while</code> — цикл, работающий относительно результата условного выражения
 
 ### Ключевые слова, зарезервированные для будущего использования
 
