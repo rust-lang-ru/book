@@ -52,17 +52,17 @@
 
     - [Хранение списков значений с векторами](ch08-01-vectors.md)
     - [Хранение закодированного текста UTF-8 со строками](ch08-02-strings.md)
-    - [Storing Keys with Associated Values in Hash Maps](ch08-03-hash-maps.md)
+    - [Хранение ключей со связанными значениями в HashMap](ch08-03-hash-maps.md)
 
 - [Обработка ошибок](ch09-00-error-handling.md)
 
     - [Неустранимые ошибки с `panic!`](ch09-01-unrecoverable-errors-with-panic.md)
     - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-result.md)
-    - [To `panic!` or Not to `panic!`](ch09-03-to-panic-or-not-to-panic.md)
+    - [<code>panic!</code>овать или не `panic!`овать](ch09-03-to-panic-or-not-to-panic.md)
 
 - [Общие типы, трейты (характеристики) и время жизни](ch10-00-generics.md)
 
-    - [Generic Data Types](ch10-01-syntax.md)
+    - [Обобщённые типы данных](ch10-01-syntax.md)
     - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
     - [Проверка ссылок с временем жизни](ch10-03-lifetime-syntax.md)
 
@@ -139,15 +139,15 @@
 - [Финальный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
 
     - [Создание однопоточного веб-сервера](ch20-01-single-threaded.md)
-    - [Turning Our Single-Threaded Server into a Multithreaded Server](ch20-02-multithreaded.md)
-    - [Graceful Shutdown and Cleanup](ch20-03-graceful-shutdown-and-cleanup.md)
+    - [Превращение нашего однопоточного сервера в многопоточный сервер](ch20-02-multithreaded.md)
+    - [	Мягкое завершение работы и очистка](ch20-03-graceful-shutdown-and-cleanup.md)
 
-- [Appendix](appendix-00.md)
+- [Приложения](appendix-00.md)
 
-    - [A - Keywords](appendix-01-keywords.md)
-    - [B - Operators and Symbols](appendix-02-operators.md)
-    - [C - Derivable Traits](appendix-03-derivable-traits.md)
-    - [D - Useful Development Tools](appendix-04-useful-development-tools.md)
-    - [E - Editions](appendix-05-editions.md)
-    - [F - Translations of the Book](appendix-06-translation.md)
+    - [А — Ключевые слова](appendix-01-keywords.md)
+    - [B — Операторы и символы](appendix-02-operators.md)
+    - [C — Выводимые трейты](appendix-03-derivable-traits.md)
+    - [D — Полезные инструменты разработки](appendix-04-useful-development-tools.md)
+    - [E — Редакции](appendix-05-editions.md)
+    - [F — Переводы книги](appendix-06-translation.md)
     - [G — Как создается Rust и «Nightly Rust»](appendix-07-nightly-rust.md)
