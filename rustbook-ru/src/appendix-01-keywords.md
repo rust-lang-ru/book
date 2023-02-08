@@ -1,11 +1,12 @@
 ## Приложение A: Ключевые слова
 
-Следующий список содержит ключевые слова, зарезервированные для текущего или будущего использования в языке Rust. Как таковые их нельзя использовать в качестве идентификаторов (за исключением сырых идентификаторов, которые мы обсудим в разделе [«Сырые идентификаторы»]<!-- ignore -->). Идентификаторы — это имена функций, переменных, параметров, полей структур, модулей, крейтов, констант, макросов, статических значений, атрибутов, типов, свойств или времён жизни.
+Следующий список содержит ключевые слова, зарезервированные для текущего или будущего использования в языке Rust. Как таковые их нельзя использовать в качестве идентификаторов (за исключением сырых идентификаторов, которые мы обсудим в разделе [«Сырые идентификаторы»](#raw-identifiers)<!-- ignore -->). Идентификаторы — это имена функций, переменных, параметров, полей структур, модулей, крейтов, констант, макросов, статических значений, атрибутов, типов, свойств или времён жизни.
 
-### Ключевые слова, использующиеся в Rust в настоящее время
+### Используемые в настоящее время ключевые слова
 
 Ниже приведён список используемых в настоящее время ключевых слов с описанием их функций.
 
+-
 - `as` — выполнить примитивное преобразование, уточнить конкретную характеристику, которую содержит объект, или переименовать элемент в выражении <code>use</code>
 - `async` —  вернуть `Future` вместо блокирования текущего потока
 - `await` — немедленно завершить цикл приостановить выполнение до тех пор, пока не будет готов результат `Future`
@@ -40,11 +41,49 @@
 - `trait` — определить типаж
 - `true` — логический литерал «истина»
 - `type` — определить псевдоним типа или ассоциированный тип
-- `union` — определение [union]<!-- ignore --> (объединения); является ключевым словом только при использовании в объявлении объединения
+- `union` — определение [union](../reference/items/unions.html)<!-- ignore --> (объединения); является ключевым словом только при использовании в объявлении объединения
 - `unsafe` — обозначить небезопасный код, функции, типажа или реализации
 - `use` — ввести объекты в область видимости
 - `where` — обозначить утверждения, которые ограничивают тип
 - `while` — цикл, работающий относительно результата условного выражения
+- `async` -  return a `Future` instead of blocking the current thread
+- `await` - suspend execution until the result of a `Future` is ready
+- `break` - exit a loop immediately
+- `const` - define constant items or constant raw pointers
+- `continue` - continue to the next loop iteration
+- `crate` - in a module path, refers to the crate root
+- `dyn` - dynamic dispatch to a trait object
+- `else` - fallback for `if` and `if let` control flow constructs
+- `enum` - define an enumeration
+- `extern` - link an external function or variable
+- `false` - Boolean false literal
+- `fn` - define a function or the function pointer type
+- `for` - loop over items from an iterator, implement a trait, or specify a higher-ranked lifetime
+- `if` - branch based on the result of a conditional expression
+- `impl` - implement inherent or trait functionality
+- `in` - part of `for` loop syntax
+- `let` - bind a variable
+- `loop` - loop unconditionally
+- `match` - match a value to patterns
+- `mod` - define a module
+- `move` - make a closure take ownership of all its captures
+- `mut` - denote mutability in references, raw pointers, or pattern bindings
+- `pub` - denote public visibility in struct fields, `impl` blocks, or modules
+- `ref` - bind by reference
+- `return` - return from function
+- `Self` - a type alias for the type we are defining or implementing
+- `self` - method subject or current module
+- `static` - global variable or lifetime lasting the entire program execution
+- `struct` - define a structure
+- `super` - parent module of the current module
+- `trait` - define a trait
+- `true` - Boolean true literal
+- `type` - define a type alias or associated type
+- `union` - define a [union](../reference/items/unions.html)<!-- ignore -->; is only a keyword when used in a union declaration
+- `unsafe` - denote unsafe code, functions, traits, or implementations
+- `use` - bring symbols into scope
+- `where` - denote clauses that constrain a type
+- `while` - loop conditionally based on the result of an expression
 
 ### Ключевые слова, зарезервированные для будущего использования
 
@@ -104,9 +143,4 @@ fn main() {
 
 Этот код скомпилируется без ошибок. Обратите внимание, что префикс `r#` в определении имени функции указан так же, как он указан в месте её вызова в `main`.
 
-Сырые идентификаторы позволяют вам использовать любое слово, которое вы выберете, в качестве идентификатора, даже если это слово окажется зарезервированным ключевым словом. Это даёт нам больше свободы в выборе имён идентификаторов, а также позволяет нам интегрироваться с программами, написанными на языке, где эти слова не являются ключевыми. Кроме того, необработанные идентификаторы позволяют вам использовать библиотеки, написанные в версии Rust, отличной от используемой в вашем крейте. Например, `try` не является ключевым словом в выпуске 2015 года, но есть в выпуске 2018 года. Если вы зависите от библиотеки, написанной с использованием версии 2015 года и имеющей функцию `try`, вам потребуется использовать синтаксис сырого идентификатора, в данном случае `r#try`, для вызова этой функции из кода версии 2018 года. См. [Приложение E]<!-- ignore --> для получения дополнительной информации о редакциях Rust.
-
-
-[«Сырые идентификаторы»]: #raw-identifiers
-[union]: ../reference/items/unions.html
-[Приложение E]: appendix-05-editions.html
+Сырые идентификаторы позволяют вам использовать любое слово, которое вы выберете, в качестве идентификатора, даже если это слово окажется зарезервированным ключевым словом. Это даёт нам больше свободы в выборе имён идентификаторов, а также позволяет нам интегрироваться с программами, написанными на языке, где эти слова не являются ключевыми. Кроме того, необработанные идентификаторы позволяют вам использовать библиотеки, написанные в версии Rust, отличной от используемой в вашем крейте. Например, `try` не является ключевым словом в выпуске 2015 года, но есть в выпуске 2018 года. Если вы зависите от библиотеки, написанной с использованием версии 2015 года и имеющей функцию `try`, вам потребуется использовать синтаксис сырого идентификатора, в данном случае `r#try`, для вызова этой функции из кода версии 2018 года. См. [Приложение E](appendix-05-editions.html)<!-- ignore --> для получения дополнительной информации о редакциях Rust.
