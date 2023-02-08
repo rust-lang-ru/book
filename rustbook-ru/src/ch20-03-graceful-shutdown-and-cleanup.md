@@ -8,7 +8,7 @@
 
 Давайте начнём с реализации `Drop` у нашего пула потоков. Когда пул удаляется, все наши потоки должны объединиться (join), чтобы убедиться, что они завершают свою работу. В листинге 20-22 показана первая попытка реализации `Drop`, код пока не будет работать.
 
-<span class="filename">Файл : src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-22/src/lib.rs:here}}
@@ -155,7 +155,7 @@ Shutting down worker 3
 - Добавьте тесты для функционала, реализуемого библиотекой.
 - Замените вызовы `unwrap` на более устойчивую обработку ошибок.
 - Используйте `ThreadPool` для выполнения некоторых других задач, помимо обслуживания веб-запросов.
-- Найдите крейт для пула потоков на [crates.io](https://crates.io/) и реализуйте аналогичный веб-сервер, используя такой крейт. Затем сравните его API и надёжность с пулом потоков, который мы реализовали.
+- Find a thread pool crate on [crates.io](https://crates.io/) and implement a similar web server using the crate instead. Then compare its API and robustness to the thread pool we implemented.
 
 ## Итоги
 
