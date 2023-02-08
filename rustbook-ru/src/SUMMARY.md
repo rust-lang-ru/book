@@ -58,7 +58,7 @@
 
     - [Неустранимые ошибки с `panic!`](ch09-01-unrecoverable-errors-with-panic.md)
     - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-result.md)
-    - [<code>panic!</code>овать или не `panic!`овать](ch09-03-to-panic-or-not-to-panic.md)
+    - [<code>panic!</code> или не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
 
 - [Общие типы, трейты (характеристики) и время жизни](ch10-00-generics.md)
 
@@ -76,7 +76,7 @@
 
     - [Получение аргументов командной строки](ch12-01-accepting-command-line-arguments.md)
     - [Чтение файла](ch12-02-reading-a-file.md)
-    - [Рефакторинг для обсепечения модульности и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
+    - [Рефакторинг для обеспечения модульности и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
     - [Разработка функциональности библиотеки с помощью разработки через тестирование](ch12-04-testing-the-librarys-functionality.md)
     - [Работа с переменными среды](ch12-05-working-with-environment-variables.md)
     - [Запись сообщений об ошибках в stderr вместо stdout](ch12-06-writing-to-stderr-instead-of-stdout.md)
@@ -85,7 +85,7 @@
 
 - [Функциональные возможности языка: итераторы и замыкания](ch13-00-functional-features.md)
 
-    - [Замыкания: анонимные функции, которые захватывают свое окружение](ch13-01-closures.md)
+    - [Замыкания: анонимные функции, которые захватывают своё окружение](ch13-01-closures.md)
     - [Обработка последовательности элементов с помощью итераторов](ch13-02-iterators.md)
     - [Улучшение нашего проекта с вводом/выводом](ch13-03-improving-our-io-project.md)
     - [Сравнение производительности: циклы и итераторы](ch13-04-performance.md)
@@ -150,4 +150,4 @@
     - [D — Полезные инструменты разработки](appendix-04-useful-development-tools.md)
     - [E — Редакции](appendix-05-editions.md)
     - [F — Переводы книги](appendix-06-translation.md)
-    - [G — Как создается Rust и «Nightly Rust»](appendix-07-nightly-rust.md)
+    - [G — Как создаётся Rust и «Nightly Rust»](appendix-07-nightly-rust.md)
