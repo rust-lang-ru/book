@@ -1,6 +1,6 @@
 # Введение
 
-> Note: This edition of the book is the same as [The Rust Programming Language](https://nostarch.com/rust-programming-language-2nd-edition) available in print and ebook format from [No Starch Press](https://nostarch.com/).
+> Примечание. Это издание книги такое же, как и [Язык программирования Rust], доступное в печатном и электронном формате от [No Starch Press].
 
 Добро пожаловать в *The Rust Programming Language*, вводную книгу о Rust. Язык программирования Rust помогает создавать быстрые, более надёжные приложения. Хорошая эргономика и низкоуровневый контроль часто являются противоречивыми требованиями для дизайна языков программирования; Rust бросает вызов этому конфликту. Благодаря сбалансированности мощных технических возможностей c большим удобством разработки, Rust предоставляет возможности управления низкоуровневыми элементами (например, использование памяти) без трудностей, традиционно связанных с таким контролем.
 
@@ -82,4 +82,9 @@ Ferris | Пояснения
 
 ## Исходные коды
 
-Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub](https://github.com/rust-lang/book/tree/main/src).
+Файлы с исходным кодом, используемым в этой книге, можно найти на [GitHub].
+
+
+[Язык программирования Rust]: https://nostarch.com/rust-programming-language-2nd-edition
+[No Starch Press]: https://nostarch.com/
+[GitHub]: https://github.com/rust-lang/book/tree/main/src
