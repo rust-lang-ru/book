@@ -155,7 +155,7 @@ Shutting down worker 3
 - Добавьте тесты для функционала, реализуемого библиотекой.
 - Замените вызовы `unwrap` на более устойчивую обработку ошибок.
 - Используйте `ThreadPool` для выполнения некоторых других задач, помимо обслуживания веб-запросов.
-- Find a thread pool crate on [crates.io](https://crates.io/) and implement a similar web server using the crate instead. Then compare its API and robustness to the thread pool we implemented.
+- Найдите крейт для пула потоков на[crates.io](https://crates.io/) и реализуйте аналогичный веб-сервер, используя такой крейт. Затем сравните его API и надёжность с пулом потоков, который мы реализовали.
 
 ## Итоги
 
