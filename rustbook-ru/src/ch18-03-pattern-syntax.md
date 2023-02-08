@@ -62,7 +62,7 @@
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-04-ranges-of-char/src/main.rs:here}}
 ```
 
-Rust может сообщить, что `'c'` находится в диапазоне первого шаблона и напечатать `начальную букву ASCII `.
+Rust может сообщить, что `'c'` находится в диапазоне первого шаблона и напечатать `early ASCII letter`.
 
 ### Деструктуризация для получения значений
 
