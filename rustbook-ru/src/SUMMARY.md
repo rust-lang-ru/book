@@ -8,7 +8,7 @@
 
     - [Установка](ch01-01-installation.md)
     - [Привет, мир!](ch01-02-hello-world.md)
-    - [Привет, Cargo!](ch01-03-hello-cargo.md)
+    - [Hello, Cargo!](ch01-03-hello-cargo.md)
 
 - [Программирование игры в загадки](ch02-00-guessing-game-tutorial.md)
 
@@ -52,17 +52,17 @@
 
     - [Хранение списков значений с векторами](ch08-01-vectors.md)
     - [Хранение закодированного текста UTF-8 со строками](ch08-02-strings.md)
-    - [Хранение ключей со связанными значениями в хэш-картах](ch08-03-hash-maps.md)
+    - [Хранение ключей со связанными значениями в HashMap](ch08-03-hash-maps.md)
 
 - [Обработка ошибок](ch09-00-error-handling.md)
 
     - [Неустранимые ошибки с `panic!`](ch09-01-unrecoverable-errors-with-panic.md)
     - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-result.md)
-    - [`panic!` или Не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
+    - [<code>panic!</code> или не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
 
 - [Общие типы, трейты (характеристики) и время жизни](ch10-00-generics.md)
 
-    - [Универсальные типы данных](ch10-01-syntax.md)
+    - [Обобщённые типы данных](ch10-01-syntax.md)
     - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
     - [Проверка ссылок с временем жизни](ch10-03-lifetime-syntax.md)
 
@@ -71,7 +71,7 @@
     - [Как писать тесты](ch11-01-writing-tests.md)
     - [Управление выполнением тестов](ch11-02-running-tests.md)
     - [Организация испытаний](ch11-03-test-organization.md)
-    
+
 - [Проект с вводом-выводом: создание программы командной строки](ch12-00-an-io-project.md)
 
     - [Получение аргументов командной строки](ch12-01-accepting-command-line-arguments.md)
@@ -131,18 +131,18 @@
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
     - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
-    - [Трейты для продвинутых](ch19-03-advanced-traits.md)
-    - [Типы для продвинутых](ch19-04-advanced-types.md)
-    - [Функции и замыкания для продвинутых](ch19-05-advanced-functions-and-closures.md)
+    - [Трейты - дополнительно](ch19-03-advanced-traits.md)
+    - [Типы — дополнительно](ch19-04-advanced-types.md)
+    - [Функции и замыкания — дополнительно](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
 
 - [Финальный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
 
     - [Создание однопоточного веб-сервера](ch20-01-single-threaded.md)
     - [Превращение нашего однопоточного сервера в многопоточный сервер](ch20-02-multithreaded.md)
-    - [Планомерное завершение работы и очистка](ch20-03-graceful-shutdown-and-cleanup.md)
+    - [	Мягкое завершение работы и очистка](ch20-03-graceful-shutdown-and-cleanup.md)
 
-- [Приложение](appendix-00.md)
+- [Приложения](appendix-00.md)
 
     - [А — Ключевые слова](appendix-01-keywords.md)
     - [B — Операторы и символы](appendix-02-operators.md)
