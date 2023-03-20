@@ -38,7 +38,7 @@
 - `struct` — определить структуру
 - `super` — родительский модуль текущего модуля
 - `trait` — определить типаж
-- `true` - Boolean true literal
+- `true` — логический литерал «истина»
 - `type` — определить псевдоним типа или ассоциированный тип
 - `union` - define a [union](../reference/items/unions.html)<!-- ignore -->; is only a keyword when used in a union declaration
 - `unsafe` — обозначить небезопасный код, функции, типажи или реализации
