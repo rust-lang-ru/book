@@ -58,7 +58,7 @@
 
     - [Неустранимые ошибки с `panic!`](ch09-01-unrecoverable-errors-with-panic.md)
     - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-result.md)
-    - [<code>panic!</code> или не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
+    - [`panic!` или не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
 
 - [Общие типы, трейты (характеристики) и время жизни](ch10-00-generics.md)
 
@@ -131,9 +131,9 @@
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
     - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
-    - [Трейты - дополнительно](ch19-03-advanced-traits.md)
-    - [Типы — дополнительно](ch19-04-advanced-types.md)
-    - [Функции и замыкания — дополнительно](ch19-05-advanced-functions-and-closures.md)
+    - [Продвинутые типажи](ch19-03-advanced-traits.md)
+    - [Продвинутые типы](ch19-04-advanced-types.md)
+    - [Продвинутые функции и замыкания](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
 
 - [Финальный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
