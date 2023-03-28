@@ -7,7 +7,7 @@
 - [С чего начать](ch01-00-getting-started.md)
 
     - [Установка](ch01-01-installation.md)
-    - [Hello, World!](ch01-02-hello-world.md)
+    - [Привет, мир!](ch01-02-hello-world.md)
     - [Hello, Cargo!](ch01-03-hello-cargo.md)
 
 - [Программирование игры в загадки](ch02-00-guessing-game-tutorial.md)
@@ -58,13 +58,13 @@
 
     - [Неустранимые ошибки с `panic!`](ch09-01-unrecoverable-errors-with-panic.md)
     - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-result.md)
-    - [To `panic!` or Not to `panic!`](ch09-03-to-panic-or-not-to-panic.md)
+    - [`panic!` или не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
 
 - [Общие типы, трейты (характеристики) и время жизни](ch10-00-generics.md)
 
     - [Generic Data Types](ch10-01-syntax.md)
     - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
-    - [Validating References with Lifetimes](ch10-03-lifetime-syntax.md)
+    - [Проверка ссылок с временем жизни](ch10-03-lifetime-syntax.md)
 
 - [Написание автоматических тестов](ch11-00-testing.md)
 
@@ -131,9 +131,9 @@
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
     - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
-    - [Трейты - дополнительно](ch19-03-advanced-traits.md)
-    - [Типы — дополнительно](ch19-04-advanced-types.md)
-    - [Функции и замыкания — дополнительно](ch19-05-advanced-functions-and-closures.md)
+    - [Продвинутые типажи](ch19-03-advanced-traits.md)
+    - [Продвинутые типы](ch19-04-advanced-types.md)
+    - [Продвинутые функции и замыкания](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
 
 - [Финальный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
