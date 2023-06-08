@@ -32,7 +32,7 @@
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-25-comments-above-line/src/main.rs}}
 ```
 
-В Rust есть еще один вид комментариев - документационные комментарии, которые мы обсудим в разделе ["Публикация пакета на Crates.io"] главы 14.
+В Rust есть ещё один вид комментариев - документационные комментарии, которые мы обсудим в разделе ["Публикация пакета на Crates.io"] главы 14.
 
 
 ["Публикация пакета на Crates.io"]: ch14-02-publishing-to-crates-io.html
