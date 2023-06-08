@@ -156,7 +156,7 @@ io::stdin().read_line(&mut guess).expect("Failed to read line");
 
 В [Главе 6](ch06-00-enums.html) рассмотрим перечисления более подробно. Задачей типов `Result` является кодирование информации для обработки ошибок.
 
-`Result`’s variants are `Ok` and `Err`. The `Ok` variant indicates the operation was successful, and inside `Ok` is the successfully generated value. The `Err` variant means the operation failed, and `Err` contains information about how or why the operation failed.
+Вариантами `Result` являются `Ok` и `Err`. Вариант `Ok` указывает, что операция завершилась успешно, а внутри `Ok` находится успешно сгенерированное значение. Вариант `Err` означает, что операция не удалась, а `Err` содержит информацию о причинах неудачи.
 
 Значения типа `Result`, как и значения любого типа, имеют определённые для них методы. У экземпляра `Result` есть [метод `expect`](../std/result/enum.Result.html#method.expect)<!-- ignore -->, который можно вызвать. Если этот экземпляр `Result` является значением `Err`, `expect` вызовет сбой программы и отобразит сообщение, которое вы передали в качестве аргумента. Если метод `read_line` возвращает `Err`, то это, скорее всего, результат ошибки базовой операционной системы. Если экземпляр `Result` является значением `Ok`, `expect` возьмёт возвращаемое значение, которое удерживает `Ok`, и вернёт вам только это значение, чтобы вы могли его использовать далее. В данном случае это значение представляет собой количество байтов, введённых пользователем.
 
@@ -321,7 +321,7 @@ Cargo игнорирует релиз 0.9.0. В этот момент также
 rand = "0.9.0"
 ```
 
-The next time you run `cargo build`, Cargo will update the registry of crates available and reevaluate your `rand` requirements according to the new version you have specified.
+В следующий раз, при запуске `cargo build`, Cargo обновит реестр доступных пакетов и пересмотрит ваши требования к `rand` в соответствии с новой версией, которую вы указали.
 
 Можно много рассказать про [Cargo](http://doc.crates.io)<!-- ignore --> и [его экосистему](http://doc.crates.io/crates-io.html)<!-- ignore --> которые мы обсудим в главе 14, сейчас это все что вам нужно знать. Cargo позволяет очень легко повторно использовать библиотеки, поэтому Rust разработчики имеют возможность писать меньшие проекты, которые скомпонованы из многих пакетов.
 
@@ -376,7 +376,7 @@ Please input your guess.
 You guessed: 5
 ```
 
-You should get different random numbers, and they should all be numbers between 1 and 100. Great job!
+Вы должны получить разные случайные числа, и все они должны быть числами в диапазоне от 1 до 100. Отличная работа!
 
 ## Сравнение догадки с секретным числом
 
@@ -388,7 +388,7 @@ You should get different random numbers, and they should all be numbers between 
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-04/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 2-4: Handling the possible return values of comparing two numbers</span>
+<span class="caption">Листинг 2-4: Обработка возможных возвращаемых значений при сравнении двух чисел</span>
 
 Сначала добавим ещё один оператор `use`, который вводит тип с именем `std::cmp::Ordering` в область видимости из стандартной библиотеки. Тип `Ordering` является ещё одним перечислением и имеет варианты `Less`, `Greater` и `Equal`. Это три возможных исхода при сравнении двух величин.
 
@@ -460,7 +460,7 @@ Too big!
 
 Хорошо! Несмотря на то, что были добавлены пробелы в строке ввода, программа всё равно поняла, что пользователь имел в виду число 76. Запустите программу несколько раз, чтобы проверить разное поведение при различных типах ввода: задайте число правильно, задайте слишком большое число и задайте слишком маленькое число.
 
-We have most of the game working now, but the user can make only one guess. Let’s change that by adding a loop!
+Сейчас у нас работает большая часть игры, но пользователь может сделать только одну догадку. Давайте изменим это, добавив цикл!
 
 ## Возможность нескольких догадок с помощью циклов
 
@@ -534,7 +534,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 {{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-05/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 2-5: Ignoring a non-number guess and asking for another guess instead of crashing the program</span>
+<span class="caption">Листинг 2-5. Игнорирование нечисловой догадки и запрос другой догадки вместо завершения программы</span>
 
 Мы переключаем вызов `expect` на выражение `match`, чтобы перейти от аварийного завершения при ошибке к обработке ошибки. Помните, что `parse` возвращает тип `Result`, а `Result` — это перечисление, которое имеет варианты `Ok` и `Err`. Здесь мы используем выражение `match`, как и в случае с результатом `Ordering` метода `cmp`.
 
