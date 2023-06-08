@@ -85,7 +85,7 @@ const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
 {{#include ../listings/ch03-common-programming-concepts/no-listing-03-shadowing/output.txt}}
 ```
 
-Shadowing is different from marking a variable as `mut` because we’ll get a compile-time error if we accidentally try to reassign to this variable without using the `let` keyword. By using `let`, we can perform a few transformations on a value but have the variable be immutable after those transformations have been completed.
+Затенение отличается от объявления переменной с помощью `mut`, так как мы получим ошибку компиляции, если случайно попробуем переназначить значение без использования ключевого слова `let`. Используя `let`, можно выполнить несколько превращений над значением, при этом оставляя переменную неизменяемой, после того как все эти превращения завершены.
 
 Другой разницей между `mut` и затенением является то, что мы создаём совершенно новую переменную, когда снова используем слово `let` (ещё одну). Мы можем даже изменить тип значения, но снова использовать прежнее имя. К примеру, наша программа спрашивает пользователя, сколько пробелов он хочет разместить между некоторым текстом, запрашивая символы пробела, но мы на самом деле хотим сохранить данный ввод как число:
 
