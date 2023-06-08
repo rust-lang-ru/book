@@ -238,7 +238,7 @@ You guessed: 6
 
 Cargo рассчитывает, что эти версии имеют общедоступное API, совместимое с версией <code>0.8.5</code>, и вы получите последние версии исправлений, которые по-прежнему будут компилироваться с кодом из этой главы. Не гарантируется, что версия <code>0.9.0</code> или выше будет иметь тот же API, что и в следующих примерах.
 
-Now, without changing any of the code, let’s build the project, as shown in Listing 2-2.
+Теперь, не меняя ничего в коде, давайте соберём проект, как показано в листинге 2-2.
 
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/listing-02-02/
@@ -275,7 +275,7 @@ $ cargo build
 
 После обновления реестра Cargo проверяет раздел `[dependencies]` и загружает все указанные в списке пакеты, которые ещё не были загружены. В нашем случае, хотя мы указали только `rand` в качестве зависимости, Cargo также захватил другие пакеты, от которых зависит работа `rand`. После загрузки пакетов Rust компилирует их, а затем компилирует проект с имеющимися зависимостями.
 
-If you immediately run `cargo build` again without making any changes, you won’t get any output aside from the `Finished` line. Cargo knows it has already downloaded and compiled the dependencies, and you haven’t changed anything about them in your *Cargo.toml* file. Cargo also knows that you haven’t changed anything about your code, so it doesn’t recompile that either. With nothing to do, it simply exits.
+Если сразу же запустить `cargo build` снова, не внося никаких изменений, то кроме строки `Finished` вы не получите никакого вывода. Cargo знает, что он уже загрузил и скомпилировал зависимости, и вы не вносили никаких изменений в файл *Cargo.toml*. Cargo также знает, что вы ничего не изменили в своём коде, поэтому он не перекомпилирует и его. Если делать нечего, он просто завершает работу.
 
 Если вы откроете файл *src/main.rs*, внесете тривиальное изменение, а затем сохраните его и снова соберете, вы увидите только две строки вывода:
 
