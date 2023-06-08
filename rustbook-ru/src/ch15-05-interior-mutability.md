@@ -51,7 +51,7 @@
 
 #### Вариант использования внутренней изменяемости: мок объекты
 
-Sometimes during testing a programmer will use a type in place of another type, in order to observe particular behavior and assert it’s implemented correctly. This placeholder type is called a *test double*. Think of it in the sense of a “stunt double” in filmmaking, where a person steps in and substitutes for an actor to do a particular tricky scene. Test doubles stand in for other types when we’re running tests. *Mock objects* are specific types of test doubles that record what happens during a test so you can assert that the correct actions took place.
+Иногда во время тестирования программист использует один тип вместо другого для того, чтобы проверить определённое поведение и убедиться, что оно реализовано правильно. Такой тип-заместитель называется *тестовым дублёром*. Воспринимайте его как «каскадёра» в кинематографе, когда дублёр заменяет актёра для выполнения определённой сложной сцены. Тестовые дублёры заменяют другие типы при выполнении тестов. *Инсценировочные (mock) объекты* — это особый тип тестовых дублёров, которые сохраняют данные происходящих во время теста действий тем самым позволяя вам убедиться впоследствии, что все действия были выполнены правильно.
 
 В Rust нет объектов в том же смысле, в каком они есть в других языках и в Rust нет функциональности мок объектов, встроенных в стандартную библиотеку, как в некоторых других языках. Однако вы определённо можете создать структуру, которая будет служить тем же целям, что и мок объект.
 
@@ -133,7 +133,7 @@ Sometimes during testing a programmer will use a type in place of another type, 
 
 Обратите внимание, что код вызвал панику с сообщением `already borrowed: BorrowMutError`. Вот так тип `RefCell<T>` обрабатывает нарушения правил заимствования во время выполнения.
 
-Choosing to catch borrowing errors at runtime rather than compile time, as we’ve done here, means you’d potentially be finding mistakes in your code later in the development process: possibly not until your code was deployed to production. Also, your code would incur a small runtime performance penalty as a result of keeping track of the borrows at runtime rather than compile time. However, using `RefCell<T>` makes it possible to write a mock object that can modify itself to keep track of the messages it has seen while you’re using it in a context where only immutable values are allowed. You can use `RefCell<T>` despite its trade-offs to get more functionality than regular references provide.
+Решение отлавливать ошибки заимствования во время выполнения, а не во время компиляции, как мы сделали здесь, означает, что вы потенциально будете находить ошибки в своём коде на более поздних этапах разработки: возможно, не раньше, чем ваш код будет развернут в рабочем окружении. Кроме того, ваш код будет иметь небольшие потери производительности в процессе работы, поскольку заимствования будут отслеживаться во время выполнения, а не во время компиляции. Однако использование `RefCell<T>` позволяет написать объект-имитатор, который способен изменять себя, чтобы сохранять сведения о тех значениях, которые он получал, пока вы использовали его в контексте, где разрешены только неизменяемые значения. Вы можете использовать `RefCell<T>`, несмотря на его недостатки, чтобы получить больше функциональности, чем дают обычные ссылки.
 
 ### Наличие нескольких владельцев изменяемых данных путём объединения типов `Rc<T>` и `RefCell<T>`
 
@@ -153,7 +153,7 @@ Choosing to catch borrowing errors at runtime rather than compile time, as we’
 
 Мы оборачиваем список у переменной `a` в тип `Rc<T>`, поэтому при создании списков в переменные `b` и `c` они оба могут ссылаться на `a`, что мы и сделали в листинге 15-18.
 
-После создания списков `a`, `b` и `c` мы хотим добавить 10 к значению в `value`. Для этого вызовем `borrow_mut` у `value`, который использует функцию автоматического разыменования, о которой мы говорили в главе 5 (см. раздел ["Где находится оператор `->`?"](ch05-03-method-syntax.html#wheres-the---operator)<!-- ignore -->) во внутреннее значение `RefCell<T>`. Метод `borrow_mut` возвращает умный указатель `RefMut<T>`, и мы используя оператор разыменования, изменяем внутреннее значение.
+После создания списков `a`, `b` и `c` мы хотим добавить 10 к значению в `value`. Для этого вызовем `borrow_mut` у `value`, который использует функцию автоматического разыменования, о которой мы говорили в главе 5 (см. раздел ["Где находится оператор `->`?"]<!-- ignore -->) во внутреннее значение `RefCell<T>`. Метод `borrow_mut` возвращает умный указатель `RefMut<T>`, и мы используя оператор разыменования, изменяем внутреннее значение.
 
 Когда мы печатаем `a`, `b` и `c` то видим, что все они имеют изменённое значение равное 15, а не 5:
 
@@ -162,3 +162,6 @@ Choosing to catch borrowing errors at runtime rather than compile time, as we’
 ```
 
 Эта техника довольно изящна! Используя `RefCell<T>`, мы получаем внешне неизменяемое значение `List`. Но мы можем использовать методы `RefCell<T>`, которые предоставляют доступ к его внутренностям, чтобы мы могли изменять наши данные, когда это необходимо. Проверка правил заимствования во время выполнения защищает нас от гонок данных, и иногда стоит немного пожертвовать производительностью ради такой гибкости наших структур данных. Обратите внимание, что `RefCell<T>` не работает для многопоточного кода! `Mutex<T>` - это thread-safe версия `RefCell<T>`, а `Mutex<T>` мы обсудим в главе 16.
+
+
+["Где находится оператор `->`?"]: ch05-03-method-syntax.html#wheres-the---operator
