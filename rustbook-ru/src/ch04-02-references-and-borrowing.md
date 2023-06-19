@@ -26,7 +26,7 @@
 
 `&s1` позволяет нам создать ссылку, которая *ссылается* на значение `s1`, но не владеет им. Поскольку она не владеет им, значение, на которое она указывает, не будет удалено, когда ссылка перестанет использоваться.
 
-Likewise, the signature of the function uses `&` to indicate that the type of the parameter `s` is a reference. Let’s add some explanatory annotations:
+Сигнатура функции использует `&` для индикации того, что тип параметра `s` является ссылкой. Добавим объясняющие комментарии:
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-08-reference-with-annotations/src/main.rs:here}}
@@ -173,3 +173,5 @@ for it to be borrowed from
 - Все ссылки должны быть действительными.
 
 В следующей главе мы рассмотрим другой тип ссылок — срезы.
+
+
