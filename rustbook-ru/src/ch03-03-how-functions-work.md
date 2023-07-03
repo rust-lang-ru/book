@@ -20,7 +20,7 @@
 {{#include ../listings/ch03-common-programming-concepts/no-listing-16-functions/output.txt}}
 ```
 
-The lines execute in the order in which they appear in the `main` function. First the “Hello, world!” message prints, and then `another_function` is called and its message is printed.
+Строки выполняются в том порядке, в котором они расположены в функции `main`. Сначала печатается сообщение "Hello, world!", а затем вызывается `another_function`, которая также печатает сообщение.
 
 ### Параметры функции
 
@@ -66,7 +66,7 @@ The lines execute in the order in which they appear in the `main` function. Firs
 
 Тела функций состоят из ряда операторов, необязательно заканчивающихся выражением. До сих пор функции, которые мы рассматривали, не включали завершающее выражение, но вы видели выражение как часть оператора. Поскольку Rust является языком, основанным на выражениях, это важное различие необходимо понимать. В других языках таких различий нет, поэтому давайте рассмотрим, что такое операторы и выражения, и как их различия влияют на тела функций.
 
-- **Statements** are instructions that perform some action and do not return a value.
+- **Операторы** — это инструкции, которые выполняют какое-либо действие и не возвращают значения.
 - **Выражения** вычисляются до результирующего значения. Давайте рассмотрим несколько примеров.
 
 На самом деле мы уже использовали операторы и выражения. Создание переменной и присвоение ей значения с помощью ключевого слова `let` является оператором. В Листинге 3-1, `let y = 6;` - это оператор.
@@ -148,7 +148,7 @@ let x = 5;
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-22-function-parameter-and-return/src/main.rs}}
 ```
 
-Running this code will print `The value of x is: 6`. But if we place a semicolon at the end of the line containing `x + 1`, changing it from an expression to a statement, we’ll get an error:
+Запуск кода напечатает `The value of x is: 6`. Но если поставить точку с запятой в конце строки, содержащей `x + 1`, превратив её из выражения в оператор, мы получим ошибку:
 
 <span class="filename">Имя файла: src/main.rs</span>
 
@@ -162,4 +162,4 @@ Running this code will print `The value of x is: 6`. But if we place a semicolon
 {{#include ../listings/ch03-common-programming-concepts/no-listing-23-statements-dont-return-values/output.txt}}
 ```
 
-The main error message, `mismatched types`, reveals the core issue with this code. The definition of the function `plus_one` says that it will return an `i32`, but statements don’t evaluate to a value, which is expressed by `()`, the unit type. Therefore, nothing is returned, which contradicts the function definition and results in an error. In this output, Rust provides a message to possibly help rectify this issue: it suggests removing the semicolon, which would fix the error.
+Основное сообщение об ошибке, `несовпадение типов`, раскрывает ключевую проблему этого кода. Определение функции `plus_one` сообщает, что будет возвращено `i32`, но операторы не вычисляют значение, что и выражается единичным типом `()`. Следовательно, ничего не возвращается, что противоречит определению функции и приводит к ошибке. В этом выводе Rust выдаёт сообщение, которое, возможно, поможет исправить эту проблему: он предлагает удалить точку с запятой для устранения ошибки.
