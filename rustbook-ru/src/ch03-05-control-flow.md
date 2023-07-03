@@ -1,6 +1,6 @@
 ## Управляющие конструкции
 
-The ability to run some code depending on whether a condition is `true` and to run some code repeatedly while a condition is `true` are basic building blocks in most programming languages. The most common constructs that let you control the flow of execution of Rust code are `if` expressions and loops.
+Возможности запуска некоторого кода в зависимости от того, выполняется ли некоторое условие как `true`, <br>и выполнять некоторый код повторно, пока условие равно `true`, являются базовыми элементами в большинстве языков программирования. Наиболее распространенными конструкциями, позволяющими управлять потоком выполнения кода Rust, являются выражения `if` и циклы.
 
 ### Выражения `if`
 
@@ -76,7 +76,7 @@ The ability to run some code depending on whether a condition is `true` and to r
 {{#include ../listings/ch03-common-programming-concepts/no-listing-30-else-if/output.txt}}
 ```
 
-When this program executes, it checks each `if` expression in turn and executes the first body for which the condition evaluates to `true`. Note that even though 6 is divisible by 2, we don’t see the output `number is divisible by 2`, nor do we see the `number is not divisible by 4, 3, or 2` text from the `else` block. That’s because Rust only executes the block for the first `true` condition, and once it finds one, it doesn’t even check the rest.
+Во время выполнения этой программы по очереди проверяется каждое выражение `if` и выполняется первый блок, для которого условие вычислилось в `true`. Заметьте, что хотя 6 делится на 2, мы не видим ни вывода `number is divisible by 2`, ни текста `number is not divisible by 4, 3, or 2` из блока `else`. Так происходит потому, что Rust выполняет блок только для первого истинного условия, а обнаружив его, даже не проверяет остальные.
 
 Использование множества выражений `else if` приводит к загромождению кода, поэтому при наличии более чем одного выражения, возможно, стоит провести рефакторинг кода. В главе 6 описана мощная конструкция ветвления Rust для таких случаев, называемая `match`.
 
@@ -170,7 +170,7 @@ again!
 
 #### Метки циклов для устранения неоднозначности между несколькими циклами
 
-If you have loops within loops, `break` and `continue` apply to the innermost loop at that point. You can optionally specify a *loop label* on a loop that you can then use with `break` or `continue` to specify that those keywords apply to the labeled loop instead of the innermost loop. Loop labels must begin with a single quote. Here’s an example with two nested loops:
+Если у вас есть циклы внутри циклов, `break` и `continue` применяются к самому внутреннему циклу в этой цепочке. При желании вы можете создать *метку цикла*, которую вы затем сможете использовать с `break` или `continue` для указания, что эти ключевые слова применяются к помеченному циклу, а не к самому внутреннему циклу. Метки цикла должны начинаться с одинарной кавычки. Вот пример с двумя вложенными циклами:
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-32-5-loop-labels/src/main.rs}}
@@ -194,7 +194,7 @@ If you have loops within loops, `break` and `continue` apply to the innermost lo
 
 <span class="caption">Листинг 3-3: Использование цикла <code>while</code> для выполнения кода, пока условие истинно</span>
 
-This construct eliminates a lot of nesting that would be necessary if you used `loop`, `if`, `else`, and `break`, and it’s clearer. While a condition evaluates to `true`, the code runs; otherwise, it exits the loop.
+Эта конструкция устраняет множество вложений, которые потребовались бы при использовании `loop`, `if`, `else` и `break`, и она более понятна. Пока условие вычисляется в `true`, код выполняется; в противном случае происходит выход из цикла.
 
 #### Цикл по элементам коллекции с помощью `for`<a id="looping-through-a-collection-with-for"></a>
 
@@ -216,7 +216,7 @@ This construct eliminates a lot of nesting that would be necessary if you used `
 
 Все пять значений массива появляются в терминале, как и ожидалось. Поскольку `index` в какой-то момент достигнет значения `5`, цикл прекратит выполнение перед попыткой извлечь шестое значение из массива.
 
-However, this approach is error prone; we could cause the program to panic if the index value or test condition is incorrect. For example, if you changed the definition of the `a` array to have four elements but forgot to update the condition to `while index < 4`, the code would panic. It’s also slow, because the compiler adds runtime code to perform the conditional check of whether the index is within the bounds of the array on every iteration through the loop.
+Однако такой подход чреват ошибками; мы можем вызвать панику в программе, если значение индекса или условие проверки неверны. Например, если изменить определение массива `a` на четыре элемента, но забыть обновить условие на `while index < 4`, код вызовет панику. Также это медленно, поскольку компилятор добавляет код времени выполнения для обеспечения проверки нахождения индекса в границах массива на каждой итерации цикла.
 
 В качестве более краткой альтернативы можно использовать цикл `for` и выполнять некоторый код для каждого элемента коллекции. Цикл `for` может выглядеть как код в листинге 3-5.
 
@@ -246,7 +246,7 @@ However, this approach is error prone; we could cause the program to panic if th
 
 ## Итоги
 
-You made it! This was a sizable chapter: you learned about variables, scalar and compound data types, functions, comments, `if` expressions, and loops! To practice with the concepts discussed in this chapter, try building programs to do the following:
+Вы справились! Это была объёмная глава: вы узнали о переменных, скалярных и составных типах данных, функциях, комментариях, выражениях `if` и циклах! Для практики работы с концепциями, обсуждаемыми в этой главе, попробуйте создать программы для выполнения следующих действий:
 
 - Конвертация температур между значениями по Фаренгейту к Цельсию.
 - Генерирование n-го числа Фибоначчи.
