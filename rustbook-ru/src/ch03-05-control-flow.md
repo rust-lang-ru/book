@@ -1,10 +1,10 @@
 ## Управляющие конструкции
 
-Способность запускать некоторый код в зависимости от истинности условия или выполнять некоторый код многократно, пока условие истинно, является базовым элементом большинства языков программирования. Наиболее распространёнными конструкциями, позволяющими управлять потоком выполнения кода в Rust, являются выражения `if` и циклы.
+The ability to run some code depending on whether a condition is `true` and to run some code repeatedly while a condition is `true` are basic building blocks in most programming languages. The most common constructs that let you control the flow of execution of Rust code are `if` expressions and loops.
 
 ### Выражения `if`
 
-Выражение `if` позволяет разветвлять код в зависимости от условий. Вы задаёте условие, а затем объявляете: "Если это условие соблюдено, то выполнить этот блок кода. Если условие не соблюдается, не выполнять этот блок кода".
+Выражение `if` позволяет выполнять ветвление кода в зависимости от условий. Вы задаете условие, а затем указываете: "Если это условие выполняется, выполните этот блок кода. Если условие не выполняется, не выполняйте этот блок кода".
 
 Для изучения выражения `if` создайте новый проект под названием *branches* в каталоге *projects*. В файл <em>src/main.rs</em> поместите следующий код:
 
@@ -14,7 +14,7 @@
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-26-if-true/src/main.rs}}
 ```
 
-Все выражения `if` начинаются с ключевого слова `if`, за которым следует условие. В этом случае условие проверяет, имеет ли переменная `number` значение меньше 5. Если условие истинно, мы помещаем блок исполняемого кода сразу после условия внутри фигурных скобок. Блоки кода, связанные с условиями в выражениях `if`, иногда называются *ответвлениями*, точно так же, как ответвления в выражениях `match`, которые мы обсуждали в разделе [«Сравнение догадки с секретным числом»][comparing-the-guess-to-the-secret-number]<!-- ignore --> Главы 2.
+Все выражения `if` начинаются с ключевого слова `if`, за которым следует условие. В данном случае условие проверяет, имеет ли переменная `number` значение меньше 5. Сразу после условия внутри фигурных скобок мы помещаем блок кода, который будет выполняться, если условие `true`. Блоки кода, связанные с условиями в выражениях `if`, иногда называют *ответвлениями*, как и ответвления в выражениях `match`, которые мы обсуждали в разделе ["Сравнение догадки с секретным числом"](ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number) главы 2.
 
 Опционально можно включить выражение `else`, которое мы используем в данном примере, чтобы предоставить программе альтернативный блок выполнения кода, выполняющийся при ложном условии. Если не указать выражение `else` и условие будет ложным, программа просто пропустит блок `if` и перейдёт к следующему фрагменту кода.
 
@@ -76,7 +76,7 @@
 {{#include ../listings/ch03-common-programming-concepts/no-listing-30-else-if/output.txt}}
 ```
 
-Во время выполнения этой программы по очереди проверяется каждое выражение `if` и выполняется первое тело, для которого условие истинно. Заметьте, что хотя 6 делится на 2, мы не видим ни вывода `number is divisible by 2`, ни текста `number is not divisible by 4, 3, or 2` из блока `else`. Так происходит потому, что Rust выполняет блок только для первого истинного условия, а обнаружив его, даже не проверяет остальные.
+When this program executes, it checks each `if` expression in turn and executes the first body for which the condition evaluates to `true`. Note that even though 6 is divisible by 2, we don’t see the output `number is divisible by 2`, nor do we see the `number is not divisible by 4, 3, or 2` text from the `else` block. That’s because Rust only executes the block for the first `true` condition, and once it finds one, it doesn’t even check the rest.
 
 Использование множества выражений `else if` приводит к загромождению кода, поэтому при наличии более чем одного выражения, возможно, стоит провести рефакторинг кода. В главе 6 описана мощная конструкция ветвления Rust для таких случаев, называемая `match`.
 
@@ -154,7 +154,7 @@ again!
 
 Символ `^C` обозначает место, где было нажато <span class="keystroke">ctrl-c </span>. В зависимости от того, где находился код в цикле в момент получения сигнала прерывания, вы можете увидеть или не увидеть слово `again!`, напечатанное после `^C`.
 
-К счастью, Rust также предоставляет способ выйти из цикла с помощью кода. Ключевое слово `break` нужно поместить в цикл, чтобы указать программе, когда следует прекратить выполнение цикла. Напоминаем, мы делали так в игре "Угадайка" в разделе ["Выход после правильной догадки"][quitting-after-a-correct-guess]<!-- ignore --> Главы 2, чтобы выйти из программы, когда пользователь выиграл игру, угадав правильное число.
+К счастью, Rust также предоставляет способ выйти из цикла с помощью кода. Ключевое слово `break` нужно поместить в цикл, чтобы указать программе, когда следует прекратить выполнение цикла. Напоминаем, мы делали так в игре "Угадайка" в разделе ["Выход после правильной догадки"](ch02-00-guessing-game-tutorial.html#quitting-after-a-correct-guess)<!-- ignore --> Главы 2, чтобы выйти из программы, когда пользователь выиграл игру, угадав правильное число.
 
 Мы также использовали `continue` в игре "Угадайка", которое указывает программе в цикле пропустить весь оставшийся код в данной итерации цикла и перейти к следующей итерации.
 
@@ -170,7 +170,7 @@ again!
 
 #### Метки циклов для устранения неоднозначности между несколькими циклами
 
-Если у вас есть циклы внутри циклов, `break` и `continue` применяются к самому внутреннему циклу в этой цепочке. При желании вы можете создать *метку* цикла, которую вы затем сможете использовать с `break` или `continue` для указания, что эти ключевые слова применяются к помеченному циклу, а не к самому внутреннему циклу. Метки цикла должны начинаться с одинарной кавычки. Вот пример с двумя вложенными циклами:
+If you have loops within loops, `break` and `continue` apply to the innermost loop at that point. You can optionally specify a *loop label* on a loop that you can then use with `break` or `continue` to specify that those keywords apply to the labeled loop instead of the innermost loop. Loop labels must begin with a single quote. Here’s an example with two nested loops:
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-32-5-loop-labels/src/main.rs}}
@@ -194,9 +194,9 @@ again!
 
 <span class="caption">Листинг 3-3: Использование цикла <code>while</code> для выполнения кода, пока условие истинно</span>
 
-Эта конструкция устраняет множество вложений, которые потребовались бы при использовании `loop`, `if`, `else` и `break`, и она более понятна. Пока условие истинно, код выполняется, в противном случае происходит выход из цикла.
+This construct eliminates a lot of nesting that would be necessary if you used `loop`, `if`, `else`, and `break`, and it’s clearer. While a condition evaluates to `true`, the code runs; otherwise, it exits the loop.
 
-#### Цикл по элементам коллекции с помощью `for`<a id="looping-through-a-collection-with-for"/>
+#### Цикл по элементам коллекции с помощью `for`<a id="looping-through-a-collection-with-for"></a>
 
 Для перебора элементов коллекции, например, массива, можно использовать конструкцию `while`. Например, цикл в листинге 3-4 печатает каждый элемент массива `a`.
 
@@ -216,7 +216,7 @@ again!
 
 Все пять значений массива появляются в терминале, как и ожидалось. Поскольку `index` в какой-то момент достигнет значения `5`, цикл прекратит выполнение перед попыткой извлечь шестое значение из массива.
 
-Однако такой подход чреват ошибками. Можно вызвать панику в программе, если значение индекса или условие теста будут неверны. Например, если изменить определение массива `a` на четыре элемента, но забыть обновить условие на `while index < 4`, код вызовет панику. Также это медленно, поскольку компилятор добавляет код времени выполнения для обеспечения проверки нахождения индекса в границах массива на каждой итерации цикла.
+However, this approach is error prone; we could cause the program to panic if the index value or test condition is incorrect. For example, if you changed the definition of the `a` array to have four elements but forgot to update the condition to `while index < 4`, the code would panic. It’s also slow, because the compiler adds runtime code to perform the conditional check of whether the index is within the bounds of the array on every iteration through the loop.
 
 В качестве более краткой альтернативы можно использовать цикл `for` и выполнять некоторый код для каждого элемента коллекции. Цикл `for` может выглядеть как код в листинге 3-5.
 
@@ -246,13 +246,10 @@ again!
 
 ## Итоги
 
-Вы справились! Это была объёмная глава: вы узнали о переменных, скалярных и составных типах данных, функциях, комментариях, выражениях `if` и циклах! Для практики работы с концепциями, обсуждаемыми в этой главе, попробуйте создать программы для выполнения следующих действий:
+You made it! This was a sizable chapter: you learned about variables, scalar and compound data types, functions, comments, `if` expressions, and loops! To practice with the concepts discussed in this chapter, try building programs to do the following:
 
 - Конвертация температур между значениями по Фаренгейту к Цельсию.
 - Генерирование n-го числа Фибоначчи.
 - Распечатайте текст рождественской песни "Двенадцать дней Рождества", воспользовавшись повторами в песне.
 
 Когда вы будете готовы двигаться дальше, мы поговорим о концепции в Rust, которая *не существует* обычно в других языках программирования: владение.
-
-[comparing-the-guess-to-the-secret-number]: ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number
-[quitting-after-a-correct-guess]: ch02-00-guessing-game-tutorial.html#quitting-after-a-correct-guess
