@@ -601,7 +601,6 @@ You win!
 [*перечисление*]: ch06-00-enums.html
 [метод `expect`]: ../std/result/enum.Result.html#method.expect
 [главе 9]: ch09-02-recoverable-errors-with-result.html
-[крейт `rand`]: https://crates.io/crates/rand
 [семантическое версионирование]: http://semver.org
 [Crates.io]: https://crates.io/
 [Cargo]: http://doc.crates.io
