@@ -22,7 +22,7 @@
 - `for` - loop over items from an iterator, implement a trait, or specify a higher-ranked lifetime
 - `if` — ветвление на основе результата условного выражения
 - `impl` - задает функции сущности или реализует типаж
-- `in` - part of `for` loop syntax
+- `in` — часть синтаксиса определения цикла  `for`
 - `let` — объявляет переменную
 - `loop` — безусловный цикл или начало условного цикла
 - `match` — сопоставляет значение с образцами
