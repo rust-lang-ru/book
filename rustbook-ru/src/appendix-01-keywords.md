@@ -20,7 +20,7 @@
 - `false` - логическое значение «ложь»
 - `fn` - определяет функцию или тип указателя на функцию
 - `for` - loop over items from an iterator, implement a trait, or specify a higher-ranked lifetime
-- `if` - branch based on the result of a conditional expression
+- `if` — ветвление на основе результата условного выражения
 - `impl` - задает функции сущности или реализует типаж
 - `in` - part of `for` loop syntax
 - `let` — объявляет переменную
@@ -30,13 +30,13 @@
 - `move` — вынуждает замыкание принять на себя владение всеми своими захватами
 - `mut` - обозначает изменяемость для ссылок, сырых указателей или привязок к шаблонам
 - `pub` - модификатор публичной доступность полей структур, блоков `impl` или модулей
-- `ref` - bind by reference
+- `ref` — привязка по ссылке
 - `return` — возвращает результат из функции
-- `Self` - a type alias for the type we are defining or implementing
+- `Self` — псевдоним для типа, который мы определяем или реализуем
 - `self` - объект, содержащий текущий метод, или текущий модуль
-- `static` - global variable or lifetime lasting the entire program execution
+- `static` — глобальная переменная или время жизни на протяжении всего выполнения программы
 - `struct` — определяет структуру
-- `super` - parent module of the current module
+- `super` — родительский модуль текущего модуля
 - `trait` - определяет типаж
 - `true` - логическое значение «истина»
 - `type` — определяет псевдоним типа или ассоциированный тип
