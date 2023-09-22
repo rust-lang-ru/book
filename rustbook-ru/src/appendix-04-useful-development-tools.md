@@ -18,7 +18,7 @@ $ rustup component add rustfmt
 $ cargo fmt
 ```
 
-Эта команда отформатирует весь код на языке Rust в текущем крейте. Будет изменён только стиль кода, семантика останется прежней. Для большей информации о `rustfmt`, смотрите [документацию].
+Эта команда отформатирует весь код на языке Rust в текущем крейте. Будет изменён только стиль кода, семантика останется прежней. Для большей информации о `rustfmt`, смотрите [документацию](https://github.com/rust-lang/rustfmt).
 
 ### Исправление кода с `rustfix`
 
@@ -133,15 +133,10 @@ fn main() {
 }
 ```
 
-Для большей информации о Clippy смотрите [документацию](https://github.com/rust-lang/rustfmt).
+Для большей информации о Clippy смотрите [документацию](https://github.com/rust-lang/rust-clippy).
 
 ### Интеграция с IDE с помощью `rust-analyzer`
 
-Чтобы облегчить интеграцию с IDE, сообщество Rust рекомендует использовать [`rust-analyzer`]<!-- ignore -->. Этот инструмент представляет собой набор ориентированных на компилятор утилит, которые используют [Language Server Protocol]<!-- ignore -->, который является спецификацией для взаимодействия IDE и языков программирования друг с другом. Разные клиенты могут использовать `rust-analyzer`, например [подключаемый модуль анализатора Rust для Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+Чтобы облегчить интеграцию с IDE, сообщество Rust рекомендует использовать [`rust-analyzer`](https://rust-analyzer.github.io)<!-- ignore -->. Этот инструмент представляет собой набор ориентированных на компилятор утилит, которые используют [Language Server Protocol](http://langserver.org/)<!-- ignore -->, который является спецификацией для взаимодействия IDE и языков программирования друг с другом. Разные клиенты могут использовать `rust-analyzer`, например [подключаемый модуль анализатора Rust для Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
 
 Посетите <a>домашнюю страницу</a> проекта <code>rust-analyzer</code> для получения инструкций по установке, затем установите поддержку языкового сервера в конкретной среде IDE. Ваша IDE получит такие возможности, как автозаполнение, переход к определению и встроенные ошибки.
-
-
-[документацию]: https://github.com/rust-lang/rustfmt
-[Language Server Protocol]: http://langserver.org/
-[`rust-analyzer`]: https://rust-analyzer.github.io
