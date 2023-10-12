@@ -62,7 +62,7 @@
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-15/src/main.rs:here}}
 ```
 
-<span class="caption">Листинг 8-15: Добавление среза строки к <code>String</code> используя метод <code>push_str</code></span>
+<span class="caption">Listing 8-15: Appending a string slice to a <code>String</code> using the <code>push_str</code> method</span>
 
 После этих двух строк кода `s` будет содержать `foobar`. Метод `push_str` принимает строковый срез, потому что мы не всегда хотим владеть входным параметром. Например, код в листинге 8-16 показывает вариант, когда будет не желательно поведение, при котором мы не сможем использовать `s2` после его добавления к содержимому значения переменной `s1`.
 
