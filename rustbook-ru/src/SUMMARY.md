@@ -22,7 +22,7 @@
 
 - [Понимание владения](ch04-00-understanding-ownership.md)
 
-    - [What is Ownership?](ch04-01-what-is-ownership.md)
+    - [Что такое "владение"?](ch04-01-what-is-ownership.md)
     - [Ссылки и заимствование](ch04-02-references-and-borrowing.md)
     - [Тип среза](ch04-03-slices.md)
 
@@ -34,7 +34,7 @@
 
 - [Перечисления и сопоставление с образцом](ch06-00-enums.md)
 
-    - [Defining an Enum](ch06-01-defining-an-enum.md)
+    - [Определение Enum](ch06-01-defining-an-enum.md)
     - [Конструкция потока управления `match`](ch06-02-match.md)
     - [Лаконичный поток управления с `if let`](ch06-03-if-let.md)
 
