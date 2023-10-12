@@ -7,7 +7,7 @@
 - [С чего начать](ch01-00-getting-started.md)
 
     - [Установка](ch01-01-installation.md)
-    - [Hello, World!](ch01-02-hello-world.md)
+    - [Привет, Мир!](ch01-02-hello-world.md)
     - [Привет, Cargo!](ch01-03-hello-cargo.md)
 
 - [Программирование игры в загадки](ch02-00-guessing-game-tutorial.md)
@@ -131,7 +131,7 @@
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
     - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
-    - [Advanced Traits](ch19-03-advanced-traits.md)
+    - [Продвинутые типажи](ch19-03-advanced-traits.md)
     - [Продвинутые типы](ch19-04-advanced-types.md)
     - [Продвинутые функции и замыкания](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
