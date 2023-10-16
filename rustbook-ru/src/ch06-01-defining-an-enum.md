@@ -4,7 +4,7 @@
 
 Давайте рассмотрим ситуацию, которую мы могли бы захотеть отразить в коде, и поймём, почему перечисления полезны и более уместны, чем структуры в этом случае. Допустим, нам нужно работать с IP-адресами. В настоящее время для обозначения IP-адресов используются два основных стандарта: четвёртая и шестая версии. Поскольку это единственно возможные варианты IP-адресов, с которыми может столкнуться наша программа, мы можем *перечислить* все возможные варианты, откуда перечисление и получило своё название.
 
-Любой IP-адрес может быть либо четвёртой, либо шестой версии, но не обеими одновременно. Эта особенность IP-адресов делает структуру данных enum подходящей, поскольку значение enum может представлять собой только один из его возможных вариантов. Адреса как четвёртой, так и шестой версии по своей сути все равно являются IP-адресами, поэтому их следует рассматривать как один и тот же тип, когда в коде обрабатываются задачи, относящиеся к любому типу IP-адресов.
+Any IP address can be either a version four or a version six address, but not both at the same time. That property of IP addresses makes the enum data structure appropriate because an enum value can only be one of its variants. Both version four and version six addresses are still fundamentally IP addresses, so they should be treated as the same type when the code is handling situations that apply to any kind of IP address.
 
 Можно выразить эту концепцию в коде, определив перечисление `IpAddrKind` и составив список возможных видов IP-адресов, `V4` и `V6`. Вот варианты перечислений:
 
@@ -50,9 +50,9 @@
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-02-enum-with-data/src/main.rs:here}}
 ```
 
-Мы прикрепляем данные к каждому варианту перечисления напрямую, поэтому нет необходимости в дополнительной структуре. Здесь также легче увидеть ещё одну деталь того, как работают перечисления: имя каждого варианта перечисления, который мы определяем, также становится функцией, которая создаёт экземпляр перечисления. То есть `IpAddr::V4()` - это вызов функции, который принимает `String` и возвращает экземпляр типа `IpAddr`. Мы автоматически получаем эту функцию-конструктор, определяемую в результате определения перечисления.
+We attach data to each variant of the enum directly, so there is no need for an extra struct. Here, it’s also easier to see another detail of how enums work: the name of each enum variant that we define also becomes a function that constructs an instance of the enum. That is, `IpAddr::V4()` is a function call that takes a `String` argument and returns an instance of the `IpAddr` type. We automatically get this constructor function defined as a result of defining the enum.
 
-Ещё одно преимущество использования перечисления вместо структуры заключается в том, что каждый вариант перечисления может иметь разное количество ассоциированных данных представленных в разных типах. Версия 4 для типа IP адресов всегда будет содержать четыре цифровых компонента, которые будут иметь значения между 0 и 255. При необходимости сохранить адреса типа `V4` как четыре значения типа `u8`, а также описать адреса типа `V6` как единственное значение типа  `String`, мы не смогли бы с помощью структуры. Перечисления решают эту задачу легко:
+There’s another advantage to using an enum rather than a struct: each variant can have different types and amounts of associated data. Version four IP addresses will always have four numeric components that will have values between 0 and 255. If we wanted to store `V4` addresses as four `u8` values but still express `V6` addresses as one `String` value, we wouldn’t be able to with a struct. Enums handle this case with ease:
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-03-variants-with-different-data/src/main.rs:here}}
@@ -90,7 +90,7 @@ enum IpAddr {
 Это перечисление имеет 4 элемента:
 
 - `Quit` - пустой элемент без ассоциированных данных,
-- `Move` имеет именованные поля, как и структура.
+- `Move` has named fields, like a struct does.
 - `Write` - элемент с единственной строкой типа `String`,
 - `ChangeColor` - кортеж из трёх значений типа `i32`.
 
@@ -100,7 +100,7 @@ enum IpAddr {
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-04-structs-similar-to-message-enum/src/main.rs:here}}
 ```
 
-Но когда мы использовали различные структуры, которые имеют свои собственные типы, мы не могли легко определять функции, которые принимают любые типы сообщений, как это можно сделать с помощью перечисления типа `Message`, объявленного в листинге 6-2, который является единым типом.
+But if we used the different structs, each of which has its own type, we couldn’t as easily define a function to take any of these kinds of messages as we could with the `Message` enum defined in Listing 6-2, which is a single type.
 
 Есть ещё одно сходство между перечислениями и структурами: так же, как мы можем определять методы для структур с помощью `impl` блока, мы можем определять и методы для перечисления. Вот пример метода с именем `call`, который мы могли бы определить в нашем перечислении `Message`:
 
@@ -116,7 +116,7 @@ enum IpAddr {
 
 В этом разделе рассматривается пример использования `Option`, ещё одного перечисления, определённого в стандартной библиотеке. Тип `Option` кодирует очень распространённый сценарий, в котором значение может быть чем-то, а может быть ничем.
 
-Например, если вы запросите первое значение из списка, содержащего элементы, вы получите значение. Если вы запросите первое значение из пустого списка, вы ничего не получите. Выражение этой концепции в терминах системы типов означает, что компилятор может проверить, обработали ли вы все случаи, которые должны были обработать; эта функциональность может предотвратить ошибки, которые чрезвычайно распространены в других языках программирования.
+For example, if you request the first item in a non-empty list, you would get a value. If you request the first item in an empty list, you would get nothing. Expressing this concept in terms of the type system means the compiler can check whether you’ve handled all the cases you should be handling; this functionality can prevent bugs that are extremely common in other programming languages.
 
 Дизайн языка программирования часто рассматривается с точки зрения того, какие функции вы включаете в него, но те функции, которые вы исключаете, также важны. Например в Rust нет такого функционала как null значения, однако он есть во многих других языках. *Null значение* - это значение, которое означает, что значения нет. В языках с null значением переменные всегда могут находиться в одном из двух состояний: *нет значения (null)* или *есть значение (not-null)*.
 
@@ -139,7 +139,7 @@ enum Option<T> {
 
 Перечисление `Option<T>` настолько полезно, что оно даже включено в прелюдию; вам не нужно явно вводить его в область видимости. Его варианты также включены в прелюдию: вы можете использовать `Some` и `None` напрямую, без префикса `Option::`. При всём при этом, `Option<T>` является обычным перечислением, а `Some(T)` и `None` представляют собой его варианты.
 
-Проблема не в самой концепции, а в конкретной реализации. Таким образом, в Rust нет null-значений, но есть перечисление, которое может закодировать концепцию наличия или отсутствия значения. Это перечисление `Option<T>` и оно [определено в стандартной библиотеке](https://doc.rust-lang.org/std/option/enum.Option.html)<!-- ignore --> следующим образом:
+The `<T>` syntax is a feature of Rust we haven’t talked about yet. It’s a generic type parameter, and we’ll cover generics in more detail in Chapter 10. For now, all you need to know is that `<T>` means that the `Some` variant of the `Option` enum can hold one piece of data of any type, and that each concrete type that gets used in place of `T` makes the overall `Option<T>` type a different type. Here are some examples of using `Option` values to hold number types and string types:
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-06-option-examples/src/main.rs:here}}
@@ -147,15 +147,15 @@ enum Option<T> {
 
 Тип `some_number` - `Option<i32>`. Тип `some_char` - `Option<char>`, это другой тип. Rust может вывести эти типы, потому что мы указали значение внутри варианта `Some`. Для `absent_number` Rust требует, чтобы мы аннотировали общий тип для `Option`: компилятор не может вывести тип, который будет в `Some`, глядя только на значение `None`. Здесь мы сообщаем Rust, что `absent_number` должен иметь тип `Option<i32>`.
 
-Когда есть значение `Some`, мы знаем, что значение присутствует и содержится внутри `Some`. Когда есть значение `None`, это означает то же самое, что и null в некотором смысле: у нас нет действительного значения. Так почему наличие `Option<T>` лучше, чем null?
+When we have a `Some` value, we know that a value is present and the value is held within the `Some`. When we have a `None` value, in some sense it means the same thing as null: we don’t have a valid value. So why is having `Option<T>` any better than having null?
 
-Вкратце, поскольку `Option<T>` и `T` (где `T` может быть любым типом) относятся к разным типам, компилятор не позволит нам использовать значение `Option<T>` даже если бы оно было определённо допустимым вариантом `Some`. Например, этот код не будет компилироваться, потому что он пытается добавить `i8` к значению типа `Option<i8>`:
+In short, because `Option<T>` and `T` (where `T` can be any type) are different types, the compiler won’t let us use an `Option<T>` value as if it were definitely a valid value. For example, this code won’t compile, because it’s trying to add an `i8` to an `Option<i8>`:
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-07-cant-use-option-directly/src/main.rs:here}}
 ```
 
-Запуск данного кода даст ошибку ниже:
+If we run this code, we get an error message like this one:
 
 ```console
 {{#include ../listings/ch06-enums-and-pattern-matching/no-listing-07-cant-use-option-directly/output.txt}}
@@ -167,9 +167,6 @@ enum Option<T> {
 
 Устранение риска ошибочного предположения касательно не-null значения помогает вам быть более уверенным в своём коде. Чтобы иметь значение, которое может быть null, вы должны явно описать тип этого значения с помощью `Option<T>`. Затем, когда вы используете это значение, вы обязаны явно обрабатывать случай, когда значение равно null. Везде, где значение имеет тип, отличный от `Option<T>`, вы *можете* смело рассчитывать на то, что значение не равно null. Это продуманное проектное решение в Rust, ограничивающее распространение null и увеличивающее безопасность кода на Rust.
 
-Итак, как же получить значение `T` из варианта `Some`, если у вас на руках есть только объект `Option<T>`, и как можно его, вообще, использовать? Перечисление `Option<T>` имеет большое количество методов, полезных в различных ситуациях; вы можете ознакомиться с ними в [его документации]<!-- ignore -->. Знакомство с методами перечисления `Option<T>` будет чрезвычайно полезным в вашем путешествии с Rust.
+So how do you get the `T` value out of a `Some` variant when you have a value of type `Option<T>` so that you can use that value? The `Option<T>` enum has a large number of methods that are useful in a variety of situations; you can check them out in [its documentation](../std/option/enum.Option.html)<!-- ignore -->. Becoming familiar with the methods on `Option<T>` will be extremely useful in your journey with Rust.
 
-В общем случае, чтобы использовать значение `Option<T>`, нужен код, который будет обрабатывать все варианты перечисления `Option<T>`. Вам понадобится некоторый код, который будет работать только тогда, когда у вас есть значение `Some(T)`, и этому коду разрешено использовать внутреннее `T`. Также вам понадобится другой код, который будет работать, если у вас есть значение `None`, и у этого кода не будет доступного значения `T`. Выражение `match` — это конструкция управления потоком выполнения программы, которая делает именно это при работе с перечислениями: она запускает разный код в зависимости от того, какой вариант перечисления имеется, и этот код может использовать данные, находящиеся внутри совпавшего варианта.
-
-
-[его документации]: ../std/option/enum.Option.html
+In general, in order to use an `Option<T>` value, you want to have code that will handle each variant. You want some code that will run only when you have a `Some(T)` value, and this code is allowed to use the inner `T`. You want some other code to run only if you have a `None` value, and that code doesn’t have a `T` value available. The `match` expression is a control flow construct that does just this when used with enums: it will run different code depending on which variant of the enum it has, and that code can use the data inside the matching value.
