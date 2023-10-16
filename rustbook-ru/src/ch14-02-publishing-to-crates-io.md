@@ -266,10 +266,15 @@ $ cargo publish
 
 Чтобы вычеркнуть версию крейта, в директории крейта, который вы опубликовали ранее, выполните команду `cargo yank` и укажите, какую версию вы хотите вычеркнуть. Например, если мы опубликовали крейт под названием `guessing_game` версии 1.0.1 и хотим вычеркнуть её, в каталоге проекта для `guessing_game` мы выполним:
 
+<!-- manual-regeneration:
+cargo yank carol-test --version 2.1.0
+cargo yank carol-test --version 2.1.0 --undo
+-->
+
 ```console
 $ cargo yank --vers 1.0.1
     Updating crates.io index
-        Yank guessing_game:1.0.1
+        Yank guessing_game@1.0.1
 ```
 
 Добавив в команду `--undo`, вы также можете отменить выламывание и разрешить проектам начать зависеть от версии снова:
@@ -277,7 +282,7 @@ $ cargo yank --vers 1.0.1
 ```console
 $ cargo yank --vers 1.0.1 --undo
     Updating crates.io index
-      Unyank guessing_game_:1.0.1
+      Unyank guessing_game@1.0.1
 ```
 
 Вычёркивание *не удаляет* код. Оно не может, например, удалить случайно загруженные пароли. Если это произойдёт, вы должны немедленно сбросить эти пароли.
