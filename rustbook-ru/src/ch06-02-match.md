@@ -4,11 +4,11 @@
 
 ## Управляющая конструкция `match`
 
-Rust has an extremely powerful control flow construct called `match` that allows you to compare a value against a series of patterns and then execute code based on which pattern matches. Patterns can be made up of literal values, variable names, wildcards, and many other things; [Chapter 18](ch18-00-patterns.html)<!-- ignore --> covers all the different kinds of patterns and what they do. The power of `match` comes from the expressiveness of the patterns and the fact that the compiler confirms that all possible cases are handled.
+В Rust есть чрезвычайно мощный механизм управления потоком, именуемый `match`, который позволяет сравнивать значение с различными шаблонами и затем выполнять код в зависимости от того, какой из шаблонов совпал. Шаблоны могут состоять из литеральных значений, имён переменных, подстановочных знаков и многого другого; в главе 18 рассматриваются все различные виды шаблонов и то, что они делают. Сила <code>match</code> заключается в выразительности шаблонов и в том, что компилятор проверяет, что все возможные случаи обработаны.
 
 Думайте о выражении `match` как о машине для сортировки монет: монеты скользят по дорожке с различными по размеру отверстиями, и каждая монета падает через первое попавшееся отверстие, в которое она поместилась. Таким же образом значения проходят через каждый шаблон в `match`, и при первом же "подходящем" шаблоне значение попадает в соответствующий блок кода, который будет использоваться во время выполнения.
 
-Speaking of coins, let’s use them as an example using `match`! We can write a function that takes an unknown US coin and, in a similar way as the counting machine, determines which coin it is and returns its value in cents, as shown in Listing 6-3.
+Говоря о монетах, давайте используем их в качестве примера, используя `match`! Для этого мы напишем функцию, которая будет получать на вход неизвестную монету Соединённых Штатов и, подобно счётной машине, определять, какая это монета, и возвращать её стоимость в центах, как показано в листинге 6-3.
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-03/src/main.rs:here}}
@@ -16,13 +16,13 @@ Speaking of coins, let’s use them as an example using `match`! We can write a 
 
 <span class="caption">Листинг 6-3: Перечисление и выражение <code>match</code>, использующее в качестве шаблонов его варианты</span>
 
-Let’s break down the `match` in the `value_in_cents` function. First we list the `match` keyword followed by an expression, which in this case is the value `coin`. This seems very similar to a conditional expression used with `if`, but there’s a big difference: with `if`, the condition needs to evaluate to a Boolean value, but here it can be any type. The type of `coin` in this example is the `Coin` enum that we defined on the first line.
+Давайте разберём `match` в функции `value_in_cents`. Сначала пишется ключевое слово `match`, затем следует выражение, которое в данном случае является значением `coin`. Это выглядит очень похоже на условное выражение, используемое в `if`, но есть большая разница: с `if` выражение должно возвращать <em>булево значение</em>, а здесь это может быть любой тип. Тип `coin` в этом примере — перечисление типа <code>Coin</code>, объявленное в строке 1.
 
 Далее идут ветки `match`. Ветки состоят из двух частей: шаблон и некоторый код. Здесь первая ветка имеет шаблон, который является значением `Coin::Penny`, затем идёт оператор `=>`, который разделяет шаблон и код для выполнения. Код в этом случае - это просто значение `1`. Каждая ветка отделяется от последующей при помощи запятой.
 
-When the `match` expression executes, it compares the resultant value against the pattern of each arm, in order. If a pattern matches the value, the code associated with that pattern is executed. If that pattern doesn’t match the value, execution continues to the next arm, much as in a coin-sorting machine. We can have as many arms as we need: in Listing 6-3, our `match` has four arms.
+Когда выполняется выражение `match`, оно сравнивает полученное значение с образцом каждого ответвления по порядку. Если образец совпадает со значением, то выполняется код, связанный с этим образцом. Если этот образец не соответствует значению, то выполнение продолжается со следующей ветки, так же, как в автомате по сортировке монет. У нас может быть столько ответвлений, сколько нужно: в листинге 6-3 наш `match` состоит из четырёх ответвлений.
 
-The code associated with each arm is an expression, and the resultant value of the expression in the matching arm is the value that gets returned for the entire `match` expression.
+Код, связанный с каждым ответвлением, является выражением, а полученное значение выражения в соответствующем ответвлении — это значение, которое возвращается для всего выражения `match`.
 
 Обычно фигурные скобки не используются, если код совпадающей ветви невелик, как в листинге 6-3, где каждая ветвь просто возвращает значение. Если вы хотите выполнить несколько строк кода в одной ветви, вы должны использовать фигурные скобки, а запятая после этой ветви необязательна. Например, следующий код печатает "Lucky penny!" каждый раз, когда метод вызывается с `Coin::Penny`, но при этом он возвращает последнее значение блока - `1`:
 
@@ -30,11 +30,11 @@ The code associated with each arm is an expression, and the resultant value of t
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-08-match-arm-multiple-lines/src/main.rs:here}}
 ```
 
-### Patterns That Bind to Values
+### Образцы, привязывающие значения
 
 Есть ещё одно полезное качество у веток в выражении <code>match</code>: они могут привязываться к частям тех значений, которые совпали с шаблоном. Благодаря этому можно извлекать значения из вариантов перечисления.
 
-As an example, let’s change one of our enum variants to hold data inside it. From 1999 through 2008, the United States minted quarters with different designs for each of the 50 states on one side. No other coins got state designs, so only quarters have this extra value. We can add this information to our `enum` by changing the `Quarter` variant to include a `UsState` value stored inside it, which we’ve done in Listing 6-4.
+В качестве примера, давайте изменим один из вариантов перечисления так, чтобы он хранил в себе данные. С 1999 по 2008 год Соединённые Штаты чеканили 25 центов с различным дизайном на одной стороне для каждого из 50 штатов. Ни одна другая монета не получила дизайна штата, только четверть доллара имела эту дополнительную особенность. Мы можем добавить эту информацию в наш `enum` путём изменения варианта `Quarter` и включить в него значение `UsState`, как сделано в листинге 6-4.
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-04/src/main.rs:here}}
@@ -42,7 +42,7 @@ As an example, let’s change one of our enum variants to hold data inside it. F
 
 <span class="caption">Листинг 6-4: Перечисление <code>Coin</code>, в котором вариант <code>Quarter</code> также сохраняет значение <code>UsState</code></span>
 
-Let’s imagine that a friend is trying to collect all 50 state quarters. While we sort our loose change by coin type, we’ll also call out the name of the state associated with each quarter so that if it’s one our friend doesn’t have, they can add it to their collection.
+Представьте, что ваш друг пытается собрать четвертаки всех 50 штатов. Сортируя монеты по типу, мы также будем сообщать название штата, к которому относится каждый четвертак, чтобы, если у нашего друга нет такой монеты, он мог добавить её в свою коллекцию.
 
 В выражении match для этого кода мы добавляем переменную с именем `state` в шаблон, который соответствует значениям варианта `Coin::Quarter`. Когда `Coin::Quarter` совпадёт с шаблоном, переменная `state` будет привязана к значению штата этого четвертака. Затем мы сможем использовать `state` в коде этой ветки, вот так:
 
@@ -54,7 +54,7 @@ Let’s imagine that a friend is trying to collect all 50 state quarters. While 
 
 ### Сопоставление шаблона для `Option<T>`
 
-In the previous section, we wanted to get the inner `T` value out of the `Some` case when using `Option<T>`; we can also handle `Option<T>` using `match`, as we did with the `Coin` enum! Instead of comparing coins, we’ll compare the variants of `Option<T>`, but the way the `match` expression works remains the same.
+В предыдущем разделе мы хотели получить внутреннее значение `T` для случая `Some` при использовании `Option<T>`; мы можем обработать тип `Option<T>` используя `match`, как уже делали с перечислением `Coin`! Вместо сравнения монет мы будем сравнивать варианты `Option<T>`, независимо от этого изменения механизм работы выражения `match` останется прежним.
 
 Допустим, мы хотим написать функцию, которая принимает `Option<i32>` и если есть значение внутри, то добавляет 1 к существующему значению. Если значения нет, то функция должна возвращать значение `None` и не пытаться выполнить какие-либо операции.
 
@@ -66,21 +66,21 @@ In the previous section, we wanted to get the inner `T` value out of the `Some` 
 
 <span class="caption">Листинг 6-5: Функция, использующая выражение <code>match</code> для <code>Option&lt;i32&gt;</code></span>
 
-Let’s examine the first execution of `plus_one` in more detail. When we call `plus_one(five)`, the variable `x` in the body of `plus_one` will have the value `Some(5)`. We then compare that against each match arm:
+Давайте более подробно рассмотрим первое выполнение `plus_one`. Когда мы вызываем `plus_one(five)`, переменная `x` в теле `plus_one` будет иметь значение `Some(5)`. Затем мы сравниваем это значение с каждой ветвью сопоставления:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-05/src/main.rs:first_arm}}
 ```
 
-The `Some(5)` value doesn’t match the pattern `None`, so we continue to the next arm:
+Значение `Some(5)` не соответствует образцу `None`, поэтому мы продолжаем со следующим ответвлением:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-05/src/main.rs:second_arm}}
 ```
 
-Does `Some(5)` match `Some(i)`? It does! We have the same variant. The `i` binds to the value contained in `Some`, so `i` takes the value `5`. The code in the match arm is then executed, so we add 1 to the value of `i` and create a new `Some` value with our total `6` inside.
+Совпадает ли `Some(5)` с образцом `Some(i)`? Да, это так! У нас такой же вариант. Тогда переменная `i` привязывается к значению, содержащемуся внутри `Some`, поэтому `i` получает значение `5`. Затем выполняется код ассоциированный для данного ответвления, поэтому мы добавляем 1 к значению `i` и создаём новое значение `Some` со значением `6` внутри.
 
-Now let’s consider the second call of `plus_one` in Listing 6-5, where `x` is `None`. We enter the `match` and compare to the first arm:
+Теперь давайте рассмотрим второй вызов `plus_one` в листинге 6-5, где `x` является `None`. Мы входим в выражение `match` и сравниваем значение с первым ответвлением:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-05/src/main.rs:first_arm}}
@@ -104,7 +104,7 @@ Now let’s consider the second call of `plus_one` in Listing 6-5, where `x` is 
 {{#include ../listings/ch06-enums-and-pattern-matching/no-listing-10-non-exhaustive-match/output.txt}}
 ```
 
-Rust knows that we didn’t cover every possible case, and even knows which pattern we forgot! Matches in Rust are *exhaustive*: we must exhaust every last possibility in order for the code to be valid. Especially in the case of `Option<T>`, when Rust prevents us from forgetting to explicitly handle the `None` case, it protects us from assuming that we have a value when we might have null, thus making the billion-dollar mistake discussed earlier impossible.
+Rust знает, что мы не описали все возможные случаи, и даже знает, какой именно из шаблонов мы упустили! Сопоставления в Rust являются *исчерпывающими*: мы должны покрыть все возможные варианты, чтобы код был корректным. Особенно в случае `Option<T>`, когда Rust не даёт нам забыть обработать явным образом значение `None`, тем самым он защищает нас от предположения, что у нас есть значение, в то время как у нас может быть и null, что делает невозможным совершить ошибку на миллиард долларов, о которой говорилось ранее.
 
 ### Универсальные шаблоны и заполнитель `_`
 
@@ -128,7 +128,7 @@ Rust knows that we didn’t cover every possible case, and even knows which patt
 
 Этот пример также удовлетворяет требованию исчерпывающей полноты, поскольку мы явно игнорируем все остальные значения в последней ветке; мы ничего не забыли.
 
-Finally, we’ll change the rules of the game one more time so that nothing else happens on your turn if you roll anything other than a 3 or a 7. We can express that by using the unit value (the empty tuple type we mentioned in [“The Tuple Type”](ch03-02-data-types.html#the-tuple-type)<!-- ignore --> section) as the code that goes with the `_` arm:
+Если мы изменим правила игры ещё раз, чтобы в ваш ход не происходило ничего другого, если вы бросаете не 3 или 7, мы можем выразить это, используя единичное значение (пустой тип кортежа, о котором мы упоминали в разделе ["Кортежи"]<!-- ignore -->) в качестве кода, который идёт вместе с веткой `_`:
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-17-underscore-unit/src/main.rs:here}}
@@ -136,4 +136,8 @@ Finally, we’ll change the rules of the game one more time so that nothing else
 
 Здесь мы явно говорим Rust, что не собираемся использовать никакое другое значение, которое не соответствует шаблонам в предыдущих ветках, и не хотим запускать никакой код в этом случае.
 
-Подробнее о шаблонах и совпадениях мы поговорим в [Главе 18](ch18-00-patterns.html)<!-- ignore -->. Пока же мы перейдём к синтаксису `if let`, который может быть полезен в ситуациях, когда выражение `match` слишком многословно.
+Подробнее о шаблонах и совпадениях мы поговорим в [Главе 18]<!-- ignore -->. Пока же мы перейдём к синтаксису `if let`, который может быть полезен в ситуациях, когда выражение `match` слишком многословно.
+
+
+["Кортежи"]: ch03-02-data-types.html#the-tuple-type
+[Главе 18]: ch18-00-patterns.html
