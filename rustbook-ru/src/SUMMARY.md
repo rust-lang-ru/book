@@ -7,8 +7,8 @@
 - [С чего начать](ch01-00-getting-started.md)
 
     - [Установка](ch01-01-installation.md)
-    - [Привет, мир!](ch01-02-hello-world.md)
-    - [Hello, Cargo!](ch01-03-hello-cargo.md)
+    - [Привет, Мир!](ch01-02-hello-world.md)
+    - [Привет, Cargo!](ch01-03-hello-cargo.md)
 
 - [Программирование игры в загадки](ch02-00-guessing-game-tutorial.md)
 
@@ -22,7 +22,7 @@
 
 - [Понимание владения](ch04-00-understanding-ownership.md)
 
-    - [Что такое владение?](ch04-01-what-is-ownership.md)
+    - [Что такое "владение"?](ch04-01-what-is-ownership.md)
     - [Ссылки и заимствование](ch04-02-references-and-borrowing.md)
     - [Тип среза](ch04-03-slices.md)
 
@@ -34,7 +34,7 @@
 
 - [Перечисления и сопоставление с образцом](ch06-00-enums.md)
 
-    - [Определение перечисления](ch06-01-defining-an-enum.md)
+    - [Определение Enum](ch06-01-defining-an-enum.md)
     - [Конструкция потока управления `match`](ch06-02-match.md)
     - [Лаконичный поток управления с `if let`](ch06-03-if-let.md)
 
@@ -58,7 +58,7 @@
 
     - [Неустранимые ошибки с `panic!`](ch09-01-unrecoverable-errors-with-panic.md)
     - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-result.md)
-    - [`panic!` или не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
+    - [`panic!` или Не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
 
 - [Общие типы, трейты (характеристики) и время жизни](ch10-00-generics.md)
 
