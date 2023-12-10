@@ -52,7 +52,7 @@
 
 ### Предотвращение ссылочной зацикленности: замена умного указателя `Rc<T>` на `Weak<T>`
 
-So far, we’ve demonstrated that calling `Rc::clone` increases the `strong_count` of an `Rc<T>` instance, and an `Rc<T>` instance is only cleaned up if its `strong_count` is 0. You can also create a *weak reference* to the value within an `Rc<T>` instance by calling `Rc::downgrade` and passing a reference to the `Rc<T>`. Strong references are how you can share ownership of an `Rc<T>` instance. Weak references don’t express an ownership relationship, and their count doesn’t affect when an `Rc<T>` instance is cleaned up. They won’t cause a reference cycle because any cycle involving some weak references will be broken once the strong reference count of values involved is 0.
+До сих пор мы демонстрировали, что вызов `Rc::clone` увеличивает `strong_count` экземпляра `Rc<T>`, а экземпляр `Rc<T>` удаляется, только если его `strong_count` равен 0. Вы также можете создать *слабую ссылку* на значение внутри экземпляра `Rc<T>`, вызвав `Rc::downgrade` и передав ссылку на `Rc<T>`. Сильные ссылки - это то с помощью чего вы можете поделиться владением экземпляра `Rc<T>`. Слабые ссылки не отражают связи владения, и их подсчёт не влияет на то, когда экземпляр `Rc<T>` будет очищен. Они не приведут к ссылочному циклу, потому что любой цикл, включающий несколько слабых ссылок, будет разорван, как только количество сильных ссылок для задействованных значений станет равным 0.
 
 Когда вы вызываете `Rc::downgrade`, вы получаете умный указатель типа `Weak<T>`. Вместо того чтобы увеличить `strong_count` в экземпляре `Rc<T>` на 1, вызов `Rc::downgrade` увеличивает `weak_count` на 1. Тип `Rc<T>` использует `weak_count` для отслеживания количества существующих ссылок `Weak<T>`, аналогично `strong_count`. Разница в том, что `weak_count` не должен быть равен 0, чтобы экземпляр `Rc<T>` мог быть удалён.
 
@@ -157,3 +157,5 @@ children: RefCell { value: [] } }] } })
 Если эта глава вызвала у вас интерес и вы хотите реализовать свои собственные умные указатели, обратитесь к ["The Rustonomicon"](https://doc.rust-lang.org/nomicon/index.html) за более полезной информацией.
 
 Далее мы поговорим о параллелизме в Rust. Вы даже узнаете о нескольких новых умных указателях.
+
+
