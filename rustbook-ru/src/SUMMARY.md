@@ -64,7 +64,7 @@
 
     - [Обобщённые типы данных](ch10-01-syntax.md)
     - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
-    - [Validating References with Lifetimes](ch10-03-lifetime-syntax.md)
+    - [Проверка ссылок с временем жизни](ch10-03-lifetime-syntax.md)
 
 - [Написание автоматических тестов](ch11-00-testing.md)
 
@@ -131,9 +131,9 @@
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
     - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
-    - [Advanced Traits](ch19-03-advanced-traits.md)
+    - [Продвинутые типажи](ch19-03-advanced-traits.md)
     - [Продвинутые типы](ch19-04-advanced-types.md)
-    - [Advanced Functions and Closures](ch19-05-advanced-functions-and-closures.md)
+    - [Продвинутые функции и замыкания](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
 
 - [Финальный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
