@@ -44,7 +44,7 @@
 
 Если вы удалите последний комментарий с `println!` и запустите программу, Rust будет пытаться печатать зацикленность в `a`, указывающей на `b`, указывающей на `a` и так далее, пока не переполниться стек.
 
-По сравнению с реальной программой, последствия создания цикла ссылок в этом примере не так страшны: сразу после создания цикла ссылок программа завершается. Однако если более сложная программа выделит много памяти в цикле и будет удерживать её в течение длительного времени, программа будет потреблять больше памяти, чем ей нужно, и может перенапрячь систему, что приведёт к исчерпанию доступной памяти.
+Compared to a real-world program, the consequences of creating a reference cycle in this example aren’t very dire: right after we create the reference cycle, the program ends. However, if a more complex program allocated lots of memory in a cycle and held onto it for a long time, the program would use more memory than it needed and might overwhelm the system, causing it to run out of available memory.
 
 Вызвать образование ссылочной зацикленности не просто, но и не невозможно. Если у вас есть значения `RefCell<T>` которые содержат значения `Rc<T>` или аналогичные вложенные комбинации типов с внутренней изменчивостью и подсчётом ссылок, вы должны убедиться, что вы не создаёте зацикленность; Вы не можете полагаться на то, что Rust их обнаружит. Создание ссылочной зацикленности являлось бы логической ошибкой в программе, для которой вы должны использовать автоматические тесты, проверку кода и другие практики разработки программного обеспечения для её минимизации.
 
@@ -52,7 +52,7 @@
 
 ### Предотвращение ссылочной зацикленности: замена умного указателя `Rc<T>` на `Weak<T>`
 
-До сих пор мы демонстрировали, что вызов `Rc::clone` увеличивает `strong_count` экземпляра `Rc<T>`, а экземпляр `Rc<T>` удаляется, только если его `strong_count` равен 0. Вы также можете создать *слабую ссылку* на значение внутри экземпляра `Rc<T>`, вызвав `Rc::downgrade` и передав ссылку на `Rc<T>`. Сильные ссылки - это то с помощью чего вы можете поделиться владением экземпляра `Rc<T>`. Слабые ссылки не отражают связи владения, и их подсчёт не влияет на то, когда экземпляр `Rc<T>` будет очищен. Они не приведут к ссылочному циклу, потому что любой цикл, включающий несколько слабых ссылок, будет разорван, как только количество сильных ссылок для задействованных значений станет равным 0.
+So far, we’ve demonstrated that calling `Rc::clone` increases the `strong_count` of an `Rc<T>` instance, and an `Rc<T>` instance is only cleaned up if its `strong_count` is 0. You can also create a *weak reference* to the value within an `Rc<T>` instance by calling `Rc::downgrade` and passing a reference to the `Rc<T>`. Strong references are how you can share ownership of an `Rc<T>` instance. Weak references don’t express an ownership relationship, and their count doesn’t affect when an `Rc<T>` instance is cleaned up. They won’t cause a reference cycle because any cycle involving some weak references will be broken once the strong reference count of values involved is 0.
 
 Когда вы вызываете `Rc::downgrade`, вы получаете умный указатель типа `Weak<T>`. Вместо того чтобы увеличить `strong_count` в экземпляре `Rc<T>` на 1, вызов `Rc::downgrade` увеличивает `weak_count` на 1. Тип `Rc<T>` использует `weak_count` для отслеживания количества существующих ссылок `Weak<T>`, аналогично `strong_count`. Разница в том, что `weak_count` не должен быть равен 0, чтобы экземпляр `Rc<T>` мог быть удалён.
 
@@ -157,5 +157,3 @@ children: RefCell { value: [] } }] } })
 Если эта глава вызвала у вас интерес и вы хотите реализовать свои собственные умные указатели, обратитесь к ["The Rustonomicon"](https://doc.rust-lang.org/nomicon/index.html) за более полезной информацией.
 
 Далее мы поговорим о параллелизме в Rust. Вы даже узнаете о нескольких новых умных указателях.
-
-
