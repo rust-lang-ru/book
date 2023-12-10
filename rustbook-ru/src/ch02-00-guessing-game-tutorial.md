@@ -603,7 +603,7 @@ You win!
 [главе 9]: ch09-02-recoverable-errors-with-result.html
 [семантическое версионирование]: http://semver.org
 [Crates.io]: https://crates.io/
-[Cargo]: http://doc.crates.io
-[его экосистему]: http://doc.crates.io/crates-io.html
+[Cargo]: https://doc.rust-lang.org/cargo/
+[его экосистему]: https://doc.rust-lang.org/cargo/reference/publishing.html
 [`match`]: ch06-02-match.html
 [`parse` строк]: ../std/primitive.str.html#method.parse
