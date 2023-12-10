@@ -1,4 +1,4 @@
-# Язык программирования Rust
+# The Rust Programming Language
 
 [Язык программирования Rust](title-page.md) [Предисловие](foreword.md) [Введение](ch00-00-introduction.md)
 
@@ -8,14 +8,14 @@
 
     - [Установка](ch01-01-installation.md)
     - [Привет, Мир!](ch01-02-hello-world.md)
-    - [Привет, Cargo!](ch01-03-hello-cargo.md)
+    - [Hello, Cargo!](ch01-03-hello-cargo.md)
 
 - [Программирование игры в загадки](ch02-00-guessing-game-tutorial.md)
 
 - [Общие концепции программирования](ch03-00-common-programming-concepts.md)
 
     - [Переменные и изменяемость](ch03-01-variables-and-mutability.md)
-    - [Типы данных](ch03-02-data-types.md)
+    - [Типы Данных](ch03-02-data-types.md)
     - [Функции](ch03-03-how-functions-work.md)
     - [Комментарии](ch03-04-comments.md)
     - [Управляющие конструкции](ch03-05-control-flow.md)
@@ -70,7 +70,7 @@
 
     - [Как писать тесты](ch11-01-writing-tests.md)
     - [Управление выполнением тестов](ch11-02-running-tests.md)
-    - [Организация испытаний](ch11-03-test-organization.md)
+    - [Организация тестов](ch11-03-test-organization.md)
 
 - [Проект с вводом-выводом: создание программы командной строки](ch12-00-an-io-project.md)
 
