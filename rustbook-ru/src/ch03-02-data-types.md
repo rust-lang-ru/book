@@ -48,7 +48,7 @@ let guess: u32 = "42".parse().expect("Not a number!");
 Числовой литерал | Пример
 --- | ---
 Десятичный | `98_222`
-Шестнадцатиричный | `0xff`
+Шестнадцатеричный | `0xff`
 восьмеричный | `0o77`
 Двоичный | `0b1111_0000`
 Байт (только `u8`) | `b'A'`
@@ -68,7 +68,7 @@ let guess: u32 = "42".parse().expect("Not a number!");
 
 Вот пример, демонстрирующий числа с плавающей запятой в действии:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-06-floating-point/src/main.rs}}
@@ -80,7 +80,7 @@ let guess: u32 = "42".parse().expect("Not a number!");
 
 Rust поддерживает основные математические операции, привычные для всех типов чисел: сложение, вычитание, умножение, деление и остаток. Целочисленное деление обрезает значение в направлении нуля до ближайшего целого числа. Следующий код показывает, как можно использовать каждую числовую операцию в инструкции `let`:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-07-numeric-operations/src/main.rs}}
@@ -92,7 +92,7 @@ Rust поддерживает основные математические оп
 
 Как и в большинстве других языков программирования, логический тип в Rust имеет два возможных значения: `true` и `false`. Значения логических типов имеют размер в один байт. Логический тип в Rust задаётся с помощью `bool`. Например:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-08-boolean/src/main.rs}}
@@ -104,7 +104,7 @@ Rust поддерживает основные математические оп
 
 Тип `char` в Rust является самым примитивным алфавитным типом языка. Вот несколько примеров объявления значений `char`:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-09-char/src/main.rs}}
@@ -122,7 +122,7 @@ Rust поддерживает основные математические оп
 
 Мы создаём кортеж, записывая список значений, разделённых запятыми, внутри круглых скобок. Каждая позиция в кортеже имеет тип, причём типы различных значений в кортеже не обязательно должны быть одинаковыми. В этом примере мы добавили необязательные аннотации типов:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-10-tuples/src/main.rs}}
@@ -130,7 +130,7 @@ Rust поддерживает основные математические оп
 
 Переменная `tup` связана со всем кортежем, поскольку кортеж является одним составным элементом. Чтобы получить отдельные значения из кортежа, можно использовать сопоставление с образцом для деструктуризации значения кортежа, например, так:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-11-destructuring-tuples/src/main.rs}}
@@ -140,7 +140,7 @@ Rust поддерживает основные математические оп
 
 Мы также можем получить доступ к элементу кортежа напрямую, используя точку (`.`), за которой следует индекс значения, требуемого для доступа. Например:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-12-tuple-indexing/src/main.rs}}
@@ -156,7 +156,7 @@ Rust поддерживает основные математические оп
 
 Мы записываем значения в массиве в виде списка, разделённого запятыми, внутри квадратных скобок:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-13-arrays/src/main.rs}}
@@ -191,7 +191,7 @@ let a = [3; 5];
 
 Массив — это единый фрагмент памяти известного фиксированного размера, который может быть размещён в стеке. Вы можете получить доступ к элементам массива с помощью индексации, например:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-14-array-indexing/src/main.rs}}
@@ -203,7 +203,7 @@ let a = [3; 5];
 
 Давайте посмотрим, что произойдёт, если попытаться получить доступ к элементу массива, находящемуся за его пределами. Допустим, вы запускаете данный код, похожий на игру в угадывание из Главы 2, чтобы получить от пользователя индекс массива:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,panics
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-15-invalid-array-access/src/main.rs}}
