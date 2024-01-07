@@ -130,7 +130,7 @@ Rust выбирает другой путь: память автоматичес
 
 <img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl04-01.svg?raw=true" class="">
 
-<span class="caption">Figure 4-1: Representation in memory of a <code>String</code> holding the value <code>"hello"</code> bound to <code>s1</code></span>
+<span class="caption">Рисунок 4-1: представление в памяти <code>String</code>, содержащей значение <code>"hello"</code>, привязанное к <code>s1</code></span>
 
 Длина — это объём памяти в байтах, который в настоящее время использует содержимое `String`. Ёмкость — это общий объём памяти в байтах, который `String` получил от распределителя. Разница между длиной и ёмкостью имеет значение, но не в этом контексте, поэтому на данный момент можно игнорировать ёмкость.
 
@@ -138,13 +138,13 @@ Rust выбирает другой путь: память автоматичес
 
 <img alt="Three tables: tables s1 and s2 representing those strings on the&lt;br&gt;stack, respectively, and both pointing to the same string data on the heap." src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl04-02.svg?raw=true" class="">
 
-<span class="caption">Figure 4-2: Representation in memory of the variable <code>s2</code> that has a copy of the pointer, length, and capacity of <code>s1</code></span>
+<span class="caption">Рисунок 4-2: представление в памяти переменной <code>s2</code>, имеющей копию указателя, длины и ёмкости <code>s1</code></span>
 
 Представление *не* похоже на рисунок 4-3, как выглядела бы память, если бы вместо этого Rust также скопировал данные кучи. Если бы Rust сделал это, операция `s2 = s1` могла бы быть очень дорогой с точки зрения производительности во время выполнения, если бы данные в куче были большими.
 
 <img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl04-01.svg?raw=true" class="">
 
-<span class="caption">Figure 4-3: Another possibility for what <code>s2 = s1</code> might do if Rust copied the heap data as well</span>
+<span class="caption">Рисунок 4-3: другой вариант того, что может сделать <code>s2 = s1</code>, если Rust также скопирует данные кучи</span>
 
 Ранее мы сказали, что когда переменная выходит за пределы области видимости, Rust автоматически вызывает функцию `drop` и очищает память в куче для данной переменной. Но на рис. 4.2 оба указателя данных указывают на одно и то же место. Это проблема: когда переменные `s2` и `s1` выходят из области видимости, они обе будут пытаться освободить одну и ту же память в куче. Это известно как *ошибка двойного освобождения (double free)* и является одной из ошибок безопасности памяти, упоминаемых ранее. Освобождение памяти дважды может привести к повреждению памяти, что потенциально может привести к уязвимостям безопасности.
 
@@ -164,7 +164,7 @@ Rust выбирает другой путь: память автоматичес
 
 <img alt="Три таблицы: таблицы s1 и s2, представляющие эти строки в стеке соответственно, и обе указывающие на одни и те же строковые данные в куче. Таблица s1 выделена серым цветом, потому что s1 больше недействительна; только s2 можно использовать для доступа к данным кучи." src="img/trpl04-04.svg" class="center" style="width: 50%;">
 
-<span class="caption">Figure 4-4: Representation in memory after <code>s1</code> has been invalidated</span>
+<span class="caption">Рисунок 4-4: представление в памяти после того, как <code>s1</code> был признан недействительным</span>
 
 Это решает нашу проблему! Действительной остаётся только переменная `s2`. Когда она выходит из области видимости, то она одна будет освобождать память в куче.
 
