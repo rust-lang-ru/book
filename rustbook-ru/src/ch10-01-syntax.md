@@ -8,7 +8,7 @@
 
 Рассмотрим пример с функцией `largest`. Листинг 10-4 показывает две функции, каждая из которых находит самое большое значение в срезе своего типа. Позже мы объединим их в одну функцию, использующую обобщённые типы данных.
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-04/src/main.rs:here}}
@@ -30,7 +30,7 @@ fn largest<T>(list: &[T]) -> &T {
 
 Листинг 10-5 показывает определение функции `largest` с использованием обобщённых типов данных в её сигнатуре. Листинг также показывает, как мы можем вызвать функцию со срезом данных типа `i32` или `char`. Данный код пока не будет компилироваться, но мы исправим это к концу раздела.
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-05/src/main.rs}}
@@ -50,7 +50,7 @@ fn largest<T>(list: &[T]) -> &T {
 
 Мы также можем определить структуры, использующие обобщённые типы в одном или нескольких своих полях, с помощью синтаксиса `<>`. Листинг 10-6 показывает, как определить структуру `Point<T>`, чтобы хранить поля координат `x` и `y` любого типа данных.
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-06/src/main.rs}}
@@ -62,13 +62,13 @@ fn largest<T>(list: &[T]) -> &T {
 
 Так как мы используем только один обобщённый тип данных для определения структуры `Point<T>`, это определение означает, что структура `Point<T>` является обобщённой с типом `T`, и <em>оба</em> поля `x` и <code>y</code> имеют одинаковый тип, каким бы он не являлся. Если мы создадим экземпляр структуры `Point<T>` со значениями разных типов, как показано в листинге 10-7, наш код не скомпилируется.
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Файл : src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-07/src/main.rs}}
 ```
 
-<span class="caption">Листинг 10-7: поля <code>x</code> и <code>y</code> должны быть одного типа, так как они имеют один и тот же обобщённый тип <code>T</code></span>
+<span class="caption">Listing 10-7: The fields <code>x</code> and <code>y</code> must be the same type because both have the same generic data type <code>T</code>.</span>
 
 В этом примере, когда мы присваиваем целочисленное значение 5 переменной `x` , мы сообщаем компилятору, что обобщённый тип `T` будет целым числом для этого экземпляра `Point<T>`. Затем, когда мы указываем значение 4.0 (имеющее тип, отличный от целого числа) для `y`, который по нашему определению должен иметь тот же тип, что и `x`, мы получим ошибку несоответствия типов:
 
@@ -78,7 +78,7 @@ fn largest<T>(list: &[T]) -> &T {
 
 Чтобы определить структуру `Point`, где оба значения `x` и `y` являются обобщёнными, но различными типами, можно использовать несколько параметров обобщённого типа. Например, в листинге 10-8 мы изменим определение `Point` таким образом, чтобы оно использовало обобщённые типы `T` и `U`, где `x` имеет тип `T` а `y` имеет тип `U`.
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-08/src/main.rs}}
@@ -118,7 +118,7 @@ enum Result<T, E> {
 
 Мы можем реализовать методы для структур и перечислений (как мы делали в главе 5) и в определениях этих методов также использовать обобщённые типы. В листинге 10-9 показана структура `Point<T>`, которую мы определили в листинге 10-6, с добавленным для неё методом `x`.
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-09/src/main.rs}}
@@ -132,7 +132,7 @@ enum Result<T, E> {
 
 Мы можем также указать ограничения, какие обобщённые типы разрешено использовать при определении методов. Например, мы могли бы реализовать методы только для экземпляров типа `Point<f32>`, а не для экземпляров `Point<T>`, в которых используется произвольный обобщённый тип. В листинге 10-10 мы используем конкретный тип `f32`, что означает, что мы не определяем никакие типы после `impl`.
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-10/src/main.rs:here}}
@@ -144,7 +144,7 @@ enum Result<T, E> {
 
 Параметры обобщённого типа, которые мы используем в определении структуры, не всегда совпадают с аналогами, использующимися в сигнатурах методов этой структуры. Чтобы пример был более очевидным, в листинге 10-11 используются обобщённые типы `X1` и `Y1` для определения структуры `Point` и типы `X2` `Y2` для сигнатуры метода `mixup`. Метод создаёт новый экземпляр структуры `Point`, где значение `x` берётся из `self` `Point` (имеющей тип `X1`), а значение `y` - из переданной структуры `Point` (где эта переменная имеет тип `Y2`).
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Filename: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-11/src/main.rs}}
@@ -173,7 +173,7 @@ let float = Some(5.0);
 
 Мономорфизированная версия кода выглядит примерно так (компилятор использует имена, отличные от тех, которые мы используем здесь для иллюстрации):
 
-<span class="filename">Файл: src/main.rs</span>
+<span class="filename">Filename: src/main.rs</span>
 
 ```rust
 enum Option_i32 {
@@ -193,5 +193,3 @@ fn main() {
 ```
 
 Обобщённое `Option<T>` заменяется конкретными определениями, созданными компилятором. Поскольку Rust компилирует обобщённый код в код, определяющий тип в каждом экземпляре, мы не платим за использование обобщённых типов во время выполнения. Когда код запускается, он работает точно так же, как если бы мы продублировали каждое определение вручную. Процесс мономорфизации делает обобщённые типы Rust чрезвычайно эффективными во время выполнения.
-
-
