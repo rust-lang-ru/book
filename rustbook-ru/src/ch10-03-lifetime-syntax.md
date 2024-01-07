@@ -54,7 +54,7 @@
 
 Напишем функцию, которая возвращает более длинный из двух срезов строки. Эта функция принимает два среза строки и возвращает один срез строки. После того как мы реализовали функцию `longest`, код в листинге 10-19 должен вывести `The longest string is abcd`.
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-19/src/main.rs}}
@@ -66,7 +66,7 @@
 
 Если мы попробуем реализовать функцию `longest` так, как это показано в листинге 10-20, программа не скомпилируется:
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-20/src/main.rs:here}}
@@ -106,7 +106,7 @@
 
 Мы хотим, чтобы сигнатура отражала следующее ограничение: возвращаемая ссылка будет действительна до тех пор, пока валидны оба параметра. Это связь между временами жизни параметров и возвращаемого значения. Мы назовём это время жизни `'a`, а затем добавим его к каждой ссылке, как показано в листинге 10-21.
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-21/src/main.rs:here}}
@@ -126,7 +126,7 @@
 
 Давайте посмотрим, как аннотации времени жизни ограничивают функцию `longest` путём передачи в неё ссылок, которые имеют разные конкретные времена жизни. Листинг 10-22 является очевидным примером.
 
-<span class="filename">Файл : src/main.rs</span>
+<span class="filename">Файл: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-22/src/main.rs:here}}
