@@ -128,10 +128,7 @@ Rust выбирает другой путь: память автоматичес
 
 Взгляните на рисунок 4-1, чтобы увидеть, что происходит со `String` под капотом. `String` состоит из трёх частей, показанных слева: указатель на память, в которой хранится содержимое строки, длина и ёмкость. Эта группа данных хранится в стеке. Справа — память в куче, которая содержит содержимое.
 
-<img alt="Two tables: the first table contains the representation of s1 on the
-stack, consisting of its length (5), capacity (5), and a pointer to the first
-value in the second table. The second table contains the representation of the
-string data on the heap, byte by byte." src="img/trpl04-01.svg" class="center" style="width: 50%;">
+<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl04-01.svg?raw=true" class="">
 
 <span class="caption">Figure 4-1: Representation in memory of a <code>String</code> holding the value <code>"hello"</code> bound to <code>s1</code></span>
 
