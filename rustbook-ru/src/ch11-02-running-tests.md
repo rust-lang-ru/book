@@ -30,7 +30,7 @@ $ cargo test -- --test-threads=1
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-10/src/lib.rs}}
 ```
 
-<span class="caption">Листинг 11-10: Тест функции, которая использует макрос println!</span>
+<span class="caption">Листинг 11-10: Тест функции, которая использует макрос <code>println!</code></span>
 
 Результат вывода на консоль команды `cargo test`:
 
@@ -58,7 +58,7 @@ $ cargo test -- --show-output
 
 Для демонстрации, как запустить группу тестов, мы создадим группу тестов для функции `add_two` function, как показано в Листинге 11-11, и постараемся выбрать какие из них запускать.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-11/src/lib.rs}}
