@@ -52,7 +52,7 @@
 
     - [Хранение списков значений с векторами](ch08-01-vectors.md)
     - [Хранение закодированного текста UTF-8 со строками](ch08-02-strings.md)
-    - [Storing Keys with Associated Values in Hash Maps](ch08-03-hash-maps.md)
+    - [Хранение ключей со связанными значениями в HashMap](ch08-03-hash-maps.md)
 
 - [Обработка ошибок](ch09-00-error-handling.md)
 
@@ -62,7 +62,7 @@
 
 - [Общие типы, трейты (характеристики) и время жизни](ch10-00-generics.md)
 
-    - [Generic Data Types](ch10-01-syntax.md)
+    - [Обобщённые типы данных](ch10-01-syntax.md)
     - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
     - [Валидация ссылок посредством сроков жизни](ch10-03-lifetime-syntax.md)
 
