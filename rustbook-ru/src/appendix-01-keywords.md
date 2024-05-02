@@ -50,7 +50,7 @@
 - `await` — остановка выполнения до готовности результата `Future`
 - `break` — немедленный выход из цикла
 - `const` — определение константного элемента или неизменяемого сырого указателя
-- `continue` - continue to the next loop iteration
+- `continue` — досрочный переход к следующей итерации цикла
 - `crate` — ссылка на корень пакета в пути к модулю
 - `dyn` — динамическая отсылка к типажу объекта
 - `else` — альтернативные ветви для конструкций управления потока `if` и `if let`
@@ -78,8 +78,8 @@
 - `super` - parent module of the current module
 - `trait` — определение типажа
 - `true` — логический истинный литерал
-- `type` - define a type alias or associated type
-- `union` - define a [union](../reference/items/unions.html)<!-- ignore -->; is only a keyword when used in a union declaration
+- `type` — определение псевдонима типа или связанного типа
+- `union` - определить [объединение](../reference/items/unions.html)<!-- ignore -->; является ключевым словом только при использовании в объявлении объединения
 - `unsafe` — обозначение небезопасного кода, функций, типажей и их реализаций
 - `use` — ввод имён в область видимости
 - `where` — ограничение типа
