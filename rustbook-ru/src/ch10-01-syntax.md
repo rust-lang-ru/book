@@ -68,7 +68,7 @@ fn largest<T>(list: &[T]) -> &T {
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-07/src/main.rs}}
 ```
 
-<span class="caption">Listing 10-7: The fields <code>x</code> and <code>y</code> must be the same type because both have the same generic data type <code>T</code>.</span>
+<span class="caption">Листинг 10-7: поля <code>x</code> и <code>y</code> должны быть одного типа, так как они имеют один и тот же обобщённый тип <code>T</code></span>
 
 В этом примере, когда мы присваиваем целочисленное значение 5 переменной `x` , мы сообщаем компилятору, что обобщённый тип `T` будет целым числом для этого экземпляра `Point<T>`. Затем, когда мы указываем значение 4.0 (имеющее тип, отличный от целого числа) для `y`, который по нашему определению должен иметь тот же тип, что и `x`, мы получим ошибку несоответствия типов:
 
