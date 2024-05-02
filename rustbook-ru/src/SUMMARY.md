@@ -46,13 +46,13 @@
     - [Определение модулей для управления областью действия и конфиденциальностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
     - [Пути для ссылки на элемент в дереве модулей](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
-    - [Разделение модулей на разные файлы](ch07-05-separating-modules-into-different-files.md)
+    - [Separating Modules into Different Files](ch07-05-separating-modules-into-different-files.md)
 
 - [Общие коллекции](ch08-00-common-collections.md)
 
     - [Хранение списков значений с векторами](ch08-01-vectors.md)
     - [Хранение закодированного текста UTF-8 со строками](ch08-02-strings.md)
-    - [Хранение ключей со связанными значениями в HashMap](ch08-03-hash-maps.md)
+    - [Storing Keys with Associated Values in Hash Maps](ch08-03-hash-maps.md)
 
 - [Обработка ошибок](ch09-00-error-handling.md)
 
@@ -62,15 +62,15 @@
 
 - [Общие типы, трейты (характеристики) и время жизни](ch10-00-generics.md)
 
-    - [Обобщённые типы данных](ch10-01-syntax.md)
+    - [Generic Data Types](ch10-01-syntax.md)
     - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
-    - [Проверка ссылок с временем жизни](ch10-03-lifetime-syntax.md)
+    - [Validating References with Lifetimes](ch10-03-lifetime-syntax.md)
 
 - [Написание автоматических тестов](ch11-00-testing.md)
 
     - [Как писать тесты](ch11-01-writing-tests.md)
     - [Управление выполнением тестов](ch11-02-running-tests.md)
-    - [Организация тестов](ch11-03-test-organization.md)
+    - [Test Organization](ch11-03-test-organization.md)
 
 - [Проект с вводом-выводом: создание программы командной строки](ch12-00-an-io-project.md)
 
@@ -131,9 +131,9 @@
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
     - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
-    - [Продвинутые типажи](ch19-03-advanced-traits.md)
+    - [Advanced Traits](ch19-03-advanced-traits.md)
     - [Продвинутые типы](ch19-04-advanced-types.md)
-    - [Продвинутые функции и замыкания](ch19-05-advanced-functions-and-closures.md)
+    - [Advanced Functions and Closures](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
 
 - [Финальный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
