@@ -64,13 +64,13 @@
 
     - [Generic Data Types](ch10-01-syntax.md)
     - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
-    - [Validating References with Lifetimes](ch10-03-lifetime-syntax.md)
+    - [Валидация ссылок посредством сроков жизни](ch10-03-lifetime-syntax.md)
 
 - [Написание автоматических тестов](ch11-00-testing.md)
 
     - [Как писать тесты](ch11-01-writing-tests.md)
     - [Управление выполнением тестов](ch11-02-running-tests.md)
-    - [Test Organization](ch11-03-test-organization.md)
+    - [Организация тестов](ch11-03-test-organization.md)
 
 - [Проект с вводом-выводом: создание программы командной строки](ch12-00-an-io-project.md)
 
