@@ -61,7 +61,7 @@ match x {
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-02/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 18-2: Using a <code>while let</code> loop to print values for as long as <code>stack.pop()</code> returns <code>Some</code></span>
+<span class="caption">Листинг 18-2: Использование цикла <code>while let</code> для печати значений до тех пор, пока <code>stack.pop()</code> возвращает <code>Some</code></span>
 
 В этом примере выводится 3, 2, а затем 1. Метод `pop` извлекает последний элемент из вектора и возвращает `Some(value)`. Если вектор пуст, то `pop` возвращает `None`. Цикл `while` продолжает выполнение кода в своём блоке, пока `pop` возвращает `Some`. Когда `pop` возвращает `None`, цикл останавливается. Мы можем использовать `while let` для удаления каждого элемента из стека.
 
