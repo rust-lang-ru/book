@@ -46,7 +46,7 @@
     - [Определение модулей для управления областью действия и конфиденциальностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
     - [Пути для ссылки на элемент в дереве модулей](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
-    - [Разделение модулей на разные файлы](ch07-05-separating-modules-into-different-files.md)
+    - [Separating Modules into Different Files](ch07-05-separating-modules-into-different-files.md)
 
 - [Общие коллекции](ch08-00-common-collections.md)
 
@@ -64,7 +64,7 @@
 
     - [Обобщённые типы данных](ch10-01-syntax.md)
     - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
-    - [Проверка ссылок с временем жизни](ch10-03-lifetime-syntax.md)
+    - [Валидация ссылок посредством сроков жизни](ch10-03-lifetime-syntax.md)
 
 - [Написание автоматических тестов](ch11-00-testing.md)
 
