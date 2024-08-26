@@ -191,10 +191,18 @@
 <h4 id="mutext-api"><a class="header" href="#mutext-api"><code>Mutex&lt;T&gt;</code> API</a></h4>
 <p>Давайте рассмотрим пример использования мьютекса в приложении 16-12 без использования нескольких потоков:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-12/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::sync::Mutex;
+
+fn main() {
+    let m = Mutex::new(5);
+
+    {
+        let mut num = m.lock().unwrap();
+        *num = 6;
+    }
+
+    println!("m = {m:?}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 16-12: Изучение API <code>Mutex&lt;T&gt;</code> для простоты в однопоточном среде</span></p>
 <p>Как и во многих других видах, мы создаём <code>Mutex&lt;T&gt;</code> с помощью сопутствующей функции <code>new</code>. Чтобы получить доступ к данным внутри мьютекса, мы используем способ <code>lock</code> для получения блокировки. Этот вызов блокирует выполнение текущего потока, так что он не сможет выполнять никакие действия, до тех пор пока не наступит наша очередь получить блокировку.</p>
 <p>Вызов <code>lock</code> потерпит неудачу, если другой поток, удерживающий блокировку, запаникует. В таком случае никто не сможет получить блокировку, поэтому мы предпочли использовать <code>unwrap</code> и заставить этот поток паниковать, если мы окажемся в такой ситуации.</p>
@@ -204,21 +212,117 @@
 <h4 id="Разделение-mutext-между-множеством-потоков"><a class="header" href="#Разделение-mutext-между-множеством-потоков">Разделение <code>Mutex&lt;T&gt;</code> между множеством потоков</a></h4>
 <p>Теперь давайте попробуем с помощью <code>Mutex&lt;T&gt;</code> совместно использовать значение между несколькими потоками. Мы стартуем 10 потоков и каждый из них увеличивает значение счётчика на 1, поэтому счётчик изменяется от 0 до 10. Обратите внимание, что в следующих нескольких примерах будут ошибки сборщика и мы будем использовать эти ошибки, чтобы узнать больше об использовании вида <code>Mutex&lt;T&gt;</code> и как Rust помогает нам правильно его использовать. Приложение 16-13 содержит наш начальный пример:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-13/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use std::sync::Mutex;
+use std::thread;
+
+fn main() {
+    let counter = Mutex::new(0);
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}</code></pre>
 <p><span class="caption">Приложение 16-13. Десять потоков, увеличивающих счётчик, защищённый <code>Mutex&lt;T&gt;</code></span></p>
 <p>Мы создаём переменную-счётчик <code>counter</code> для хранения <code>i32</code> значения внутри <code>Mutex&lt;T&gt;</code>, как мы это делали в приложении 16-12. Затем мы создаём 10 потоков, перебирая рядчисел. Мы используем <code>thread::spawn</code> и передаём всем этим потокам одинаковое замыкание, которое перемещает счётчик в поток, запрашивает блокировку на <code>Mutex&lt;T&gt;</code>, вызывая способ <code>lock</code>, а затем добавляет 1 к значению в мьютексе. Когда поток завершит выполнение своего замыкания, <code>num</code> выйдет из области видимости и освободит блокировку, чтобы её мог получить другой поток.</p>
 <p>В основном потоке мы собираем все дескрипторы в переменную handles. Затем, как мы это делали в приложении 16-2, вызываем <code>join</code> для каждого дескриптора, чтобы убедиться в завершении всех потоков. В этот момент основной поток получит доступ к блокировке и тоже напечатает результат программы.</p>
 <p>Сборщик намекнул, что этот пример не собирается. Давайте выясним почему!</p>
-<pre><code class="language-console">{{#include ../listings/ch16-fearless-concurrency/listing-16-13/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling shared-state v0.1.0 (file:///projects/shared-state)
+error[E0382]: borrow of moved value: `counter`
+  --&gt; src/main.rs:21:29
+   |
+5  |     let counter = Mutex::new(0);
+   |         ------- move occurs because `counter` has type `Mutex&lt;i32&gt;`, which does not implement the `Copy` trait
+...
+8  |     for _ in 0..10 {
+   |     -------------- inside of this loop
+9  |         let handle = thread::spawn(move || {
+   |                                    ------- value moved into closure here, in previous iteration of loop
+...
+21 |     println!("Result: {}", *counter.lock().unwrap());
+   |                             ^^^^^^^ value borrowed here after move
+   |
+help: consider moving the expression out of the loop so it is only moved once
+   |
+8  ~     let mut value = counter.lock();
+9  ~     for _ in 0..10 {
+10 |         let handle = thread::spawn(move || {
+11 ~             let mut num = value.unwrap();
+   |
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `shared-state` (bin "shared-state") due to 1 previous error
 </code></pre>
 <p>Сообщение об ошибке указывает, что значение <code>counter</code> было перемещёно в замыкание на предыдущей повторения цикла. Rust говорит нам, что мы не можем передать <code>counter</code> во владение  нескольким потокам. Давайте исправим ошибку сборщика с помощью способа множественного владения, который мы обсуждали в главе 15.</p>
 <h4 id="Множественное-владение-между-множеством-потоков"><a class="header" href="#Множественное-владение-между-множеством-потоков">Множественное владение между множеством потоков</a></h4>
 <p>В главе 15 мы давали значение нескольким владельцам, используя умный указатель <code>Rc&lt;T&gt;</code> для создания значения подсчитанных ссылок. Давайте сделаем то же самое здесь и посмотрим, что произойдёт. Мы завернём <code>Mutex&lt;T&gt;</code> в <code>Rc&lt;T&gt;</code> в приложении 16-14 и клонируем <code>Rc&lt;T&gt;</code> перед передачей владения в поток. Теперь, когда мы увидели ошибки, мы также вернёмся к использованию цикла <code>for</code> и сохраним ключевое слово <code>move</code> у замыкания.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-14/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use std::rc::Rc;
+use std::sync::Mutex;
+use std::thread;
+
+fn main() {
+    let counter = Rc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Rc::clone(&amp;counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}</code></pre>
 <p><span class="caption">Приложение 16-14: Попытка использования <code>Rc&lt;T&gt;</code>, чтобы позволить нескольким потокам владеть <code>Mutex&lt;T&gt;</code></span></p>
 <p>Ещё раз, мы собираем и получаем ... другие ошибки! Сборщик  учит нас.</p>
-<pre><code class="language-console">{{#include ../listings/ch16-fearless-concurrency/listing-16-14/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling shared-state v0.1.0 (file:///projects/shared-state)
+error[E0277]: `Rc&lt;Mutex&lt;i32&gt;&gt;` cannot be sent between threads safely
+  --&gt; src/main.rs:11:36
+   |
+11 |           let handle = thread::spawn(move || {
+   |                        ------------- ^------
+   |                        |             |
+   |  ______________________|_____________within this `{closure@src/main.rs:11:36: 11:43}`
+   | |                      |
+   | |                      required by a bound introduced by this call
+12 | |             let mut num = counter.lock().unwrap();
+13 | |
+14 | |             *num += 1;
+15 | |         });
+   | |_________^ `Rc&lt;Mutex&lt;i32&gt;&gt;` cannot be sent between threads safely
+   |
+   = help: within `{closure@src/main.rs:11:36: 11:43}`, the trait `Send` is not implemented for `Rc&lt;Mutex&lt;i32&gt;&gt;`, which is required by `{closure@src/main.rs:11:36: 11:43}: Send`
+note: required because it's used within this closure
+  --&gt; src/main.rs:11:36
+   |
+11 |         let handle = thread::spawn(move || {
+   |                                    ^^^^^^^
+note: required by a bound in `spawn`
+  --&gt; /rustc/129f3b9964af4d4a709d1383930ade12dfe7c081/library/std/src/thread/mod.rs:691:1
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `shared-state` (bin "shared-state") due to 1 previous error
 </code></pre>
 <p>Ничего себе, это сообщение об ошибке очень многословно! Вот важная часть, на которой следует сосредоточиться: ``Rc&lt;Mutex<i32>&gt;<code> cannot be sent between threads safely</code>. Сборщик также сообщает нам причину: <code>the trait </code>Send<code>is not implemented for</code>Rc&lt;Mutex<i32>&gt;<code> </code>. Мы поговорим о <code>Send</code> в следующем разделе: это один из типажей, который заверяет, что виды которые мы используем с потоками, предназначены для использования в многопоточном коде.</p>
 <p>К сожалению, <code>Rc&lt;T&gt;</code> небезопасен для совместного использования между потоками. Когда <code>Rc&lt;T&gt;</code> управляет счётчиком ссылок, он добавляется значение к счётчику для каждого вызова <code>clone</code> и вычитается значение из счётчика, когда каждое клонированное значение удаляется при выходе из области видимости. Но он не использует примитивы многопоточности, чтобы обеспечить, что изменения в подсчёте не могут быть прерваны другим потоком. Это может привести к неправильным подсчётам - незначительным ошибкам, которые в свою очередь, могут привести к утечкам памяти или удалению значения до того, как мы отработали с ним. Нам нужен вид точно такой же как <code>Rc&lt;T&gt;</code>, но который позволяет изменять счётчик ссылок безопасно из разных потоков.</p>
@@ -227,10 +331,29 @@
 <p>Вы можете спросить, почему все примитивные виды не являются атомарными и почему стандартные виды библиотек не реализованы для использования вместе с видом <code>Arc&lt;T&gt;</code> по умолчанию. Причина в том, что безопасность потоков сопровождается снижением производительности, которое вы хотите платить только тогда, когда вам это действительно нужно. Если вы просто выполняете действия со значениями в одном потоке, то ваш код может работать быстрее, если он не должен обеспечивать заверения предоставляемые atomics.</p>
 <p>Давайте вернёмся к нашему примеру: виды <code>Arc&lt;T&gt;</code> и <code>Rc&lt;T&gt;</code> имеют одинаковый API, поэтому мы исправляем нашу программу, заменяя вид в строках <code>use</code>, вызове <code>new</code> и вызове <code>clone</code>. Код в приложении 16-15, наконец ссобирается и запустится:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-15/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&amp;counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}</code></pre></pre>
 <p><span class="caption">Приложение 16-15: Использование вида <code>Arc&lt;T&gt;</code> для обёртывания <code>Mutex&lt;T&gt;</code>, теперь несколько потоков могут совместно владеть мьютексом</span></p>
 <p>Код напечатает следующее:</p>
 <!-- Not extracting output because changes to this output aren't significant;

@@ -184,12 +184,42 @@
 <p>Изложение <code>#[cfg(test)]</code> у модуля с тестами указывает Rust собирать и запускать только код тестов, когда выполняется приказ <code>cargo test</code>, а не когда запускается <code>cargo build</code>. Это экономит время сборки, если вы только хотите собрать библиотеку и сэкономить место для результирующих собранных артефактов, потому что тесты не будут включены. Вы увидите что, по причине того, что встроенные тесты помещаются в другой каталог им не нужна изложение <code>#[cfg(test)]</code>. Тем не менее, так как модульные тесты идут в тех же файлах что и основной код, вы будете использовать <code>#[cfg(test)]</code> чтобы указать, что они не должны быть включены в собранный результат.</p>
 <p>Напомним, что когда мы генерировали новый проект <code>adder</code> в первом разделе этой главы, то Cargo сгенерировал для нас код ниже:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn add(left: usize, right: usize) -&gt; usize {
+    left + right
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+}</code></pre>
 <p>Этот код является самостоятельно сгенерированным тестовым модулем. Атрибут <code>cfg</code> предназначен для <em>настройке</em> и говорит Rust, что следующий элемент должен быть включён только учитывая определённую опцию настройке. В этом случае опцией настройке является <code>test</code>, который предоставлен в Rust для сборки и запуска текущих тестов. Используя атрибут <code>cfg</code>, Cargo собирает только тестовый код при активном запуске тестов приказом <code>cargo test</code>. Это включает в себя любые вспомогательные функции, которые могут быть в этом модуле в дополнение к функциям помеченным <code>#[test]</code>.</p>
 <h4 id="Тестирование-приватных-функций-private"><a class="header" href="#Тестирование-приватных-функций-private">Тестирование приватных функций (private)</a></h4>
 <p>Сообщество программистов не имеет однозначного мнения по поводу тестировать или нет приватные функции. В некоторых языках весьма сложно или даже невозможно тестировать такие функции. Независимо от того, какой технологии тестирования вы придерживаетесь, в Rust приватные функции можно тестировать. Рассмотрим приложение 11-12 с приватной функцией <code>internal_adder</code>.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-12/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn add_two(a: usize) -&gt; usize {
+    internal_adder(a, 2)
+}
+
+fn internal_adder(left: usize, right: usize) -&gt; usize {
+    left + right
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn internal() {
+        let result = internal_adder(2, 2);
+        assert_eq!(result, 4);
+    }
+}</code></pre>
 <p><span class="caption">Приложение 11-12: Тестирование приватных функций</span></p>
 <p>Обратите внимание, что функция <code>internal_adder</code> не помечена как <code>pub</code>. Тесты — это просто Rust код, а модуль <code>tests</code> — это ещё один модуль. Как мы обсуждали в разделе <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">“Пути для ссылки на элемент в дереве модулей“</a><!--  -->, элементы в дочерних модулях могут использовать элементы из своих родительских модулей. В этом тесте мы помещаем все элементы родительского модуля <code>test</code> в область видимости с помощью <code>use super::*</code> и затем тест может вызывать <code>internal_adder</code>. Если вы считаете, что приватные функции не нужно тестировать, то Rust не заставит вас это сделать.</p>
 <h3 id="Встраиваемые-тесты"><a class="header" href="#Встраиваемые-тесты">Встраиваемые тесты</a></h3>
@@ -207,27 +237,94 @@
 </code></pre>
 <p>Введите код из приложения 11-13 в файл <em>tests/integration_test.rs</em> file:</p>
 <p><span class="filename">Файл: tests/integration_test.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-13/tests/integration_test.rs}}</code></pre>
+<pre><code class="language-rust ignore">use adder::add_two;
+
+#[test]
+fn it_adds_two() {
+    let result = add_two(2);
+    assert_eq!(result, 4);
+}</code></pre>
 <p><span class="caption">Приложение 11-13: Встраиваемая тест функция из крейта <code>adder</code></span></p>
 <p>Каждый файл в каталоге <code>tests</code> представляет собой отдельный крейт, поэтому нам нужно подключить нашу библиотеку в область видимости каждого тестового крейта. По этой причине мы добавляем <code>use adder</code> в верхней части кода, что не нужно нам делать в модульных тестах.</p>
 <p>Нам не нужно комментировать код в <em>tests/integration_test.rs</em> с помощью <code>#[cfg(test)]</code>. Cargo особым образом обрабатывает каталог <code>tests</code> и собирает файлы в этом каталоге только тогда, когда мы запускаем приказ <code>cargo test</code>. Запустите <code>cargo test</code> сейчас:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-13/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.31s
+     Running unittests src/lib.rs (target/debug/deps/adder-1082c4b063a8fbe6)
+
+running 1 test
+test tests::internal ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration_test.rs (target/debug/deps/integration_test-1082c4b063a8fbe6)
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Выходные данные представлены тремя разделами: модульные тесты, встроенные тесты и тесты документации. Обратите внимание, что если какой-нибудь тест в одной из секций не пройдёт, последующие секции выполняться не будут. Например, если модульный тест провалился, не будет выведено результатов встроенных и документационных тестов, потому что эти тесты будут выполняться только в том случае, если все модульные тесты завершатся успешно.</p>
 <p>Первый раздел для модульных тестов такой же, как мы видели: одна строка для каждого модульного теста (один с именем <code>internal</code>, который мы добавили в приложении 11-12), а затем сводная строка для модульных тестов.</p>
 <p>Раздел встроенных тестов начинается со строки <code>Running tests/integration_test.rs</code>. Далее идёт строка для каждой тестовой функции в этом встроенном тесте и итоговая строка для результатов встроенного теста непосредственно перед началом раздела <code>Doc-tests adder</code>.</p>
 <p>Каждый файл встроенного теста имеет свой собственный раздел, поэтому, если мы добавим больше файлов в каталог <em>tests</em>, то здесь будет больше разделов встроенного теста.</p>
 <p>Мы всё ещё можем запустить определённую функцию в встроенных тестах, указав имя тест функции в качестве переменной в <code>cargo test</code>. Чтобы запустить все тесты в определенном файле встроенных тестов, используйте переменная <code>--test</code> сопровождаемый именем файла у приказы <code>cargo test</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/output-only-05-single-integration/output.txt}}
+<pre><code class="language-console">$ cargo test --test integration_test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests/integration_test.rs (target/debug/deps/integration_test-82e7799c1bc62298)
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Этот приказ запускает только тесты в файле <em>tests/integration_test.rs</em>.</p>
 <h4 id="Подмодули-в-встроенных-тестах"><a class="header" href="#Подмодули-в-встроенных-тестах">Подмодули в встроенных тестах</a></h4>
 <p>По мере добавления большего количества встроенных тестов, можно создать более одного файла в каталоге  <em>tests</em>, чтобы легче организовывать их; например, вы можете сгруппировать функции тестирования по функциональности, которую они проверяют. Как упоминалось ранее, каждый файл в каталоге <em>tests</em> собран как отдельный крейт, что полезно для создания отдельных областей видимости, чтобы более точно создавать видимость то, как конечные пользователи будут использовать ваш крейт. Однако это означает, что файлы в каталоге <em>tests</em> ведут себя не так, как файлы в <em>src</em>, как вы узнали в Главе 7 относительно того как разделить код на модули и файлы.</p>
 <p>Различное поведение файлов в каталоге <em>tests</em> наиболее заметно, когда у вас есть набор вспомогательных функций, которые будут полезны в нескольких встроенных тестовых файлах. Представим, что вы пытаетесь выполнить действия, описанные в разделе <a href="ch07-05-separating-modules-into-different-files.html">«Разделение модулей в разные файлы»</a><!--  --> главы 7, чтобы извлечь их в общий модуль. Например, вы создали файл <em>tests/common.rs</em> и поместили в него функцию <code>setup</code>, содержащую некоторый код, который вы будете вызывать из разных тестовых функций в нескольких тестовых файлах</p>
 <p><span class="filename">Файл: tests/common.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-12-shared-test-code-problem/tests/common.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn setup() {
+    // setup code specific to your library's tests would go here
+}</code></pre>
 <p>Когда мы снова запустим тесты, мы увидим новый раздел в результатах тестов для файла <em>common.rs</em>, хотя этот файл не содержит никаких тестовых функций, более того, мы даже не вызывали функцию <code>setup</code> откуда либо:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-12-shared-test-code-problem/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.89s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 1 test
+test tests::internal ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/common.rs (target/debug/deps/common-92948b65e88960b4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration_test.rs (target/debug/deps/integration_test-92948b65e88960b4)
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Упоминание файла <code>common</code> и появление в результатах выполнения тестов сообщения вида <code>running 0 tests</code> - это не то, чего мы хотели. Мы только хотели выделить некоторый общий код, который будет использоваться другими файлами встроенных тестов.</p>
 <p>Чтобы модуль <code>common</code> больше не появлялся в результатах выполнения тестов, вместо файла <em>tests/common.rs</em> мы создадим файл <em>tests/common/mod.rs</em>. Директория проекта теперь выглядит следующим образом:</p>
@@ -243,7 +340,17 @@
 <p>Здесь используется более раннее соглашение об именовании файлов, которое Rust также понимает. Мы говорили об этом в разделе <a href="ch07-05-separating-modules-into-different-files.html#alternate-file-paths">“Иные пути к файлам”</a> главы 7. Именование файла таким образом говорит, что Rust не должен рассматривать модуль <code>common</code> как файл встроенных тестов. Когда мы перемещаем код функции <code>setup</code> в файл <em>tests/common/mod.rs</em> и удаляем файл <em>tests/common.rs</em>, дополнительный раздел больше не будет отображаться в результатах тестов. Файлы в подкаталогах каталога <em>tests</em> не собираются как отдельные крейты или не появляются в результатах выполнения тестов.</p>
 <p>После того, как мы создали файл <em>tests/common/mod.rs</em>, мы можем использовать его в любых файлах встроенных тестов как обычный модуль. Вот пример вызова функции <code>setup</code> из теста <code>it_adds_two</code> в файле <em>tests/integration_test.rs</em>:</p>
 <p><span class="filename">Файл: tests/integration_test.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-13-fix-shared-test-code-problem/tests/integration_test.rs}}</code></pre>
+<pre><code class="language-rust ignore">use adder::add_two;
+
+mod common;
+
+#[test]
+fn it_adds_two() {
+    common::setup();
+
+    let result = add_two(2);
+    assert_eq!(result, 4);
+}</code></pre>
 <p>Обратите внимание, что  объявление <code>mod common;</code> совпадает с объявлением модуля, которое отображено в приложении 7-21. Затем в тестовой функции мы можем вызвать функцию <code>common::setup()</code>.</p>
 <h4 id="Встраиваемые-тесты-для-двоичных-крейтов"><a class="header" href="#Встраиваемые-тесты-для-двоичных-крейтов">Встраиваемые тесты для двоичных крейтов</a></h4>
 <p>Если наш проект является двоичным крейтом, который содержит только <em>src/main.rs</em> и не содержит <em>src/lib.rs</em>, мы не сможем создать встроенные тесты в папке <em>tests</em> и подключить функции определённые в файле <em>src/main.rs</em> в область видимости с помощью указания <code>use</code>. Только библиотечные крейты могут предоставлять функции, которые можно использовать в других крейтах; двоичные крейты предназначены только для самостоятельного запуска.</p>

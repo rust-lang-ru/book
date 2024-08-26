@@ -188,10 +188,22 @@
 <h3 id="Создание-нового-потока-с-помощью--spawn"><a class="header" href="#Создание-нового-потока-с-помощью--spawn">Создание нового потока с помощью  <code>spawn</code></a></h3>
 <p>Чтобы создать новый поток, мы вызываем функцию <code>thread::spawn</code> и передаём ей замыкание (мы говорили о замыканиях в главе 13), содержащее код, который мы хотим запустить в новом потоке. Пример в приложении 16-1 печатает некоторый текст из основного потока, а также другой текст из нового потока:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-01/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+use std::time::Duration;
+
+fn main() {
+    thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+}</code></pre></pre>
 <p><span class="caption">Приложение 16-1: Создание нового потока для печати определённого текста, в то время как основной поток печатает что-то другое</span></p>
 <p>Обратите внимание, что когда основной поток программы на Rust завершается, все порождённые потоки закрываются, независимо от того, завершили они работу или нет. Вывод этой программы может каждый раз немного отличаться, но он будет выглядеть примерно так:</p>
 <!-- Not extracting output because changes to this output aren't significant;
@@ -213,10 +225,24 @@ hi number 5 from the spawned thread!
 <p>Код в приложении 16-1 преждевременно останавливает порождённый поток в большинстве случаев, из-за завершения основного потока. Более того, так как порядок выполнения потоков чётко не определён, этот код не даёт заверения, что порождённый поток вообще начнёт исполняться!</p>
 <p>Мы можем исправить проблему, когда созданный поток не запускается или завершается преждевременно, сохранив возвращаемое значение <code>thread::spawn</code> в какой-либо переменной. Вид возвращаемого значения <code>thread::spawn</code> — <code>JoinHandle</code> . <code>JoinHandle</code> — это владеющее значение, которое, при вызове способа <code>join</code> , будет ждать завершения своего потока. Приложение 16-2 отображает, как использовать <code>JoinHandle</code> потока, созданного в приложении 16-1, и вызывать функцию <code>join</code> , для того, чтобы убедиться, что порождённый поток завершится раньше, чем поток <code>main</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-02/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+
+    handle.join().unwrap();
+}</code></pre></pre>
 <p><span class="caption">Приложение 16-2. Сохранение значения <code>JoinHandle</code> потока <code>thread::spawn</code> , обеспечивающее, что поток выполнит всю необходимую работу, перед тем, как завершится</span></p>
 <p>Вызов <code>join</code> у дескриптора блокирует текущий поток, пока поток, представленный дескриптором не завершится. <em>Блокировка</em> потока означает, что потоку запрещено выполнять работу или выходить из него. Поскольку мы поместили вызов <code>join</code> после цикла <code>for</code> основного потока, выполнение приложения 16-2 должно привести к выводу, подобному следующему:</p>
 <!-- Not extracting output because changes to this output aren't significant;
@@ -239,10 +265,24 @@ hi number 9 from the spawned thread!
 <p>Два потока продолжают чередоваться, но основной поток находится в ожидании из-за вызова <code>handle.join()</code> и не завершается до тех пор, пока не завершится запущенный поток.</p>
 <p>Но давайте посмотрим, что произойдёт, если мы вместо этого переместим <code>handle.join()</code> перед циклом <code>for</code> в <code>main</code>, например так:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch16-fearless-concurrency/no-listing-01-join-too-early/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    handle.join().unwrap();
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+}</code></pre></pre>
 <p>Основной поток будет ждать завершения порождённого потока, а затем запустит свой цикл <code>for</code> , поэтому выходные данные больше не будут чередоваться, как показано ниже:</p>
 <!-- Not extracting output because changes to this output aren't significant;
 the changes are likely to be due to the threads running differently rather than
@@ -266,15 +306,61 @@ hi number 4 from the main thread!
 <p>Мы часто используем ключевое слово <code>move</code> с замыканиями, переданными в <code>thread::spawn</code>, потому что в этом случае замыкание получает из окружения права владения на используемые им значения, таким образом передавая права владения этими значениями от одного потока к другому. В разделе <a href="ch13-01-closures.html#capturing-references-or-moving-ownership">"Захват ссылок или перемещение прав владения"</a> главы 13 мы обсудили <code>move</code> в среде замыканий. Теперь мы сосредоточимся на взаимодействии между <code>move</code> и <code>thread::spawn</code>.</p>
 <p>Обратите внимание, что в приложении 16-1 замыкание, которое мы передаём в <code>thread::spawn</code> не принимает переменных: мы не используем никаких данных из основного потока в коде порождённого потока. Чтобы использовать данные из основного потока в порождённом потоке, замыкание порождённого потока должно захватывать значения, которые ему необходимы. Приложение 16-3 показывает попытку создать вектор в главном потоке и использовать его в порождённом потоке. Тем не менее, это не будет работать, как вы увидите через мгновение.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-03/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use std::thread;
+
+fn main() {
+    let v = vec![1, 2, 3];
+
+    let handle = thread::spawn(|| {
+        println!("Here's a vector: {v:?}");
+    });
+
+    handle.join().unwrap();
+}</code></pre>
 <p><span class="caption">Приложение 16-3: Попытка использовать вектор, созданный основным потоком, в другом потоке</span></p>
 <p>Замыкание использует переменную <code>v</code>, поэтому оно захватит <code>v</code> и сделает его частью окружения замыкания. Поскольку <code>thread::spawn</code> запускает это замыкание в новом потоке, мы должны иметь доступ к <code>v</code> внутри этого нового потока. Но при сборки этого примера, мы получаем следующую ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch16-fearless-concurrency/listing-16-03/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling threads v0.1.0 (file:///projects/threads)
+error[E0373]: closure may outlive the current function, but it borrows `v`, which is owned by the current function
+ --&gt; src/main.rs:6:32
+  |
+6 |     let handle = thread::spawn(|| {
+  |                                ^^ may outlive borrowed value `v`
+7 |         println!("Here's a vector: {v:?}");
+  |                                     - `v` is borrowed here
+  |
+note: function requires argument type to outlive `'static`
+ --&gt; src/main.rs:6:18
+  |
+6 |       let handle = thread::spawn(|| {
+  |  __________________^
+7 | |         println!("Here's a vector: {v:?}");
+8 | |     });
+  | |______^
+help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
+  |
+6 |     let handle = thread::spawn(move || {
+  |                                ++++
+
+For more information about this error, try `rustc --explain E0373`.
+error: could not compile `threads` (bin "threads") due to 1 previous error
 </code></pre>
 <p>Rust <em>выводит</em> как захватить <code>v</code> и так как в <code>println!</code> нужна только ссылка на <code>v</code>, то замыкание пытается заимствовать <code>v</code>. Однако есть проблема: Rust не может определить, как долго будет работать порождённый поток, поэтому он не знает, будет ли всегда действительной ссылка на <code>v</code>.</p>
 <p>В приложении 16-4 приведён сценарий, который с большей вероятностью будет иметь ссылку на <code>v</code>, что будет недопустимо:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-04/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use std::thread;
+
+fn main() {
+    let v = vec![1, 2, 3];
+
+    let handle = thread::spawn(|| {
+        println!("Here's a vector: {v:?}");
+    });
+
+    drop(v); // oh no!
+
+    handle.join().unwrap();
+}</code></pre>
 <p><span class="caption">Приложение 16-4. Поток с замыканием, который пытается захватить ссылку на <code>v</code> из основного потока, удаляющего <code>v</code></span></p>
 <p>Если бы Rust позволил нам запустить этот код, есть вероятность, что порождённый поток был бы немедленно переведён в фоновый режим, не выполнив ничего. Порождённый поток имеет ссылку на <code>v</code>, но основной поток немедленно удаляет <code>v</code> , используя функцию <code>drop</code> , которую мы обсуждали в главе 15. Затем, когда порождённый поток начинает выполняться, <code>v</code> уже не существует, поэтому ссылка на него также будет недействительной. О, нет!</p>
 <p>Чтобы исправить ошибку сборщика в приложении 16-3, мы можем использовать совет из сообщения об ошибке:</p>
@@ -288,13 +374,37 @@ after automatic regeneration, look at listings/ch16-fearless-concurrency/listing
 </code></pre>
 <p>Добавляя ключевое слово <code>move</code> перед замыканием, мы заставляем замыкание забирать используемые значения во владение, вместо того, чтобы позволить Rust вывести необходимость заимствования значения. Модификация Приложения 16-3, показанная в Приложении 16-5, будет собрана и запущена так, как мы ожидаем:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-05/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+
+fn main() {
+    let v = vec![1, 2, 3];
+
+    let handle = thread::spawn(move || {
+        println!("Here's a vector: {v:?}");
+    });
+
+    handle.join().unwrap();
+}</code></pre></pre>
 <p><span class="caption">Приложение 16-5. Использование ключевого слова <code>move</code> , чтобы замыкание стало владельцем используемых им значений.</span></p>
 <p>У нас может возникнуть соблазн попробовать то же самое, чтобы исправить код в приложении 16.4, где основной поток вызывал <code>drop</code> с помощью замыкания <code>move</code> . Однако это исправление не сработает, потому что то, что пытается сделать приложение 16.4, запрещено по другой причине. Если мы добавим <code>move</code> к замыканию, мы переместим <code>v</code> в окружение замыкания и больше не сможем вызывать для него <code>drop</code> в основном потоке. Вместо этого мы получим эту ошибку сборщика:</p>
-<pre><code class="language-console">{{#include ../listings/ch16-fearless-concurrency/output-only-01-move-drop/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling threads v0.1.0 (file:///projects/threads)
+error[E0382]: use of moved value: `v`
+  --&gt; src/main.rs:10:10
+   |
+4  |     let v = vec![1, 2, 3];
+   |         - move occurs because `v` has type `Vec&lt;i32&gt;`, which does not implement the `Copy` trait
+5  |
+6  |     let handle = thread::spawn(move || {
+   |                                ------- value moved into closure here
+7  |         println!("Here's a vector: {v:?}");
+   |                                     - variable moved due to use in closure
+...
+10 |     drop(v); // oh no!
+   |          ^ value used here after move
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `threads` (bin "threads") due to 1 previous error
 </code></pre>
 <p>Правила владения Rust снова нас спасли! Мы получили ошибку кода из приложения 16-3, потому что Rust был консервативен и заимствовал <code>v</code> только для потока, что означало, что основной поток теоретически может сделать недействительной ссылку на порождённый поток. Сообщив Rust о передаче владения <code>v</code> в порождаемый поток, мы заверяем Rust, что основной поток больше не будет использовать <code>v</code>. Если мы изменим Приложение 16-4 таким же образом, то мы нарушаем правила владения при попытке использовать <code>v</code> в главном потоке. Ключевое слово <code>move</code> отменяет основное консервативное поведение Rust по заимствованию, что не позволяет нам нарушать правила владения.</p>
 <p>Имея достаточное понимание потоков и API потоков, давайте посмотрим, что мы можем <em>делать</em> с помощью потоков.</p>

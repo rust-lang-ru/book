@@ -190,7 +190,20 @@
 <p>Любые другие изменения, сделанные в записи, не должны иметь никакого эффекта. Например, если мы попытаемся подтвердить черновик записи в блоге до того, как запросим проверку, запись должна остаться неопубликованным черновиком.</p>
 <p>В приложении 17-11 показан этот поток действий в виде кода: это пример использования API, который мы собираемся реализовать в библиотеке (крейте) с именем <code>blog</code>. Он пока не собирается, потому что крейт <code>blog</code> ещё не создан.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch17-oop/listing-17-11/src/main.rs:all}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use blog::Post;
+
+fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+    assert_eq!("", post.content());
+
+    post.request_review();
+    assert_eq!("", post.content());
+
+    post.approve();
+    assert_eq!("I ate a salad for lunch today", post.content());
+}</code></pre>
 <p><span class="caption">Приложение 17-11: Код, отображающий желаемое поведение, которое мы хотим получить в крейте <code>blog</code></span></p>
 <p>Мы хотим, чтобы пользователь мог создать новый черновик записи в блоге с помощью <code>Post::new</code>. Затем мы хотим разрешить добавление текста в запись блога. Если мы попытаемся получить содержимое записи сразу, до её проверки, мы не должны получить никакого текста на выходе, потому что запись все ещё является черновиком. Мы добавили утверждение (<code>assert_eq!</code>) в коде для опытных целей. Утверждение (assertion), что черновик записи блога должен возвращать пустую строку из способа <code>content</code> было бы отличным модульным тестом, но мы не собираемся писать тесты для этого примера.</p>
 <p>Далее мы хотим разрешить сделать запрос на проверку записи и хотим, чтобы <code>content</code> возвращал пустую строку, пока проверки не завершена. Когда запись пройдёт проверку, она должна быть опубликована, то есть при вызове <code>content</code> будет возвращён текст записи.</p>
@@ -199,26 +212,141 @@
 <p>Приступим к реализации библиотеки! Мы знаем, что нам нужна публичная структура <code>Post</code>, хранящая некоторое содержимое, поэтому мы начнём с определения структуры и связанной с ней публичной функцией <code>new</code> для создания экземпляра <code>Post</code>, как показано в приложении 17-12. Мы также сделаем приватный типаж <code>State</code>, который будет определять поведение, которое должны будут иметь все объекты состояний структуры <code>Post</code>.</p>
 <p>Затем <code>Post</code> будет содержать типаж-объект <code>Box&lt;dyn State&gt;</code> внутри <code>Option&lt;T&gt;</code> в закрытом поле <code>state</code> для хранения объекта состояния. Чуть позже вы поймёте, зачем нужно использовать <code>Option&lt;T&gt;</code> .</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-12/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub struct Post {
+    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+    content: String,
+}
+
+impl Post {
+    pub fn new() -&gt; Post {
+        Post {
+            state: Some(Box::new(Draft {})),
+            content: String::new(),
+        }
+    }
+}
+
+trait State {}
+
+struct Draft {}
+
+impl State for Draft {}</code></pre>
 <p><span class="caption">Приложение 17-12. Определение структуры <code>Post</code> и функции <code>new</code>, которая создаёт новый экземпляр <code>Post</code>, типажа <code>State</code> и структуры <code>Draft</code></span></p>
 <p>Типаж <code>State</code> определяет поведение, совместно используемое различными состояниями поста. Все объекты состояний (<code>Draft</code> - "черновик", <code>PendingReview</code>  - "ожидание проверки" и <code>Published</code> - "опубликовано") будут реализовывать типаж <code>State</code>. Пока у этого типажа нет никаких способов, и мы начнём с определения состояния <code>Draft</code>, просто потому, что это первое состояние, с которого, как мы хотим, публикация будет начинать свой путь.</p>
 <p>Когда мы создаём новый экземпляр <code>Post</code>, мы устанавливаем его поле <code>state</code> в значение <code>Some</code>, содержащее <code>Box</code>. Этот <code>Box</code> указывает на новый экземпляр структуры <code>Draft</code>. Это заверяет, что всякий раз, когда мы создаём новый экземпляр <code>Post</code>, он появляется как черновик. Поскольку поле <code>state</code> в структуре <code>Post</code> является приватным, нет никакого способа создать <code>Post</code> в каком-либо другом состоянии! В функции <code>Post::new</code> мы объявим поле <code>content</code> новой пустой строкой вида <code>String</code>.</p>
 <h3 id="Хранение-текста-содержимого-записи"><a class="header" href="#Хранение-текста-содержимого-записи">Хранение текста содержимого записи</a></h3>
 <p>В приложении 17-11 показано, что мы хотим иметь возможность вызывать способ <code>add_text</code> и передать ему <code>&amp;str</code>, которое добавляется к текстовому содержимому записи блога. Мы реализуем эту возможность как способ, а не делаем поле <code>content</code> публично доступным, используя <code>pub</code>. Это означает, что позже мы сможем написать способ, который будет управлять, как именно читаются данные из поля <code>content</code>. Способ <code>add_text</code> довольно прост, поэтому давайте добавим его реализацию в раздел<code>impl Post</code>приложения 17-13:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-13/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn add_text(&amp;mut self, text: &amp;str) {
+        self.content.push_str(text);
+    }
+}
+<span class="boring">
+</span><span class="boring">trait State {}
+</span><span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {}</span></code></pre>
 <p><span class="caption">Приложение 17-13. Реализация <code>add_text</code> для добавления текста к <code>content</code> (содержимому записи)</span></p>
 <p>Способ <code>add_text</code> принимает изменяемую ссылку на <code>self</code>, потому что мы меняем экземпляр <code>Post</code>, для которого вызываем <code>add_text</code>. Затем мы вызываем <code>push_str</code> для <code>String</code> у поля <code>content</code> и передаём <code>text</code> переменнаяом для добавления к сохранённому <code>content</code>. Это поведение не зависит от состояния, в котором находится запись, таким образом оно не является частью шаблона "Состояние". Способ <code>add_text</code> вообще не взаимодействует с полем <code>state</code>, но это часть поведения, которое мы хотим поддерживать.</p>
 <h3 id="Убедимся-что-содержание-черновика-будет-пустым"><a class="header" href="#Убедимся-что-содержание-черновика-будет-пустым">Убедимся, что содержание черновика будет пустым</a></h3>
 <p>Даже после того, как мы вызвали <code>add_text</code> и добавили некоторый контент в нашу запись, мы хотим, чтобы способ <code>content</code> возвращал пустой фрагмент строки, так как запись всё ещё находится в черновом состоянии, как это показано в строке 7 приложения 17-11. А пока давайте реализуем способ <code>content</code> наиболее простым способом, который будет удовлетворять этому требованию: будем всегда возвращать пустой фрагмент строки. Мы изменим код позже, как только реализуем возможность изменить состояние записи, чтобы она могла бы быть опубликована. Пока что записи могут находиться только в черновом состоянии, поэтому содержимое записи всегда должно быть пустым. Приложение 17-14 показывает такую реализацию-заглушку:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-14/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn content(&amp;self) -&gt; &amp;str {
+        ""
+    }
+}
+<span class="boring">
+</span><span class="boring">trait State {}
+</span><span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {}</span></code></pre>
 <p><span class="caption">Приложение 17-14. Добавление реализации-заглушки для способа <code>content</code> в <code>Post</code>, которая всегда возвращает пустой фрагмент строки.</span></p>
 <p>С добавленным таким образом способом <code>content</code> всё в приложении 17-11 работает, как задумано, вплоть до строки 7.</p>
 <h3 id="Запрос-на-проверку-записи-меняет-её-состояние"><a class="header" href="#Запрос-на-проверку-записи-меняет-её-состояние">Запрос на проверку записи меняет её состояние</a></h3>
 <p>Далее нам нужно добавить функциональность для запроса проверки записи, который должен изменить её состояние с <code>Draft</code> на <code>PendingReview</code>. Приложение 17-15 показывает такой код:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-15/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        ""
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn request_review(&amp;mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.request_review())
+        }
+    }
+}
+
+trait State {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+}
+
+struct Draft {}
+
+impl State for Draft {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        Box::new(PendingReview {})
+    }
+}
+
+struct PendingReview {}
+
+impl State for PendingReview {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+}</code></pre>
 <p><span class="caption">Приложение 17-15. Реализация способов <code>request_review</code> в структуре <code>Post</code> и типаже <code>State</code></span></p>
 <p>Мы добавляем в <code>Post</code> публичный способ с именем <code>request_review</code> ("запросить проверку"), который будет принимать изменяемую ссылку на <code>self</code>. Затем мы вызываем внутренний способ <code>request_review</code> для текущего состояния <code>Post</code>, и этот второй способ <code>request_review</code> поглощает текущее состояние и возвращает новое состояние.</p>
 <p>Мы добавляем способ <code>request_review</code> в типаж <code>State</code>; все виды, реализующие этот типаж, теперь должны будут реализовать способ <code>request_review</code>. Обратите внимание, что вместо <code>self</code>, <code>&amp;self</code> или <code>&amp;mut self</code> в качестве первого свойства способа у нас указан <code>self: Box&lt;Self&gt;</code>. Этот синтаксис означает, что способ действителен только при его вызове с обёрткой <code>Box</code>, содержащей наш вид. Этот синтаксис становится владельцем <code>Box&lt;Self&gt;</code>, делая старое состояние недействительным, поэтому значение состояния <code>Post</code> может быть преобразовано в новое состояние.</p>
@@ -232,20 +360,256 @@
 <h3 id="Добавление-approve-для-изменения-поведения-content"><a class="header" href="#Добавление-approve-для-изменения-поведения-content">Добавление <code>approve</code> для изменения поведения <code>content</code></a></h3>
 <p>Способ <code>approve</code> ("одобрить") будет подобен способу <code>request_review</code>: он будет устанавливать у <code>state</code> значение, которое должна иметь запись при её одобрении, как показано в приложении 17-16:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-16/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        ""
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn request_review(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.request_review())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn approve(&amp;mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.approve())
+        }
+    }
+}
+
+trait State {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+}
+
+struct Draft {}
+
+impl State for Draft {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(PendingReview {})
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+}
+
+struct PendingReview {}
+
+impl State for PendingReview {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        Box::new(Published {})
+    }
+}
+
+struct Published {}
+
+impl State for Published {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+
+    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+}</code></pre>
 <p><span class="caption">Приложение 17-16. Реализация способа <code>approve</code> для вида <code>Post</code> и типажа <code>State</code></span></p>
 <p>Мы добавляем способ <code>approve</code> в типаж <code>State</code>, добавляем новую структуру, которая реализует этот типаж <code>State</code> и структуру для состояния <code>Published</code>.</p>
 <p>Подобно тому, как работает <code>request_review</code> для <code>PendingReview</code>, если мы вызовем способ <code>approve</code> для <code>Draft</code>, он не будет иметь никакого эффекта, потому что <code>approve</code> вернёт <code>self</code>. Когда мы вызываем для <code>PendingReview</code> способ <code>approve</code>, то он возвращает новый упакованный экземпляр структуры <code>Published</code>. Структура <code>Published</code> реализует трейт <code>State</code>, и как для способа <code>request_review</code>, так и для способа <code>approve</code> она возвращает себя, потому что в этих случаях запись должна оставаться в состоянии <code>Published</code>.</p>
 <p>Теперь нам нужно обновить способ <code>content</code> для <code>Post</code>. Мы хотим, чтобы значение, возвращаемое из <code>content</code>, зависело от текущего состояния <code>Post</code>, поэтому мы собираемся перенести часть функциональности <code>Post</code> в способ <code>content</code>, заданный для <code>state</code>, как показано в приложении 17.17:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch17-oop/listing-17-17/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn content(&amp;self) -&gt; &amp;str {
+        self.state.as_ref().unwrap().content(self)
+    }
+    // --snip--
+<span class="boring">
+</span><span class="boring">    pub fn request_review(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.request_review())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn approve(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.approve())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span>}
+<span class="boring">
+</span><span class="boring">trait State {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(PendingReview {})
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct PendingReview {}
+</span><span class="boring">
+</span><span class="boring">impl State for PendingReview {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(Published {})
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Published {}
+</span><span class="boring">
+</span><span class="boring">impl State for Published {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 17-17: Обновление способа <code>content</code> в структуре <code>Post</code> для делегирования части функциональности способу <code>content</code> структуры <code>State</code></span></p>
 <p>Поскольку наша цель состоит в том, чтобы сохранить все эти действия внутри структур, реализующих типаж <code>State</code>, мы вызываем способ <code>content</code> у значения в поле <code>state</code> и передаём экземпляр публикации (то есть <code>self</code> ) в качестве переменной. Затем мы возвращаем значение, которое нам выдаёт вызов способа <code>content</code> поля <code>state</code>.</p>
 <p>Мы вызываем способ <code>as_ref</code> у <code>Option</code>, потому что нам нужна ссылка на значение внутри <code>Option</code>, а не владение значением. Поскольку <code>state</code> является видом <code>Option&lt;Box&lt;dyn State&gt;&gt;</code>, то при вызове способа <code>as_ref</code> возвращается <code>Option&lt;&amp;Box&lt;dyn State&gt;&gt;</code>. Если бы мы не вызывали <code>as_ref</code>, мы бы получили ошибку, потому что мы не можем переместить <code>state</code> из заимствованного свойства <code>&amp;self</code> функции.</p>
 <p>Затем мы вызываем способ <code>unwrap</code>. Мы знаем, что этот способ здесь никогда не приведёт к аварийному завершению программы, так все способы <code>Post</code> устроены таким образом, что после их выполнения, в поле <code>state</code> всегда содержится значение <code>Some</code>. Это один из случаев, про которых мы говорили в разделе <a href="ch09-03-to-panic-or-not-to-panic.html#cases-in-which-you-have-more-information-than-the-compiler">"Случаи, когда у вас больше сведений, чем у сборщика"</a><!--  --> главы 9 - случай, когда мы знаем, что значение <code>None</code> никогда не встретится, даже если сборщик не может этого понять.</p>
 <p>Теперь, когда мы вызываем <code>content</code> у вида <code>&amp;Box&lt;dyn State&gt;</code>, в действие вступает принудительное приведение (deref coercion) для <code>&amp;</code> и <code>Box</code>, поэтому в конечном итоге способ <code>content</code> будет вызван для вида, который реализует типаж <code>State</code>. Это означает, что нам нужно добавить способ <code>content</code> в определение типажа <code>State</code>, и именно там мы поместим логику для определения того, какое содержимое возвращать, в зависимости от текущего состояния, как показано в приложении 17-18:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-18/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Post {
+</span><span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        self.state.as_ref().unwrap().content(self)
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn request_review(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.request_review())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn approve(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.approve())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>trait State {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">
+</span>    fn content&lt;'a&gt;(&amp;self, post: &amp;'a Post) -&gt; &amp;'a str {
+        ""
+    }
+}
+
+// --snip--
+<span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(PendingReview {})
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct PendingReview {}
+</span><span class="boring">
+</span><span class="boring">impl State for PendingReview {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(Published {})
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>struct Published {}
+
+impl State for Published {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    fn content&lt;'a&gt;(&amp;self, post: &amp;'a Post) -&gt; &amp;'a str {
+        &amp;post.content
+    }
+}</code></pre>
 <p><span class="caption">Приложение 17-18. Добавление способа <code>content</code> в трейт <code>State</code></span></p>
 <p>Мы добавляем реализацию по умолчанию способа <code>content</code>, который возвращает пустой фрагмент строки. Это означает, что нам не придётся реализовывать <code>content</code> в структурах <code>Draft</code> и <code>PendingReview</code>.  Структура <code>Published</code> будет переопределять способ <code>content</code> и вернёт значение из <code>post.content</code>.</p>
 <p>Обратите внимание, что для этого способа нам нужны изложении времени жизни, как мы обсуждали в главе 10. Мы берём ссылку на <code>post</code> в качестве переменной и возвращаем ссылку на часть этого <code>post</code>, поэтому время жизни возвращённой ссылки связано с временем жизни переменной <code>post</code>.</p>
@@ -272,10 +636,47 @@
 <p>Мы покажем вам, как переосмыслить шаблон "Состояние", чтобы получить другой набор соглашений. Вместо того, чтобы полностью инкапсулировать состояния и переходы, так, чтобы внешний код не знал о них, мы будем кодировать состояния с помощью разных видов. Следовательно, система проверки видов Rust предотвратит попытки использовать черновые публикации, там где разрешены только опубликованные публикации, вызывая ошибки сборки.</p>
 <p>Давайте рассмотрим первую часть <code>main</code> в приложении 17-11:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch17-oop/listing-17-11/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use blog::Post;
+</span><span class="boring">
+</span>fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+    assert_eq!("", post.content());
+<span class="boring">
+</span><span class="boring">    post.request_review();
+</span><span class="boring">    assert_eq!("", post.content());
+</span><span class="boring">
+</span><span class="boring">    post.approve();
+</span><span class="boring">    assert_eq!("I ate a salad for lunch today", post.content());
+</span>}</code></pre>
 <p>Мы по-прежнему поддерживаем создание новых сообщений в состоянии "черновика" с помощью способа <code>Post::new</code> и возможность добавлять текст к содержимому публикации. Но вместо способа <code>content</code> у чернового сообщения, возвращающего пустую строку, мы сделаем так, что у черновых сообщений вообще не будет способа <code>content</code>. Таким образом, если мы попытаемся получить содержимое черновика, мы получим ошибку сборщика, сообщающую, что способ не существует. В результате мы не сможем случайно отобразить черновик содержимого записи в работающей программе, потому что этот код даже не ссобирается. В приложении 17-19 показано определение структур <code>Post</code> и <code>DraftPost</code>, а также способов для каждой из них:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-19/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub struct Post {
+    content: String,
+}
+
+pub struct DraftPost {
+    content: String,
+}
+
+impl Post {
+    pub fn new() -&gt; DraftPost {
+        DraftPost {
+            content: String::new(),
+        }
+    }
+
+    pub fn content(&amp;self) -&gt; &amp;str {
+        &amp;self.content
+    }
+}
+
+impl DraftPost {
+    pub fn add_text(&amp;mut self, text: &amp;str) {
+        self.content.push_str(text);
+    }
+}</code></pre>
 <p><span class="caption">Приложение 17-19: Структура <code>Post</code> с способом <code>content</code> и структура <code>DraftPost</code> без способа <code>content</code></span></p>
 <p>Обе структуры, <code>Post</code> и <code>DraftPost</code>, имеют приватное поле <code>content</code>, в котором хранится текст сообщения блога. Структуры больше не содержат поле <code>state</code>, потому что мы перемещаем кодирование состояния в виды структур. Структура <code>Post</code> будет представлять опубликованную публикацию, и у неё есть способ <code>content</code>, который возвращает <code>content</code>.</p>
 <p>У нас все ещё есть функция <code>Post::new</code>, но вместо возврата экземпляра <code>Post</code> она возвращает экземпляр <code>DraftPost</code>. Поскольку поле <code>content</code> является приватным и нет никаких функций, которые возвращают <code>Post</code>, просто так создать экземпляр <code>Post</code> уже невозможно.</p>
@@ -283,12 +684,67 @@
 <h4 id="Реализация-переходов-в-виде-преобразований-в-другие-виды"><a class="header" href="#Реализация-переходов-в-виде-преобразований-в-другие-виды">Реализация переходов в виде преобразований в другие виды</a></h4>
 <p>Так как же получить опубликованный пост? Мы хотим обеспечить соблюдение правила, согласно которому черновик записи должен быть рассмотрен и утверждён до того, как он будет опубликован. Запись, находящаяся в состоянии проверки, по-прежнему не должна отображать содержимое. Давайте реализуем эти ограничения, добавив ещё одну структуру, <code>PendingReviewPost</code>, определив способ <code>request_review</code> у <code>DraftPost</code>, возвращающий <code>PendingReviewPost</code>, и определив способ <code>approve</code> у <code>PendingReviewPost</code>, возвращающий <code>Post</code>, как показано в приложении 17-20:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-20/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct DraftPost {
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Post {
+</span><span class="boring">    pub fn new() -&gt; DraftPost {
+</span><span class="boring">        DraftPost {
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        &amp;self.content
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl DraftPost {
+    // --snip--
+<span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn request_review(self) -&gt; PendingReviewPost {
+        PendingReviewPost {
+            content: self.content,
+        }
+    }
+}
+
+pub struct PendingReviewPost {
+    content: String,
+}
+
+impl PendingReviewPost {
+    pub fn approve(self) -&gt; Post {
+        Post {
+            content: self.content,
+        }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 17-20: Вид <code>PendingReviewPost</code>, который создаётся путём вызова <code>request_review</code> экземпляра <code>DraftPost</code> и способ <code>approve</code>, который превращает <code>PendingReviewPost</code> в опубликованный <code>Post</code>.</span></p>
 <p>Способы <code>request_review</code> и <code>approve</code> забирают во владение <code>self</code>, таким образом поглощая экземпляры <code>DraftPost</code> и <code>PendingReviewPost</code>, которые потом преобразуются в <code>PendingReviewPost</code> и опубликованную <code>Post</code>, соответственно. Таким образом, у нас не будет никаких долгоживущих экземпляров <code>DraftPost</code>, после того, как мы вызвали у них <code>request_review</code> и так далее. В структуре <code>PendingReviewPost</code> не определён способ <code>content</code>, поэтому попытка прочитать его содержимое приводит к ошибке сборщика, также как и в случае с <code>DraftPost</code>. Так как единственным способом получить опубликованный экземпляр <code>Post</code>, у которого действительно есть объявленный способ <code>content</code>, является вызов способа <code>approve</code> у экземпляра <code>PendingReviewPost</code>, а единственный способ получить <code>PendingReviewPost</code> - это вызвать способ <code>request_review</code> у экземпляра <code>DraftPost</code>, теперь мы закодировали процесс смены состояний записи блога с помощью системы видов.</p>
 <p>Кроме этого, нужно внести небольшие изменения в <code>main</code>. Так как способы <code>request_review</code> и <code>approve</code> теперь возвращают объекты, а не преобразуют структуру от которой были вызваны, нам нужно добавить больше затеняющих присваиваний <code>let post =</code>, чтобы сохранять возвращаемые объекты. Также, теперь мы не можем использовать утверждения (assertions) для проверки того является ли содержимое черновиков и записей, находящихся на рассмотрении, пустыми строками, да они нам и не нужны - теперь стало невозможным собрать код, который бы пытался использовать содержимое записей, находящихся в этих состояниях. Обновлённый код в <code>main</code> показан в приложении 17-21:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch17-oop/listing-17-21/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore">use blog::Post;
+
+fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+
+    let post = post.request_review();
+
+    let post = post.approve();
+
+    assert_eq!("I ate a salad for lunch today", post.content());
+}</code></pre>
 <p><span class="caption">Приложение 17-21: Изменения в <code>main</code>, использующие новую реализацию процесса подготовки записи блога</span></p>
 <p>Изменения, которые нам нужно было внести в <code>main</code>, чтобы переназначить <code>post</code> означают, что эта реализация теперь не совсем соответствует объектно-ориентированному шаблону "Состояние": преобразования между состояниями больше не инкапсулированы внутри реализации <code>Post</code> полностью. Тем не менее, мы получили большую выгоду в том, что недопустимые состояния теперь невозможны из-за системы видов и проверки видов, которая происходит во время сборки! У нас есть заверенияия, что некоторые ошибки, такие как отображение содержимого неопубликованной публикации, будут обнаружены до того, как они дойдут до пользователей.</p>
 <p>Попробуйте выполнить задачи, предложенные в начале этого раздела, в исполнения крейта <code>blog</code>, каким он стал после приложения 17-20, чтобы сформировать своё мнение о дизайне этой исполнения кода. Обратите внимание, что некоторые задачи в этом варианте могут быть уже выполнены.</p>

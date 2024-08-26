@@ -203,12 +203,40 @@ cargo test
 git co output.txt
 cd ../../..
 -->
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn add(left: usize, right: usize) -&gt; usize {
+    left + right
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+}</code></pre>
 <p><span class="caption">Приложение 11-1: Тестовый модуль и функция, сгенерированные самостоятельно с помощью <code>cargo new</code></span></p>
 <p>Сейчас давайте пропренебрегаем первые две строчки кода и сосредоточимся на функции. Обратите внимание на синтаксис изложении <code>#[test]</code>: этот атрибут указывает, что это тестовая функция, поэтому запускающий тестирование знает, что эту функцию следует рассматривать как тестовую. У нас также могут быть не тестируемые функции в модуле <code>tests</code>, которые помогут настроить общие сценарии или выполнить общие действия, поэтому нам всегда нужно указывать, какие функции являются тестами.</p>
 <p>В теле функции теста используется макрос <code>assert_eq!</code>, чтобы утверждать, что <code>result</code>, который содержит результат сложения 2 и 2, равен 4. Это утверждение служит примером формата для типичного теста. Давайте запустим его, чтобы убедиться, что этот тест пройден.</p>
 <p>Приказ <code>cargo test</code> выполнит все тесты в выбранном проекте и сообщит о результатах как в приложении 11-2:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-01/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.57s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p><span class="caption">Приложение 11-2: Вывод сведений о работе самостоятельно сгенерированных тестов</span></p>
 <p>Cargo собрал и выполнил тест. Мы видим строку <code>running 1 test</code>. Следующая строка показывает имя сгенерированной тестовой функции, называемой  <code>it_works</code>, и результат запуска этого теста равный <code>ok</code>. Текст <code>test result: ok.</code> означает, что все тесты пройдены успешно и часть вывода <code>1 passed; 0 failed</code> сообщает общее количество тестов, которые прошли или были ошибочными.</p>
@@ -217,16 +245,84 @@ cd ../../..
 <p>Следующая часть вывода тестов начинается с <code>Doc-tests adder</code> - это сведения о тестах в документации. У нас пока нет тестов документации, но Rust может собирать любые примеры кода, которые находятся в API документации. Такая возможность помогает поддерживать документацию и код в синхронизированном состоянии. Мы поговорим о написании тестов документации в секции <a href="ch14-02-publishing-to-crates-io.html#documentation-comments-as-tests">"Комментарии документации как тесты"</a><!-- ignore --> Главы 14. Пока просто пропренебрегаем часть <code>Doc-tests</code> вывода.</p>
 <p>Давайте начнём настраивать тест в соответствии с нашими собственными потребностями. Сначала поменяем название нашего теста <code>it_works</code> на <code>exploration</code>, вот так:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn add(left: usize, right: usize) -&gt; usize {
+    left + right
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn exploration() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+}</code></pre>
 <p>Снова выполним приказ <code>cargo test</code>. Вывод показывает наименование нашей тест-функции - <code>exploration</code> вместо <code>it_works</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.59s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 1 test
+test tests::exploration ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Добавим ещё один тест, но в этот раз целенаправленно сделаем так, чтобы этот новый тест не отработал! Тест терпит неудачу, когда что-то паникует в тестируемой функции. Каждый тест запускается в новом потоке и когда главный поток видит, что тестовый поток упал, то помечает тест как завершившийся аварийно. Мы говорили о простейшем способе вызвать панику в главе 9, используя для этого известный макрос <code>panic!</code>. Введём код тест-функции <code>another</code>, как в файле <em>src/lib.rs</em> из приложения 11-3.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust panics noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-03/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust panics noplayground"><span class="boring">pub fn add(left: usize, right: usize) -&gt; usize {
+</span><span class="boring">    left + right
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn exploration() {
+</span><span class="boring">        let result = add(2, 2);
+</span><span class="boring">        assert_eq!(result, 4);
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn another() {
+</span><span class="boring">        panic!("Make this test fail");
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 11-3: Добавление второго теста, который завершится ошибкой, потому что мы вызываем <code>panic!</code> макрос</span></p>
 <p>Запустим приказ <code>cargo test</code>. Вывод результатов показан в приложении 11-4, который сообщает, что тест <code>exploration</code> пройден, а <code>another</code> нет:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-03/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.72s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 2 tests
+test tests::another ... FAILED
+test tests::exploration ... ok
+
+failures:
+
+---- tests::another stdout ----
+thread 'tests::another' panicked at src/lib.rs:17:9:
+Make this test fail
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::another
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <p><span class="caption">Приложение 11-4. Результаты теста, когда один тест пройден, а другой нет</span></p>
 <p>Вместо <code>ok</code>, строка <code>test tests::another</code> сообщает <code>FAILED</code>. Две новые секции появились между отдельными результатами и сводкой: в первом отображается подробная причина каждого сбоя теста. В данном случае тест <code>another</code> не сработал, потому что <code>panicked at 'Make this test fail'</code>, произошло в строке 10 файла <em>src/lib.rs</em>. В следующем разделе перечисляют имена всех не пройденных тестов, что удобно, когда есть много тестов и много подробных результатов неудачных тестов. Мы можем использовать имя не пройденного теста для его дальнейшей отладки; мы больше поговорим о способах запуска тестов в разделе <a href="ch11-02-running-tests.html#controlling-how-tests-are-run">"Управление хода выполнения тестов"</a><!-- ignore -->.</p>
@@ -236,42 +332,286 @@ cd ../../..
 <p>Макрос <code>assert!</code> доступен из встроенной библиотеки и является удобным, когда вы хотите проверить что некоторое условие в тесте вычисляется в значение <code>true</code>. Мы передаём в макрос <code>assert!</code> переменная, который вычисляется в логическое значение. Если оно <code>true</code>, то ничего не происходит и тест считается пройденным. Если же значение вычисляется в <code>false</code>, то макрос <code>assert!</code> вызывает макрос <code>panic!</code>, чтобы вызвать сбой теста. Использование макроса <code>assert!</code> помогает проверить, что код функционирует как ожидалось.</p>
 <p>В главе 5, приложении 5-15, мы использовали структуру <code>Rectangle</code> и способ <code>can_hold</code>, который повторён в приложении 11-5. Давайте поместим этот код в файл <em>src/lib.rs</em> и напишем несколько тестов для него используя макрос <code>assert!</code>.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-05/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Rectangle {
+</span><span class="boring">    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+</span><span class="boring">        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 11-5: Использование структуры <code>Rectangle</code> и её способа can_hold из главы 5</span></p>
 <p>Способ <code>can_hold</code> возвращает логическое значение, что означает, что он является наилучшим вариантом использования в макросе <code>assert!</code>. В приложении 11-6 мы пишем тест, который выполняет способ <code>can_hold</code> путём создания экземпляра <code>Rectangle</code> шириной 8 и высотой 7 и убеждаемся, что он может содержать другой экземпляр <code>Rectangle</code> имеющий ширину 5 и высоту 1.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-06/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Rectangle {
+</span><span class="boring">    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+</span><span class="boring">        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn larger_can_hold_smaller() {
+        let larger = Rectangle {
+            width: 8,
+            height: 7,
+        };
+        let smaller = Rectangle {
+            width: 5,
+            height: 1,
+        };
+
+        assert!(larger.can_hold(&amp;smaller));
+    }
+}</code></pre>
 <p><span class="caption">Приложение 11-6: Тест для способа <code>can_hold</code>, который проверяет что больший прямоугольник действительно может содержать меньший</span></p>
 <p>Также, в модуле <code>tests</code> обратите внимание на новую добавленную строку <code>use super::*;</code>. Модуль <code>tests</code> является обычным и подчиняется тем же правилам видимости, которые мы обсуждали в главе 7 <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">"Пути для ссылки на элементы внутри дерева модуля"</a><!--  -->. Так как этот модуль <code>tests</code> является внутренним, нужно подключить тестируемый код из внешнего модуля в область видимости внутреннего модуля с тестами. Для этого используется вездесущеее подключение, так что все что определено во внешнем модуле становится доступным внутри <code>tests</code> модуля.</p>
 <p>Мы назвали наш тест <code>larger_can_hold_smaller</code> и создали два нужных экземпляра <code>Rectangle</code>. Затем вызвали макрос <code>assert!</code> и передали результат вызова <code>larger.can_hold(&amp;smaller)</code> в него. Это выражение должно возвращать <code>true</code>, поэтому наш тест должен пройти. Давайте выясним!</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-06/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling rectangle v0.1.0 (file:///projects/rectangle)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running unittests src/lib.rs (target/debug/deps/rectangle-6584c4561e48942e)
+
+running 1 test
+test tests::larger_can_hold_smaller ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests rectangle
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Тест проходит. Теперь добавим другой тест, в этот раз мы попытаемся убедиться, что меньший прямоугольник не может содержать больший прямоугольник:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-02-adding-another-rectangle-test/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Rectangle {
+</span><span class="boring">    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+</span><span class="boring">        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn larger_can_hold_smaller() {
+        // --snip--
+<span class="boring">        let larger = Rectangle {
+</span><span class="boring">            width: 8,
+</span><span class="boring">            height: 7,
+</span><span class="boring">        };
+</span><span class="boring">        let smaller = Rectangle {
+</span><span class="boring">            width: 5,
+</span><span class="boring">            height: 1,
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">        assert!(larger.can_hold(&amp;smaller));
+</span>    }
+
+    #[test]
+    fn smaller_cannot_hold_larger() {
+        let larger = Rectangle {
+            width: 8,
+            height: 7,
+        };
+        let smaller = Rectangle {
+            width: 5,
+            height: 1,
+        };
+
+        assert!(!smaller.can_hold(&amp;larger));
+    }
+}</code></pre>
 <p>Поскольку правильный результат функции <code>can_hold</code> в этом случае <code>false</code>, то мы должны инвертировать этот результат, прежде чем передадим его в <code>assert!</code> макро. Как результат, наш тест пройдёт, если <code>can_hold</code> вернёт <code>false</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-02-adding-another-rectangle-test/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling rectangle v0.1.0 (file:///projects/rectangle)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running unittests src/lib.rs (target/debug/deps/rectangle-6584c4561e48942e)
+
+running 2 tests
+test tests::larger_can_hold_smaller ... ok
+test tests::smaller_cannot_hold_larger ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests rectangle
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Два теста работают. Теперь проверим, как отреагируют тесты, если мы добавим ошибку в код. Давайте изменим реализацию способа <code>can_hold</code> заменив одно из логических выражений знак сравнения с "больше чем" на противоположный "меньше чем" при сравнении ширины:</p>
-<pre><code class="language-rust not_desired_behavior noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust not_desired_behavior noplayground"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>// --snip--
+impl Rectangle {
+    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+        self.width &lt; other.width &amp;&amp; self.height &gt; other.height
+    }
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn larger_can_hold_smaller() {
+</span><span class="boring">        let larger = Rectangle {
+</span><span class="boring">            width: 8,
+</span><span class="boring">            height: 7,
+</span><span class="boring">        };
+</span><span class="boring">        let smaller = Rectangle {
+</span><span class="boring">            width: 5,
+</span><span class="boring">            height: 1,
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">        assert!(larger.can_hold(&amp;smaller));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn smaller_cannot_hold_larger() {
+</span><span class="boring">        let larger = Rectangle {
+</span><span class="boring">            width: 8,
+</span><span class="boring">            height: 7,
+</span><span class="boring">        };
+</span><span class="boring">        let smaller = Rectangle {
+</span><span class="boring">            width: 5,
+</span><span class="boring">            height: 1,
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">        assert!(!smaller.can_hold(&amp;larger));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p>Запуск тестов теперь производит следующее:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling rectangle v0.1.0 (file:///projects/rectangle)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running unittests src/lib.rs (target/debug/deps/rectangle-6584c4561e48942e)
+
+running 2 tests
+test tests::larger_can_hold_smaller ... FAILED
+test tests::smaller_cannot_hold_larger ... ok
+
+failures:
+
+---- tests::larger_can_hold_smaller stdout ----
+thread 'tests::larger_can_hold_smaller' panicked at src/lib.rs:28:9:
+assertion failed: larger.can_hold(&amp;smaller)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::larger_can_hold_smaller
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <p>Наши тесты нашли ошибку! Так как в тесте <code>larger.width</code> равно 8 и <code>smaller.width</code> равно 5 сравнение ширины в способе <code>can_hold</code> возвращает результат <code>false</code>, поскольку число 8 не меньше чем 5.</p>
 <h3 id="Проверка-на-равенство-с-помощью-макросов-assert_eq-и-assert_ne"><a class="header" href="#Проверка-на-равенство-с-помощью-макросов-assert_eq-и-assert_ne">Проверка на равенство с помощью макросов <code>assert_eq!</code> и <code>assert_ne!</code></a></h3>
 <p>Общим способом проверки функциональности является использование сравнения результата тестируемого кода и ожидаемого значения, чтобы убедиться в их равенстве. Для этого можно использовать макрос <code>assert!</code>, передавая ему выражение с использованием оператора <code>==</code>. Важно также знать, что кроме этого стандартная библиотека предлагает пару макросов <code>assert_eq!</code> и <code>assert_ne!</code>, чтобы сделать тестирование более удобным. Эти макросы сравнивают два переменной на равенство или неравенство соответственно. Макросы также печатают два значения входных свойств, если тест завершился ошибкой, что позволяет легче увидеть <em>почему</em> тест ошибочен. Противоположно этому, макрос <code>assert!</code> может только отобразить, что он вычислил значение <code>false</code> для выражения <code>==</code>, но не значения, которые привели к результату <code>false</code>.</p>
 <p>В приложении 11-7, мы напишем функцию <code>add_two</code>, которая прибавляет к входному свойству <code>2</code> и возвращает значение. Затем, протестируем эту функцию с помощью макроса <code>assert_eq!</code>:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-07/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn add_two(a: usize) -&gt; usize {
+    a + 2
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_adds_two() {
+        let result = add_two(2);
+        assert_eq!(result, 4);
+    }
+}</code></pre>
 <p><span class="caption">Приложение 11-7: Тестирование функции <code>add_two</code> с помощью макроса <code>assert_eq!</code></span></p>
 <p>Проверим, что тесты проходят!</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-07/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 1 test
+test tests::it_adds_two ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Первый переменная, который мы передаём в макрос <code>assert_eq!</code> число <code>4</code> чей результат вызова равен <code>add_two(2)</code> . Строка для этого теста - <code>test tests::it_adds_two ... ok</code> , а текст <code>ok</code> означает, что наш тест пройден!</p>
 <p>Давайте введём ошибку в код, чтобы увидеть, как она выглядит, когда тест, который использует <code>assert_eq!</code> завершается ошибкой. Измените реализацию функции <code>add_two</code>, чтобы добавлять <code>3</code>:</p>
-<pre><code class="language-rust not_desired_behavior noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-04-bug-in-add-two/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust not_desired_behavior noplayground">pub fn add_two(a: usize) -&gt; usize {
+    a + 3
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn it_adds_two() {
+</span><span class="boring">        let result = add_two(2);
+</span><span class="boring">        assert_eq!(result, 4);
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p>Попробуем выполнить данный тест ещё раз:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-04-bug-in-add-two/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 1 test
+test tests::it_adds_two ... FAILED
+
+failures:
+
+---- tests::it_adds_two stdout ----
+thread 'tests::it_adds_two' panicked at src/lib.rs:12:9:
+assertion `left == right` failed
+  left: 5
+ right: 4
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::it_adds_two
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <p>Наш тест нашёл ошибку! Тест <code>it_adds_two</code> не выполнился, отображается сообщение <code>assertion failed: </code>(left == right)`` и показывает, что <code>left</code> было <code>4</code>, а <code>right</code> было <code>5</code>. Это сообщение полезно и помогает начать отладку: это означает <code>left</code> переменная <code>assert_eq!</code> имел значение <code>4</code>, но <code>right</code> переменная для вызова <code>add_two(2)</code> был со значением <code>5</code>.</p>
 <p>Обратите внимание, что в некоторых языках (таких как Java) в библиотеках кода для тестирования принято именовать входные свойства проверочных функций как "ожидаемое" (<code>expected</code>) и "фактическое" (<code>actual</code>). В Rust приняты следующие обозначения <code>left</code> и <code>right</code> соответственно, а порядок в котором определяются ожидаемое значение и производимое тестируемым кодом значение не имеют значения. Мы могли бы написать выражение в тесте как <code>assert_eq!(add_two(2), 4)</code>, что приведёт к отображаемому сообщению об ошибке <code>assertion failed: </code>(left == right)``, слева <code>left</code> было бы <code>5</code>, а справа <code>right</code> было бы <code>4</code>.</p>
@@ -281,17 +621,101 @@ cd ../../..
 <p>Также можно добавить пользовательское сообщение как дополнительный переменная макросов для печати в сообщении об ошибке теста <code>assert!</code>, <code>assert_eq!</code>, и <code>assert_ne!</code>. Любые переменные, указанные после обязательных переменных, далее передаются в макрос <code>format!</code> (он обсуждается в разделе <a href="ch08-02-strings.html#concatenation-with-the--operator-or-the-format-macro">"Конкатенация с помощью оператора <code>+</code> или макроса format!"</a><!-- ignore -->), так что вы можете передать форматированную строку, которая содержит  <code>{}</code> для заполнителей и значения, заменяющие эти заполнители. Пользовательские сообщения полезны для пояснения того, что означает утверждение (assertion); когда тест завершается неудачей, у вас будет лучшее представление о том, в чем проблема с кодом.</p>
 <p>Например, есть функция, которая приветствует человека по имени и мы хотим протестировать эту функцию. Мы хотим чтобы передаваемое ей имя выводилось в окно вывода:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-05-greeter/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn greeting(name: &amp;str) -&gt; String {
+    format!("Hello {name}!")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn greeting_contains_name() {
+        let result = greeting("Carol");
+        assert!(result.contains("Carol"));
+    }
+}</code></pre>
 <p>Требования к этой программе ещё не были согласованы и мы вполне уверены, что текст <code>Hello</code> в начале приветствия ещё изменится. Мы решили, что не хотим обновлять тест при изменении требований, поэтому вместо проверки на точное равенство со значением возвращённым из <code>greeting</code>, мы просто будем проверять, что вывод содержит текст из входного свойства.</p>
 <p>Давайте внесём ошибку в этот код, изменив <code>greeting</code> так, чтобы оно не включало <code>name</code> и увидим, как выглядит сбой этого теста:</p>
-<pre><code class="language-rust not_desired_behavior noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-06-greeter-with-bug/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust not_desired_behavior noplayground">pub fn greeting(name: &amp;str) -&gt; String {
+    String::from("Hello!")
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn greeting_contains_name() {
+</span><span class="boring">        let result = greeting("Carol");
+</span><span class="boring">        assert!(result.contains("Carol"));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p>Запуск этого теста выводит следующее:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-06-greeter-with-bug/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling greeter v0.1.0 (file:///projects/greeter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running unittests src/lib.rs (target/debug/deps/greeter-170b942eb5bf5e3a)
+
+running 1 test
+test tests::greeting_contains_name ... FAILED
+
+failures:
+
+---- tests::greeting_contains_name stdout ----
+thread 'tests::greeting_contains_name' panicked at src/lib.rs:12:9:
+assertion failed: result.contains("Carol")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::greeting_contains_name
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <p>Сообщение содержит лишь сведения о том что сравнение не было успешным и в какой строке это произошло. В данном случае, более полезный текст сообщения был бы, если бы также выводилось значение из функции <code>greeting</code>. Изменим тестирующую функцию так, чтобы выводились пользовательское сообщение форматированное строкой с заменителем и фактическими данными из кода <code>greeting</code>:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-07-custom-failure-message/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">pub fn greeting(name: &amp;str) -&gt; String {
+</span><span class="boring">    String::from("Hello!")
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span>    #[test]
+    fn greeting_contains_name() {
+        let result = greeting("Carol");
+        assert!(
+            result.contains("Carol"),
+            "Greeting did not contain name, value was `{result}`"
+        );
+    }
+<span class="boring">}</span></code></pre>
 <p>После того, как выполним тест ещё раз мы получим подробное сообщение об ошибке:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-07-custom-failure-message/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling greeter v0.1.0 (file:///projects/greeter)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+     Running unittests src/lib.rs (target/debug/deps/greeter-170b942eb5bf5e3a)
+
+running 1 test
+test tests::greeting_contains_name ... FAILED
+
+failures:
+
+---- tests::greeting_contains_name stdout ----
+thread 'tests::greeting_contains_name' panicked at src/lib.rs:12:9:
+Greeting did not contain name, value was `Hello!`
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::greeting_contains_name
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <p>Мы можем увидеть значение, которое мы на самом деле получили в тестовом выводе, что поможет нам отлаживать произошедшее, а не то, что мы ожидали.</p>
 <h3 id="Проверка-с-помощью-макроса-should_panic"><a class="header" href="#Проверка-с-помощью-макроса-should_panic">Проверка с помощью макроса <code>should_panic</code></a></h3>
@@ -299,31 +723,214 @@ cd ../../..
 <p>Реализуем это с помощью другого атрибута тест-функции <code>#[should_panic]</code>. Этот атрибут сообщает системе тестирования, что тест проходит, когда способ генерирует ошибку. Если ошибка не генерируется - тест считается не пройденным.</p>
 <p>Приложение 11-8 показывает тест, который проверяет, что условия ошибки <code>Guess::new</code> произойдут, когда мы их ожидаем их.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-08/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub struct Guess {
+    value: i32,
+}
+
+impl Guess {
+    pub fn new(value: i32) -&gt; Guess {
+        if value &lt; 1 || value &gt; 100 {
+            panic!("Guess value must be between 1 and 100, got {value}.");
+        }
+
+        Guess { value }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[should_panic]
+    fn greater_than_100() {
+        Guess::new(200);
+    }
+}</code></pre>
 <p><span class="caption">Приложение 11-8: Проверка того, что условие вызовет макрос <code>panic!</code></span></p>
 <p>Атрибут <code>#[should_panic]</code> следует после <code>#[test]</code> и до объявления тестовой функции. Посмотрим на вывод результата, когда тест проходит:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-08/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running unittests src/lib.rs (target/debug/deps/guessing_game-57d70c3acb738f4d)
+
+running 1 test
+test tests::greater_than_100 - should panic ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests guessing_game
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Выглядит хорошо! Теперь давайте внесём ошибку в наш код, убрав условие о том, что функция <code>new</code> будет паниковать если значение больше 100:</p>
-<pre><code class="language-rust not_desired_behavior noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-08-guess-with-bug/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust not_desired_behavior noplayground"><span class="boring">pub struct Guess {
+</span><span class="boring">    value: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>// --snip--
+impl Guess {
+    pub fn new(value: i32) -&gt; Guess {
+        if value &lt; 1 {
+            panic!("Guess value must be between 1 and 100, got {value}.");
+        }
+
+        Guess { value }
+    }
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    #[should_panic]
+</span><span class="boring">    fn greater_than_100() {
+</span><span class="boring">        Guess::new(200);
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p>Когда мы запустим тест в приложении 11-8, он потерпит неудачу:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-08-guess-with-bug/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running unittests src/lib.rs (target/debug/deps/guessing_game-57d70c3acb738f4d)
+
+running 1 test
+test tests::greater_than_100 - should panic ... FAILED
+
+failures:
+
+---- tests::greater_than_100 stdout ----
+note: test did not panic as expected
+
+failures:
+    tests::greater_than_100
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <p>Мы получаем не очень полезное сообщение в этом случае, но когда мы смотрим на тестирующую функцию, мы видим, что она <code>#[should_panic]</code>. Аварийное выполнение, которое мы получили означает, что код в тестирующей функции не вызвал паники.</p>
 <p>Тесты, которые используют <code>should_panic</code> могут быть неточными, потому что они только указывают, что код вызвал панику. Тест с атрибутом <code>should_panic</code> пройдёт, даже если тест паникует по причине, отличной от той, которую мы ожидали. Чтобы сделать тесты с <code>should_panic</code> более точными, мы можем добавить необязательный свойство <code>expected</code>  для атрибута <code>should_panic</code>. Такая подробностизация теста позволит удостовериться, что сообщение об ошибке содержит предоставленный текст. Например, рассмотрим модифицированный код для <code>Guess</code> в приложении 11-9, где <code>new</code> функция паникует с различными сообщениями в зависимости от того, является ли значение слишком маленьким или слишком большим.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-09/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Guess {
+</span><span class="boring">    value: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>// --snip--
+
+impl Guess {
+    pub fn new(value: i32) -&gt; Guess {
+        if value &lt; 1 {
+            panic!(
+                "Guess value must be greater than or equal to 1, got {value}."
+            );
+        } else if value &gt; 100 {
+            panic!(
+                "Guess value must be less than or equal to 100, got {value}."
+            );
+        }
+
+        Guess { value }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[should_panic(expected = "less than or equal to 100")]
+    fn greater_than_100() {
+        Guess::new(200);
+    }
+}</code></pre>
 <p><span class="caption">Приложение 11-9: Проверка <code>panic!</code> на наличие в его сообщении указанной подстроки</span></p>
 <p>Этот тест пройдёт, потому что значение, которое мы поместили для <code>should_panic</code> в свойство атрибута <code>expected</code> является подстрокой сообщения, с которым функция <code>Guess::new</code> вызывает панику. Мы могли бы указать полное, ожидаемое сообщение для паники, в этом случае это будет <code>Guess value must be less than or equal to 100, got 200</code>. То что вы выберите для указания как ожидаемого свойства у <code>should_panic</code> зависит от того, какая часть сообщения о панике уникальна или динамична, насколько вы хотите, чтобы ваш тест был точным. В этом случае достаточно подстроки из сообщения паники, чтобы обеспечить выполнение кода в тестовой функции <code>else if value &gt; 100</code> .</p>
 <p>Чтобы увидеть, что происходит, когда тест <code>should_panic</code> неуспешно завершается с сообщением <code>expected</code>, давайте снова внесём ошибку в наш код, поменяв местами <code>if value &lt; 1</code> и <code>else if value &gt; 100</code> блоки:</p>
-<pre><code class="language-rust ignore not_desired_behavior">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-09-guess-with-panic-msg-bug/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore not_desired_behavior"><span class="boring">pub struct Guess {
+</span><span class="boring">    value: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Guess {
+</span><span class="boring">    pub fn new(value: i32) -&gt; Guess {
+</span>        if value &lt; 1 {
+            panic!(
+                "Guess value must be less than or equal to 100, got {value}."
+            );
+        } else if value &gt; 100 {
+            panic!(
+                "Guess value must be greater than or equal to 1, got {value}."
+            );
+        }
+<span class="boring">
+</span><span class="boring">        Guess { value }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    #[should_panic(expected = "less than or equal to 100")]
+</span><span class="boring">    fn greater_than_100() {
+</span><span class="boring">        Guess::new(200);
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p>На этот раз, когда мы выполним <code>should_panic</code> тест, он потерпит неудачу:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-09-guess-with-panic-msg-bug/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running unittests src/lib.rs (target/debug/deps/guessing_game-57d70c3acb738f4d)
+
+running 1 test
+test tests::greater_than_100 - should panic ... FAILED
+
+failures:
+
+---- tests::greater_than_100 stdout ----
+thread 'tests::greater_than_100' panicked at src/lib.rs:12:13:
+Guess value must be greater than or equal to 1, got 200.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+note: panic did not contain expected string
+      panic message: `"Guess value must be greater than or equal to 1, got 200."`,
+ expected substring: `"less than or equal to 100"`
+
+failures:
+    tests::greater_than_100
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <p>Сообщение об ошибке указывает, что этот тест действительно вызвал панику, как мы и ожидали, но сообщение о панике не включено ожидаемую строку <code>'Guess value must be less than or equal to 100'</code>. Сообщение о панике, которое мы получили в этом случае, было <code>Guess value must be greater than or equal to 1, got 200.</code> Теперь мы можем начать выяснение, где ошибка!</p>
 <h3 id="Использование-resultt-e-в-тестах"><a class="header" href="#Использование-resultt-e-в-тестах">Использование <code>Result&lt;T, E&gt;</code> в тестах</a></h3>
 <p>Пока что мы написали тесты, которые паникуют, когда терпят неудачу. Мы также можем написать тесты которые используют <code>Result&lt;T, E&gt;</code>! Вот тест из приложения 11-1, переписанный с использованием <code>Result&lt;T, E&gt;</code> и возвращающий <code>Err</code> вместо паники:</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-10-result-in-tests/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn add(left: usize, right: usize) -&gt; usize {
+    left + right
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // ANCHOR: here
+    #[test]
+    fn it_works() -&gt; Result&lt;(), String&gt; {
+        let result = add(2, 2);
+
+        if result == 4 {
+            Ok(())
+        } else {
+            Err(String::from("two plus two does not equal four"))
+        }
+    }
+    // ANCHOR_END: here
+}</code></pre>
 <p>Функция <code>it_works</code> теперь имеет возвращаемый вид <code>Result&lt;(), String&gt;</code>. В теле функции, вместо вызова макроса <code>assert_eq!</code>, мы возвращаем <code>Ok(())</code> когда тест успешно выполнен и <code>Err</code> со <code>String</code> внутри, когда тест не проходит.</p>
 <p>Написание тестов так, чтобы они возвращали <code>Result&lt;T, E&gt;</code> позволяет использовать оператор "вопросительный знак"  в теле тестов, который может быть удобным способом писать тесты, которые должны выполниться не успешно, если какая-либо действие внутри них возвращает вариант ошибки <code>Err</code>.</p>
 <p>Вы не можете использовать изложение <code>#[should_panic]</code> в тестах, использующих <code>Result&lt;T, E&gt;</code>. Чтобы утверждать, что действие возвращает вариант <code>Err</code>, <em>не</em> используйте оператор вопросительного знака для значения <code>Result&lt;T, E&gt;</code>. Вместо этого используйте <code>assert!(value.is_err())</code>.</p>

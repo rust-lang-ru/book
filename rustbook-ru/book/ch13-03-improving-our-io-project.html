@@ -180,7 +180,110 @@
 <h3 id="Удаляем-clone-используем-повторитель"><a class="header" href="#Удаляем-clone-используем-повторитель">Удаляем <code>clone</code>, используем повторитель</a></h3>
 <p>В приложении 12-6 мы добавили код, который принимает срез значений <code>String</code> и создаёт экземпляр структуры <code>Config</code> путём упорядочевания среза и клонирования значений, позволяя структуре <code>Config</code> владеть этими значениями. В приложении 13-17 мы воспроизвели реализацию функции <code>Config::build</code>, как это было в приложении 12-23:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch13-functional-features/listing-12-23-reproduced/src/lib.rs:ch13}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Config {
+    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        if args.len() &lt; 3 {
+            return Err("not enough arguments");
+        }
+
+        let query = args[1].clone();
+        let file_path = args[2].clone();
+
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
+        Ok(Config {
+            query,
+            file_path,
+            ignore_case,
+        })
+    }
+}
+<span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 13-17: Репродукция функции <code>Config::build</code> из приложения 12-23</span></p>
 <p>Ранее мы говорили, что не стоит беспокоиться о неэффективных вызовах <code>clone</code>, потому что мы удалим их в будущем. Ну что же, время пришло!</p>
 <p>Нам понадобился здесь <code>clone</code>, потому что в свойстве <code>args</code> у нас срез с элементами <code>String</code>, но функция <code>build</code> не владеет <code>args</code>. Чтобы экземпляр <code>Config</code> владел значениями, нам пришлось клонировать их из <code>args</code> в переменные <code>query</code> и <code>file_path</code>.</p>
@@ -189,15 +292,157 @@
 <h4 id="Использование-возвращённого-повторителя-напрямую"><a class="header" href="#Использование-возвращённого-повторителя-напрямую">Использование возвращённого повторителя напрямую</a></h4>
 <p>Откройте файл <em>src/main.rs</em> проекта ввода-вывода, который должен выглядеть следующим образом:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch13-functional-features/listing-12-24-reproduced/src/main.rs:ch13}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span><span class="boring">use minigrep::Config;
+</span><span class="boring">
+</span>fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
+
+    // --snip--
+<span class="boring">
+</span><span class="boring">    if let Err(e) = minigrep::run(config) {
+</span><span class="boring">        eprintln!("Application error: {e}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    }
+</span>}</code></pre>
 <p>Сначала мы изменим начало функции <code>main</code>, которая была в приложении 12-24, на код в приложении 13-18, который теперь использует повторитель. Это не будет собираться, пока мы не обновим <code>Config::build</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch13-functional-features/listing-13-18/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span><span class="boring">use minigrep::Config;
+</span><span class="boring">
+</span>fn main() {
+    let config = Config::build(env::args()).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
+
+    // --snip--
+<span class="boring">
+</span><span class="boring">    if let Err(e) = minigrep::run(config) {
+</span><span class="boring">        eprintln!("Application error: {e}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    }
+</span>}</code></pre>
 <p><span class="caption">Приложение 13-18: Передача возвращаемого значения из <code>env::args</code> в <code>Config::build</code></span></p>
 <p>Функция <code>env::args</code> возвращает повторитель! Вместо того чтобы собирать значения повторителя в вектор и затем передавать срез в <code>Config::build</code>, теперь мы передаём владение повторителем, возвращённым из <code>env::args</code> в <code>Config::build</code> напрямую.</p>
 <p>Далее нам нужно обновить определение <code>Config::build</code>. В файле <em>src/lib.rs</em> вашего проекта ввода-вывода изменим сигнатуру <code>Config::build</code> так, чтобы она выглядела как в приложении 13-19. Это все ещё не ссобирается, потому что нам нужно обновить тело функции.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch13-functional-features/listing-13-19/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Config {
+    pub fn build(
+        mut args: impl Iterator&lt;Item = String&gt;,
+    ) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        // --snip--
+<span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        let ignore_case = env::var("IGNORE_CASE").is_ok();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config {
+</span><span class="boring">            query,
+</span><span class="boring">            file_path,
+</span><span class="boring">            ignore_case,
+</span><span class="boring">        })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 13-19: Обновление сигнатуры <code>Config::build</code> для определения повторителя как ожидаемого свойства</span></p>
 <p>Документация встроенной библиотеки для функции <code>env::args</code> показывает, что вид возвращаемого ею повторителя - <code>std::env::Args</code>, и этот вид реализует признак <code>Iterator</code> и возвращает значения <code>String</code>.</p>
 <p>Мы обновили сигнатуру функции <code>Config::build</code>, чтобы свойство <code>args</code> имел универсальный вид ограниченный трейтом <code>impl Iterator&lt;Item = String&gt;</code> вместо <code>&amp;[String]</code>. Такое использование синтаксиса <code>impl Trait</code>, который мы обсуждали в разделе <a href="ch10-02-traits.html#traits-as-parameters">" Трейты как свойства"</a><!-- ignore --> главы 10, означает, что <code>args</code> может быть любым видом, реализующим вид <code>Iterator</code> и возвращающим элементы <code>String</code>.</p>
@@ -205,17 +450,285 @@
 <h4 id="Использование-способов-типажа-iterator-вместо-порядковых-указателей"><a class="header" href="#Использование-способов-типажа-iterator-вместо-порядковых-указателей">Использование способов типажа <code>Iterator</code> вместо порядковых указателей</a></h4>
 <p>Далее мы подправим содержимое <code>Config::build</code>. Поскольку <code>args</code> реализует признак <code>Iterator</code>, мы знаем, что можем вызвать у него способ <code>next</code>! В приложении 13-20 код из приложения 12-23 обновлён для использования способа <code>next</code>:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch13-functional-features/listing-13-20/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Config {
+    pub fn build(
+        mut args: impl Iterator&lt;Item = String&gt;,
+    ) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        args.next();
+
+        let query = match args.next() {
+            Some(arg) =&gt; arg,
+            None =&gt; return Err("Didn't get a query string"),
+        };
+
+        let file_path = match args.next() {
+            Some(arg) =&gt; arg,
+            None =&gt; return Err("Didn't get a file path"),
+        };
+
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
+        Ok(Config {
+            query,
+            file_path,
+            ignore_case,
+        })
+    }
+}
+<span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 13-20: Изменяем тело <code>Config::build</code> так, чтобы использовать способы повторителя</span></p>
 <p>Помните, что первое значение в возвращаемых данных <code>env::args</code> - это имя программы. Мы хотим пропренебрегать его и перейти к следующему значению, поэтому сперва мы вызываем <code>next</code> и ничего не делаем с возвращаемым значением. Затем мы вызываем <code>next</code>, чтобы получить значение, которое мы хотим поместить в поле <code>query</code> в <code>Config</code>. Если <code>next</code> возвращает <code>Some</code>, мы используем <code>match</code> для извлечения значения. Если возвращается <code>None</code>, это означает, что было задано недостаточно переменных, и мы досрочно возвращаем значение <code>Err</code>. То же самое мы делаем для значения <code>file_path</code>.</p>
 <h3 id="Делаем-код-понятнее-с-помощью-адаптеров-повторителей"><a class="header" href="#Делаем-код-понятнее-с-помощью-адаптеров-повторителей">Делаем код понятнее с помощью адаптеров повторителей</a></h3>
 <p>Мы также можем воспользоваться преимуществами повторителей в функции <code>search</code> в нашем проекте с действиеми ввода-вывода, которая воспроизведена здесь в приложении 13-21 так же, как и в приложении 12-19:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-19/src/lib.rs:ch13}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+
+    results
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 13-21: Реализация функции <code>search</code> из приложения 12-19</span></p>
 <p>Мы можем написать этот код в более сжатом виде, используя способы адаптера повторителя. Это также позволит нам избежать наличия изменяемого временного вектора <code>results</code>. Функциональный стиль программирования предпочитает минимизировать количество изменяемого состояния, чтобы сделать код более понятным. Удаление изменяемого состояния может позволить в будущем сделать поиск параллельным, поскольку нам не придётся управлять одновременным доступом к вектору <code>results</code>. В приложении 13-22 показано это изменение:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch13-functional-features/listing-13-22/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(
+</span><span class="boring">        mut args: impl Iterator&lt;Item = String&gt;,
+</span><span class="boring">    ) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        args.next();
+</span><span class="boring">
+</span><span class="boring">        let query = match args.next() {
+</span><span class="boring">            Some(arg) =&gt; arg,
+</span><span class="boring">            None =&gt; return Err("Didn't get a query string"),
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">        let file_path = match args.next() {
+</span><span class="boring">            Some(arg) =&gt; arg,
+</span><span class="boring">            None =&gt; return Err("Didn't get a file path"),
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">        let ignore_case = env::var("IGNORE_CASE").is_ok();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config {
+</span><span class="boring">            query,
+</span><span class="boring">            file_path,
+</span><span class="boring">            ignore_case,
+</span><span class="boring">        })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    contents
+        .lines()
+        .filter(|line| line.contains(query))
+        .collect()
+}
+<span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 13-22: Использование способов адаптера повторителя в реализации функции <code>search</code></span></p>
 <p>Напомним, что назначение функции <code>search</code> - вернуть все строки в <code>contents</code>, которые содержат <code>query</code>. Подобно примеру <code>filter</code> в приложении 13-16, этот код использует адаптер <code>filter</code>, чтобы сохранить только те строки, для которых <code>line.contains(query)</code> возвращает <code>true</code>. Затем мы собираем совпадающие строки в другой вектор с помощью <code>collect</code>. Так гораздо проще! Не стесняйтесь сделать такое же изменение для использования способов повторителя в функции <code>search_case_insensitive</code>.</p>
 <h3 id="Выбор-между-циклами-или-повторителями"><a class="header" href="#Выбор-между-циклами-или-повторителями">Выбор между циклами или повторителями</a></h3>

@@ -212,12 +212,20 @@
 </code></pre>
 <p>Файл корневого модуля крейта в нашем случае  <em>src/main.rs</em>, и его содержимое:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust noplayground ignore">{{#rustdoc_include ../listings/ch07-managing-growing-projects/quick-reference-example/src/main.rs}}</code></pre>
+<pre><code class="language-rust noplayground ignore">use crate::garden::vegetables::Asparagus;
+
+pub mod garden;
+
+fn main() {
+    let plant = Asparagus {};
+    println!("I'm growing {plant:?}!");
+}</code></pre>
 <p>Строка <code>pub mod garden;</code> говорит сборщику о подключении кода, найденном в <em>src/garden.rs</em>:</p>
 <p><span class="filename">Файл: src/garden.rs</span></p>
-<pre><code class="language-rust noplayground ignore">{{#rustdoc_include ../listings/ch07-managing-growing-projects/quick-reference-example/src/garden.rs}}</code></pre>
+<pre><code class="language-rust noplayground ignore">pub mod vegetables;</code></pre>
 <p>А здесь <code>pub mod vegetables;</code> указывает на подключаемый код в <em>src/garden/vegetables.rs</em>. Этот код:</p>
-<pre><code class="language-rust noplayground ignore">{{#rustdoc_include ../listings/ch07-managing-growing-projects/quick-reference-example/src/garden/vegetables.rs}}</code></pre>
+<pre><code class="language-rust noplayground ignore">#[derive(Debug)]
+pub struct Asparagus {}</code></pre>
 <p>Теперь давайте рассмотрим подробности этих правил и отобразим их в действии!</p>
 <h3 id="Группировка-связанного-кода-в-модулях"><a class="header" href="#Группировка-связанного-кода-в-модулях">Группировка связанного кода в модулях</a></h3>
 <p><em>Модули</em> позволяют упорядочивать код внутри крейта для удобочитаемости и лёгкого повторного использования. Модули также позволяют нам управлять <em>приватностью</em> элементов, поскольку код внутри модуля по умолчанию является закрытым. Частные элементы — это внутренние подробности реализации, недоступные для внешнего использования. Мы можем сделать модули и элементы внутри них общедоступными, что позволит внешнему коду использовать их и зависеть от них.</p>
@@ -225,7 +233,21 @@
 <p>В ресторанной индустрии некоторые части ресторана называются <em>фронтом дома</em>, а другие <em>задней частью дома</em>. Фронт дома это там где находятся клиенты; здесь размещаются места клиентов, официанты принимают заказы и оплаты, а бармены делают напитки. Задняя часть дома это где шеф-повара и повара работают на кухне,  работают посудомоечные машины, а менеджеры занимаются административной деятельностью.</p>
 <p>Чтобы структурировать крейт подобно тому, как работает настоящий ресторан, можно организовать размещение функций во вложенных модулях. Создадим новую библиотеку (библиотечный крейт) с именем <code>restaurant</code> выполнив приказ <code>cargo new restaurant --lib</code>; затем вставим код из приложения 7-1 в <em>src/lib.rs</em> для определения некоторых модулей и сигнатур функций. Это секция фронта дома:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-01/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">mod front_of_house {
+    mod hosting {
+        fn add_to_waitlist() {}
+
+        fn seat_at_table() {}
+    }
+
+    mod serving {
+        fn take_order() {}
+
+        fn serve_order() {}
+
+        fn take_payment() {}
+    }
+}</code></pre>
 <p><span class="caption">Приложение 7-1: Модуль <code>front_of_house</code> , содержащий другие модули, которые в свою очередь содержат функции</span></p>
 <p>Мы определяем модуль, начиная с ключевого слова  <code>mod</code>, затем определяем название модуля (в данном случае <code>front_of_house</code>) и размещаем фигурные скобки вокруг тела модуля. Внутри модулей, можно иметь другие модули, как в случае с модулями <code>hosting</code> и <code>serving</code>. Модули также могут содержать определения для других элементов, таких как структуры, перечисления, константы, типажи или — как в приложении 7-1 — функции.</p>
 <p>Используя модули, мы можем сгруппировать связанные определения вместе и сказать почему они являются связанными. Программистам будет легче найти необходимую функциональность в сгруппированном коде, вместо того чтобы искать её в одном общем списке. Программисты, добавляющие новые функции в этот код, будут знать, где разместить код для поддержания порядка в программе.</p>

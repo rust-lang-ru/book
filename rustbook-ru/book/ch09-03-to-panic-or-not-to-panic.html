@@ -184,9 +184,12 @@
 <p>Если в тесте происходит сбой при вызове способа, то вы бы хотели, чтобы весь тест не прошёл, даже если этот способ не является тестируемой функциональностью. Поскольку вызов <code>panic!</code> это способ, которым тест помечается как провалившийся, использование <code>unwrap</code> или <code>expect</code> - именно то, что нужно.</p>
 <h3 id="Случаи-в-которых-у-вас-больше-сведений-чем-у-сборщика"><a class="header" href="#Случаи-в-которых-у-вас-больше-сведений-чем-у-сборщика">Случаи, в которых у вас больше сведений, чем у сборщика</a></h3>
 <p>Также было бы целесообразно вызывать <code>unwrap</code> или <code>expect</code> когда у вас есть какая-то другая логика, которая заверяет, что <code>Result</code> будет иметь значение <code>Ok</code>, но вашу логику не понимает сборщик. У вас по-прежнему будет значение <code>Result</code> которое нужно обработать: любая действие, которую вы вызываете, все ещё имеет возможность неудачи в целом, хотя это логически невозможно в вашей именно ситуации. Если, проверяя код вручную, вы можете убедиться, что никогда не будет вариант с <code>Err</code>, то вполне допустимо вызывать <code>unwrap</code>, а ещё лучше задокументировать причину, по которой, по вашему мнению, у вас никогда не будет варианта <code>Err</code> в тексте <code>expect</code>. Вот пример:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch09-error-handling/no-listing-08-unwrap-that-cant-fail/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::net::IpAddr;
+
+    let home: IpAddr = "127.0.0.1"
+        .parse()
+        .expect("Hardcoded IP address should be valid");
 <span class="boring">}</span></code></pre></pre>
 <p>Мы создаём экземпляр <code>IpAddr</code>, анализируя жёстко закодированную строку. Можно увидеть, что <code>127.0.0.1</code> является действительным IP-адресом, поэтому здесь допустимо использование <code>expect</code>. Однако наличие жёстко закодированной допустимой строки не меняет вид возвращаемого значения способа <code>parse</code>: мы все ещё получаем значение <code>Result</code> и сборщик все также заставляет нас обращаться с <code>Result</code>так, будто возможен вариант <code>Err</code>, потому что сборщик недостаточно умён, чтобы увидеть, что эта строка всегда действительный IP-адрес. Если строка IP-адреса пришла от пользователя, то она не является жёстко запрограммированной в программе и, следовательно, <em>может</em> привести к ошибке, мы определённо хотели бы обработать <code>Result</code> более надёжным способом. Упоминание предположения о том, что этот IP-адрес жёстко закодирован, побудит нас изменить <code>expect</code> для лучшей обработки ошибок, если в будущем нам потребуется вместо этого получить IP-адрес из какого-либо другого источника.</p>
 <h3 id="Руководство-по-обработке-ошибок"><a class="header" href="#Руководство-по-обработке-ошибок">Руководство по обработке ошибок</a></h3>
@@ -203,7 +206,47 @@
 <h3 id="Создание-пользовательских-видов-для-проверки"><a class="header" href="#Создание-пользовательских-видов-для-проверки">Создание пользовательских видов для проверки</a></h3>
 <p>Давайте разовьём идею использования системы видов Rust чтобы убедиться, что у нас есть корректное значение, и рассмотрим создание пользовательского вида для валидации. Вспомним игру угадывания числа из Главы 2, в которой наш код просил пользователя угадать число между 1 и 100. Мы никогда не проверяли, что предположение пользователя лежит между этими числами, перед сравнением предположения с загаданным нами числом; мы только проверяли, что оно положительно. В этом случае последствия были не очень страшными: наши сообщения «Слишком много» или «Слишком мало», выводимые в окно вывода, все равно были правильными. Но было бы лучше подталкивать пользователя к правильным догадкам и иметь различное поведение для случаев, когда пользователь предлагает число за пределами ряда, и когда пользователь вводит, например, буквы вместо цифр.</p>
 <p>Один из способов добиться этого - пытаться разобрать введённое значение как <code>i32</code>, а не как <code>u32</code>, чтобы разрешить потенциально отрицательные числа, а затем добавить проверку для нахождение числа в ряде, например, так:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch09-error-handling/no-listing-09-guess-out-of-range/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span>    loop {
+        // --snip--
+
+<span class="boring">        println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">        io::stdin()
+</span><span class="boring">            .read_line(&amp;mut guess)
+</span><span class="boring">            .expect("Failed to read line");
+</span><span class="boring">
+</span>        let guess: i32 = match guess.trim().parse() {
+            Ok(num) =&gt; num,
+            Err(_) =&gt; continue,
+        };
+
+        if guess &lt; 1 || guess &gt; 100 {
+            println!("The secret number will be between 1 and 100.");
+            continue;
+        }
+
+        match guess.cmp(&amp;secret_number) {
+            // --snip--
+<span class="boring">            Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">            Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">            Ordering::Equal =&gt; {
+</span><span class="boring">                println!("You win!");
+</span><span class="boring">                break;
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span>    }
+<span class="boring">}</span></code></pre>
 <p>Выражение <code>if</code> проверяет, находится ли наше значение вне ряда, сообщает пользователю о проблеме и вызывает <code>continue</code>, чтобы начать следующую повторение цикла и попросить ввести другое число. После выражения <code>if</code> мы можем продолжить сравнение значения <code>guess</code> с загаданным числом, зная, что <code>guess</code> лежит в ряде от 1 до 100.</p>
 <p>Однако это не наилучшее решение: если бы было чрезвычайно важно, чтобы программа работала только со значениями от 1 до 100, существовало бы много функций, требующих этого, то такая проверка в каждой функции была бы утомительной (и могла бы отрицательно повлиять на производительность).</p>
 <p>Вместо этого можно создать новый вид и поместить проверки в функцию создания экземпляра этого вида, не повторяя их везде. Таким образом, функции могут использовать новый вид в своих сигнатурах и быть уверены в значениях, которые им передают. Приложение 9-13 показывает один из способов, как определить вид <code>Guess</code>, чтобы экземпляр <code>Guess</code> создавался только при условии, что функция <code>new</code> получает значение от 1 до 100.</p>
@@ -212,9 +255,9 @@ file requires the `rand` crate. We do want to include it for reader
 experimentation purposes, but don't want to include it for rustdoc testing
 purposes. -->
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#include ../listings/ch09-error-handling/listing-09-13/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span>
+<span class="boring">fn main() {
+</span><span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 9-13. Вид <code>Guess</code>, который будет создавать экземпляры только для значений от 1 до 100</span></p>
 <p>Сначала мы определяем структуру с именем <code>Guess</code>, которая имеет поле с именем <code>value</code> вида <code>i32</code>, в котором будет храниться число.</p>
 <p>Затем мы реализуем ассоциированную функцию <code>new</code>, создающую экземпляры значений вида <code>Guess</code>. Функция <code>new</code>  имеет один свойство <code>value</code> вида <code>i32</code>, и возвращает <code>Guess</code>. Код в теле функции <code>new</code> проверяет, что значение <code>value</code> находится между 1 и 100. Если <code>value</code> не проходит эту проверку, мы вызываем <code>panic!</code>, которая оповестит программиста, написавшего вызывающий код, что в его коде есть ошибка, которую необходимо исправить, поскольку попытка создания <code>Guess</code> со значением <code>value</code> вне заданного ряда нарушает контракт, на который полагается <code>Guess::new</code>. Условия, в которых <code>Guess::new</code> паникует, должны быть описаны в документации к API; мы рассмотрим соглашения о документации, указывающие на возможность появления <code>panic!</code> в документации API, которую вы создадите в Главе 14. Если <code>value</code> проходит проверку, мы создаём новый экземпляр <code>Guess</code>, у которого значение поля  <code>value</code> равно значению свойства <code>value</code>, и возвращаем <code>Guess</code>.</p>

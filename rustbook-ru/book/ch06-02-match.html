@@ -181,79 +181,239 @@
 <p>В Rust есть чрезвычайно мощный механизм управления потоком, именуемый <code>match</code>, который позволяет сравнивать значение с различными шаблонами и затем выполнять код в зависимости от того, какой из шаблонов совпал. Шаблоны могут состоять из литеральных значений, имён переменных, подстановочных знаков и многого другого; в главе 18 рассматриваются все различные виды шаблонов и то, что они делают. Сила <code>match</code> заключается в выразительности шаблонов и в том, что сборщик проверяет, что все возможные случаи обработаны.</p>
 <p>Думайте о выражении <code>match</code> как о машине для сортировки монет: монеты скользят по дорожке с различными по размеру отверстиями, и каждая монета падает через первое попавшееся отверстие, в которое она поместилась. Таким же образом значения проходят через каждый шаблон в <code>match</code>, и при первом же "подходящем" шаблоне значение попадает в соответствующий раздел кода, который будет использоваться во время выполнения.</p>
 <p>Говоря о монетах, давайте используем их в качестве примера, используя <code>match</code>! Для этого мы напишем функцию, которая будет получать на вход неизвестную монету Соединённых Штатов и, подобно счётной машине, определять, какая это монета, и возвращать её стоимость в центах, как показано в приложении 6-3.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-03/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; 1,
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter =&gt; 25,
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p><span class="caption">Приложение 6-3: Перечисление и выражение <code>match</code>, использующее в качестве шаблонов его варианты</span></p>
 <p>Давайте разберём <code>match</code> в функции <code>value_in_cents</code>. Сначала пишется ключевое слово <code>match</code>, затем следует выражение, которое в данном случае является значением <code>coin</code>. Это выглядит очень похоже на условное выражение, используемое в <code>if</code>, но есть большая разница: с <code>if</code> выражение должно возвращать <em>булево значение</em>, а здесь это может быть любой вид. Вид <code>coin</code> в этом примере — перечисление вида <code>Coin</code>, объявленное в строке 1.</p>
 <p>Далее идут ветки <code>match</code>. Ветки состоят из двух частей: шаблон и некоторый код. Здесь первая ветка имеет шаблон, который является значением <code>Coin::Penny</code>, затем идёт оператор <code>=&gt;</code>, который разделяет шаблон и код для выполнения. Код в этом случае - это просто значение <code>1</code>. Каждая ветка отделяется от последующей при помощи запятой.</p>
 <p>Когда выполняется выражение <code>match</code>, оно сравнивает полученное значение с образцом каждого ответвления по порядку. Если образец совпадает со значением, то выполняется код, связанный с этим образцом. Если этот образец не соответствует значению, то выполнение продолжается со следующей ветки, так же, как в автомате по сортировке монет. У нас может быть столько ответвлений, сколько нужно: в приложении 6-3 наш <code>match</code> состоит из четырёх ответвлений.</p>
 <p>Код, связанный с каждым ответвлением, является выражением, а полученное значение выражения в соответствующем ответвлении — это значение, которое возвращается для всего выражения <code>match</code>.</p>
 <p>Обычно фигурные скобки не используются, если код совпадающей ветви невелик, как в приложении 6-3, где каждая ветвь просто возвращает значение. Если вы хотите выполнить несколько строк кода в одной ветви, вы должны использовать фигурные скобки, а запятая после этой ветви необязательна. Например, следующий код печатает "Lucky penny!" каждый раз, когда способ вызывается с <code>Coin::Penny</code>, но при этом он возвращает последнее значение раздела - <code>1</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-08-match-arm-multiple-lines/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; {
+            println!("Lucky penny!");
+            1
+        }
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter =&gt; 25,
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <h3 id="Образцы-привязывающие-значения"><a class="header" href="#Образцы-привязывающие-значения">Образцы, привязывающие значения</a></h3>
 <p>Есть ещё одно полезное качество у веток в выражении <code>match</code>: они могут привязываться к частям тех значений, которые совпали с шаблоном. Благодаря этому можно извлекать значения из вариантов перечисления.</p>
 <p>В качестве примера, давайте изменим один из вариантов перечисления так, чтобы он хранил в себе данные. С 1999 по 2008 год Соединённые Штаты чеканили 25 центов с различным дизайном на одной стороне для каждого из 50 штатов. Ни одна другая монета не получила дизайна штата, только четверть доллара имела эту дополнительную особенность. Мы можем добавить эту сведения в наш <code>enum</code> путём изменения варианта <code>Quarter</code> и включить в него значение <code>UsState</code>, как сделано в приложении 6-4.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-04/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)] // so we can inspect the state in a minute
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p><span class="caption">Приложение 6-4: Перечисление <code>Coin</code>, в котором вариант <code>Quarter</code> также сохраняет значение <code>UsState</code></span></p>
 <p>Представьте, что ваш друг пытается собрать четвертаки всех 50 штатов. Сортируя монеты по виду, мы также будем сообщать название штата, к которому относится каждый четвертак, чтобы, если у нашего друга нет такой монеты, он мог добавить её в свою собрание.</p>
 <p>В выражении match для этого кода мы добавляем переменную с именем <code>state</code> в шаблон, который соответствует значениям варианта <code>Coin::Quarter</code>. Когда <code>Coin::Quarter</code> совпадёт с шаблоном, переменная <code>state</code> будет привязана к значению штата этого четвертака. Затем мы сможем использовать <code>state</code> в коде этой ветки, вот так:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; 1,
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter(state) =&gt; {
+            println!("State quarter from {state:?}!");
+            25
+        }
+    }
+}
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-09-variable-in-pattern/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    value_in_cents(Coin::Quarter(UsState::Alaska));
+</span><span class="boring">}</span></code></pre></pre>
 <p>Если мы сделаем вызов функции <code>value_in_cents(Coin::Quarter(UsState::Alaska))</code>, то <code>coin</code> будет иметь значение <code>Coin::Quarter(UsState::Alaska)</code>. Когда мы будем сравнивать это значение с каждой из веток, ни одна из них не будет совпадать, пока мы не достигнем варианта <code>Coin::Quarter(state)</code>. В этот момент <code>state</code> привяжется к значению <code>UsState::Alaska</code>. Затем мы сможем использовать эту привязку в выражении <code>println!</code>, получив таким образом внутреннее значение варианта <code>Quarter</code> перечисления <code>Coin</code>.</p>
 <h3 id="Сопоставление-шаблона-для-optiont"><a class="header" href="#Сопоставление-шаблона-для-optiont">Сопоставление шаблона для <code>Option&lt;T&gt;</code></a></h3>
 <p>В предыдущем разделе мы хотели получить внутреннее значение <code>T</code> для случая <code>Some</code> при использовании <code>Option&lt;T&gt;</code>; мы можем обработать вид <code>Option&lt;T&gt;</code> используя <code>match</code>, как уже делали с перечислением <code>Coin</code>! Вместо сравнения монет мы будем сравнивать варианты <code>Option&lt;T&gt;</code>, независимо от этого изменения механизм работы выражения <code>match</code> останется прежним.</p>
 <p>Допустим, мы хотим написать функцию, которая принимает <code>Option&lt;i32&gt;</code> и если есть значение внутри, то добавляет 1 к существующему значению. Если значения нет, то функция должна возвращать значение <code>None</code> и не пытаться выполнить какие-либо действия.</p>
 <p>Такую функцию довольно легко написать благодаря выражению <code>match</code>, код будет выглядеть как в приложении 6-5.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-05/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+        match x {
+            None =&gt; None,
+            Some(i) =&gt; Some(i + 1),
+        }
+    }
+
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 6-5: Функция, использующая выражение <code>match</code> для <code>Option&lt;i32&gt;</code></span></p>
 <p>Давайте более подробно рассмотрим первое выполнение <code>plus_one</code>. Когда мы вызываем <code>plus_one(five)</code>, переменная <code>x</code> в теле <code>plus_one</code> будет иметь значение <code>Some(5)</code>. Затем мы сравниваем это значение с каждой ветвью сопоставления:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-05/src/main.rs:first_arm}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+</span><span class="boring">        match x {
+</span>            None =&gt; None,
+<span class="boring">            Some(i) =&gt; Some(i + 1),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
 <p>Значение <code>Some(5)</code> не соответствует образцу <code>None</code>, поэтому мы продолжаем со следующим ответвлением:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-05/src/main.rs:second_arm}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+</span><span class="boring">        match x {
+</span><span class="boring">            None =&gt; None,
+</span>            Some(i) =&gt; Some(i + 1),
+<span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
 <p>Совпадает ли <code>Some(5)</code> с образцом <code>Some(i)</code>? Да, это так! У нас такой же вариант. Тогда переменная <code>i</code> привязывается к значению, содержащемуся внутри <code>Some</code>, поэтому <code>i</code> получает значение <code>5</code>. Затем выполняется код ассоциированный для данного ответвления, поэтому мы добавляем 1 к значению <code>i</code> и создаём новое значение <code>Some</code> со значением <code>6</code> внутри.</p>
 <p>Теперь давайте рассмотрим второй вызов <code>plus_one</code> в приложении 6-5, где <code>x</code> является <code>None</code>. Мы входим в выражение <code>match</code> и сравниваем значение с первым ответвлением:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-05/src/main.rs:first_arm}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+</span><span class="boring">        match x {
+</span>            None =&gt; None,
+<span class="boring">            Some(i) =&gt; Some(i + 1),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
 <p>Оно совпадает! Для данной ветки шаблон (<em>None</em>) не подразумевает наличие какого-то значения к которому можно было бы что-то добавить, поэтому программа останавливается и возвращает значение которое находится справа от <code>=&gt;</code> - т.е. <code>None</code>. Так как шаблон первой ветки совпал, то никакие другие шаблоны веток не сравниваются.</p>
 <p>Комбинирование <code>match</code> и перечислений полезно во многих ситуациях. Вы часто будете видеть подобную сочетание в коде на Rust: сделать сопоставление значений перечисления используя <code>match</code>, привязать переменную к данным внутри значения, выполнить код на основе привязанных данных. Сначала это может показаться немного сложным, но как только вы привыкнете, то захотите чтобы такая возможность была бы во всех языках. Это неизменно любимый пользователями приём.</p>
 <h3 id="match-объемлет-все-варианты-значения"><a class="header" href="#match-объемлет-все-варианты-значения">Match объемлет все варианты значения</a></h3>
 <p>Есть ещё один особенность <code>match</code>, который мы должны обсудить: шаблоны должны покрывать все возможные варианты. Рассмотрим эту исполнение нашей функции <code>plus_one</code>, которая содержит ошибку и не собирается:</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-10-non-exhaustive-match/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+        match x {
+            Some(i) =&gt; Some(i + 1),
+        }
+    }
+<span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
 <p>Мы не обработали вариант <code>None</code>, поэтому этот код вызовет изъян в программе. К счастью, Rust знает и умеет ловить такой случай. Если мы попытаемся собрать такой код, мы получим ошибку сборки:</p>
-<pre><code class="language-console">{{#include ../listings/ch06-enums-and-pattern-matching/no-listing-10-non-exhaustive-match/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling enums v0.1.0 (file:///projects/enums)
+error[E0004]: non-exhaustive patterns: `None` not covered
+ --&gt; src/main.rs:3:15
+  |
+3 |         match x {
+  |               ^ pattern `None` not covered
+  |
+note: `Option&lt;i32&gt;` defined here
+ --&gt; /rustc/129f3b9964af4d4a709d1383930ade12dfe7c081/library/core/src/option.rs:571:1
+ ::: /rustc/129f3b9964af4d4a709d1383930ade12dfe7c081/library/core/src/option.rs:575:5
+  |
+  = note: not covered
+  = note: the matched value is of type `Option&lt;i32&gt;`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+  |
+4 ~             Some(i) =&gt; Some(i + 1),
+5 ~             None =&gt; todo!(),
+  |
+
+For more information about this error, try `rustc --explain E0004`.
+error: could not compile `enums` (bin "enums") due to 1 previous error
 </code></pre>
 <p>Rust знает, что мы не описали все возможные случаи, и даже знает, какой именно из шаблонов мы упустили! Сопоставления в Rust являются <em>исчерпывающими</em>: мы должны покрыть все возможные варианты, чтобы код был корректным. Особенно в случае <code>Option&lt;T&gt;</code>, когда Rust не даёт нам забыть обработать явным образом значение <code>None</code>, тем самым он защищает нас от предположения, что у нас есть значение, в то время как у нас может быть и null, что делает невозможным совершить ошибку на миллиард долларов, о которой говорилось ранее.</p>
 <h3 id="Универсальные-шаблоны-и-заполнитель-_"><a class="header" href="#Универсальные-шаблоны-и-заполнитель-_">Универсальные шаблоны и заполнитель <code>_</code></a></h3>
 <p>Используя перечисления, мы также можем выполнять особые действия для нескольких определённых значений, а для всех остальных значений выполнять одно действие по умолчанию. Представьте, что мы реализуем игру, в которой при выпадении 3 игрок не двигается, а получает новую модную шляпу. Если выпадает 7, игрок теряет шляпу. При всех остальных значениях ваш игрок перемещается на столько-то мест на игровом поле. Вот <code>match</code>, реализующий эту логику, в котором результат броска костей жёстко закодирован, а не является случайным значением, а вся остальная логика представлена функциями без тел, поскольку их реализация не входит в рамки данного примера:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-15-binding-catchall/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let dice_roll = 9;
+    match dice_roll {
+        3 =&gt; add_fancy_hat(),
+        7 =&gt; remove_fancy_hat(),
+        other =&gt; move_player(other),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn move_player(num_spaces: u8) {}
 <span class="boring">}</span></code></pre></pre>
 <p>Для первых двух веток шаблонами являются литеральные значения 3 и 7. Для последней ветки, которая охватывает все остальные возможные значения, шаблоном является переменная, которую мы решили назвать <code>other</code>. Код, выполняемый для ветки <code>other</code>, использует эту переменную, передавая её в функцию <code>move_player</code>.</p>
 <p>Этот код собирается, даже если мы не перечислили все возможные значения <code>u8</code>, потому что последний паттерн будет соответствовать всем значениям, не указанным в определенном списке. Этот универсальный шаблон удовлетворяет требованию, что соответствие должно быть исчерпывающим. Обратите внимание, что мы должны поместить ветку с универсальным шаблоном последней, потому что шаблоны оцениваются по порядку. Rust предупредит нас, если мы добавим ветки после универсального шаблона, потому что эти последующие ветки никогда не будут выполняться!</p>
 <p>В Rust также есть шаблон, который можно использовать, когда мы не хотим использовать значение в универсальном шаблоне: <code>_</code>, который является особым шаблоном, который соответствует любому значению и не привязывается к этому значению. Это говорит Rust, что мы не собираемся использовать это значение, поэтому Rust не будет предупреждать нас о неиспользуемой переменной.</p>
 <p>Давайте изменим правила игры так: если выпадает что-то, кроме 3 или 7, нужно бросить ещё раз. Нам не нужно использовать значение в этом случае, поэтому мы можем изменить наш код, чтобы использовать <code>_</code> вместо переменной с именем <code>other</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-16-underscore-catchall/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let dice_roll = 9;
+    match dice_roll {
+        3 =&gt; add_fancy_hat(),
+        7 =&gt; remove_fancy_hat(),
+        _ =&gt; reroll(),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn reroll() {}
 <span class="boring">}</span></code></pre></pre>
 <p>Этот пример также удовлетворяет требованию исчерпывающей полноты, поскольку мы явно пренебрегаем все остальные значения в последней ветке; мы ничего не забыли.</p>
 <p>Если мы изменим правила игры ещё раз, чтобы в ваш ход не происходило ничего другого, если вы бросаете не 3 или 7, мы можем выразить это, используя единичное значение (пустой вид кортежа, о котором мы упоминали в разделе <a href="ch03-02-data-types.html#the-tuple-type">"Кортежи"</a><!-- ignore -->) в качестве кода, который идёт вместе с веткой <code>_</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-17-underscore-unit/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let dice_roll = 9;
+    match dice_roll {
+        3 =&gt; add_fancy_hat(),
+        7 =&gt; remove_fancy_hat(),
+        _ =&gt; (),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
 <span class="boring">}</span></code></pre></pre>
 <p>Здесь мы явно говорим Rust, что не собираемся использовать никакое другое значение, которое не соответствует шаблонам в предыдущих ветках, и не хотим запускать никакой код в этом случае.</p>
 <p>Подробнее о шаблонах и совпадениях мы поговорим в <a href="ch18-00-patterns.html">Главе 18</a><!-- ignore -->. Пока же мы перейдём к синтаксису <code>if let</code>, который может быть полезен в ситуациях, когда выражение <code>match</code> слишком многословно.</p>

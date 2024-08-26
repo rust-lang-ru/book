@@ -191,16 +191,15 @@
 <span class="boring">}</span></code></pre></pre>
 <p>Комментарии также можно размещать в конце строк, содержащих код:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-24-comments-end-of-line/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let lucky_number = 7; // I’m feeling lucky today
+}</code></pre></pre>
 <p>Но чаще всего они используются в таком формате: комментарий располагается на отдельной строке над кодом, который он аннотирует:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-25-comments-above-line/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    // I’m feeling lucky today
+    let lucky_number = 7;
+}</code></pre></pre>
 <p>В Rust есть ещё один вид комментариев - документационные комментарии, которые мы обсудим в разделе <a href="ch14-02-publishing-to-crates-io.html">"Публикация пакета на Crates.io"</a> главы 14.</p>
 
                     </main>

@@ -188,10 +188,10 @@
 <p>Прежде чем мы обсудим этот вариант использования <code>Box&lt;T&gt;</code>, мы рассмотрим синтаксис и то, как взаимодействовать со значениями, хранящимися в <code>Box&lt;T&gt;</code>.</p>
 <p>В приложении 15-1 показано, как использовать поле для хранения значения <code>i32</code> в куче:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-01/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let b = Box::new(5);
+    println!("b = {b}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-1: Сохранение значения <code>i32</code> в куче с использованием box</span></p>
 <p>Мы объявляем переменную <code>b</code> со значением <code>Box</code>, указывающим на число <code>5</code>, размещённое в куче. Эта программа выведет <code>b = 5</code>; в этом случае мы получаем доступ к данным в box так же, как если бы эти данные находились в стеке. Как и любое другое значение, когда box выйдет из области видимости, как <code>b</code> в конце <code>main</code>, он будет удалён. Деаллокация происходит как для box ( хранящегося в стеке), так и для данных, на которые он указывает (хранящихся в куче).</p>
 <p>Размещать одиночные значения в куче не слишком целесообразно, поэтому вряд ли вы будете часто использовать box'ы таким образом. В большинстве ситуаций более уместно размещать такие значения, как <code>i32</code>, в стеке, где они и сохраняются по умолчанию. Давайте рассмотрим ситуацию, когда box позволяет нам определить виды, которые мы не могли бы иметь, если бы у нас не было box.</p>
@@ -207,27 +207,72 @@
 <p>Cons list не является часто используемой структурой данных в Rust. В большинстве случаев, когда вам нужен список элементов при использовании Rust, лучше использовать <code>Vec&lt;T&gt;</code>. Другие, более сложные рекурсивные виды данных <em>полезны</em> в определённых ситуациях, но благодаря тому, что в этой главе мы начнём с cons list, мы сможем выяснить, как box позволяет нам определить рекурсивный вид данных без особого напряжения.</p>
 <p>Приложение 15-2 содержит объявление перечисления cons списка. Обратите внимание, что этот код не будет собираться, потому что вид <code>List</code> не имеет известного размера, что мы и выясним.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-02/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">enum List {
+    Cons(i32, List),
+    Nil,
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
 <p><span class="caption">Приложение 15-2: Первая попытка определить перечисление в качестве структуры данных cons list, состоящей из <code>i32</code> значений.</span></p>
 <blockquote>
 <p>Примечание: В данном примере мы реализуем cons list, который содержит только значения <code>i32</code>. Мы могли бы реализовать его с помощью generics, о которых мы говорили в главе 10, чтобы определить вид cons list, который мог бы хранить значения любого вида.</p>
 </blockquote>
 <p>Использование вида <code>List</code> для хранения списка <code>1, 2, 3</code> будет выглядеть как код в приложении 15-3:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-03/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">enum List {
+</span><span class="boring">    Cons(i32, List),
+</span><span class="boring">    Nil,
+</span><span class="boring">}
+</span><span class="boring">
+</span>use crate::List::{Cons, Nil};
+
+fn main() {
+    let list = Cons(1, Cons(2, Cons(3, Nil)));
+}</code></pre>
 <p><span class="caption">Приложение 15-3: Использование перечисления <code>List</code> для хранения списка <code>1, 2, 3</code></span></p>
 <p>Первое значение <code>Cons</code> содержит <code>1</code> и другой <code>List</code>. Это значение <code>List</code> является следующим значением <code>Cons</code>, которое содержит <code>2</code> и другой <code>List</code>. Это значение <code>List</code> является ещё один значением <code>Cons</code>, которое содержит <code>3</code> и значение <code>List</code>, которое наконец является <code>Nil</code>, не рекурсивным вариантом, сигнализирующим об окончании списка.</p>
 <p>Если мы попытаемся собрать код в приложении 15-3, мы получим ошибку, показанную в приложении 15-4:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-03/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+error[E0072]: recursive type `List` has infinite size
+ --&gt; src/main.rs:1:1
+  |
+1 | enum List {
+  | ^^^^^^^^^
+2 |     Cons(i32, List),
+  |               ---- recursive without indirection
+  |
+help: insert some indirection (e.g., a `Box`, `Rc`, or `&amp;`) to break the cycle
+  |
+2 |     Cons(i32, Box&lt;List&gt;),
+  |               ++++    +
+
+error[E0391]: cycle detected when computing when `List` needs drop
+ --&gt; src/main.rs:1:1
+  |
+1 | enum List {
+  | ^^^^^^^^^
+  |
+  = note: ...which immediately requires computing when `List` needs drop again
+  = note: cycle used when computing whether `List` needs drop
+  = note: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information
+
+Some errors have detailed explanations: E0072, E0391.
+For more information about an error, try `rustc --explain E0072`.
+error: could not compile `cons-list` (bin "cons-list") due to 2 previous errors
 </code></pre>
 <p><span class="caption">Приложение 15-4: Ошибка, которую мы получаем при попытке определить рекурсивное перечисление</span></p>
 <p>Ошибка говорит о том, что этот вид "имеет бесконечный размер". Причина в том, что мы определили <code>List</code> в форме, которая является рекурсивной: она непосредственно хранит другое значение своего собственного вида. В результате Rust не может определить, сколько места ему нужно для хранения значения <code>List</code>. Давайте разберёмся, почему мы получаем эту ошибку. Сначала мы рассмотрим, как Rust решает, сколько места ему нужно для хранения значения нерекурсивного вида.</p>
 <h4 id="Вычисление-размера-нерекурсивного-вида"><a class="header" href="#Вычисление-размера-нерекурсивного-вида">Вычисление размера нерекурсивного вида</a></h4>
 <p>Вспомните перечисление <code>Message</code> определённое в приложении 6-2, когда обсуждали объявление enum  в главе 6:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-02/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p>Чтобы определить, сколько памяти выделять под значение <code>Message</code>, Rust проходит каждый из вариантов, чтобы увидеть, какой вариант требует наибольшее количество памяти. Rust видит, что для <code>Message::Quit</code> не требуется места, <code>Message::Move</code> хватает места для хранения двух значений <code>i32</code> и т.д. Так как будет использоваться только один вариант, то наибольшее пространство, которое потребуется для значения <code>Message</code>, это пространство, которое потребуется для хранения самого большого из вариантов перечисления.</p>
 <p>Сравните это с тем, что происходит, когда Rust пытается определить, сколько места необходимо рекурсивному виду, такому как перечисление <code>List</code> в приложении 15-2. Сборщик смотрит на вариант <code>Cons</code>, который содержит значение вида <code>i32</code> и значение вида <code>List</code>. Следовательно, <code>Cons</code> нужно пространство, равное размеру <code>i32</code> плюс размер <code>List</code>. Чтобы выяснить, сколько памяти необходимо виду <code>List</code>, сборщик смотрит на варианты, начиная с <code>Cons</code>. Вариант <code>Cons</code> содержит значение вида <code>i32</code> и значение вида <code>List</code>, и этот процесс продолжается бесконечно, как показано на рисунке 15-1.</p>
  <img alt="Бесконечный список Cons" src="img/trpl15-01.svg" class="center" style="width: 50%;">
@@ -246,10 +291,16 @@ after doing automatic regeneration, look at listings/ch15-smart-pointers/listing
 <p>Поскольку <code>Box&lt;T&gt;</code> является указателем, Rust всегда знает, сколько места нужно <code>Box&lt;T&gt;</code>: размер указателя не меняется в зависимости от объёма данных, на которые он указывает. Это означает, что мы можем поместить <code>Box&lt;T&gt;</code> внутрь экземпляра <code>Cons</code> вместо значения <code>List</code> напрямую. <code>Box&lt;T&gt;</code> будет указывать на значение очередного <code>List</code>, который будет находиться в куче, а не внутри экземпляра <code>Cons</code>. Концептуально у нас все ещё есть список, созданный из списков, содержащих другие списки, но эта реализация теперь больше похожа на размещение элементов рядом друг с другом, а не внутри друг друга.</p>
 <p>Мы можем изменить определение перечисления <code>List</code> в приложении 15-2 и использование <code>List</code> в приложении 15-3 на код из приложения 15-5, который будет собираться:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-05/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">enum List {
+    Cons(i32, Box&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+
+fn main() {
+    let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-5: Определение <code>List</code>, которое использует <code>Box&lt;T&gt;</code> для того, чтобы иметь вычисляемый размер</span></p>
 <p><code>Cons</code> требуется объём <code>i32</code> плюс место для хранения данных указателя box. <code>Nil</code> не хранит никаких значений, поэтому ему нужно меньше места, чем <code>Cons</code>. Теперь мы знаем, что любое значение <code>List</code> займёт размер <code>i32</code> плюс размер данных указателя box. Используя box, мы разорвали бесконечную рекурсивную цепочку, поэтому сборщик может определить размер, необходимый для хранения значения <code>List</code>. На рисунке 15-2 показано, как теперь выглядит <code>Cons</code>.</p>
  <img alt="Бесконечный список Cons" src="img/trpl15-02.svg" class="center" style="width: 50%;">

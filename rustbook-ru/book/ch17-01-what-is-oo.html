@@ -187,11 +187,44 @@
 <p>Другим особенностью, обычно связанным с объектно-ориентированным программированием, является мысль <em>инкапсуляции</em>: подробности реализации объекта недоступны для кода, использующего этот объект. Единственный способ взаимодействия с объектом — через его публичный внешняя оболочка; код, использующий этот объект, не должен иметь возможности взаимодействовать с внутренними свойствами объекта и напрямую изменять его данные или поведение. Инкапсуляция позволяет изменять и реорганизовывать внутренние свойства объекта без необходимости изменять код, который использует объект.</p>
 <p>В главе 7 мы уже говорили о том, как управлять инкапсуляцией: мы можем использовать ключевое слово <code>pub</code>, чтобы определить, какие модули, виды, функции и способы в нашем коде будут публичными, а всё остальное по умолчанию будет приватными. Например, мы можем определить структуру <code>AveragedCollection</code>, в которой есть поле, содержащее вектор значений <code>i32</code>. Также, структура будет иметь поле, содержащее среднее арифметическое чисел этого вектора, таким образом, среднее не нужно будет вычислять каждый раз, когда оно кому-то понадобится. Другими словами, <code>AveragedCollection</code> будет кэшировать вычисленное среднее для нас. В приложении 17-1 приведено определение структуры <code>AveragedCollection</code>:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-01/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub struct AveragedCollection {
+    list: Vec&lt;i32&gt;,
+    average: f64,
+}</code></pre>
 <p><span class="caption">Приложение 17-1: структура <code>AveragedCollection</code> содержит список целых чисел и их среднее арифметическое.</span></p>
 <p>Обратите внимание, что структура помечена ключевым словом <code>pub</code>, что позволяет другому коду её использовать, однако, поля структуры остаются недоступными. Это важно, потому что мы хотим обеспечить обновление среднего значения при добавлении или удалении элемента из списка. Мы можем получить нужное поведение, определив в структуре способы <code>add</code>, <code>remove</code> и <code>average</code>, как показано в примере 17-2:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-02/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct AveragedCollection {
+</span><span class="boring">    list: Vec&lt;i32&gt;,
+</span><span class="boring">    average: f64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl AveragedCollection {
+    pub fn add(&amp;mut self, value: i32) {
+        self.list.push(value);
+        self.update_average();
+    }
+
+    pub fn remove(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        let result = self.list.pop();
+        match result {
+            Some(value) =&gt; {
+                self.update_average();
+                Some(value)
+            }
+            None =&gt; None,
+        }
+    }
+
+    pub fn average(&amp;self) -&gt; f64 {
+        self.average
+    }
+
+    fn update_average(&amp;mut self) {
+        let total: i32 = self.list.iter().sum();
+        self.average = total as f64 / self.list.len() as f64;
+    }
+}</code></pre>
 <p><span class="caption">Приложение 17-2: Реализация публичных способов <code>add</code>,<code>remove</code>, и <code>average</code> для <code>AveragedCollection</code></span></p>
 <p>Публичные способы <code>add</code>, <code>remove</code> и <code>average</code> являются единственным способом получить или изменить данные в экземпляре <code>AveragedCollection</code>. Когда элемент добавляется в <code>list</code> способом <code>add</code>, или удаляется с помощью способа <code>remove</code>, код реализации каждого из этих способов вызывает приватный способ <code>update_average</code>, который позаботится об обновлении поля <code>average</code>.</p>
 <p>Мы оставляем поля <code>list</code> и <code>average</code> приватными, чтобы внешний код не мог добавлять или удалять элементы непосредственно в поле <code>list</code>; в противном случае поле <code>average</code> может оказаться не синхронизировано при подобном вмешательстве. Способ <code>average</code> возвращает значение в поле <code>average</code>, что позволяет внешнему коду читать значение <code>average</code>, но не изменять его.</p>

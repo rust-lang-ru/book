@@ -177,29 +177,71 @@
                     <main>
                         <h2 id="Краткое-управление-потоком-выполнения-с-if-let"><a class="header" href="#Краткое-управление-потоком-выполнения-с-if-let">Краткое управление потоком выполнения с <code>if let</code></a></h2>
 <p>Синтаксис <code>if let</code> позволяет скомбинировать <code>if</code> и <code>let</code> в менее многословную конструкцию, и затем обработать значения соответствующе только одному шаблону, одновременно пренебрегая все остальные. Рассмотрим программу в приложении 6-6, которая обрабатывает сопоставление значения <code>Option&lt;u8&gt;</code> в переменной <code>config_max</code>, но хочет выполнить код только в том случае, если значение является вариантом <code>Some</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-06/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let config_max = Some(3u8);
+    match config_max {
+        Some(max) =&gt; println!("The maximum is configured to be {max}"),
+        _ =&gt; (),
+    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 6-6. Выражение <code>match</code>, которое выполнит код только при значении равном <code>Some</code></span></p>
 <p>Если значение равно <code>Some</code>, мы распечатываем значение в варианте <code>Some</code>, привязывая значение к переменной <code>max</code> в шаблоне. Мы не хотим ничего делать со значением <code>None</code>. Чтобы удовлетворить выражение <code>match</code>, мы должны добавить <code>_ =&gt; ()</code> после обработки первой и единственной ветки, и добавление шаблонного кода раздражает.</p>
 <p>Вместо этого, мы могли бы написать это более коротким способом, используя <code>if let</code>. Следующий код ведёт себя так же, как выражение <code>match</code> в приложении 6-6:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-12-if-let/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let config_max = Some(3u8);
+    if let Some(max) = config_max {
+        println!("The maximum is configured to be {max}");
+    }
 <span class="boring">}</span></code></pre></pre>
 <p>Синтаксис <code>if let</code> принимает шаблон и выражение, разделённые знаком равенства. Он работает так же, как <code>match</code>, когда в него на вход передадут выражение и подходящим шаблоном для этого выражения окажется первая ветка. В данном случае шаблоном является <code>Some(max)</code>, где <code>max</code> привязывается к значению внутри <code>Some</code>. Затем мы можем использовать <code>max</code> в теле раздела <code>if let</code> так же, как мы использовали <code>max</code> в соответствующей ветке <code>match</code>. Код в разделе <code>if let</code> не запускается, если значение не соответствует шаблону.</p>
 <p>Используя <code>if let</code> мы меньше печатаем, меньше делаем отступов и меньше получаем шаблонного кода. Тем не менее, мы теряем полную проверку всех вариантов, предоставляемую выражением <code>match</code>. Выбор между <code>match</code> и <code>if let</code> зависит от того, что вы делаете в вашем определенном случае и является ли получение краткости при потере полноты проверки подходящим соглашением.</p>
 <p>Другими словами, вы можете думать о конструкции <code>if let</code> как о <em>синтаксическом сахаре</em> для <code>match</code>, который выполнит код если входное значение будет соответствовать единственному шаблону, и пропренебрегает все остальные значения.</p>
 <p>Можно добавлять <code>else</code> к <code>if let</code>. Разделкода, который находится внутри <code>else</code> подобен по смыслу блоку кода ветки связанной с шаблоном <code>_</code> выражения <code>match</code> (которое эквивалентно сборной конструкции <code>if let</code> и <code>else</code>). Вспомним объявление перечисления <code>Coin</code> в приложении 6-4, где вариант <code>Quarter</code> также содержит внутри значение штата вида <code>UsState</code>. Если бы мы хотели посчитать все монеты не являющиеся четвертями, а для четвертей печатать название штата, то мы могли бы сделать это с помощью выражения <code>match</code> таким образом:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-13-count-and-announce-match/src/main.rs:here}}
+</span><span class="boring">    let coin = Coin::Penny;
+</span>    let mut count = 0;
+    match coin {
+        Coin::Quarter(state) =&gt; println!("State quarter from {state:?}!"),
+        _ =&gt; count += 1,
+    }
 <span class="boring">}</span></code></pre></pre>
 <p>Или мы могли бы использовать выражение <code>if let</code> и <code>else</code> так:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-14-count-and-announce-if-let-else/src/main.rs:here}}
+</span><span class="boring">    let coin = Coin::Penny;
+</span>    let mut count = 0;
+    if let Coin::Quarter(state) = coin {
+        println!("State quarter from {state:?}!");
+    } else {
+        count += 1;
+    }
 <span class="boring">}</span></code></pre></pre>
 <p>Если у вас есть ситуация в которой ваша программа имеет логику которая слишком многословна для того чтобы её выражать используя <code>match</code>, помните, о том, что также в вашем наборе средств Rust есть <code>if let</code>.</p>
 <h2 id="Итоги"><a class="header" href="#Итоги">Итоги</a></h2>

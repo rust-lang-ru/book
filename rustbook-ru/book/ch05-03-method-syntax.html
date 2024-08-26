@@ -180,10 +180,29 @@
 <h3 id="Определение-способов"><a class="header" href="#Определение-способов">Определение способов</a></h3>
 <p>Давайте изменим функцию <code>area</code> так, чтобы она имела экземпляр <code>Rectangle</code> в качестве входного свойства и сделаем её способом <code>area</code>, определённым для структуры <code>Rectangle</code>, как показано в приложении 5-13:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-13/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect1.area()
+    );
+}</code></pre></pre>
 <p><span class="caption">Приложение 5-13: Определение способа <code>area</code> для структуры <code>Rectangle</code></span></p>
 <p>Чтобы определить функцию в среде <code>Rectangle</code>, мы создаём раздел<code>impl</code> (implementation - реализация) для <code>Rectangle</code>. Всё в <code>impl</code> будет связано с видом <code>Rectangle</code>. Затем мы перемещаем функцию <code>area</code> внутрь фигурных скобок <code>impl</code> и меняем первый (и в данном случае единственный) свойство на <code>self</code> в сигнатуре и в теле. В <code>main</code>, где мы вызвали функцию <code>area</code> и передали <code>rect1</code> в качестве переменной, теперь мы можем использовать <em>синтаксис способа</em> для вызова способа <code>area</code> нашего экземпляра <code>Rectangle</code>. Синтаксис способа идёт после экземпляра: мы добавляем точку, за которой следует имя способа, круглые скобки и любые переменные.</p>
 <p>В сигнатуре <code>area</code> мы используем <code>&amp;self</code> вместо <code>rectangle: &amp;Rectangle</code>. <code>&amp;self</code> на самом деле является сокращением от <code>self: &amp;Self</code>. Внутри раздела <code>impl</code> вид <code>Self</code> является псевдонимом вида, для которого реализован раздел<code>impl</code>. Способы обязаны иметь свойство с именем <code>self</code> вида <code>Self</code>, поэтому Rust позволяет вам сокращать его, используя только имя <code>self</code> на месте первого свойства. Обратите внимание, что нам по-прежнему нужно использовать <code>&amp;</code> перед сокращением <code>self</code>, чтобы указать на то, что этот способ заимствует экземпляр <code>Self</code>, точно так же, как мы делали это в <code>rectangle: &amp;Rectangle</code>. Как и любой другой свойство, способы могут брать во владение <code>self</code>, заимствовать неизменяемый <code>self</code>, как мы поступили в данном случае, или заимствовать изменяемый <code>self</code>.</p>
@@ -191,10 +210,28 @@
 <p>Основная причина использования способов вместо функций, помимо синтаксиса способа, где нет необходимости повторять вид <code>self</code> в сигнатуре каждого способа, заключается в организации кода. Мы поместили все, что мы можем сделать с экземпляром вида, в один <code>impl</code> вместо того, чтобы заставлять будущих пользователей нашего кода искать доступный функционал <code>Rectangle</code> в разных местах предоставляемой нами библиотеки.</p>
 <p>Обратите внимание, что мы можем дать способу то же имя, что и одному из полей структуры. Например, для <code>Rectangle</code> мы можем определить способ, также названный <code>width</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-06-method-field-interaction/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn width(&amp;self) -&gt; bool {
+        self.width &gt; 0
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    if rect1.width() {
+        println!("The rectangle has a nonzero width; it is {}", rect1.width);
+    }
+}</code></pre></pre>
 <p>Здесь мы определили, чтобы способ <code>width</code> возвращал значение <code>true</code>, если значение в поле <code>width</code> экземпляра больше <code>0</code>, и значение <code>false</code>, если значение равно <code>0</code>, но мы можем использовать поле в способе с тем же именем для любых целей. В <code>main</code>, когда мы ставим после <code>rect1.width</code> круглые скобки, Rust знает, что мы имеем в виду способ <code>width</code>. Когда мы не используем круглые скобки, Rust понимает, что мы имеем в виду поле <code>width</code>.</p>
 <p>Часто, но не всегда, когда мы создаём способы с тем же именем, что и у поля, мы хотим, чтобы он только возвращал значение одноимённого поля и больше ничего не делал. Подобные способы называются <em>геттерами</em>, и Rust не реализует их самостоятельно для полей структуры, как это делают некоторые другие языки. Геттеры полезны, поскольку вы можете сделать поле приватным, а способ публичным и, таким образом, включить доступ только для чтения к этому полю как часть общедоступного API вида. Мы обсудим, что такое публичность и приватность, и как обозначить поле или способ в качестве публичного или приватного в <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">главе 7</a><!-- ignore -->.</p>
 <blockquote>
@@ -229,7 +266,23 @@
 <h3 id="Способы-с-несколькими-свойствами"><a class="header" href="#Способы-с-несколькими-свойствами">Способы с несколькими свойствами</a></h3>
 <p>Давайте попрактикуемся в использовании способов, реализовав второй способ в структуре <code>Rectangle</code>. На этот раз мы хотим, чтобы экземпляр <code>Rectangle</code> брал другой экземпляр <code>Rectangle</code> и возвращал <code>true</code>, если второй <code>Rectangle</code> может полностью поместиться внутри <code>self</code> (первый <code>Rectangle</code>); в противном случае он должен вернуть <code>false</code>. То есть, как только мы определим способ <code>can_hold</code>, мы хотим иметь возможность написать программу, показанную в Приложении 5-14.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-14/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore">fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    let rect2 = Rectangle {
+        width: 10,
+        height: 40,
+    };
+    let rect3 = Rectangle {
+        width: 60,
+        height: 45,
+    };
+
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
+}</code></pre>
 <p><span class="caption">Приложение 5-14: Использование ещё не написанного способа <code>can_hold</code></span></p>
 <p>Ожидаемый результат будет выглядеть следующим образом, т.к. оба размера в экземпляре <code>rect2</code> меньше, чем размеры в экземпляре <code>rect1</code>, а <code>rect3</code> шире, чем <code>rect1</code>:</p>
 <pre><code class="language-text">Can rect1 hold rect2? true
@@ -237,28 +290,102 @@ Can rect1 hold rect3? false
 </code></pre>
 <p>Мы знаем, что хотим определить способ, поэтому он будет находится в <code>impl Rectangle</code> разделе. Имя способа будет <code>can_hold</code>, и оно будет принимать неизменяемое заимствование на другой <code>Rectangle</code> в качестве свойства. Мы можем сказать, какой это будет вид свойства, посмотрев на код вызывающего способа: способ <code>rect1.can_hold(&amp;rect2)</code> передаёт в него  <code>&amp;rect2</code> , который является неизменяемым заимствованием экземпляра <code>rect2</code> вида <code>Rectangle</code>. В этом есть смысл, потому что нам нужно только читать <code>rect2</code> (а не писать, что означало бы, что нужно изменяемое заимствование), и мы хотим, чтобы <code>main</code> сохранил право собственности на экземпляр <code>rect2</code>, чтобы мы могли использовать его снова после вызов способа <code>can_hold</code>. Возвращаемое значение <code>can_hold</code> имеет булевый вид, а реализация проверяет, являются ли ширина и высота <code>self</code> больше, чем ширина и высота другого <code>Rectangle</code> соответственно. Давайте добавим новый способ <code>can_hold</code> в <code>impl</code> разделиз приложения 5-13, как показано в приложении 5-15.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+
+    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+    }
+}
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-15/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let rect1 = Rectangle {
+</span><span class="boring">        width: 30,
+</span><span class="boring">        height: 50,
+</span><span class="boring">    };
+</span><span class="boring">    let rect2 = Rectangle {
+</span><span class="boring">        width: 10,
+</span><span class="boring">        height: 40,
+</span><span class="boring">    };
+</span><span class="boring">    let rect3 = Rectangle {
+</span><span class="boring">        width: 60,
+</span><span class="boring">        height: 45,
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
+</span><span class="boring">    println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
+</span><span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 5-15: Реализация способа <code>can_hold</code> для <code>Rectangle</code>, принимающего другой экземпляр <code>Rectangle</code> в качестве свойства</span></p>
 <p>Когда мы запустим код с функцией <code>main</code> приложения 5-14, мы получим желаемый вывод. Способы могут принимать несколько свойств, которые мы добавляем в сигнатуру после первого  свойства <code>self</code>, и эти свойства работают так же, как свойства в функциях.</p>
 <h3 id="Ассоциированные-функции"><a class="header" href="#Ассоциированные-функции">Ассоциированные функции</a></h3>
 <p>Все функции, определённые в разделе <code>impl</code>, называются <em>ассоциированными функциями</em>, потому что они ассоциированы с видом, указанным после ключевого слова <code>impl</code>. Мы можем определить ассоциированные функции, которые не имеют <code>self</code> в качестве первого свойства (и, следовательно, не являются способами), потому что им не нужен экземпляр вида для работы. Мы уже использовали одну подобную функцию: функцию <code>String::from</code>, определённую для вида <code>String</code>.</p>
 <p>Ассоциированные функции, не являющиеся способами, часто используются для конструкторов, возвращающих новый экземпляр структуры. Их часто называют <code>new</code>, но <code>new</code> не является особым именем и не встроена в язык. Например, мы можем предоставить ассоциированную функцию с именем <code>square</code>, которая будет иметь один свойство размера и использовать его как ширину и высоту, что упростит создание квадратного <code>Rectangle</code>, вместо того, чтобы указывать одно и то же значение дважды:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn square(size: u32) -&gt; Self {
+        Self {
+            width: size,
+            height: size,
+        }
+    }
+}
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-03-associated-functions/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let sq = Rectangle::square(3);
+</span><span class="boring">}</span></code></pre></pre>
 <p>Ключевые слова <code>Self</code> в возвращаемом виде и в теле функции являются псевдонимами для вида, указанного после ключевого слова <code>impl</code>, которым в данном случае является <code>Rectangle</code>.</p>
 <p>Чтобы вызвать эту связанную функцию, используется синтаксис <code>::</code> с именем структуры; например <code>let sq = Rectangle::square(3);</code>. Эта функция находится в пространстве имён структуры. Синтаксис <code>::</code> используется как для связанных функций, так и для пространств имён, созданных модулями. Мы обсудим модули в <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">главе 7</a><!-- ignore -->.</p>
 <h3 id="Несколько-разделов-impl"><a class="header" href="#Несколько-разделов-impl">Несколько разделов <code>impl</code></a></h3>
 <p>Каждая структура может иметь несколько <code>impl</code>. Например, Приложение 5-15 эквивалентен коду, показанному в приложении 5-16, в котором каждый способ находится в своём собственном разделе <code>impl</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+}
+
+impl Rectangle {
+    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+    }
+}
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-16/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let rect1 = Rectangle {
+</span><span class="boring">        width: 30,
+</span><span class="boring">        height: 50,
+</span><span class="boring">    };
+</span><span class="boring">    let rect2 = Rectangle {
+</span><span class="boring">        width: 10,
+</span><span class="boring">        height: 40,
+</span><span class="boring">    };
+</span><span class="boring">    let rect3 = Rectangle {
+</span><span class="boring">        width: 60,
+</span><span class="boring">        height: 45,
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
+</span><span class="boring">    println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
+</span><span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 5-16: Переписанный Приложения 5-15 с использованием нескольких <code>impl</code></span></p>
 <p>Здесь нет причин разделять способы на несколько <code>impl</code>, но это допустимый синтаксис. Мы увидим случай, когда несколько <code>impl</code> могут оказаться полезными, в Главе 10, рассматривающей обобщённые виды и свойства.</p>
 <h2 id="Итоги"><a class="header" href="#Итоги">Итоги</a></h2>

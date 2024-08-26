@@ -189,47 +189,239 @@
 <p>По умолчанию, если тест пройден, система управления запуска тестов блокирует вывод на печать, т.е. если вы вызовете макрос <code>println!</code> внутри кода теста и тест будет пройден, вы не увидите вывода на окно вывода результатов вызова <code>println!</code>. Если же тест не был пройден, все несущие сведения сообщения, а также описание ошибки будут выведены на окно вывода.</p>
 <p>Например, в коде (11-10) функция выводит значение свойства с поясняющим текстовым сообщением, а также возвращает целочисленное константное значение <code>10</code>. Далее следует тест, который имеет правильный входной свойство и тест, который имеет ошибочный входной свойство:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust panics noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-10/src/lib.rs}}</code></pre>
+<pre><code class="language-rust panics noplayground">fn prints_and_returns_10(a: i32) -&gt; i32 {
+    println!("I got the value {a}");
+    10
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn this_test_will_pass() {
+        let value = prints_and_returns_10(4);
+        assert_eq!(value, 10);
+    }
+
+    #[test]
+    fn this_test_will_fail() {
+        let value = prints_and_returns_10(8);
+        assert_eq!(value, 5);
+    }
+}</code></pre>
 <p><span class="caption">Приложение 11-10: Тест функции, которая использует макрос <code>println!</code></span></p>
 <p>Результат вывода на окно вывода приказы <code>cargo test</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-10/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling silly-function v0.1.0 (file:///projects/silly-function)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running unittests src/lib.rs (target/debug/deps/silly_function-160869f38cff9166)
+
+running 2 tests
+test tests::this_test_will_fail ... FAILED
+test tests::this_test_will_pass ... ok
+
+failures:
+
+---- tests::this_test_will_fail stdout ----
+I got the value 8
+thread 'tests::this_test_will_fail' panicked at src/lib.rs:19:9:
+assertion `left == right` failed
+  left: 10
+ right: 5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::this_test_will_fail
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <p>Обратите внимание, что нигде в этом выводе мы не видим сообщения <code>I got the value 4</code> , которое печатается при выполнении пройденного теста. Этот вывод был записан. Результат неудачного теста, <code>I got the value 8</code> , появляется в разделе итоговых результатов теста, который также показывает причину неудачного теста.</p>
 <p>Если мы хотим видеть напечатанные результаты прохождения тестов, мы можем сказать Rust, чтобы он также показывал результаты успешных тестов с помощью <code>--show-output</code>.</p>
 <pre><code class="language-console">$ cargo test -- --show-output
 </code></pre>
 <p>Когда мы снова запускаем тесты из Приложения 11-10 с флагом <code>--show-output</code> , мы видим следующий результат:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/output-only-01-show-output/output.txt}}
+<pre><code class="language-console">$ cargo test -- --show-output
+   Compiling silly-function v0.1.0 (file:///projects/silly-function)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running unittests src/lib.rs (target/debug/deps/silly_function-160869f38cff9166)
+
+running 2 tests
+test tests::this_test_will_fail ... FAILED
+test tests::this_test_will_pass ... ok
+
+successes:
+
+---- tests::this_test_will_pass stdout ----
+I got the value 4
+
+
+successes:
+    tests::this_test_will_pass
+
+failures:
+
+---- tests::this_test_will_fail stdout ----
+I got the value 8
+thread 'tests::this_test_will_fail' panicked at src/lib.rs:19:9:
+assertion `left == right` failed
+  left: 5
+ right: 10
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::this_test_will_fail
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <h3 id="Запуск-подмножества-тестов-по-имени"><a class="header" href="#Запуск-подмножества-тестов-по-имени">Запуск подмножества тестов по имени</a></h3>
 <p>Бывают случаи, когда в запуске всех тестов нет необходимости и нужно запустить только несколько тестов. Если вы работаете над функцией и хотите запустить тесты, которые исследуют её работу - это было бы удобно. Вы можете это сделать, используя приказ <code>cargo test</code>, передав в качестве переменной имена тестов.</p>
 <p>Для отображения, как запустить группу тестов, мы создадим группу тестов для функции <code>add_two</code> function, как показано в Приложении 11-11, и постараемся выбрать какие из них запускать.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-11/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn add_two(a: usize) -&gt; usize {
+    a + 2
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn add_two_and_two() {
+        let result = add_two(2);
+        assert_eq!(result, 4);
+    }
+
+    #[test]
+    fn add_three_and_two() {
+        let result = add_two(3);
+        assert_eq!(result, 5);
+    }
+
+    #[test]
+    fn one_hundred() {
+        let result = add_two(100);
+        assert_eq!(result, 102);
+    }
+}</code></pre>
 <p><span class="caption">Приложение 11-11: Три теста с различными именами</span></p>
 <p>Если вы выполните приказ <code>cargo test</code> без уточняющих переменных, все тесты выполнятся параллельно:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-11/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 3 tests
+test tests::add_three_and_two ... ok
+test tests::add_two_and_two ... ok
+test tests::one_hundred ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <h4 id="Запуск-одного-теста"><a class="header" href="#Запуск-одного-теста">Запуск одного теста</a></h4>
 <p>Мы можем запустить один тест с помощью указания его имени в приказу <code>cargo test</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/output-only-02-single-test/output.txt}}
+<pre><code class="language-console">$ cargo test one_hundred
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.69s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 1 test
+test tests::one_hundred ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Был запущен только тест с названием <code>one_hundred</code>; два других теста не соответствовали этому названию. Результаты теста с помощью вывода <code>2 filtered out</code> дают нам понять, что у нас было больше тестов, но они не были запущены.</p>
 <p>Таким образом мы не можем указать имена нескольких тестов; будет использоваться только первое значение, указанное для <code>cargo test</code> . Но есть способ запустить несколько тестов.</p>
 <h4 id="Использование-фильтров-для-запуска-нескольких-тестов"><a class="header" href="#Использование-фильтров-для-запуска-нескольких-тестов">Использование фильтров для запуска нескольких тестов</a></h4>
 <p>Мы можем указать часть имени теста, и будет запущен любой тест, имя которого соответствует этому значению. Например, поскольку имена двух наших тестов содержат <code>add</code>, мы можем запустить эти два, запустив <code>cargo test add</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/output-only-03-multiple-tests/output.txt}}
+<pre><code class="language-console">$ cargo test add
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 2 tests
+test tests::add_three_and_two ... ok
+test tests::add_two_and_two ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Этот приказ запускала все тесты с <code>add</code> в имени и отфильтровывала тест с именем <code>one_hundred</code> . Также обратите внимание, что модуль, в котором появляется тест, становится частью имени теста, поэтому мы можем запускать все тесты в модуле, фильтруя имя модуля.</p>
 <h3 id="Пренебрежение-тестов"><a class="header" href="#Пренебрежение-тестов">Пренебрежение тестов</a></h3>
 <p>Бывает, что некоторые тесты требуют продолжительного времени для своего исполнения, и вы хотите исключить их из исполнения при запуске <code>cargo test</code>. Вместо перечисления в приказной строке всех тестов, которые вы хотите запускать, вы можете аннотировать тесты, требующие много времени для прогона, атрибутом <code>ignore</code>, чтобы исключить их, как показано здесь:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-11-ignore-a-test/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn add(left: usize, right: usize) -&gt; usize {
+    left + right
+}
+
+// ANCHOR: here
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+
+    #[test]
+    #[ignore]
+    fn expensive_test() {
+        // code that takes an hour to run
+    }
+}
+// ANCHOR_END: here</code></pre>
 <p>После <code>#[test]</code> мы добавляем строку <code>#[ignore]</code> в тест, который хотим исключить. Теперь, когда мы запускаем наши тесты, <code>it_works</code> запускается, а <code>expensive_test</code> пренебрегается:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-11-ignore-a-test/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 2 tests
+test tests::expensive_test ... ignored
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Функция <code>expensive_test</code> помечена как <code>ignored</code>. Если вы хотите выполнить только пренебреженные тесты, вы можете воспользоваться приказом <code>cargo test -- --ignored</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/output-only-04-running-ignored/output.txt}}
+<pre><code class="language-console">$ cargo test -- --ignored
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 1 test
+test expensive_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Управляя тем, какие тесты запускать, вы можете быть уверены, что результаты вашего <code>cargo test</code> будут быстрыми. Когда вы дойдёте до момента, где имеет смысл проверить результаты тестов <code>ignored</code>, и у вас есть время дождаться их результатов, вы можете запустить их с помощью <code>cargo test -- --ignored</code>. Если вы хотите запустить все тесты независимо от того, пренебрегаются они или нет, выполните <code>cargo test -- --include-ignored</code>.</p>
 

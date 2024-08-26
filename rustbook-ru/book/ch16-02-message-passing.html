@@ -183,24 +183,45 @@
 <p>Давайте создадим программу, в которой один поток будет генерировать значения и отправлять их в поток, а другой поток будет получать значения и распечатывать их. Мы будем отправлять между потоками простые значения, используя поток, чтобы изобразить эту функцию. После того, как вы ознакомитесь с этим способом, вы сможете использовать потоки с любыми потоками, которым необходимо взаимодействовать друг с другом. Это может быть например система чата или система, в которой несколько вычислительных потоков выполняют свою часть расчёта, а затем отправляют эту часть в отдельный поток, который уже агрегирует полученные результаты.</p>
 <p>Сначала в приложении 16-6 мы создадим поток, но не будем ничего с ним делать. Обратите внимание, что этот код ещё не собирается, потому что Rust не может сказать, какой вид значений мы хотим отправить через поток.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-06/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+}</code></pre>
 <p><span class="caption">Приложение 16-6: Создание потока и присваивание двух значений переменным <code>tx</code> и <code>rx</code></span></p>
 <p>Мы создаём новый поток, используя функцию <code>mpsc::channel</code>; <code>mpsc</code> означает <em>несколько производителей, один потребитель</em> (multiple producer, single consumer). Коротко, способ которым стандартная библиотека Rust реализует потоки, означает, что поток может иметь несколько <em>отправляющих</em> источников генерирующих значения, но только одну <em>принимающую</em> сторону, которая потребляет эти значения. Представьте, что несколько ручьёв втекают в одну большую реку: всё, что плывёт вниз по любому из ручьёв, в конце концов окажется в одной реке. Сейчас мы пока начнём с одного производителя, а когда пример заработает,  добавим ещё несколько.</p>
 <p>Функция <code>mpsc::channel</code> возвращает кортеж, первый элемент которого является отправляющей стороной (передатчиком), а вторым элементом является принимающая сторона (получатель). Аббревиатуры <code>tx</code> и <code>rx</code> традиционно используются во многих полях для <em>передатчика</em> и <em>приёмника</em> соответственно, поэтому мы называем соответствующие переменные именно так. Мы используем указанию <code>let</code> с шаблоном, который деструктурирует кортежи; мы обсудим использование шаблонов в указаниях <code>let</code> и деструктуризацию в главе 18. А пока знайте, что описанное использование указания <code>let</code> является удобным способом извлечения частей кортежа, возвращаемых <code>mpsc::channel</code> .</p>
 <p>Давайте переместим передающую часть в порождённый поток так, чтобы он отправлял одну строку и чтобы таким образом, порождённый поток связывался с основным потоком, как показано в приложении 16-7. Это похоже на то, как если бы вы поместили резиновую утку в реку вверх по течению или отправили сообщение чата из одного потока в другой.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-07/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+}</code></pre></pre>
 <p><span class="caption">Приложение 16-7: Перемещение <code>tx</code> в созданный поток и отправка сообщения «привет»</span></p>
 <p>Опять же, мы используем <code>thread::spawn</code> для создания нового потока, а затем используем <code>move</code> для перемещения <code>tx</code> в замыкание, чтобы порождённый поток владел <code>tx</code> . Порождённый поток должен владеть передатчиком, чтобы иметь возможность отправлять сообщения через поток. Передатчик имеет способ <code>send</code> , который принимает значение, которое мы хотим отправить. Способ <code>send</code> возвращает вид <code>Result&lt;T, E&gt;</code> , поэтому, если получатель уже удалён и отправить значение некуда, действие отправки вернёт ошибку. В этом примере мы вызываем <code>unwrap</code> для паники в случае ошибки. В реальном приложении мы обработали бы эту ситуацию более корректно: вернитесь к главе 9, если хотите ещё раз разобрать стратегии правильной обработки ошибок.</p>
 <p>В приложении 16-8 мы получим значение от приёмника в основном потоке. Это похоже на извлечение резиновой уточки из воды в конце реки или получение сообщения в чате.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-08/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 16-8: В основном потоке получаем сообщение "hi" и печатаем его</span></p>
 <p>Получатель имеет два важных способа: <code>recv</code> и <code>try_recv</code>. Мы используем <code>recv</code>, что является сокращением от <em>receive</em>, который блокирует выполнение основного потока и ждёт, пока данные не будут переданы по потоку. Как только значение будет получено, <code>recv</code> вернёт его в виде <code>Result&lt;T, E&gt;</code>. Когда поток закроется, <code>recv</code> вернёт ошибку, чтобы дать понять, что больше никаких сообщений не поступит.</p>
 <p>В свою очередь, способ try_recv не блокирует, а сразу возвращает результат <code>Result&lt;T, E&gt;</code>: значение Ok, содержащее сообщение, если оно доступно или значение Err, если никаких сообщений не поступило. Использование try_recv полезно, если у этого потока есть и другая работа в то время, пока происходит ожидание сообщений: так, мы можем написать цикл, который вызывает try_recv время от времени, обрабатывает сообщение, если оно доступно, а в промежутке выполняет другую работу до того момента, как вновь будет произведена проверка.</p>
@@ -215,16 +236,69 @@ changes in the compiler -->
 <h3 id="потоки-и-передача-владения"><a class="header" href="#потоки-и-передача-владения">потоки и передача владения</a></h3>
 <p>Правила владения играют жизненно важную роль в отправке сообщений, потому что они помогают писать безопасный многопоточный код. Предотвращение ошибок в многопоточном программировании является преимуществом для размышлений о владении во всех ваших Rust программах. Давайте проведём эксперимент, чтобы показать как потоки и владение действуют совместно для предотвращения проблем: мы попытаемся использовать значение <code>val</code> в порождённом потоке <em>после</em> того как отправим его в поток. Попробуйте собрать код в приложении 16-9, чтобы понять, почему этот код не разрешён:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-09/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+        println!("val is {val}");
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
+}</code></pre>
 <p><span class="caption">Приложение 16-9: Попытка использовать <code>val</code> после того, как мы отправили его по потоку</span></p>
 <p>Здесь мы пытаемся напечатать значение <code>val</code> после того, как отправили его в поток вызвав <code>tx.send</code>. Разрешить это было бы плохой идеей: после того, как значение было отправлено в другой поток, текущий поток мог бы изменить или удалить значение, прежде чем мы попытались бы использовать значение снова. Потенциально изменения в другом потоке могут привести к ошибкам или не ожидаемым результатам из-за противоречивых или несуществующих данных. Однако Rust выдаёт нам ошибку, если мы пытаемся собрать код в приложении 16-9:</p>
-<pre><code class="language-console">{{#include ../listings/ch16-fearless-concurrency/listing-16-09/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling message-passing v0.1.0 (file:///projects/message-passing)
+error[E0382]: borrow of moved value: `val`
+  --&gt; src/main.rs:10:26
+   |
+8  |         let val = String::from("hi");
+   |             --- move occurs because `val` has type `String`, which does not implement the `Copy` trait
+9  |         tx.send(val).unwrap();
+   |                 --- value moved here
+10 |         println!("val is {val}");
+   |                          ^^^^^ value borrowed here after move
+   |
+   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `message-passing` (bin "message-passing") due to 1 previous error
 </code></pre>
 <p>Наша ошибка для многопоточности привела к ошибке сборки. Функция <code>send</code> вступает во владение своим свойствоом и когда значение перемещается, получатель становится владельцем этого свойства. Это останавливает нас от случайного использования значения снова после его отправки; анализатор заимствования проверяет, что все в порядке.</p>
 <h3 id="Отправка-нескольких-значений-и-ожидание-получателем"><a class="header" href="#Отправка-нескольких-значений-и-ожидание-получателем">Отправка нескольких значений и ожидание получателем</a></h3>
 <p>Код в приложении 16-8 собирается и выполняется, но в нем неясно показано то, что два отдельных потока общаются друг с другом через поток. В приложении 16-10 мы внесли некоторые изменения, которые докажут, что код в приложении 16-8 работает одновременно: порождённый поток теперь будет отправлять несколько сообщений и делать паузу на секунду между каждым сообщением.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-10/src/main.rs}}</code></pre>
+<pre><code class="language-rust noplayground">use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {received}");
+    }
+}</code></pre>
 <p><span class="caption">Приложение 16-10: Отправка нескольких сообщений и пауза между ними</span></p>
 <p>На этот раз порождённый поток имеет вектор строк, которые мы хотим отправить основному потоку. Мы перебираем их, отправляя каждую строку по отдельности и делаем паузу между ними, вызывая функцию <code>thread::sleep</code> со значением <code>Duration</code> равным 1 секунде.</p>
 <p>В основном потоке мы больше не вызываем функцию <code>recv</code> явно: вместо этого мы используем <code>rx</code> как повторитель. Для каждого полученного значения мы печатаем его. Когда поток будет закрыт, повторение закончится.</p>
@@ -241,7 +315,50 @@ Got: thread
 <h3 id="Создание-нескольких-отправителей-путём-клонирования-передатчика"><a class="header" href="#Создание-нескольких-отправителей-путём-клонирования-передатчика">Создание нескольких отправителей путём клонирования передатчика</a></h3>
 <p>Ранее мы упоминали, что <code>mpsc</code> — это аббревиатура от <em>множество поставщиков, один потребитель</em> . Давайте используем <code>mpsc</code> в полной мере и расширим код в приложении 16.10, создав несколько потоков, которые отправляют значения одному и тому же получателю. Мы можем сделать это, клонировав передатчик, как показано в приложении 16.11:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-11/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">use std::sync::mpsc;
+</span><span class="boring">use std::thread;
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    // --snip--
+
+    let (tx, rx) = mpsc::channel();
+
+    let tx1 = tx.clone();
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("more"),
+            String::from("messages"),
+            String::from("for"),
+            String::from("you"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {received}");
+    }
+
+    // --snip--
+<span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 16-11: Отправка нескольких сообщений от нескольких производителей</span></p>
 <p>На этот раз, прежде чем мы создадим первый порождённый поток, мы вызовем функцию <code>clone</code> на передатчике. В результате мы получим новый передатчик, который мы сможем передать первому порождённому потоку. Исходный передатчик мы передадим второму порождённому потоку. Это даст нам два потока, каждый из которых отправляет разные сообщения одному получателю.</p>
 <p>Когда вы запустите код, вывод должен выглядеть примерно так:</p>

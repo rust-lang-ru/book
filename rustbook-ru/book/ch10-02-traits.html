@@ -185,7 +185,9 @@
 <p>Например, пусть есть несколько структур, которые имеют различный вид и различный размер текста: структура <code>NewsArticle</code>, которая содержит новость, напечатанную в каком-то месте мира; структура <code>Tweet</code>, которая содержит 280 символьную строку твита и мета-данные, обозначающие является ли твит новым или ответом на другой твит.</p>
 <p>Мы хотим создать крейт библиотеки медиа-агрегатора <code>aggregator</code>, которая может отображать сводку данных сохранённых в экземплярах структур <code>NewsArticle</code> или <code>Tweet</code>. Чтобы этого достичь, нам необходимо иметь возможность для каждой структуры получить короткую сводку на основе имеющихся данных, и для этого мы запросим сводку вызвав способ <code>summarize</code>. Приложение 10-12 показывает определение типажа <code>Summary</code>, который выражает это поведение.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-12/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize(&amp;self) -&gt; String;
+}</code></pre>
 <p><span class="caption">Приложение 10-12: Определение типажа <code>Summary</code>, который содержит поведение предоставленное способом <code>summarize</code></span></p>
 <p>Здесь мы объявляем типаж с использованием ключевого слова <code>trait</code>, а затем его название, которым в нашем случае является <code>Summary</code>. Также мы объявляем крейт как <code>pub</code> что позволяет крейтам, зависящим от нашего крейта, тоже использовать наш крейт, что мы увидим в последующих примерах. Внутри фигурных скобок объявляются сигнатуры способов, которые описывают поведения видов, реализующих данный типаж, в данном случае поведение определяется только одной сигнатурой способа <code>fn summarize(&amp;self) -&gt; String</code>.</p>
 <p>После сигнатуры способа, вместо предоставления реализации в фигурных в скобках, мы используем точку с запятой. Каждый вид, реализующий данный типаж, должен предоставить своё собственное поведение для данного способа. Сборщик обеспечит, что любой вид содержащий типаж <code>Summary</code>, будет также иметь и способ <code>summarize</code> объявленный с точно такой же сигнатурой.</p>
@@ -193,11 +195,52 @@
 <h3 id="Реализация-типажа-у-вида"><a class="header" href="#Реализация-типажа-у-вида">Реализация типажа у вида</a></h3>
 <p>Теперь, после того как мы определили желаемое поведение используя типаж <code>Summary</code>, можно реализовать его у видов в нашем медиа-агрегаторе. Приложение 10-13 показывает реализацию типажа <code>Summary</code> у структуры <code>NewsArticle</code>, которая использует для создания сводки в способе <code>summarize</code> заголовок, автора и место публикации статьи. Для структуры <code>Tweet</code> мы определяем реализацию <code>summarize</code> используя имя пользователя и следующий за ним полный текст твита, полагая что содержание твита уже ограничено 280 символами.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-13/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    }
+}
+
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+
+impl Summary for Tweet {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{}: {}", self.username, self.content)
+    }
+}</code></pre>
 <p><span class="caption">Приложение 10-13: Реализация типажа <code>Summary</code> для структур <code>NewsArticle</code> и <code>Tweet</code></span></p>
 <p>Реализация типажа у вида подобна реализации обычных способов. Разница в том что после <code>impl</code> мы ставим имя типажа, который мы хотим реализовать, затем используем ключевое слово <code>for</code>, а затем указываем имя вида, для которого мы хотим сделать реализацию типажа. Внутри раздела <code>impl</code> мы помещаем сигнатуру способа объявленную в типаже. Вместо добавления точки с запятой в конце, после каждой сигнатуры используются фигурные скобки и тело способа заполняется определенным поведением, которое мы хотим получить у способов типажа для определенного вида.</p>
 <p>Теперь когда библиотека реализовала типаж <code>Summary</code> для <code>NewsArticle</code> и <code>Tweet</code>, программисты использующие крейт могут вызывать способы типажа у экземпляров видов <code>NewsArticle</code> и <code>Tweet</code> точно так же как если бы это были обычные способы. Единственное отличие состоит в том, что программист должен ввести типаж в область видимости точно так же как и виды. Здесь пример того как двоичный крейт может использовать наш <code>aggregator</code>:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-01-calling-trait-method/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore">use aggregator::{Summary, Tweet};
+
+fn main() {
+    let tweet = Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    };
+
+    println!("1 new tweet: {}", tweet.summarize());
+}</code></pre>
 <p>Данный код напечатает: <code>1 new tweet: horse_ebooks: of course, as you probably already know, people</code>.</p>
 <p>Другие крейты, которые зависят от <code>aggregator</code>, тоже могу включить типаж <code>Summary</code> в область видимости для реализации <code>Summary</code> в их собственных видах. Одно ограничение, на которое следует обратить внимание, заключается в том, что мы можем реализовать типаж для вида только в том случае, если хотя бы один из типажей вида является местным для нашего крейта. Например, мы можем реализовать стандартный библиотечный типаж <code>Display</code> на собственном виде <code>Tweet</code> как часть функциональности нашего крейта <code>aggregator</code> потому что вид <code>Tweet</code> является местным для крейта <code>aggregator</code>. Также мы можем реализовать <code>Summary</code> для <code>Vec&lt;T&gt;</code> в нашем крейте <code>aggregator</code>, потому что типаж <code>Summary</code> является местным для нашего крейта <code>aggregator</code>.</p>
 <p>Но мы не можем реализовать внешние типажи для внешних видов. Например, мы не можем реализовать типаж <code>Display</code> для <code>Vec&lt;T&gt;</code> внутри нашего крейта <code>aggregator</code>, потому что <code>Display</code> и <code>Vec&lt;T&gt;</code> оба определены в встроенной библиотеке а не местно в нашем крейте <code>aggregator</code>. Это ограничение является частью свойства называемого <em>согласованность</em> (coherence), а ещё точнее <em>сиротское правило</em> (orphan rule), которое называется так потому что не представлен родительский вид. Это правило заверяет, что код других людей не может сломать ваш код и наоборот. Без этого правила два крейта могли бы реализовать один типаж для одинакового вида и Rust не сможет понять, какой реализацией нужно пользоваться.</p>
@@ -205,24 +248,147 @@
 <p>Иногда полезно иметь поведение по умолчанию для некоторых или всех способов в типаже вместо того, чтобы требовать реализации всех способов в каждом виде, реализующим данный типаж. Затем, когда мы реализуем типаж для определённого вида, можно сохранить или переопределить поведение каждого способа по умолчанию уже внутри видов.</p>
 <p>В примере 10-14 показано, как указать строку по умолчанию для способа <code>summarize</code> из типажа <code>Summary</code> вместо определения только сигнатуры способа, как мы сделали в примере 10-12.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-14/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize(&amp;self) -&gt; String {
+        String::from("(Read more...)")
+    }
+}
+<span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 10-14: Определение типажа <code>Summary</code> с реализацией способа <code>summarize</code> по умолчанию</span></p>
 <p>Для использования реализации по умолчанию при создании сводки у экземпляров <code>NewsArticle</code> вместо определения пользовательской реализации, мы указываем пустой раздел<code>impl</code> с <code>impl Summary for NewsArticle {}</code>.</p>
 <p>Хотя мы больше не определяем способ <code>summarize</code> непосредственно в <code>NewsArticle</code>, мы предоставили реализацию по умолчанию и указали, что <code>NewsArticle</code> реализует типаж <code>Summary</code>. В результате мы всё ещё можем вызвать способ <code>summarize</code> у экземпляра <code>NewsArticle</code>, например так:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-02-calling-default-impl/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use aggregator::{self, NewsArticle, Summary};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    let article = NewsArticle {
+        headline: String::from("Penguins win the Stanley Cup Championship!"),
+        location: String::from("Pittsburgh, PA, USA"),
+        author: String::from("Iceburgh"),
+        content: String::from(
+            "The Pittsburgh Penguins once again are the best \
+             hockey team in the NHL.",
+        ),
+    };
+
+    println!("New article available! {}", article.summarize());
+<span class="boring">}</span></code></pre>
 <p>Этот код печатает <code>New article available! (Read more...)</code> .</p>
 <p>Создание реализации по умолчанию не требует от нас изменений чего-либо в реализации <code>Summary</code> для <code>Tweet</code> в приложении 10-13. Причина заключается в том, что синтаксис для переопределения реализации по умолчанию является таким же, как синтаксис для реализации способа типажа, который не имеет реализации по умолчанию.</p>
 <p>Реализации по умолчанию могут вызывать другие способы в том же типаже, даже если эти другие способы не имеют реализации по умолчанию. Таким образом, типаж может предоставить много полезной функциональности и только требует от разработчиков  указывать небольшую его часть. Например, мы могли бы определить типаж <code>Summary</code> имеющий способ <code>summarize_author</code>, реализация которого требуется, а затем определить способ <code>summarize</code> который имеет реализацию по умолчанию, которая внутри вызывает способ <code>summarize_author</code>:</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-03-default-impl-calls-other-methods/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize_author(&amp;self) -&gt; String;
+
+    fn summarize(&amp;self) -&gt; String {
+        format!("(Read more from {}...)", self.summarize_author())
+    }
+}
+<span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize_author(&amp;self) -&gt; String {
+</span><span class="boring">        format!("@{}", self.username)
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p>Чтобы использовать такую исполнение типажа <code>Summary</code>, нужно только определить способ <code>summarize_author</code>, при реализации типажа для вида:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-03-default-impl-calls-other-methods/src/lib.rs:impl}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize_author(&amp;self) -&gt; String;
+</span><span class="boring">
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("(Read more from {}...)", self.summarize_author())
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Summary for Tweet {
+    fn summarize_author(&amp;self) -&gt; String {
+        format!("@{}", self.username)
+    }
+}</code></pre>
 <p>После того, как мы определим <code>summarize_author</code>, можно вызвать <code>summarize</code> для экземпляров структуры <code>Tweet</code> и реализация по умолчанию способа <code>summarize</code> будет вызывать определение <code>summarize_author</code> которое мы уже предоставили. Так как мы реализовали способ <code>summarize_author</code> типажа <code>Summary</code>, то типаж даёт нам поведение способа <code>summarize</code> без необходимости писать код.</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-03-default-impl-calls-other-methods/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use aggregator::{self, Summary, Tweet};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    let tweet = Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    };
+
+    println!("1 new tweet: {}", tweet.summarize());
+<span class="boring">}</span></code></pre>
 <p>Этот код печатает <code>1 new tweet: (Read more from @horse_ebooks...)</code> .</p>
 <p>Обратите внимание, что невозможно вызвать реализацию по умолчанию из переопределённой реализации того же способа.</p>
 <h3 id="Типажи-как-свойства"><a class="header" href="#Типажи-как-свойства">Типажи как свойства</a></h3>
 <p>Теперь, когда вы знаете, как определять и реализовывать типажи, можно изучить, как использовать типажи, чтобы определить функции, которые принимают много различных видов. Мы будем использовать типаж <code>Summary</code>,  реализованный для видов <code>NewsArticle</code> и <code>Tweet</code> в приложении 10-13, чтобы определить функцию <code>notify</code>, которая вызывает способ <code>summarize</code> для его свойства <code>item</code>, который имеет некоторый вид, реализующий типаж <code>Summary</code>. Для этого мы используем синтаксис <code>impl Trait</code> примерно так:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-04-traits-as-parameters/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn notify(item: &amp;impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}</code></pre>
 <p>Вместо определенного вида у свойства <code>item</code> указывается ключевое слово <code>impl</code> и имя типажа. Этот свойство принимает любой вид, который реализует указанный типаж. В теле <code>notify</code> мы можем вызывать любые способы у экземпляра <code>item</code> , которые приходят с типажом <code>Summary</code>, такие как способ <code>summarize</code>. Мы можем вызвать <code>notify</code> и передать в него любой экземпляр <code>NewsArticle</code> или <code>Tweet</code>. Код, который вызывает данную функцию с любым другим видом, таким как <code>String</code> или <code>i32</code>, не будет собираться, потому что эти виды не реализуют типаж <code>Summary</code>.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="fixing-the-largest-function-with-trait-bounds"></a></p>
@@ -247,20 +413,139 @@
 <p>Использование слишком большого количества ограничений типажа имеет свои недостатки. Каждый обобщённый вид имеет свои границы типажа, поэтому функции с несколькими свойствами обобщённого вида могут содержать много сведений об ограничениях между названием функции и списком её свойств затрудняющих чтение сигнатуры. По этой причине в Rust есть иной синтаксис для определения ограничений типажа внутри предложения <code>where</code> после сигнатуры функции. Поэтому вместо того, чтобы писать так:</p>
 <pre><code class="language-rust ignore">fn some_function&lt;T: Display + Clone, U: Clone + Debug&gt;(t: &amp;T, u: &amp;U) -&gt; i32 {</code></pre>
 <p>можно использовать <code>where</code> таким образом:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-07-where-clause/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore">fn some_function&lt;T, U&gt;(t: &amp;T, u: &amp;U) -&gt; i32
+where
+    T: Display + Clone,
+    U: Clone + Debug,
+{
+<span class="boring">    unimplemented!()
+</span><span class="boring">}</span></code></pre>
 <p>Сигнатура этой функции менее загромождена: название функции, список свойств, и возвращаемый вид находятся рядом, а сигнатура не содержит в себе множество ограничений типажа.</p>
 <h3 id="Возврат-значений-вида-реализующего-определённый-типаж"><a class="header" href="#Возврат-значений-вида-реализующего-определённый-типаж">Возврат значений вида реализующего определённый типаж</a></h3>
 <p>Также можно использовать синтаксис <code>impl Trait</code> в возвращаемой позиции, чтобы вернуть значение некоторого вида реализующего типаж, как показано здесь:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-05-returning-impl-trait/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn returns_summarizable() -&gt; impl Summary {
+    Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    }
+}</code></pre>
 <p>Используя <code>impl Summary</code> для возвращаемого вида, мы указываем, что функция <code>returns_summarizable</code> возвращает некоторый вид, который реализует типаж <code>Summary</code> без обозначения определенного вида. В этом случае <code>returns_summarizable</code> возвращает <code>Tweet</code>, но код, вызывающий эту функцию, этого не знает.</p>
 <p>Возможность возвращать вид, который определяется только реализуемым им признаком, особенно полезна в среде замыканий и повторителей, которые мы рассмотрим в Главе 13. Замыкания и повторители создают виды, которые знает только сборщик или виды, которые очень долго указывать. Синтаксис <code>impl Trait</code> позволяет кратко указать, что функция возвращает некоторый вид, который реализует типаж <code>Iterator</code> без необходимости писать очень длинный вид.</p>
 <p>Однако, <code>impl Trait</code> возможно использовать, если возвращаете только один вид. Например, данный код, который возвращает значения или вида <code>NewsArticle</code> или вида <code>Tweet</code>, но в качестве возвращаемого вида объявляет <code>impl Summary</code> , не будет работать:</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-06-impl-trait-returns-one-type/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn returns_summarizable(switch: bool) -&gt; impl Summary {
+    if switch {
+        NewsArticle {
+            headline: String::from(
+                "Penguins win the Stanley Cup Championship!",
+            ),
+            location: String::from("Pittsburgh, PA, USA"),
+            author: String::from("Iceburgh"),
+            content: String::from(
+                "The Pittsburgh Penguins once again are the best \
+                 hockey team in the NHL.",
+            ),
+        }
+    } else {
+        Tweet {
+            username: String::from("horse_ebooks"),
+            content: String::from(
+                "of course, as you probably already know, people",
+            ),
+            reply: false,
+            retweet: false,
+        }
+    }
+}</code></pre>
 <p>Возврат либо <code>NewsArticle</code> либо <code>Tweet</code> не допускается из-за ограничений того, как реализован синтаксис <code>impl Trait</code> в сборщике. Мы рассмотрим, как написать функцию с таким поведением в разделе <a href="ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">"Использование объектов типажей, которые разрешены для значений или разных видов"</a><!--  --> Главы 17.</p>
 <h3 id="Использование-ограничений-типажа-для-условной-реализации-способов"><a class="header" href="#Использование-ограничений-типажа-для-условной-реализации-способов">Использование ограничений типажа для условной реализации способов</a></h3>
 <p>Используя ограничение типажа с разделом <code>impl</code>, который использует свойства обобщённого вида, можно реализовать способы условно, для тех видов, которые реализуют указанный типаж. Например, вид <code>Pair&lt;T&gt;</code>  в приложении 10-15 всегда реализует функцию  <code>new</code> для возврата нового экземпляра <code>Pair&lt;T&gt;</code> (вспомните раздел <a href="ch05-03-method-syntax.html#defining-methods">“Определение способов”</a><!-- ignore --> Главы 5 где <code>Self</code> является псевдонимом вида для вида раздела <code>impl</code>, который в данном случае является <code>Pair&lt;T&gt;</code>). Но в следующем разделе <code>impl</code> вид <code>Pair&lt;T&gt;</code> реализует способ  <code>cmp_display</code> только если его внутренний вид <code>T</code> реализует типаж <code>PartialOrd</code> (позволяющий сравнивать) <em>и</em> типаж <code>Display</code> (позволяющий выводить на печать).</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-15/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">use std::fmt::Display;
+
+struct Pair&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+impl&lt;T&gt; Pair&lt;T&gt; {
+    fn new(x: T, y: T) -&gt; Self {
+        Self { x, y }
+    }
+}
+
+impl&lt;T: Display + PartialOrd&gt; Pair&lt;T&gt; {
+    fn cmp_display(&amp;self) {
+        if self.x &gt;= self.y {
+            println!("The largest member is x = {}", self.x);
+        } else {
+            println!("The largest member is y = {}", self.y);
+        }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 10-15: Условная реализация способов у обобщённых видов в зависимости от ограничений типажа</span></p>
 <p>Мы также можем условно реализовать типаж для любого вида, который реализует другой типаж. Реализации типажа для любого вида, который удовлетворяет ограничениям типажа, называются <em>общими реализациями</em> и широко используются в встроенной библиотеке Rust. Например, стандартная библиотека реализует типаж <code>ToString</code> для любого вида, который реализует типаж <code>Display</code>. Раздел<code>impl</code> в встроенной библиотеке выглядит примерно так:</p>
 <pre><code class="language-rust ignore">impl&lt;T: Display&gt; ToString for T {

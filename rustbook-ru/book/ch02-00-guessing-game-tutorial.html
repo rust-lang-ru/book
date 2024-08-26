@@ -194,37 +194,117 @@ cargo run > output.txt 2>&1
 cd ../../..
 -->
 <p><span class="filename">Файл: Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/Cargo.toml}}
+<pre><code class="language-toml">[package]
+name = "guessing_game"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
 </code></pre>
 <p>Как вы уже видели в главе 1, <code>cargo new</code> создаёт программу «Hello, world!». Посмотрите файл <em>src/main.rs</em>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    println!("Hello, world!");
+}</code></pre></pre>
 <p>Теперь давайте соберем программу «Hello, world!» и сразу на этом же этапе запустим её с помощью приказы <code>cargo run</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch02-guessing-game-tutorial/no-listing-01-cargo-new/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.50s
+     Running `target/debug/guessing_game`
+Hello, world!
 </code></pre>
 <p>Приказ <code>run</code> пригодится, когда необходимо ускоренно выполнить повторение проекта. Именно так мы собираемся делать в этом проекте, быстро тестируя каждую повторение, прежде чем перейти к следующей.</p>
 <p>Снова откройте файл <em>src/main.rs</em>. Весь код вы будете писать в нем.</p>
 <h2 id="Обработка-догадки"><a class="header" href="#Обработка-догадки">Обработка догадки</a></h2>
 <p>Первая часть программы запрашивает ввод данных пользователем, обрабатывает их и проверяет, что они в ожидаемой форме. Начнём с того, что позволим игроку ввести догадку. Вставьте код из приложения 2-1 в <em>src/main.rs</em>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:all}}</code></pre>
+<pre><code class="language-rust ignore">use std::io;
+
+fn main() {
+    println!("Guess the number!");
+
+    println!("Please input your guess.");
+
+    let mut guess = String::new();
+
+    io::stdin()
+        .read_line(&amp;mut guess)
+        .expect("Failed to read line");
+
+    println!("You guessed: {}", guess);
+}</code></pre>
 <p><span class="caption">Приложение 2-1: код, который получает догадку от пользователя и выводит её на экран</span></p>
 <p>Этот код содержит много сведений, поэтому давайте рассмотрим его построчно. Чтобы получить пользовательский ввод и затем вывести результат, нам нужно включить в область видимости библиотеку ввода/вывода <code>io</code>. Библиотека <code>io</code> является частью встроенной библиотеки, известной как <code>std</code>:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:io}}</code></pre>
+<pre><code class="language-rust ignore">use std::io;
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {}", guess);
+</span><span class="boring">}</span></code></pre>
 <p>По умолчанию в Rust есть набор элементов, определённых в встроенной библиотеке, которые он добавляет в область видимости каждой программы. Этот набор называется <em>прелюдией</em>, и вы можете изучить его содержание <a href="../std/prelude/index.html">в документации встроенной библиотеки</a>.</p>
 <p>Если вид, который требуется использовать, отсутствует в прелюдии, его нужно явно ввести в область видимости с помощью оператора <code>use</code>. Использование библиотеки <code>std::io</code> предоставляет ряд полезных функциональных возможностей, включая способность принимать пользовательский ввод.</p>
 <p>Как уже отмечалось в главе 1, функция <code>main</code> является точкой входа в программу:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:main}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::io;
+</span><span class="boring">
+</span>fn main() {
+<span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {}", guess);
+</span><span class="boring">}</span></code></pre>
 <p>Ключевое слово <code>fn</code> объявляет новую функцию, круглые скобки <code>()</code> показывают, что у функции нет входных свойств, фигурная скобка <code>{</code> - обозначение начала тела функции.</p>
 <p>Также в главе 1 упоминалось, что <code>println!</code> — это макрос, который выводит строку на экран:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:print}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    println!("Guess the number!");
+
+    println!("Please input your guess.");
+<span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {}", guess);
+</span><span class="boring">}</span></code></pre>
 <p>Этот код показывает сведения о ходе игры и запрашивает пользовательский ввод.</p>
 <h3 id="Хранение-значений-с-помощью-переменных"><a class="header" href="#Хранение-значений-с-помощью-переменных">Хранение значений с помощью переменных</a></h3>
 <p>Далее мы создаём <em>переменную</em> для хранения пользовательского ввода, как показано ниже:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:string}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span>    let mut guess = String::new();
+<span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {}", guess);
+</span><span class="boring">}</span></code></pre>
 <p>Вот теперь программа становится важнее! В этой маленькой строке на самом деле происходит очень многое. Для создания переменной мы используем оператор <code>let</code>. Вот ещё один пример:</p>
 <pre><code class="language-rust ignore">let apples = 5;</code></pre>
 <p>Эта строка создаёт новую переменную с именем <code>apples</code> и привязывает её к значению 5. В Rust переменные неизменяемы по умолчанию, то есть как только мы присвоим переменной значение, оно не изменится. Мы подробно обсудим эту концепцию в разделе <a href="ch03-01-variables-and-mutability.html#variables-and-mutability">"Переменные и изменчивость".</a><!-- ignore --> в главе 3. Чтобы сделать переменную изменяемой, мы добавляем <code>mut</code> перед её именем:</p>
@@ -238,7 +318,21 @@ let mut bananas = 5; // изменяемая</code></pre>
 <p>В конечном итоге строка <code>let mut guess = String::new();</code> создала изменяемую переменную, которая связывается с новым пустым экземпляром <code>String</code>. Фух!</p>
 <h3 id="Получение-пользовательского-ввода"><a class="header" href="#Получение-пользовательского-ввода">Получение пользовательского ввода</a></h3>
 <p>Напомним: мы подключили функциональность ввода/вывода из встроенной библиотеки с помощью <code>use std::io;</code> в первой строке программы. Теперь мы вызовем функцию <code>stdin</code> из модуля <code>io</code>, которая позволит нам обрабатывать пользовательский ввод:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:read}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span>    io::stdin()
+        .read_line(&amp;mut guess)
+<span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {}", guess);
+</span><span class="boring">}</span></code></pre>
 <p>Если бы мы не импортировали библиотеку <code>io</code> с помощью <code>use std::io</code> в начале программы, мы все равно могли бы использовать эту функцию, записав её вызов как <code>std::io::stdin</code>. Функция <code>stdin</code> возвращает экземпляр <a href="../std/io/struct.Stdin.html"><code>std::io::Stdin</code></a>, который является видом, представляющим дескриптор принятого ввода для вашего окна вызова.</p>
 <p>Далее строка <code>.read_line(&amp;mut guess)</code> вызывает способ <a href="../std/io/struct.Stdin.html#method.read_line"><code>read_line</code></a> на дескрипторе принятого ввода для получения ввода от пользователя. Мы также передаём <code>&amp;mut guess</code> в качестве переменной <code>read_line</code>, сообщая ему, в какой строке хранить пользовательский ввод. Главная задача <code>read_line</code> — принять все, что пользователь вводит в стандартный ввод, и сложить это в строку (не переписывая её содержимое), поэтому мы передаём эту строку в качестве переменной. Строковый переменная должен быть изменяемым, чтобы способ мог изменить содержимое строки.</p>
 <p>Символ <code>&amp;</code> указывает, что этот переменная является <em>ссылкой</em>, которая предоставляет возможность нескольким частям вашего кода получить доступ к одному фрагменту данных без необходимости копировать эти данные в память несколько раз. Ссылки — это сложная функциональная возможность, а одним из главных преимуществ Rust является безопасность и простота использования ссылок. Чтобы дописать эту программу, вам не понадобится знать много таких подробностей. Пока вам достаточно знать, что ссылки, как и переменные, по умолчанию неизменяемы. Соответственно, чтобы сделать её изменяемой, нужно написать <code>&amp;mut guess</code>, а не <code>&amp;guess</code>. (В главе 4 ссылки будут описаны более подробно).</p>
@@ -246,7 +340,21 @@ let mut bananas = 5; // изменяемая</code></pre>
 <p><a id="handling-potential-failure-with-the-result-type"></a></p>
 <h3 id="Обработка-потенциального-сбоя-с-помощью-вида-result"><a class="header" href="#Обработка-потенциального-сбоя-с-помощью-вида-result">Обработка потенциального сбоя с помощью вида <code>Result</code></a></h3>
 <p>Мы всё ещё работаем над этой строкой кода. Сейчас мы обсуждаем третью строку, но обратите внимание, что она по-прежнему является частью одной логической строки. Следующая часть — способ:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:expect}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span>        .expect("Failed to read line");
+<span class="boring">
+</span><span class="boring">    println!("You guessed: {}", guess);
+</span><span class="boring">}</span></code></pre>
 <p>Мы могли бы написать этот код так:</p>
 <pre><code class="language-rust ignore">io::stdin().read_line(&amp;mut guess).expect("Failed to read line");</code></pre>
 <p>Однако одну длинную строку трудно читать, поэтому лучше разделить её. При вызове способа с помощью синтаксиса <code>.method_name()</code> часто целесообразно вводить новую строку и другие пробельные символы, чтобы разбить длинные строки. Теперь давайте обсудим, что делает эта строка.</p>
@@ -255,13 +363,43 @@ let mut bananas = 5; // изменяемая</code></pre>
 <p>Вариантами <code>Result</code> являются <code>Ok</code> и <code>Err</code>. Вариант <code>Ok</code> указывает, что действие завершилась успешно, а внутри <code>Ok</code> находится успешно сгенерированное значение. Вариант <code>Err</code> означает, что действие не удалась, а <code>Err</code> содержит сведения о причинах неудачи.</p>
 <p>Значения вида <code>Result</code>, как и значения любого вида, имеют определённые для них способы. У экземпляра <code>Result</code> есть <a href="../std/result/enum.Result.html#method.expect">способ <code>expect</code></a><!-- ignore -->, который можно вызвать. Если этот экземпляр <code>Result</code> является значением <code>Err</code>, <code>expect</code> вызовет сбой программы и отобразит сообщение, которое вы передали в качестве переменной. Если способ <code>read_line</code> возвращает <code>Err</code>, то это, скорее всего, результат ошибки основной операционной системы. Если экземпляр <code>Result</code> является значением <code>Ok</code>, <code>expect</code> возьмёт возвращаемое значение, которое удерживает <code>Ok</code>, и вернёт вам только это значение, чтобы вы могли его использовать далее. В данном случае это значение представляет собой количество байтов, введённых пользователем.</p>
 <p>Если не вызвать <code>expect</code>, программа ссобирается, но будет получено предупреждение:</p>
-<pre><code class="language-console">{{#include ../listings/ch02-guessing-game-tutorial/no-listing-02-without-expect/output.txt}}
+<pre><code class="language-console">$ cargo build
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+warning: unused `Result` that must be used
+  --&gt; src/main.rs:10:5
+   |
+10 |     io::stdin().read_line(&amp;mut guess);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this `Result` may be an `Err` variant, which should be handled
+   = note: `#[warn(unused_must_use)]` on by default
+help: use `let _ = ...` to ignore the resulting value
+   |
+10 |     let _ = io::stdin().read_line(&amp;mut guess);
+   |     +++++++
+
+warning: `guessing_game` (bin "guessing_game") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.59s
 </code></pre>
 <p>Rust предупреждает о неиспользованном значении <code>Result</code>, возвращаемого из <code>read_line</code>, показывая, что программа не учла возможность возникновения ошибки.</p>
 <p>Правильный способ убрать предупреждение — это написать обработку ошибок, но в нашем случае мы просто хотим аварийно завершить программу при возникновении проблемы, поэтому используем <code>expect</code>. О способах восстановления после ошибок вы узнаете в <a href="ch09-02-recoverable-errors-with-result.html">главе 9</a>.</p>
 <h3 id="Вывод-значений-с-помощью-заполнителей-println"><a class="header" href="#Вывод-значений-с-помощью-заполнителей-println">Вывод значений с помощью заполнителей <code>println!</code></a></h3>
 <p>Кроме закрывающей фигурной скобки, в коде на данный момент есть ещё только одно место для обсуждения:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-01/src/main.rs:print_guess}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span>    println!("You guessed: {}", guess);
+<span class="boring">}</span></code></pre>
 <p>Этот код выводит строку, которая теперь содержит ввод пользователя. Набор фигурных скобок <code>{}</code> является заполнителем: думайте о <code>{}</code> как о маленьких клешнях краба, которые удерживают значение на месте. При печати значения переменной имя переменной может заключаться в фигурные скобки. При печати результата вычисления выражения поместите пустые фигурные скобки в строку формата, затем после строки формата укажите список выражений, разделённых запятыми, которые будут напечатаны в каждом заполнителе пустой фигурной скобки в том же порядке. Печать переменной и результата выражения одним вызовом <code>println!</code> будет выглядеть так:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -299,7 +437,8 @@ You guessed: 6
 * ch14-03-cargo-workspaces.md
 -->
 <p><span class="filename">Имя файла: Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch02-guessing-game-tutorial/listing-02-02/Cargo.toml:8:}}
+<pre><code class="language-toml">[dependencies]
+rand = "0.8.5"
 </code></pre>
 <p>В файле <em>Cargo.toml</em> всё, что следует за заголовком, является частью этой секции, которая продолжается до тех пор, пока не начнётся следующая. В <code>[dependencies]</code> вы сообщаете Cargo, от каких внешних крейтов зависит ваш проект и какие исполнения этих крейтов вам нужны. В этом случае мы указываем крейт <code>rand</code> со спецификатором семантической исполнения <code>0.8.5</code>. Cargo понимает <a href="http://semver.org">семантическое версионирование</a> (иногда называемое <em>SemVer</em>), которое является стандартом для описания исполнений. Число <code>0.8.5</code> на самом деле является сокращением от <code>^0.8.5</code>, что означает любую исполнение не ниже <code>0.8.5</code>, но ниже <code>0.9.0</code>.</p>
 <p>Cargo рассчитывает, что эти исполнения имеют общедоступное API, совместимое с исполнением <code>0.8.5</code>, и вы получите последние исполнения исправлений, которые по-прежнему будут собираться с кодом из этой главы. Не обеспечивается, что исполнение <code>0.9.0</code> или выше будет иметь тот же API, что и в следующих примерах.</p>
@@ -366,7 +505,26 @@ rand = "0.9.0"
 <h3 id="Генерация-случайного-числа"><a class="header" href="#Генерация-случайного-числа">Генерация случайного числа</a></h3>
 <p>Давайте начнём использовать <code>rand</code>, чтобы сгенерировать число для угадывания. Следующим шагом будет обновление <em>src/main.rs</em>, как показано в приложении 2-3.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-03/src/main.rs:all}}</code></pre>
+<pre><code class="language-rust ignore">use std::io;
+use rand::Rng;
+
+fn main() {
+    println!("Guess the number!");
+
+    let secret_number = rand::thread_rng().gen_range(1..=100);
+
+    println!("The secret number is: {secret_number}");
+
+    println!("Please input your guess.");
+
+    let mut guess = String::new();
+
+    io::stdin()
+        .read_line(&amp;mut guess)
+        .expect("Failed to read line");
+
+    println!("You guessed: {guess}");
+}</code></pre>
 <p><span class="caption">Приложение 2-3: Добавление кода который генерирует случайное число</span></p>
 <p>Сначала мы добавляем строку <code>use rand::Rng</code>. Типаж <code>Rng</code> определяет способы, реализующие генераторы случайных чисел, и этот типаж должен быть в области видимости, чтобы эти способы можно было использовать. В главе 10 мы рассмотрим типажи подробно.</p>
 <p>Затем мы добавляем две строки посередине. В первой строке мы вызываем функцию <code>rand::thread_rng</code>, дающую нам генератор случайных чисел, который мы собираемся использовать: тот самый, который является местным для текущего потока выполнения и запускается операционной системой. Затем мы вызываем его способ <code>gen_range</code>. Этот способ определяется <code>Rng</code>, который мы включили в область видимости с помощью оператора <code>use rand::Rng</code>. Способ <code>gen_range</code> принимает в качестве переменной выражение ряда и генерирует случайное число в этом ряде. Вид используемого выражения ряда принимает форму <code>start..=end</code> и включает нижнюю и верхнюю границы, поэтому, чтобы запросить число от 1 до 100, нам нужно указать <code>1..=100</code>.</p>
@@ -405,7 +563,34 @@ You guessed: 5
 <h2 id="Сравнение-догадки-с-секретным-числом"><a class="header" href="#Сравнение-догадки-с-секретным-числом">Сравнение догадки с секретным числом</a></h2>
 <p>Теперь, когда у нас есть пользовательский ввод и случайное число, мы можем сравнить их. Этот шаг показан в приложении 2-4. Учтите, что этот код ещё не ссобирается, подробнее мы объясним дальше.</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-04/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use rand::Rng;
+use std::cmp::Ordering;
+use std::io;
+
+fn main() {
+    // --snip--
+<span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span>
+    println!("You guessed: {guess}");
+
+    match guess.cmp(&amp;secret_number) {
+        Ordering::Less =&gt; println!("Too small!"),
+        Ordering::Greater =&gt; println!("Too big!"),
+        Ordering::Equal =&gt; println!("You win!"),
+    }
+}</code></pre>
 <p><span class="caption">Приложение 2-4: Обработка возможных возвращаемых значений при сравнении двух чисел</span></p>
 <p>Сначала добавим ещё один оператор <code>use</code>, который вводит вид с именем <code>std::cmp::Ordering</code> в область видимости из встроенной библиотеки. Вид <code>Ordering</code> является ещё одним перечислением и имеет варианты <code>Less</code>, <code>Greater</code> и <code>Equal</code>. Это три возможных исхода при сравнении двух величин.</p>
 <p>После чего ниже добавляем пять новых строк, использующих вид <code>Ordering</code>. Способ <code>cmp</code> сравнивает два значения и может вызываться для всего, что можно сравнить. Он принимает ссылку на все, что требуется сравнить: здесь сравнивается <code>guess</code> с <code>secret_number</code>. В результате возвращается вариант перечисления <code>Ordering</code>, которое мы ввели в область видимости с помощью оператора <code>use</code>. Для принятия решения о том, что делать дальше, мы используем выражение <a href="ch06-02-match.html"><code>match</code></a>, определяющее, какой вариант <code>Ordering</code> был возвращён из вызова <code>cmp</code> со значениями <code>guess</code> и <code>secret_number</code>.</p>
@@ -417,12 +602,65 @@ You guessed: 5
 The error numbers in this output should be that of the code **WITHOUT** the
 anchor or snip comments
 -->
-<pre><code class="language-console">{{#include ../listings/ch02-guessing-game-tutorial/listing-02-04/output.txt}}
+<pre><code class="language-console">$ cargo build
+   Compiling libc v0.2.86
+   Compiling getrandom v0.2.2
+   Compiling cfg-if v1.0.0
+   Compiling ppv-lite86 v0.2.10
+   Compiling rand_core v0.6.2
+   Compiling rand_chacha v0.3.0
+   Compiling rand v0.8.5
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+error[E0308]: mismatched types
+  --&gt; src/main.rs:22:21
+   |
+22 |     match guess.cmp(&amp;secret_number) {
+   |                 --- ^^^^^^^^^^^^^^ expected `&amp;String`, found `&amp;{integer}`
+   |                 |
+   |                 arguments to this method are incorrect
+   |
+   = note: expected reference `&amp;String`
+              found reference `&amp;{integer}`
+note: method defined here
+  --&gt; /rustc/129f3b9964af4d4a709d1383930ade12dfe7c081/library/core/src/cmp.rs:840:8
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `guessing_game` (bin "guessing_game") due to 1 previous error
 </code></pre>
 <p>Суть ошибки заключается в наличии <em>несовпадающих видов</em>. У Rust строгая статическая система видов. Однако в нем также есть механизм вывода видов. Когда мы написали <code>let mut guess = String::new()</code>, Rust смог сделать вывод, что <code>guess</code> должна быть <code>String</code> и не заставил указывать вид. С другой стороны, <code>secret_number</code> — это числовой вид. Несколько видов чисел в Rust могут иметь значение от 1 до 100: <code>i32</code>, 32-битное число; <code>u32</code>, беззнаковое 32-битное число; <code>i64</code>, 64-битное число, и так далее. Если не указано иное, Rust по умолчанию использует <code>i32</code>, который будет видом <code>secret_number</code>, если вы не добавите сведения о виде где-то ещё, чтобы заставить Rust вывести другой числовой вид. Причина ошибки заключается в том, что Rust не может сравнить строку и числовой вид.</p>
 <p>В конечном итоге необходимо преобразовать <code>String</code>, считываемую программой в качестве входных данных, в существующий числовой вид, чтобы иметь возможность числового сравнения с загаданным числом. Для этого добавьте в тело функции <code>main</code> следующую строку:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-03-convert-string-to-number/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span>    // --snip--
+
+    let mut guess = String::new();
+
+    io::stdin()
+        .read_line(&amp;mut guess)
+        .expect("Failed to read line");
+
+    let guess: u32 = guess.trim().parse().expect("Please type a number!");
+
+    println!("You guessed: {guess}");
+
+    match guess.cmp(&amp;secret_number) {
+        Ordering::Less =&gt; println!("Too small!"),
+        Ordering::Greater =&gt; println!("Too big!"),
+        Ordering::Equal =&gt; println!("You win!"),
+    }
+<span class="boring">}</span></code></pre>
 <p>Вот эта строка:</p>
 <pre><code class="language-rust ignore">let guess: u32 = guess.trim().parse().expect("Please type a number!");</code></pre>
 <p>Мы создаём переменную с именем <code>guess</code>. Но подождите, разве в программе уже нет переменной с этим именем <code>guess</code>? Так и есть, но Rust позволяет нам затенять предыдущее значение <code>guess</code> новым. <em>Затенение</em> позволяет нам повторно использовать имя переменной <code>guess</code>, чтобы избежать создания двух уникальных переменных, таких как <code>guess_str</code> и <code>guess</code>, например. Мы рассмотрим это более подробно в главе 3, а пока знайте, что эта функция часто используется, когда необходимо преобразовать значение из одного вида в другой.</p>
@@ -452,7 +690,42 @@ Too big!
 <h2 id="Возможность-нескольких-догадок-с-помощью-циклов"><a class="header" href="#Возможность-нескольких-догадок-с-помощью-циклов">Возможность нескольких догадок с помощью циклов</a></h2>
 <p>Ключевое слово <code>loop</code> создаёт бесконечный цикл. Мы добавляем цикл, чтобы дать пользователям больше шансов угадать число:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-04-looping/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span>    // --snip--
+
+    println!("The secret number is: {secret_number}");
+
+    loop {
+        println!("Please input your guess.");
+
+        // --snip--
+
+<span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">        io::stdin()
+</span><span class="boring">            .read_line(&amp;mut guess)
+</span><span class="boring">            .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">        let guess: u32 = guess.trim().parse().expect("Please type a number!");
+</span><span class="boring">
+</span><span class="boring">        println!("You guessed: {guess}");
+</span><span class="boring">
+</span>        match guess.cmp(&amp;secret_number) {
+            Ordering::Less =&gt; println!("Too small!"),
+            Ordering::Greater =&gt; println!("Too big!"),
+            Ordering::Equal =&gt; println!("You win!"),
+        }
+    }
+}</code></pre>
 <p>Как видите, мы переместили всё, начиная с подсказки ввода догадки, в цикл. Не забудьте добавить ещё по четыре пробела на отступы строк внутри цикла и запустите программу снова. Теперь программа будет бесконечно запрашивать ещё одну догадку, что фактически создаёт новую проблему. Похоже, пользователь не сможет выйти из игры!</p>
 <p>Пользователь может прервать выполнение программы с помощью сочетания клавиш <span class="keystroke">ctrl+c</span>. Но есть и другой способ спастись от этого ненасытного монстра, о котором говорилось при обсуждении <code>parse</code> в <a href="#comparing-the-guess-to-the-secret-number">«Сравнение догадки с секретным числом»</a>: если пользователь введёт нечисловой ответ, программа завершится аварийно. Мы можем воспользоваться этим, чтобы позволить пользователю выйти из игры, как показано здесь:</p>
 <!-- manual-regeneration
@@ -490,12 +763,87 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <h3 id="Выход-после-правильной-догадки"><a class="header" href="#Выход-после-правильной-догадки">Выход после правильной догадки</a></h3>
 <p>Давайте запрограммируем игру на выход при выигрыше пользователя, добавив оператор <code>break</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/no-listing-05-quitting/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    loop {
+</span><span class="boring">        println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">        io::stdin()
+</span><span class="boring">            .read_line(&amp;mut guess)
+</span><span class="boring">            .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">        let guess: u32 = guess.trim().parse().expect("Please type a number!");
+</span><span class="boring">
+</span><span class="boring">        println!("You guessed: {guess}");
+</span><span class="boring">
+</span>        // --snip--
+
+        match guess.cmp(&amp;secret_number) {
+            Ordering::Less =&gt; println!("Too small!"),
+            Ordering::Greater =&gt; println!("Too big!"),
+            Ordering::Equal =&gt; {
+                println!("You win!");
+                break;
+            }
+        }
+    }
+}</code></pre>
 <p>Добавление строки <code>break</code> после <code>You win!</code> заставляет программу выйти из цикла, когда пользователь правильно угадает секретное число. Выход из цикла также означает выход из программы, так как цикл является последней частью <code>main</code>.</p>
 <h3 id="Обработка-недопустимого-ввода"><a class="header" href="#Обработка-недопустимого-ввода">Обработка недопустимого ввода</a></h3>
 <p>Чтобы улучшить поведение игры, вместо аварийного завершения программы, когда пользователь вводит не число, давайте заставим игру пренебрегать этот факт, позволяя пользователю продолжить угадывание. Для этого необходимо изменить строку, в которой <code>guess</code> преобразуется из <code>String</code> в <code>u32</code>, как показано в приложении 2-5.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-05/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    loop {
+</span><span class="boring">        println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span>        // --snip--
+
+        io::stdin()
+            .read_line(&amp;mut guess)
+            .expect("Failed to read line");
+
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) =&gt; num,
+            Err(_) =&gt; continue,
+        };
+
+        println!("You guessed: {guess}");
+
+        // --snip--
+<span class="boring">
+</span><span class="boring">        match guess.cmp(&amp;secret_number) {
+</span><span class="boring">            Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">            Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">            Ordering::Equal =&gt; {
+</span><span class="boring">                println!("You win!");
+</span><span class="boring">                break;
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 2-5. Пренебрежение нечисловой догадки и запрос другой догадки вместо завершения программы</span></p>
 <p>Мы заменяем вызов <code>expect</code> на выражение <code>match</code>, чтобы перейти от аварийного завершения при ошибке к обработке ошибки. Помните, что <code>parse</code> возвращает вид <code>Result</code>, а <code>Result</code> — это перечисление, которое имеет варианты <code>Ok</code> и <code>Err</code>. Здесь мы используем выражение <code>match</code>, как и в случае с результатом <code>Ordering</code> способа <code>cmp</code>.</p>
 <p>Если <code>parse</code> успешно преобразует строку в число, он вернёт значение <code>Ok</code>, содержащее полученное число. Это значение <code>Ok</code> будет соответствовать шаблону первой ветки, а выражение <code>match</code> просто вернёт значение <code>num</code>, которое <code>parse</code> произвёл и поместил внутрь значения <code>Ok</code>. Это число окажется в нужной нам переменной <code>guess</code>, которую мы создали.</p>
@@ -532,7 +880,41 @@ You win!
 </code></pre>
 <p>Потрясающе! С помощью одной маленькой последней правки мы закончим игру в угадывание. Напомним, что программа все ещё печатает секретное число. Это хорошо подходило для тестирования, но это портит игру. Давайте удалим <code>println!</code>, который выводит секретное число. В Приложении 2-6 показан окончательный вариант кода.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-06/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore">use rand::Rng;
+use std::cmp::Ordering;
+use std::io;
+
+fn main() {
+    println!("Guess the number!");
+
+    let secret_number = rand::thread_rng().gen_range(1..=100);
+
+    loop {
+        println!("Please input your guess.");
+
+        let mut guess = String::new();
+
+        io::stdin()
+            .read_line(&amp;mut guess)
+            .expect("Failed to read line");
+
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) =&gt; num,
+            Err(_) =&gt; continue,
+        };
+
+        println!("You guessed: {guess}");
+
+        match guess.cmp(&amp;secret_number) {
+            Ordering::Less =&gt; println!("Too small!"),
+            Ordering::Greater =&gt; println!("Too big!"),
+            Ordering::Equal =&gt; {
+                println!("You win!");
+                break;
+            }
+        }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 2-6: полный код игры</span></p>
 <p>На данный момент вы успешно создали игру в загадки. Поздравляем!</p>
 <h2 id="Заключение"><a class="header" href="#Заключение">Заключение</a></h2>

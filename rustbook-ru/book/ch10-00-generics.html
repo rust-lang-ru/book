@@ -185,27 +185,79 @@
 <p>В обобщениях мы можем заменить определенный вид на "заполнитель" (placeholder), обозначающую несколько видов, что позволяет удалить повторяющийся код. Прежде чем углубляться в синтаксис обобщённых видов, давайте сначала посмотрим, как удалить повторение, не задействуя универсальные виды, путём извлечения функции, которая заменяет определённые значения заполнителем, представляющим несколько значений. Затем мы применим ту же технику для извлечения универсальной функции! Изучив, как распознать повторяющийся код, который можно извлечь в функцию, вы начнёте распознавать повторяющийся код, который может использовать обобщённые виды.</p>
 <p>Начнём с короткой программы в приложении 10-1, которая находит наибольшее число в списке.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-01/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let mut largest = &amp;number_list[0];
+
+    for number in &amp;number_list {
+        if number &gt; largest {
+            largest = number;
+        }
+    }
+
+    println!("The largest number is {largest}");
+<span class="boring">    assert_eq!(*largest, 100);
+</span>}</code></pre></pre>
 <p><span class="caption">Приложение 10-1: Поиск наибольшего числа в списке чисел</span></p>
 <p>Сохраним список целых чисел в переменной <code>number_list</code> и поместим первое значение из списка в переменную <code>largest</code>. Далее, переберём все элементы списка, и, если текущий элемент больше числа сохранённого в переменной <code>largest</code>, заменим значение в этой переменной. Если текущий элемент меньше или равен "наибольшему", найденному ранее, значение переменной оставим прежним и перейдём к следующему элементу списка. После перебора всех элементов списка переменная <code>largest</code> должна содержать наибольшее значение, которое в нашем случае будет равно 100.</p>
 <p>Теперь перед нами стоит задача найти наибольшее число в двух разных списках. Для этого мы можем повторять код из приложения 10-1 и использовать ту же логику в двух разных местах программы, как показано в приложении 10-2.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-02/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let mut largest = &amp;number_list[0];
+
+    for number in &amp;number_list {
+        if number &gt; largest {
+            largest = number;
+        }
+    }
+
+    println!("The largest number is {largest}");
+
+    let number_list = vec![102, 34, 6000, 89, 54, 2, 43, 8];
+
+    let mut largest = &amp;number_list[0];
+
+    for number in &amp;number_list {
+        if number &gt; largest {
+            largest = number;
+        }
+    }
+
+    println!("The largest number is {largest}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 10-2: Код для поиска наибольшего числа в <em>двух</em> списках чисел</span></p>
 <p>Несмотря на то, что код программы работает, повторение кода утомительно и подвержено ошибкам. При внесении изменений мы должны не забыть обновить каждое место, где код повторяется.</p>
 <p>Для устранения повторения мы можем создать дополнительную абстракцию с помощью функции которая сможет работать с любым списком целых чисел переданным ей в качестве входного свойства и находить для этого списка наибольшее число. Данное решение делает код более ясным и позволяет абстрактным образом реализовать алгоритм поиска наибольшего числа в списке.</p>
 <p>В приложении 10-3 мы извлекаем код, который находит наибольшее число, в функцию с именем  <code>largest</code>. Затем мы вызываем функцию, чтобы найти наибольшее число в двух списках из приложения 10-2. Мы также можем использовать эту функцию для любого другого списка значений <code>i32</code> , который может встретиться позже.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-03/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn largest(list: &amp;[i32]) -&gt; &amp;i32 {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest(&amp;number_list);
+    println!("The largest number is {result}");
+<span class="boring">    assert_eq!(*result, 100);
+</span>
+    let number_list = vec![102, 34, 6000, 89, 54, 2, 43, 8];
+
+    let result = largest(&amp;number_list);
+    println!("The largest number is {result}");
+<span class="boring">    assert_eq!(*result, 6000);
+</span>}</code></pre></pre>
 <p><span class="caption">Приложение 10-3: Абстрактный код для поиска наибольшего числа в двух списках</span></p>
 <p>Функция <code>largest</code> имеет свойство с именем <code>list</code>, который представляет любой срез значений вида <code>i32</code>, которые мы можем передать в неё. В результате вызова функции, код выполнится с определенными, переданными в неё значениями.</p>
 <p>Итак, вот шаги выполненные для изменения кода из приложения 10-2 в приложение 10-3:</p>

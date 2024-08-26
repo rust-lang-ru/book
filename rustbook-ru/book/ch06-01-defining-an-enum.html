@@ -180,44 +180,113 @@
 <p>Давайте рассмотрим ситуацию, которую мы могли бы захотеть отразить в коде, и поймём, почему перечисления полезны и более уместны, чем структуры в этом случае. Допустим, нам нужно работать с IP-адресами. В настоящее время для обозначения IP-адресов используются два основных стандарта: четвёртая и шестая исполнения. Поскольку это единственно возможные варианты IP-адресов, с которыми может столкнуться наша программа, мы можем <em>перечислить</em> все возможные варианты, откуда перечисление и получило своё название.</p>
 <p>Любой IP-адрес может быть либо четвёртой, либо шестой исполнения, но не обеими одновременно. Эта особенность IP-адресов делает структуру данных enum подходящей, поскольку значение enum может представлять собой только один из его возможных вариантов. Адреса как четвёртой, так и шестой исполнения по своей сути все равно являются IP-адресами, поэтому их следует рассматривать как один и тот же вид, когда в коде обрабатываются задачи, относящиеся к любому виду IP-адресов.</p>
 <p>Можно выразить эту концепцию в коде, определив перечисление <code>IpAddrKind</code> и составив список возможных видов IP-адресов, <code>V4</code> и <code>V6</code>. Вот варианты перечислений:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust">enum IpAddrKind {
+    V4,
+    V6,
+}
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-01-defining-enums/src/main.rs:def}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let four = IpAddrKind::V4;
+</span><span class="boring">    let six = IpAddrKind::V6;
+</span><span class="boring">
+</span><span class="boring">    route(IpAddrKind::V4);
+</span><span class="boring">    route(IpAddrKind::V6);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn route(ip_kind: IpAddrKind) {}</span></code></pre></pre>
 <p><code>IpAddrKind</code> теперь является пользовательским видом данных, который мы можем использовать в другом месте нашего кода.</p>
 <h3 id="Значения-перечислений"><a class="header" href="#Значения-перечислений">Значения перечислений</a></h3>
 <p>Экземпляры каждого варианта перечисления <code>IpAddrKind</code> можно создать следующим образом:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum IpAddrKind {
+</span><span class="boring">    V4,
+</span><span class="boring">    V6,
+</span><span class="boring">}
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-01-defining-enums/src/main.rs:instance}}
-<span class="boring">}</span></code></pre></pre>
+</span>    let four = IpAddrKind::V4;
+    let six = IpAddrKind::V6;
+<span class="boring">
+</span><span class="boring">    route(IpAddrKind::V4);
+</span><span class="boring">    route(IpAddrKind::V6);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn route(ip_kind: IpAddrKind) {}</span></code></pre></pre>
 <p>Обратите внимание, что варианты перечисления находятся в пространстве имён вместе с его определителем, а для их обособления мы используем двойное двоеточие. Это удобно тем, что теперь оба значения <code>IpAddrKind::V4</code> и <code>IpAddrKind::V6</code> относятся к одному виду: <code>IpAddrKind</code>. Затем мы можем, например, определить функцию, которая принимает любой из вариантов <code>IpAddrKind</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum IpAddrKind {
+</span><span class="boring">    V4,
+</span><span class="boring">    V6,
+</span><span class="boring">}
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-01-defining-enums/src/main.rs:fn}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let four = IpAddrKind::V4;
+</span><span class="boring">    let six = IpAddrKind::V6;
+</span><span class="boring">
+</span><span class="boring">    route(IpAddrKind::V4);
+</span><span class="boring">    route(IpAddrKind::V6);
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn route(ip_kind: IpAddrKind) {}</code></pre></pre>
 <p>Можно вызвать эту функцию с любым из вариантов:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum IpAddrKind {
+</span><span class="boring">    V4,
+</span><span class="boring">    V6,
+</span><span class="boring">}
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-01-defining-enums/src/main.rs:fn_call}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let four = IpAddrKind::V4;
+</span><span class="boring">    let six = IpAddrKind::V6;
+</span><span class="boring">
+</span>    route(IpAddrKind::V4);
+    route(IpAddrKind::V6);
+<span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn route(ip_kind: IpAddrKind) {}</span></code></pre></pre>
 <p>Использование перечислений позволяет получить ещё больше преимуществ. Если подумать о нашем виде для IP-адреса, то выяснится, что на данный момент у нас нет возможности хранить собственно сам <em>IP-адрес</em>; мы будем знать только его <em>вид</em>. Учитывая, что недавно в главе 5 вы узнали о структурах, у вас может возникнуть соблазн решить эту проблему с помощью структур, как показано в приложении 6-1.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-01/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum IpAddrKind {
+        V4,
+        V6,
+    }
+
+    struct IpAddr {
+        kind: IpAddrKind,
+        address: String,
+    }
+
+    let home = IpAddr {
+        kind: IpAddrKind::V4,
+        address: String::from("127.0.0.1"),
+    };
+
+    let loopback = IpAddr {
+        kind: IpAddrKind::V6,
+        address: String::from("::1"),
+    };
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 6-1. Сохранение данных и <code>IpAddrKind</code> IP-адреса с использованием <code>struct</code></span></p>
 <p>Здесь мы определили структуру <code>IpAddr</code>, у которой есть два поля: <code>kind</code> вида <code>IpAddrKind</code> (перечисление, которое мы определили ранее) и <code>address</code> вида <code>String</code>. У нас есть два экземпляра этой структуры. Первый - <code>home</code>, который является <code>IpAddrKind::V4</code> в качестве значения <code>kind</code> с соответствующим адресом <code>127.0.0.1</code>. Второй экземпляр - <code>loopback</code>. Он в качестве значения <code>kind</code> имеет другой вариант <code>IpAddrKind</code>, <code>V6</code>, и с ним ассоциирован адрес <code>::1</code>. Мы использовали структуру для объединения значений <code>kind</code> и <code>address</code> вместе, таким образом вид формата адреса теперь ассоциирован со значением.</p>
 <p>Однако представление этой же концепции с помощью перечисления более лаконично: вместо того, чтобы помещать перечисление в структуру, мы можем поместить данные непосредственно в любой из вариантов перечисления. Это новое определение перечисления <code>IpAddr</code> гласит, что оба варианта <code>V4</code> и <code>V6</code> будут иметь соответствующие значения <code>String</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-02-enum-with-data/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum IpAddr {
+        V4(String),
+        V6(String),
+    }
+
+    let home = IpAddr::V4(String::from("127.0.0.1"));
+
+    let loopback = IpAddr::V6(String::from("::1"));
 <span class="boring">}</span></code></pre></pre>
 <p>Мы прикрепляем данные к каждому варианту перечисления напрямую, поэтому нет необходимости в дополнительной структуре. Здесь также легче увидеть ещё одну подробность того, как работают перечисления: имя каждого варианта перечисления, который мы определяем, также становится функцией, которая создаёт экземпляр перечисления. То есть <code>IpAddr::V4()</code> - это вызов функции, который принимает <code>String</code> и возвращает экземпляр вида <code>IpAddr</code>. Мы самостоятельно получаем эту функцию-конструктор, определяемую в результате определения перечисления.</p>
 <p>Ещё одно преимущество использования перечисления вместо структуры заключается в том, что каждый вариант перечисления может иметь разное количество ассоциированных данных представленных в разных видах. Исполнение 4 для IP адресов всегда будет содержать четыре цифровых компонента, которые будут иметь значения между 0 и 255. При необходимости сохранить адреса вида <code>V4</code> как четыре значения вида <code>u8</code>, а также описать адреса вида <code>V6</code> как единственное значение вида  <code>String</code>, мы не смогли бы с помощью структуры. Перечисления решают эту задачу легко:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-03-variants-with-different-data/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum IpAddr {
+        V4(u8, u8, u8, u8),
+        V6(String),
+    }
+
+    let home = IpAddr::V4(127, 0, 0, 1);
+
+    let loopback = IpAddr::V6(String::from("::1"));
 <span class="boring">}</span></code></pre></pre>
 <p>Мы показали несколько различных способов определения структур данных для хранения IP-адресов четвёртой и шестой исполнений. Однако, как оказалось, желание хранить IP-адреса и указывать их вид настолько распространено, что в встроенной библиотеке есть определение, которое мы можем использовать!<!-- ignore --> Давайте посмотрим, как стандартная библиотека определяет <code>IpAddr</code>: в ней есть точно такое же перечисление с вариантами, которое мы определили и использовали, но она помещает данные об адресе внутрь этих вариантов в виде двух различных структур, которые имеют различные определения для каждого из вариантов:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -238,10 +307,14 @@ enum IpAddr {
 <p>Этот код отображает что мы можем добавлять любой вид данных в значение перечисления: строку, число, структуру и пр. Вы даже можете включить в перечисление другие перечисления! Стандартные виды данных не очень сложны, хотя, потенциально, могут быть очень сложными (вложенность данных может быть очень глубокой).</p>
 <p>Обратите внимание, что хотя определение перечисления <code>IpAddr</code> есть в встроенной библиотеке, мы смогли объявлять и использовать свою собственную реализацию с подобным названием без каких-либо конфликтов, потому что мы не добавили определение встроенной библиотеки в область видимости кода. Подробнее об этом поговорим в Главе 7.</p>
 <p>Рассмотрим другой пример перечисления в приложении 6-2: в этом примере каждый элемент перечисления имеет свой особый вид данных внутри:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-02/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p><span class="caption">Приложение 6-2. Перечисление <code>Message</code>, в каждом из вариантов которого хранятся разные количества и виды значений.</span></p>
 <p>Это перечисление имеет 4 элемента:</p>
 <ul>
@@ -251,15 +324,33 @@ enum IpAddr {
 <li><code>ChangeColor</code> - кортеж из трёх значений вида <code>i32</code>.</li>
 </ul>
 <p>Определение перечисления с вариантами, такими как в приложении 6-2, похоже на определение значений различных видов внутри структур, за исключением того, что перечисление не использует ключевое слово <code>struct</code> и все варианты сгруппированы внутри вида <code>Message</code>. Следующие структуры могут содержать те же данные, что и предыдущие варианты перечислений:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-04-structs-similar-to-message-enum/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">struct QuitMessage; // unit struct
+struct MoveMessage {
+    x: i32,
+    y: i32,
+}
+struct WriteMessage(String); // tuple struct
+struct ChangeColorMessage(i32, i32, i32); // tuple struct
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p>Но когда мы использовали различные структуры, каждая из которых имеет свои собственные виды, мы не могли легко определять функции, которые принимают любые виды сообщений, как это можно сделать с помощью перечисления вида <code>Message</code>, объявленного в приложении 6-2, который является единым видом.</p>
 <p>Есть ещё одно сходство между перечислениями и структурами: так же, как мы можем определять способы для структур с помощью <code>impl</code> раздела, мы можем определять и способы для перечисления. Вот пример способа с именем <code>call</code>, который мы могли бы определить в нашем перечислении <code>Message</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-05-methods-on-enums/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    enum Message {
+</span><span class="boring">        Quit,
+</span><span class="boring">        Move { x: i32, y: i32 },
+</span><span class="boring">        Write(String),
+</span><span class="boring">        ChangeColor(i32, i32, i32),
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    impl Message {
+        fn call(&amp;self) {
+            // method body would be defined here
+        }
+    }
+
+    let m = Message::Write(String::from("hello"));
+    m.call();
 <span class="boring">}</span></code></pre></pre>
 <p>В теле способа будет использоваться <code>self</code> для получения значение того объекта, у которого мы вызвали этот способ. В этом примере мы создали переменную <code>m</code>, содержащую значение <code>Message::Write(String::from("hello"))</code>, и именно это значение будет представлять <code>self</code> в теле способа <code>call</code> при выполнении <code>m.call()</code>.</p>
 <p>Теперь посмотрим на другое наиболее часто используемое перечисление из встроенной библиотеки, которое является очень распространённым и полезным: <code>Option</code>.</p>
@@ -283,16 +374,39 @@ enum IpAddr {
 <span class="boring">}</span></code></pre></pre>
 <p>Перечисление <code>Option&lt;T&gt;</code> настолько полезно, что оно даже включено в прелюдию; вам не нужно явно вводить его в область видимости. Его варианты также включены в прелюдию: вы можете использовать <code>Some</code> и <code>None</code> напрямую, без префикса <code>Option::</code>. При всём при этом, <code>Option&lt;T&gt;</code> является обычным перечислением, а <code>Some(T)</code> и <code>None</code> представляют собой его варианты.</p>
 <p><code>&lt;T&gt;</code> - это особенность Rust, о которой мы ещё не говорили. Это свойство обобщённого вида, и мы рассмотрим его более подробно в главе 10. На данный момент всё, что вам нужно знать, это то, что <code>&lt;T&gt;</code> означает, что вариант <code>Some</code> <code>Option</code> может содержать один фрагмент данных любого вида, и что каждый определенный вид, который используется вместо <code>T</code> делает общий <code>Option&lt;T&gt;</code> другим видом. Вот несколько примеров использования <code>Option</code> для хранения числовых и строковых видов:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-06-option-examples/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let some_number = Some(5);
+    let some_char = Some('e');
+
+    let absent_number: Option&lt;i32&gt; = None;
 <span class="boring">}</span></code></pre></pre>
 <p>Вид <code>some_number</code> - <code>Option&lt;i32&gt;</code>. Вид <code>some_char</code> - <code>Option&lt;char&gt;</code>, это другой вид. Rust может вывести эти виды, потому что мы указали значение внутри варианта <code>Some</code>. Для <code>absent_number</code> Rust требует, чтобы мы аннотировали общий вид для <code>Option</code>: сборщик не может вывести вид, который будет в <code>Some</code>, глядя только на значение <code>None</code>. Здесь мы сообщаем Rust, что <code>absent_number</code> должен иметь вид <code>Option&lt;i32&gt;</code>.</p>
 <p>Когда есть значение <code>Some</code>, мы знаем, что значение присутствует и содержится внутри <code>Some</code>. Когда есть значение <code>None</code>, это означает то же самое, что и null в некотором смысле: у нас нет действительного значения. Так почему наличие <code>Option&lt;T&gt;</code> лучше, чем null?</p>
 <p>Вкратце, поскольку <code>Option&lt;T&gt;</code> и <code>T</code> (где <code>T</code> может быть любым видом) относятся к разным видам, сборщик не позволит нам использовать значение <code>Option&lt;T&gt;</code> даже если бы оно было определённо допустимым значением. Например, этот код не будет собираться, потому что он пытается добавить <code>i8</code> к значению вида <code>Option&lt;i8&gt;</code>:</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-07-cant-use-option-directly/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let x: i8 = 5;
+    let y: Option&lt;i8&gt; = Some(5);
+
+    let sum = x + y;
+<span class="boring">}</span></code></pre>
 <p>Если мы запустим этот код, то получим такое сообщение об ошибке:</p>
-<pre><code class="language-console">{{#include ../listings/ch06-enums-and-pattern-matching/no-listing-07-cant-use-option-directly/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling enums v0.1.0 (file:///projects/enums)
+error[E0277]: cannot add `Option&lt;i8&gt;` to `i8`
+ --&gt; src/main.rs:5:17
+  |
+5 |     let sum = x + y;
+  |                 ^ no implementation for `i8 + Option&lt;i8&gt;`
+  |
+  = help: the trait `Add&lt;Option&lt;i8&gt;&gt;` is not implemented for `i8`
+  = help: the following other types implement trait `Add&lt;Rhs&gt;`:
+            &lt;&amp;'a i8 as Add&lt;i8&gt;&gt;
+            &lt;&amp;i8 as Add&lt;&amp;i8&gt;&gt;
+            &lt;i8 as Add&lt;&amp;i8&gt;&gt;
+            &lt;i8 as Add&gt;
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `enums` (bin "enums") due to 1 previous error
 </code></pre>
 <p>Сильно! Фактически, это сообщение об ошибке означает, что Rust не понимает, как сложить <code>i8</code> и <code>Option&lt;i8&gt;</code>, потому что это разные виды. Когда у нас есть значение вида наподобие <code>i8</code>, сборщик заверяет, что у нас всегда есть допустимое значение вида. Мы можем уверенно продолжать работу, не проверяя его на null перед использованием. Однако, когда у нас есть значение вида <code>Option&lt;T&gt;</code> (где <code>T</code> - это любое значение любого вида <code>T</code>, упакованное в <code>Option</code>, например значение вида <code>i8</code> или <code>String</code>), мы должны беспокоиться о том, что <em>значение</em> вида T возможно не имеет значения (является вариантом <code>None</code>), и сборщик позаботится о том, чтобы мы обработали такой случай, прежде чем мы бы попытались использовать <code>None</code> значение.</p>
 <p>Другими словами, вы должны преобразовать <code>Option&lt;T&gt;</code> в <code>T</code> прежде чем вы сможете выполнять действия с этим <code>T</code>. Как правило, это помогает выявить одну из наиболее распространённых проблем с null: предполагая, что что-то не равно null, когда оно на самом деле равно null.</p>

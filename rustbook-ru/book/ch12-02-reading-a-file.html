@@ -178,18 +178,59 @@
                         <h2 id="Чтение-файла"><a class="header" href="#Чтение-файла">Чтение файла</a></h2>
 <p>Теперь добавим возможность чтения файла, указанного как переменная приказной строки <code>file_path</code>. Во-первых, нам нужен пример файла для тестирования: мы будем использовать файл с небольшим объёмом текста в несколько строк с несколькими повторяющимися словами. В приложении 12-3 представлено стихотворение Эмили Дикинсон, которое будет хорошо работать! Создайте файл с именем <em>poem.txt</em> в корне вашего проекта и введите стихотворение "I’m nobody! Who are you?"</p>
 <p><span class="filename">Файл: poem.txt</span></p>
-<pre><code class="language-text">{{#include ../listings/ch12-an-io-project/listing-12-03/poem.txt}}
+<pre><code class="language-text">I'm nobody! Who are you?
+Are you nobody, too?
+Then there's a pair of us - don't tell!
+They'd banish us, you know.
+
+How dreary to be somebody!
+How public, like a frog
+To tell your name the livelong day
+To an admiring bog!
 </code></pre>
 <p><span class="caption">Приложение 12-3: Стихотворение Эмили Дикинсон - хороший пример для проверки</span></p>
 <p>Текст на месте, изменените <em>src/main.rs</em> и добавьте код для чтения файла, как показано в приложении 12-4.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust should_panic noplayground">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-04/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust should_panic noplayground">use std::env;
+use std::fs;
+
+fn main() {
+    // --snip--
+<span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let query = &amp;args[1];
+</span><span class="boring">    let file_path = &amp;args[2];
+</span><span class="boring">
+</span><span class="boring">    println!("Searching for {query}");
+</span>    println!("In file {file_path}");
+
+    let contents = fs::read_to_string(file_path)
+        .expect("Should have been able to read the file");
+
+    println!("With text:\n{contents}");
+}</code></pre>
 <p><span class="caption">Приложение 12-4: Чтение содержимого файла указанного во втором переменной</span></p>
 <p>Во-первых, мы добавляем ещё одну указанию <code>use</code> чтобы подключить соответствующую часть встроенной библиотеки: нам нужен <code>std::fs</code> для обработки файлов.</p>
 <p>В <code>main</code> мы добавили новую указанию: функция <code>fs::read_to_string</code> принимает <code>file_path</code>, открывает этот файл и возвращает содержимое файла как <code>std::io::Result&lt;String&gt;</code>.</p>
 <p>После этого, мы снова добавили временную указанию <code>println!</code> для печати значения <code>contents</code> после чтения файла, таким образом мы можем проверить, что программа отрабатывает до этого места.</p>
 <p>Давайте запустим этот код с любой строкой в качестве первого переменной приказной строки (потому что мы ещё не реализовали поисковую часть) и файл <em>poem.txt</em> как второй переменная:</p>
-<pre><code class="language-console">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-04/output.txt}}
+<pre><code class="language-console">$ cargo run -- the poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep the poem.txt`
+Searching for the
+In file poem.txt
+With text:
+I'm nobody! Who are you?
+Are you nobody, too?
+Then there's a pair of us - don't tell!
+They'd banish us, you know.
+
+How dreary to be somebody!
+How public, like a frog
+To tell your name the livelong day
+To an admiring bog!
+
 </code></pre>
 <p>Отлично! Этот код прочитал и затем напечатал содержимое файла. Но у программы есть несколько недостатков. Прежде всего, функция <code>main</code> решает слишком много задач: как правило функция понятнее и проще в обслуживании если она воплощает только одну идею. Другая проблема заключается в том, что мы не обрабатываем ошибки так хорошо, как могли бы. Пока наша программа небольшая, то эти недостатки не являются большой проблемой, но по мере роста программы эти недостатки будет всё труднее исправлять. Хорошей практикой является начинать рефакторинг на ранней стадии разработки программы, потому что гораздо проще рефакторить меньшие объёмы кода. Мы сделаем это далее.</p>
 

@@ -181,14 +181,42 @@
 <p><em>Ассоциированные виды</em> связывают вид-заполнитель с типажом таким образом, что определения способов типажа могут использовать эти виды-заполнители в своих сигнатурах. Для именно реализации типажа вместо типа-заполнителя указывается определенный вид, который будет использоваться. Таким образом, мы можем определить типажи, использующие некоторые виды, без необходимости точно знать, что это за виды, пока типажи не будут реализованы.</p>
 <p>Мы назвали большинство продвинутых возможностей в этой главе редко востребованными. Ассоциированные виды находятся где-то посередине: они используются реже чем возможности описанные в остальной части книги, но чаще чем многие другие возможности обсуждаемые в этой главе.</p>
 <p>Одним из примеров трейта с ассоциированным видом является типаж <code>Iterator</code> из встроенной библиотеки. Ассоциированный вид называется <code>Item</code> и символизирует вид значений, по которым повторяется вид, реализующий типаж <code>Iterator</code>. Определение трейта <code>Iterator</code> показано в приложении 19-12.</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-12/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub trait Iterator {
+    type Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+}</code></pre>
 <p><span class="caption">Приложение 19-12: Определение трейта <code>Iterator</code>, который имеет ассоциированный вид <code>Item</code></span></p>
 <p>Вид <code>Item</code> является заполнителем и определение способа <code>next</code> показывает, что он будет возвращать значения вида <code>Option&lt;Self::Item&gt;</code>. Разработчики типажа <code>Iterator</code> определят определенный вид для <code>Item</code>, а способ <code>next</code> вернёт <code>Option</code> содержащий значение этого определенного вида.</p>
 <p>Ассоциированные виды могут показаться концепцией похожей на обобщения, поскольку последние позволяют нам определять функцию, не указывая, какие виды она может обрабатывать. Чтобы изучить разницу между этими двумя концепциями, мы рассмотрим реализацию типажа <code>Iterator</code> для вида с именем <code>Counter</code>, который указывает, что вид <code>Item</code> равен <code>u32</code>:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-22-iterator-on-counter/src/lib.rs:ch19}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">struct Counter {
+</span><span class="boring">    count: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Counter {
+</span><span class="boring">    fn new() -&gt; Counter {
+</span><span class="boring">        Counter { count: 0 }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        // --snip--
+<span class="boring">        if self.count &lt; 5 {
+</span><span class="boring">            self.count += 1;
+</span><span class="boring">            Some(self.count)
+</span><span class="boring">        } else {
+</span><span class="boring">            None
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p>Этот синтаксис весьма напоминает обобщённые виды. Так почему же типаж <code>Iterator</code> не определён обобщённым видом, как показано в приложении 19-13?</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-13/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub trait Iterator&lt;T&gt; {
+    fn next(&amp;mut self) -&gt; Option&lt;T&gt;;
+}</code></pre>
 <p><span class="caption">Приложение 19-13: Гипотетическое определение типажа <code>Iterator</code> используя обобщённые виды</span></p>
 <p>Разница в том, что при использовании обобщений, как показано в приложении 19-13, мы должны аннотировать виды в каждой реализации; потому что мы также можем реализовать <code>Iterator&lt;String&gt; for Counter</code> или любого другого вида, мы могли бы иметь несколько реализации <code>Iterator</code> для <code>Counter</code>. Другими словами, когда типаж имеет обобщённый свойство, он может быть реализован для вида несколько раз, каждый раз меняя определенные виды свойств обобщённого вида. Когда мы используем способ <code>next</code> у <code>Counter</code>, нам пришлось бы предоставить изложении вида, указывая какую реализацию <code>Iterator</code> мы хотим использовать.</p>
 <p>С ассоциированными видами не нужно аннотировать виды, потому что мы не можем реализовать типаж у вида несколько раз. В приложении 19-12 с определением, использующим ассоциированные виды можно выбрать только один вид <code>Item</code>, потому что может быть только одно объявление <code>impl Iterator for Counter</code>. Нам не нужно указывать, что нужен повторительзначений вида <code>u32</code> везде, где мы вызываем <code>next</code> у <code>Counter</code>.</p>
@@ -198,10 +226,31 @@
 <p>Отличным примером, когда этот способ полезен, является <em>перегрузка оператора</em> (operator overloading), когда вы настраиваете поведение оператора (например, <code>+</code> ) для определённых ситуаций.</p>
 <p>Rust не позволяет создавать собственные операторы или перегружать произвольные операторы. Но можно перегрузить перечисленные действия и соответствующие им типажи из <code>std::ops</code> путём реализации типажей, связанных с этими операторами. Например, в приложении 19-14 мы перегружаем оператор <code>+</code>, чтобы складывать два экземпляра <code>Point</code>. Мы делаем это реализуя типаж <code>Add</code> для структуры <code>Point</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-14/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::ops::Add;
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl Add for Point {
+    type Output = Point;
+
+    fn add(self, other: Point) -&gt; Point {
+        Point {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+fn main() {
+    assert_eq!(
+        Point { x: 1, y: 0 } + Point { x: 2, y: 3 },
+        Point { x: 3, y: 3 }
+    );
+}</code></pre></pre>
 <p><span class="caption">Приложение 19-14: Реализация типажа <code>Add</code> для перегрузки оператора <code>+</code> для экземпляров <code>Point</code></span></p>
 <p>Способ <code>add</code> складывает значения <code>x</code> двух экземпляров <code>Point</code> и значения <code>y</code> у <code>Point</code> для создания нового экземпляра <code>Point</code>. Типаж <code>Add</code> имеет ассоциированный вид с именем <code>Output</code>, который определяет вид, возвращаемый из способа <code>add</code>.</p>
 <p>Обобщённый вид по умолчанию в этом коде находится в типаже <code>Add</code> . Вот его определение:</p>
@@ -217,7 +266,18 @@
 <p>Когда мы реализовали <code>Add</code> для структуры <code>Point</code>, мы использовали стандартное значение для <code>RHS</code>, потому что хотели сложить два экземпляра <code>Point</code>. Давайте посмотрим на пример реализации типажа <code>Add</code>, где мы хотим пользовательский вид <code>RHS</code> вместо использования вида по умолчанию.</p>
 <p>У нас есть две разные структуры <code>Millimeters</code> и <code>Meters</code>, хранящие значения в разных единицах измерения. Это тонкое обёртывание существующего вида в другую структуру известно как шаблон <em>newtype</em>, который мы более подробно опишем в разделе <a href="ch19-03-advanced-traits.html#using-the-newtype-pattern-to-implement-external-traits-on-external-types">"Шаблон Newtype для реализация внешних типажей у внешних видов"</a><!-- ignore --> . Мы хотим добавить значения в миллиметрах к значениям в метрах и хотим иметь реализацию типажа <code>Add</code>, которая делает правильное преобразование единиц. Можно реализовать <code>Add</code> для <code>Millimeters</code> с видом <code>Meters</code> в качестве <code>Rhs</code>, как показано в приложении 19-15.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-15/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">use std::ops::Add;
+
+struct Millimeters(u32);
+struct Meters(u32);
+
+impl Add&lt;Meters&gt; for Millimeters {
+    type Output = Millimeters;
+
+    fn add(self, other: Meters) -&gt; Millimeters {
+        Millimeters(self.0 + (other.0 * 1000))
+    }
+}</code></pre>
 <p><span class="caption">Приложение 19-15: Реализация типажа <code>Add</code> для структуры  <code>Millimeters</code>, чтобы складывать <code>Millimeters</code> и <code>Meters</code></span></p>
 <p>Чтобы сложить <code>Millimeters</code> и <code>Meters</code>, мы указываем <code>impl Add&lt;Meters&gt;</code>, чтобы указать значение свойства вида <code>RHS</code> (Meters) вместо использования значения по умолчанию <code>Self</code> (Millimeters).</p>
 <p>Свойства вида по умолчанию используются в двух основных случаях:</p>
@@ -231,58 +291,226 @@
 <p>В Rust ничего не мешает типажу иметь способ с одинаковым именем, таким же как способ другого типажа и Rust не мешает реализовывать оба таких типажа у одного вида. Также возможно реализовать способ с таким же именем непосредственно у вида, такой как и способы у типажей.</p>
 <p>При вызове способов с одинаковыми именами в Rust нужно указать, какой из трёх возможных вы хотите использовать. Рассмотрим код в приложении 19-16, где мы определили два типажа: <code>Pilot</code> и <code>Wizard</code>, у обоих есть способ <code>fly</code>. Затем мы реализуем оба типажа у вида <code>Human</code> в котором уже реализован способ с именем <code>fly</code>. Каждый способ <code>fly</code> делает что-то своё.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-16/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">trait Pilot {
+    fn fly(&amp;self);
+}
+
+trait Wizard {
+    fn fly(&amp;self);
+}
+
+struct Human;
+
+impl Pilot for Human {
+    fn fly(&amp;self) {
+        println!("This is your captain speaking.");
+    }
+}
+
+impl Wizard for Human {
+    fn fly(&amp;self) {
+        println!("Up!");
+    }
+}
+
+impl Human {
+    fn fly(&amp;self) {
+        println!("*waving arms furiously*");
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p><span class="caption">Приложение 19-16: Два типажа определены с способом <code>fly</code> и реализованы у вида <code>Human</code>, а также способ <code>fly</code> реализован непосредственно у <code>Human</code></span></p>
 <p>Когда мы вызываем <code>fly</code> у экземпляра <code>Human</code>, то сборщик по умолчанию вызывает способ, который непосредственно реализован для вида, как показано в приложении 19-17.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-17/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">trait Pilot {
+</span><span class="boring">    fn fly(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">trait Wizard {
+</span><span class="boring">    fn fly(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Human;
+</span><span class="boring">
+</span><span class="boring">impl Pilot for Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("This is your captain speaking.");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Wizard for Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("Up!");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("*waving arms furiously*");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let person = Human;
+    person.fly();
+}</code></pre></pre>
 <p><span class="caption">Приложение 19-17: Вызов <code>fly</code> у экземпляра <code>Human</code></span></p>
 <p>Запуск этого кода напечатает <code>*waving arms furiously*</code> , показывая, что Rust называется способ <code>fly</code> реализованный непосредственно у <code>Human</code>.</p>
 <p>Чтобы вызвать способы <code>fly</code> у типажа <code>Pilot</code> или типажа <code>Wizard</code> нужно использовать более явный синтаксис, указывая какой способ <code>fly</code> мы имеем в виду. Приложение 19-18 отображает такой синтаксис.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-18/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">trait Pilot {
+</span><span class="boring">    fn fly(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">trait Wizard {
+</span><span class="boring">    fn fly(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Human;
+</span><span class="boring">
+</span><span class="boring">impl Pilot for Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("This is your captain speaking.");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Wizard for Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("Up!");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("*waving arms furiously*");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let person = Human;
+    Pilot::fly(&amp;person);
+    Wizard::fly(&amp;person);
+    person.fly();
+}</code></pre></pre>
 <p><span class="caption">Приложение 19-18: Указание какой способа <code>fly</code> мы хотим вызвать</span></p>
 <p>Указание имени типажа перед именем способа проясняет сборщику Rust, какую именно реализацию <code>fly</code> мы хотим вызвать. Мы могли бы также написать <code>Human::fly(&amp;person)</code>, что эквивалентно используемому нами <code>person.fly()</code> в приложении 19-18, но это писание немного длиннее, когда нужна неоднозначность.</p>
 <p>Выполнение этого кода выводит следующее:</p>
-<pre><code class="language-console">{{#include ../listings/ch19-advanced-features/listing-19-18/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.46s
+     Running `target/debug/traits-example`
+This is your captain speaking.
+Up!
+*waving arms furiously*
 </code></pre>
 <p>Поскольку способ <code>fly</code> принимает свойство <code>self</code>, если у нас было два <em>вида</em> оба реализующих один <em>типаж</em>, то Rust может понять, какую реализацию типажа использовать в зависимости от вида <code>self</code>.</p>
 <p>Однако, ассоциированные функции, не являющиеся способами, не имеют свойства <code>self</code>. Когда существует несколько видов или типажей, определяющих функции, не являющиеся способами, с одним и тем же именем функции, Rust не всегда знает, какой вид вы имеете в виду, если только вы не используете <em>полный синтаксис</em>. Например, в приложении 19-19 мы создаём типаж для приюта животных, который хочет назвать всех маленьких собак <em>Spot</em>. Мы создаём типаж <code>Animal</code> со связанной с ним функцией <code>baby_name</code>, не являющейся способом. Типаж <code>Animal</code> реализован для структуры <code>Dog</code>, для которой мы также напрямую предоставляем связанную функцию <code>baby_name</code>, не являющуюся способом.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-19/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">trait Animal {
+    fn baby_name() -&gt; String;
+}
+
+struct Dog;
+
+impl Dog {
+    fn baby_name() -&gt; String {
+        String::from("Spot")
+    }
+}
+
+impl Animal for Dog {
+    fn baby_name() -&gt; String {
+        String::from("puppy")
+    }
+}
+
+fn main() {
+    println!("A baby dog is called a {}", Dog::baby_name());
+}</code></pre></pre>
 <p><span class="caption">Приложение 19-19: Типаж с ассоциированной функцией и вид с ассоциированной функцией с тем же именем, которая тоже реализует типаж</span></p>
 <p>Мы реализовали код для приюта для животных, который хочет назвать всех щенков именем Spot, в ассоциированной функции <code>baby_name</code>, которая определена для <code>Dog</code>. Вид <code>Dog</code> также реализует типаж <code>Animal</code>, который описывает характеристики, которые есть у всех животных. Маленьких собак называют щенками, и это выражается в реализации <code>Animal</code> у <code>Dog</code> в функции <code>baby_name</code> ассоциированной с типажом <code>Animal</code>.</p>
 <p>В <code>main</code> мы вызываем функцию <code>Dog::baby_name</code>, которая вызывает ассоциированную функцию определённую напрямую у <code>Dog</code>. Этот код печатает следующее:</p>
-<pre><code class="language-console">{{#include ../listings/ch19-advanced-features/listing-19-19/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.54s
+     Running `target/debug/traits-example`
+A baby dog is called a Spot
 </code></pre>
 <p>Этот вывод не является тем, что мы хотели бы получить. Мы хотим вызвать функцию <code>baby_name</code>, которая является частью типажа <code>Animal</code> реализованного у <code>Dog</code>, так чтобы код печатал <code>A baby dog is called a puppy</code>. Техника указания имени типажа использованная в приложении 19-18 здесь не помогает; если мы изменим <code>main</code> код как в приложении 19-20, мы получим ошибку сборки.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-20/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">trait Animal {
+</span><span class="boring">    fn baby_name() -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Dog;
+</span><span class="boring">
+</span><span class="boring">impl Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("Spot")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Animal for Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("puppy")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    println!("A baby dog is called a {}", Animal::baby_name());
+}</code></pre>
 <p><span class="caption">Приложение 19-20. Попытка вызвать функцию <code>baby_name</code> из типажа <code>Animal</code>, но Rust не знает какую реализацию использовать</span></p>
 <p>Поскольку <code>Animal::baby_name</code> не имеет свойства <code>self</code>, и могут быть другие виды, реализующие типаж <code>Animal</code>, Rust не может понять, какую реализацию <code>Animal::baby_name</code> мы хотим использовать. Мы получим эту ошибку сборщика:</p>
-<pre><code class="language-console">{{#include ../listings/ch19-advanced-features/listing-19-20/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+error[E0790]: cannot call associated function on trait without specifying the corresponding `impl` type
+  --&gt; src/main.rs:20:43
+   |
+2  |     fn baby_name() -&gt; String;
+   |     ------------------------- `Animal::baby_name` defined here
+...
+20 |     println!("A baby dog is called a {}", Animal::baby_name());
+   |                                           ^^^^^^^^^^^^^^^^^^^ cannot call associated function of trait
+   |
+help: use the fully-qualified path to the only available implementation
+   |
+20 |     println!("A baby dog is called a {}", &lt;Dog as Animal&gt;::baby_name());
+   |                                           +++++++       +
+
+For more information about this error, try `rustc --explain E0790`.
+error: could not compile `traits-example` (bin "traits-example") due to 1 previous error
 </code></pre>
 <p>Чтобы устранить неоднозначность и сказать Rust, что мы хотим использовать реализацию <code>Animal</code> для <code>Dog</code>, нужно использовать полный синтаксис. Приложение 19-21 отображает, как использовать полный синтаксис.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-21/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">trait Animal {
+</span><span class="boring">    fn baby_name() -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Dog;
+</span><span class="boring">
+</span><span class="boring">impl Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("Spot")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Animal for Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("puppy")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    println!("A baby dog is called a {}", &lt;Dog as Animal&gt;::baby_name());
+}</code></pre></pre>
 <p><span class="caption">Приложение 19-21: Использование полного синтаксиса для указания, что мы мы хотим вызвать функцию <code>baby_name</code> у типажа <code>Animal</code> реализованную в <code>Dog</code></span></p>
 <p>Мы указываем изложение вида в угловых скобках, которая указывает на то что мы хотим вызвать способ <code>baby_name</code> из типажа <code>Animal</code> реализованный в <code>Dog</code>, также указывая что мы хотим рассматривать вид <code>Dog</code> в качестве <code>Animal</code> для вызова этой функции. Этот код теперь напечатает то, что мы хотим:</p>
-<pre><code class="language-console">{{#include ../listings/ch19-advanced-features/listing-19-21/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target/debug/traits-example`
+A baby dog is called a puppy
 </code></pre>
 <p>В общем, полный синтаксис определяется следующим образом:</p>
 <pre><code class="language-rust ignore">&lt;Type as Trait&gt;::function(receiver_if_method, next_arg, ...);</code></pre>
@@ -298,33 +526,138 @@
 </code></pre>
 <p>В реализации <code>outline_print</code> мы хотим использовать функциональность типажа <code>Display</code>. Поэтому нам нужно указать, что типаж <code>OutlinePrint</code> будет работать только для видов, которые также реализуют <code>Display</code> и предоставляют функциональность, которая нужна в <code>OutlinePrint</code>. Мы можем сделать это в объявлении типажа, указав <code>OutlinePrint: Display</code>. Этот способ похож на добавление ограничения в типаж. В приложении 19-22 показана реализация типажа <code>OutlinePrint</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-22/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::fmt;
+
+trait OutlinePrint: fmt::Display {
+    fn outline_print(&amp;self) {
+        let output = self.to_string();
+        let len = output.len();
+        println!("{}", "*".repeat(len + 4));
+        println!("*{}*", " ".repeat(len + 2));
+        println!("* {output} *");
+        println!("*{}*", " ".repeat(len + 2));
+        println!("{}", "*".repeat(len + 4));
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p><span class="caption">Приложение 19-22: Реализация типажа <code>OutlinePrint</code> которая требует функциональности типажа <code>Display</code></span></p>
 <p>Поскольку мы указали, что типаж <code>OutlinePrint</code> требует типажа <code>Display</code>, мы можем использовать функцию <code>to_string</code>, которая самостоятельно реализована для любого вида реализующего <code>Display</code>. Если бы мы попытались использовать <code>to_string</code> не добавляя двоеточие и не указывая типаж <code>Display</code> после имени типажа, мы получили бы сообщение о том, что способ с именем <code>to_string</code> не был найден у вида <code>&amp;Self</code> в текущей области видимости.</p>
 <p>Давайте посмотрим что происходит, если мы пытаемся реализовать типаж <code>OutlinePrint</code> для вида, который не реализует <code>Display</code>, например структура <code>Point</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-02-impl-outlineprint-for-point/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::fmt;
+</span><span class="boring">
+</span><span class="boring">trait OutlinePrint: fmt::Display {
+</span><span class="boring">    fn outline_print(&amp;self) {
+</span><span class="boring">        let output = self.to_string();
+</span><span class="boring">        let len = output.len();
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("* {output} *");
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl OutlinePrint for Point {}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let p = Point { x: 1, y: 3 };
+</span><span class="boring">    p.outline_print();
+</span><span class="boring">}</span></code></pre>
 <p>Мы получаем сообщение о том, что требуется реализация <code>Display</code>, но её нет:</p>
-<pre><code class="language-console">{{#include ../listings/ch19-advanced-features/no-listing-02-impl-outlineprint-for-point/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+error[E0277]: `Point` doesn't implement `std::fmt::Display`
+  --&gt; src/main.rs:20:23
+   |
+20 | impl OutlinePrint for Point {}
+   |                       ^^^^^ `Point` cannot be formatted with the default formatter
+   |
+   = help: the trait `std::fmt::Display` is not implemented for `Point`
+   = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
+note: required by a bound in `OutlinePrint`
+  --&gt; src/main.rs:3:21
+   |
+3  | trait OutlinePrint: fmt::Display {
+   |                     ^^^^^^^^^^^^ required by this bound in `OutlinePrint`
+
+error[E0277]: `Point` doesn't implement `std::fmt::Display`
+  --&gt; src/main.rs:24:7
+   |
+24 |     p.outline_print();
+   |       ^^^^^^^^^^^^^ `Point` cannot be formatted with the default formatter
+   |
+   = help: the trait `std::fmt::Display` is not implemented for `Point`
+   = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
+note: required by a bound in `OutlinePrint::outline_print`
+  --&gt; src/main.rs:3:21
+   |
+3  | trait OutlinePrint: fmt::Display {
+   |                     ^^^^^^^^^^^^ required by this bound in `OutlinePrint::outline_print`
+4  |     fn outline_print(&amp;self) {
+   |        ------------- required by a bound in this associated function
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `traits-example` (bin "traits-example") due to 2 previous errors
 </code></pre>
 <p>Чтобы исправить, мы реализуем <code>Display</code> у структуры <code>Point</code> и выполняем требуемое ограничение <code>OutlinePrint</code>, вот так:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">trait OutlinePrint: fmt::Display {
+</span><span class="boring">    fn outline_print(&amp;self) {
+</span><span class="boring">        let output = self.to_string();
+</span><span class="boring">        let len = output.len();
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("* {output} *");
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Point {
+</span><span class="boring">    x: i32,
+</span><span class="boring">    y: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl OutlinePrint for Point {}
+</span><span class="boring">
+</span>use std::fmt;
+
+impl fmt::Display for Point {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-03-impl-display-for-point/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let p = Point { x: 1, y: 3 };
+</span><span class="boring">    p.outline_print();
+</span><span class="boring">}</span></code></pre></pre>
 <p>Тогда реализация типажа <code>OutlinePrint</code> для структуры <code>Point</code> будет собрана успешно и мы можем вызвать <code>outline_print</code> у экземпляра <code>Point</code> для отображения значения обрамлённое звёздочками.</p>
 <h3 id="Шаблон-newtype-для-реализация-внешних-типажей-у-внешних-видов"><a class="header" href="#Шаблон-newtype-для-реализация-внешних-типажей-у-внешних-видов">Шаблон Newtype для реализация внешних типажей у внешних видов</a></h3>
 <p>В разделе <a href="ch10-02-traits.html#implementing-a-trait-on-a-type">"Реализация типажа у типа"</a><!-- ignore --> главы 10, мы упоминали "правило сироты" (orphan rule), которое гласит, что разрешается реализовать типаж у вида, если либо типаж, либо вид являются местными для нашего крейта. Можно обойти это ограничение, используя <em>шаблон нового вида</em> (newtype pattern), который включает в себя создание нового вида в кортежной структуре. (Мы рассмотрели кортежные структуры  в разделе <a href="ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types">"Использование структур кортежей без именованных полей для создания различных видов"</a><!--  --> главы 5.) Структура кортежа будет иметь одно поле и будет тонкой оболочкой для вида которому мы хотим реализовать типаж. Тогда вид оболочки является местным для нашего крейта и мы можем реализовать типаж для местной обёртки. <em>Newtype</em> это термин, который происходит от языка программирования Haskell. В нем нет ухудшения производительности времени выполнения при использовании этого шаблона и вид оболочки исключается во время сборки.</p>
 <p>В качестве примера, мы хотим реализовать типаж <code>Display</code> для вида <code>Vec&lt;T&gt;</code>, где "правило сироты" (orphan rule) не позволяет нам этого делать напрямую, потому что типаж <code>Display</code> и вид <code>Vec&lt;T&gt;</code> объявлены вне нашего крейта. Мы можем сделать структуру <code>Wrapper</code>, которая содержит экземпляр <code>Vec&lt;T&gt;</code>; тогда мы можем реализовать <code>Display</code> у структуры <code>Wrapper</code> и использовать значение <code>Vec&lt;T&gt;</code> как показано в приложении 19-23.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-23/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::fmt;
+
+struct Wrapper(Vec&lt;String&gt;);
+
+impl fmt::Display for Wrapper {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, "[{}]", self.0.join(", "))
+    }
+}
+
+fn main() {
+    let w = Wrapper(vec![String::from("hello"), String::from("world")]);
+    println!("w = {w}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 19-23. Создание вида <code>Wrapper</code> <code>Vec&lt;String&gt;</code> для реализации <code>Display</code></span></p>
 <p>Реализация <code>Display</code> использует <code>self.0</code> для доступа к внутреннему <code>Vec&lt;T&gt;</code>, потому что <code>Wrapper</code> это структура кортежа, а <code>Vec&lt;T&gt;</code> это элемент с порядковым казателем 0 в кортеже. Затем мы можем использовать функциональные возможности вида <code>Display</code> у <code>Wrapper</code>.</p>
 <p>Недостатком использования этой техники является то, что <code>Wrapper</code> является новым видом, поэтому он не имеет способов для значения, которое он держит в себе. Мы должны были бы реализовать все способы для <code>Vec&lt;T&gt;</code> непосредственно во <code>Wrapper</code>, так чтобы эти способы делегировались внутреннему <code>self.0</code>, что позволило бы нам обращаться с <code>Wrapper</code> точно так же, как с <code>Vec&lt;T&gt;</code>. Если бы мы хотели, чтобы новый вид имел каждый способ имеющийся у внутреннего вида, реализуя типаж <code>Deref</code> (обсуждается в разделе <a data-md-type="raw_html" href="ch15-02-deref.html#treating-smart-pointers-like-regular-references-with-the-deref-trait">"Работа с умными указателями как с обычными ссылками с помощью <code>Deref</code> типажа"</a><!-- ignore --> главы 15) у <code>Wrapper</code> для возвращения внутреннего вида, то это было бы решением. Если мы не хотим, чтобы вид <code>Wrapper</code> имел все способы внутреннего вида, например, для ограничения поведения вида <code>Wrapper</code>, то пришлось бы вручную реализовать только те способы, которые нам нужны.</p>

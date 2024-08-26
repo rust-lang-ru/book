@@ -186,69 +186,202 @@
 <p>Newtypes также позволяют скрыть внутреннюю реализацию. Например, мы можем создать вид <code>People</code>, который обернёт <code>HashMap&lt;i32, String&gt;</code>, хранящий ID человека, связанный с его именем. Код, использующий <code>People</code>, будет взаимодействовать только с публичным API, который мы предоставляем, например, способ добавления имени в собрание <code>People</code>; этому коду не нужно будет знать, что внутри мы присваиваем <code>i32</code> ID именам. Паттерн newtype - это лёгкий способ достижения инкапсуляции для скрытия подробностей реализации, который мы обсуждали в разделе <a href="ch17-01-what-is-oo.html#encapsulation-that-hides-implementation-details">"Инкапсуляция, скрывающая подробности реализации"</a><!-- ignore --> главы 17.</p>
 <h3 id="Создание-синонимов-вида-с-помощью-псевдонимов-вида"><a class="header" href="#Создание-синонимов-вида-с-помощью-псевдонимов-вида">Создание синонимов вида с помощью псевдонимов вида</a></h3>
 <p>Rust предоставляет возможность объявить <em>псевдоним вида</em> чтобы дать существующему виду другое имя. Для этого мы используем ключевое слово <code>type</code>. Например, мы можем создать псевдоним вида <code>Kilometers</code> для <code>i32</code> следующим образом:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-04-kilometers-alias/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    type Kilometers = i32;
+<span class="boring">
+</span><span class="boring">    let x: i32 = 5;
+</span><span class="boring">    let y: Kilometers = 5;
+</span><span class="boring">
+</span><span class="boring">    println!("x + y = {}", x + y);
+</span><span class="boring">}</span></code></pre></pre>
 <p>Теперь псевдоним <code>Kilometers</code> является <em>синонимом</em> для <code>i32</code>; в отличие от видов <code>Millimeters</code> и <code>Meters</code>, которые мы создали в приложении 19-15, <code>Kilometers</code> не является отдельным, новым видом. Значения, имеющие вид <code>Kilometers</code>, будут обрабатываться так же, как и значения вида <code>i32</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-04-kilometers-alias/src/main.rs:there}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    type Kilometers = i32;
+
+    let x: i32 = 5;
+    let y: Kilometers = 5;
+
+    println!("x + y = {}", x + y);
 <span class="boring">}</span></code></pre></pre>
 <p>Поскольку <code>Kilometers</code> и <code>i32</code> являются одним и тем же видом, мы можем добавлять значения обоих видов и передавать значения <code>Kilometers</code> функциям, принимающим свойства <code>i32</code>. Однако, используя этот способ, мы не получаем тех преимуществ проверки видов, которые мы получаем от паттерна newtype, рассмотренного ранее. Другими словами, если мы где-то перепутаем значения <code>Kilometers</code> и <code>i32</code>, сборщик не выдаст нам ошибку.</p>
 <p>Синонимы в основном используются для сокращения повторений. Например, у нас может быть такой многословный тип:</p>
 <pre><code class="language-rust ignore">Box&lt;dyn Fn() + Send + 'static&gt;</code></pre>
 <p>Написание таких длинных видов в сигнатурах функций и в виде аннотаций видов по всему коду может быть утомительным и чреватым ошибками. Представьте себе проект, наполненный таким кодом, как в приложении 19-24.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-24/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let f: Box&lt;dyn Fn() + Send + 'static&gt; = Box::new(|| println!("hi"));
+
+    fn takes_long_type(f: Box&lt;dyn Fn() + Send + 'static&gt;) {
+        // --snip--
+    }
+
+    fn returns_long_type() -&gt; Box&lt;dyn Fn() + Send + 'static&gt; {
+        // --snip--
+<span class="boring">        Box::new(|| ())
+</span>    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 19-24: Использование длинного вида во многих местах</span></p>
 <p>Псевдоним вида делает этот код более удобным для работы, сокращая количество повторений. В приложении 19-25 мы ввели псевдоним <code>Thunk</code> для вида verbose и можем заменить все использования этого вида более коротким псевдонимом <code>Thunk</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-25/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    type Thunk = Box&lt;dyn Fn() + Send + 'static&gt;;
+
+    let f: Thunk = Box::new(|| println!("hi"));
+
+    fn takes_long_type(f: Thunk) {
+        // --snip--
+    }
+
+    fn returns_long_type() -&gt; Thunk {
+        // --snip--
+<span class="boring">        Box::new(|| ())
+</span>    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 19-25: Представление псевдонима <code>Thunk</code> для уменьшения количества повторений</span></p>
 <p>Такой код гораздо легче читать и писать! Выбор осмысленного имени для псевдонима вида также может помочь прояснить ваши намерения (<em>thunk</em> - название для кода, который будет вычисляться позднее, поэтому это подходящее имя для сохраняемого замыкания).</p>
 <p>Псевдонимы видов также часто используются с видом <code>Result&lt;T, E&gt;</code> для сокращения повторений. Рассмотрим модуль <code>std::io</code> в встроенной библиотеке. Действия ввода-вывода часто возвращают <code>Result&lt;T, E&gt;</code> для обработки ситуаций, когда эти действия не удаются. В данной библиотеке есть структура <code>std::io::Error</code>, которая отражает все возможные ошибки ввода/вывода. Многие функции в <code>std::io</code> будут возвращать <code>Result&lt;T, E&gt;</code>, где <code>E</code> - это <code>std::io::Error</code>, например, эти функции в трейте <code>Write</code>:</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-05-write-trait/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">use std::fmt;
+use std::io::Error;
+
+pub trait Write {
+    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;usize, Error&gt;;
+    fn flush(&amp;mut self) -&gt; Result&lt;(), Error&gt;;
+
+    fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;(), Error&gt;;
+    fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;(), Error&gt;;
+}</code></pre>
 <p><code>Result&lt;..., Error&gt;</code> часто повторяется. Поэтому <code>std::io</code> содержит такое объявление псевдонима вида:</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-06-result-alias/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">use std::fmt;
+</span><span class="boring">
+</span>type Result&lt;T&gt; = std::result::Result&lt;T, std::io::Error&gt;;
+<span class="boring">
+</span><span class="boring">pub trait Write {
+</span><span class="boring">    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;usize&gt;;
+</span><span class="boring">    fn flush(&amp;mut self) -&gt; Result&lt;()&gt;;
+</span><span class="boring">
+</span><span class="boring">    fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;()&gt;;
+</span><span class="boring">    fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;()&gt;;
+</span><span class="boring">}</span></code></pre>
 <p>Поскольку это объявление находится в модуле <code>std::io</code>, мы можем использовать полный псевдоним <code>std::io::Result&lt;T&gt;</code>; это и есть <code>Result&lt;T, E&gt;</code>, где в качестве <code>E</code> выступает <code>std::io::Error</code>. Сигнатуры функций трейта <code>Write</code> в итоге выглядят следующим образом:</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-06-result-alias/src/lib.rs:there}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">use std::fmt;
+</span><span class="boring">
+</span><span class="boring">type Result&lt;T&gt; = std::result::Result&lt;T, std::io::Error&gt;;
+</span><span class="boring">
+</span>pub trait Write {
+    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;usize&gt;;
+    fn flush(&amp;mut self) -&gt; Result&lt;()&gt;;
+
+    fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;()&gt;;
+    fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;()&gt;;
+}</code></pre>
 <p>Псевдоним вида помогает двумя способами: он облегчает написание кода <em>и</em> даёт нам согласованный внешняя оболочка для всего из <code>std::io</code>. Поскольку это псевдоним, то это просто ещё один вид <code>Result&lt;T, E&gt;</code>, что означает, что с ним мы можем использовать любые способы, которые работают с <code>Result&lt;T, E&gt;</code>, а также особый синтаксис вроде <code>?</code> оператора.</p>
 <h3 id="Вид-never-который-никогда-не-возвращается"><a class="header" href="#Вид-never-который-никогда-не-возвращается">Вид Never, который никогда не возвращается</a></h3>
 <p>В Rust есть особый вид <code>!</code>, который на жаргоне теории видов известен как <em>empty type</em> (пустой вид), потому что он не содержит никаких значений. Мы предпочитаем называть его <em>never type</em> (никакой вид), потому что он используется в качестве возвращаемого вида, когда функция ничего не возвращает. Вот пример:</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-07-never-type/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground">fn bar() -&gt; ! {
+    // --snip--
+<span class="boring">    panic!();
+</span>}</code></pre>
 <p>Этот код читается как "функция <code>bar</code> ничего не возвращает". Функции, которые ничего не возвращают, называются <em>рассеивающими функциями</em> (diverging functions). Мы не можем производить значения вида <code>!</code>, поэтому <code>bar</code> никогда ничего не вернёт.</p>
 <p>Но для чего нужен вид, для которого вы никогда не сможете создать значения? Напомним код из приложения 2-5, фрагмента "игры в загадки"; мы воспроизвели его часть здесь в приложении 19-26.</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-05/src/main.rs:ch19}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    loop {
+</span><span class="boring">        println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">        // --snip--
+</span><span class="boring">
+</span><span class="boring">        io::stdin()
+</span><span class="boring">            .read_line(&amp;mut guess)
+</span><span class="boring">            .expect("Failed to read line");
+</span><span class="boring">
+</span>        let guess: u32 = match guess.trim().parse() {
+            Ok(num) =&gt; num,
+            Err(_) =&gt; continue,
+        };
+<span class="boring">
+</span><span class="boring">        println!("You guessed: {guess}");
+</span><span class="boring">
+</span><span class="boring">        // --snip--
+</span><span class="boring">
+</span><span class="boring">        match guess.cmp(&amp;secret_number) {
+</span><span class="boring">            Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">            Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">            Ordering::Equal =&gt; {
+</span><span class="boring">                println!("You win!");
+</span><span class="boring">                break;
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 19-26: Сопоставление <code>match</code> с веткой, которая заканчивается <code>continue</code></span></p>
 <p>В то время мы опустили некоторые подробности в этом коде. В главе 6 раздела <a href="ch06-02-match.html#the-match-control-flow-operator">"Оператор управления потоком <code>match</code>"</a><!--  --> мы обсуждали, что все ветви <code>match</code> должны возвращать одинаковый вид. Например, следующий код не работает:</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-08-match-arms-different-types/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let guess = "3";
+</span>    let guess = match guess.trim().parse() {
+        Ok(_) =&gt; 5,
+        Err(_) =&gt; "hello",
+    };
+<span class="boring">}</span></code></pre>
 <p>Вид <code>guess</code> в этом коде должен быть целым <em>и</em> строкой, а Rust требует, чтобы <code>guess</code> имел только один вид. Так что же возвращает <code>continue</code>? Как нам позволили вернуть <code>u32</code> из одной ветви и при этом иметь другую ветвь, которая оканчивается <code>continue</code> в приложении 19-26?</p>
 <p>Как вы уже возможно догадались, <code>continue</code> имеет  значение <code>!</code>. То есть, когда Rust вычисляет вид <code>guess</code>, он смотрит на обе сопоставляемые ветки, первая со значением <code>u32</code> и последняя со значением <code>!</code>. Так как <code>!</code> никогда не может иметь значение, то Rust решает что видом <code>guess</code> является вид <code>u32</code>.</p>
 <p>Формальный подход к описанию такого поведения заключается в том, что выражения вида <code>!</code> могут быть преобразованы в любой другой вид. Нам позволяется завершить этот <code>match</code> с помощью <code>continue</code>, потому что <code>continue</code> не возвращает никакого значения; вместо этого он передаёт управление обратно в начало цикла, поэтому в случае <code>Err</code> мы никогда не присваиваем значение <code>guess</code>.</p>
 <p>Вид never полезен также для макроса <code>panic!</code>. Вспомните функцию <code>unwrap</code>, которую мы вызываем для значений <code>Option&lt;T&gt;</code>, чтобы создать значение или вызвать панику с этим определением:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-09-unwrap-definition/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">enum Option&lt;T&gt; {
+</span><span class="boring">    Some(T),
+</span><span class="boring">    None,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">use crate::Option::*;
+</span><span class="boring">
+</span>impl&lt;T&gt; Option&lt;T&gt; {
+    pub fn unwrap(self) -&gt; T {
+        match self {
+            Some(val) =&gt; val,
+            None =&gt; panic!("called `Option::unwrap()` on a `None` value"),
+        }
+    }
+}</code></pre>
 <p>В этом коде происходит то же самое, что и в <code>match</code> в приложении 19-26: Rust видит, что <code>val</code> имеет вид <code>T</code>, а <code>panic!</code> имеет вид <code>!</code>, поэтому результатом общего выражения <code>match</code> является <code>T</code>. Этот код работает, потому что <code>panic!</code> не производит никакого значения; он завершает программу. В случае <code>None</code> мы не будем возвращать значение из <code>unwrap</code>, поэтому этот код работает.</p>
 <p>Последнее выражение, которое имеет вид <code>!</code> это <code>loop</code>:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-10-loop-returns-never/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span>    print!("forever ");
+
+    loop {
+        print!("and ever ");
+    }
+<span class="boring">}</span></code></pre>
 <p>В данном случае цикл никогда не завершится, поэтому <code>!</code> является значением выражения. Но это не будет так, если мы добавим <code>break</code>, так как цикл завершит свою работу, когда дойдёт до <code>break</code>.</p>
 <h3 id="Виды-с-изменяемым-размером-и-трейт-sized"><a class="header" href="#Виды-с-изменяемым-размером-и-трейт-sized">Виды с изменяемым размером и трейт <code>Sized</code></a></h3>
 <p>Rust необходимо знать некоторые подробности о видах, например, сколько места нужно выделить для значения определённого вида. Из-за этого один из особенностей системы видов поначалу вызывает некоторое недоумение: концепция <em>видов с изменяемым размером</em>. Иногда называемые <em>DST</em> или <em>безразмерные виды</em>, эти виды позволяют нам писать код, используя значения, размер которых мы можем узнать только во время выполнения.</p>
 <p>Давайте углубимся в подробности изменяемого вида <code>str</code>, который мы использовали на протяжении всей книги. Все верно, не вида <code>&amp;str</code>, а вида <code>str</code> самого по себе, который является DST. Мы не можем знать, какой длины строка до момента времени выполнения, то есть мы не можем создать переменную вида <code>str</code> и не можем принять переменная вида <code>str</code>. Рассмотрим следующий код, который не работает:</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-11-cant-create-str/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s1: str = "Hello there!";
+    let s2: str = "How's it going?";
+<span class="boring">}</span></code></pre>
 <p>Rust должен знать, сколько памяти выделить для любого значения определенного вида и все значения вида должны использовать одинаковый объем памяти. Если Rust позволил бы нам написать такой код, то эти два значения <code>str</code> должны были бы занимать одинаковое количество памяти. Но они имеют разную длину: <code>s1</code> нужно 12 байтов памяти, а для <code>s2</code> нужно 15. Вот почему невозможно создать переменную имеющую вид изменяемого размера.</p>
 <p>Так что же нам делать? В этом случае вы уже знаете ответ: мы преобразуем виды <code>s1</code> и <code>s2</code> в <code>&amp;str</code>, а не в <code>str</code>. Вспомните из раздела <a href="ch04-03-slices.html#string-slices">"Строковые срезы"</a> главы 4, что структура данных среза просто хранит начальную позицию и длину среза. Так, в отличие от <code>&amp;T</code>, который содержит только одно значение - адрес памяти, где находится <code>T</code>, в <code>&amp;str</code> хранятся <em>два</em> значения - адрес <code>str</code> и его длина. Таким образом, мы можем узнать размер значения <code>&amp;str</code> во время сборки: он вдвое больше длины <code>usize</code>. То есть, мы всегда знаем размер <code>&amp;str</code>, независимо от длины строки, на которую оно ссылается. В целом, именно так в Rust используются виды изменяемого размера: они содержат дополнительный бит метаданных, который хранит размер изменяемой сведений. Золотое правило изменяемых размерных видов заключается в том, что мы всегда должны помещать значения таких видов за каким-либо указателем.</p>
 <p>Мы можем комбинировать <code>str</code> со всеми видами указателей: например, <code>Box&lt;str&gt;</code> или <code>Rc&lt;str&gt;</code>. На самом деле, вы уже видели это раньше, но с другим изменяемым размерным видом: трейтами. Каждый трейт - это изменяемый размерный вид, на который мы можем ссылаться, используя имя трейта. В главе 17 в разделе <a href="ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">"Использование трейт-объектов, допускающих значения разных видов"</a> мы упоминали, что для использования трейтов в качестве трейт-объектов мы должны поместить их за указателем, например <code>&amp;dyn Trait</code> или <code>Box&lt;dyn Trait&gt;</code> (<code>Rc&lt;dyn Trait&gt;</code> тоже подойдёт).</p>
 <p>Для работы с DST Rust использует трейт <code>Sized</code> чтобы решить, будет ли размер вида известен на стадии сборки. Этот трейт самостоятельно реализуется для всего, чей размер известен к моменту сборки. Кроме того, Rust неявно добавляет ограничение на <code>Sized</code> к каждой универсальной функции. То есть, определение универсальной функции, такое как:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-12-generic-fn-definition/src/lib.rs}}</code></pre>
+<pre><code class="language-rust ignore">fn generic&lt;T&gt;(t: T) {
+    // --snip--
+}</code></pre>
 <p>на самом деле рассматривается как если бы мы написали её в виде:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-13-generic-implicit-sized-bound/src/lib.rs}}</code></pre>
+<pre><code class="language-rust ignore">fn generic&lt;T: Sized&gt;(t: T) {
+    // --snip--
+}</code></pre>
 <p>По умолчанию обобщённые функции будут работать только с видами чей размер известен во время сборки. Тем не менее, можно использовать следующий особый синтаксис, чтобы ослабить это ограничение:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-14-generic-maybe-sized/src/lib.rs}}</code></pre>
+<pre><code class="language-rust ignore">fn generic&lt;T: ?Sized&gt;(t: &amp;T) {
+    // --snip--
+}</code></pre>
 <p>Ограничение трейта <code>?Sized</code> означает «<code>T</code> может или не может быть <code>Sized</code>», эта нотация отменяет стандартное правило, согласно которому универсальные виды должны иметь известный размер во время сборки. Использовать синтаксис <code>?Trait</code> в таком качестве можно только для <code>Sized</code>, и ни для каких других трейтов.</p>
 <p>Также обратите внимание, что мы поменяли вид свойства <code>t</code> с <code>T</code> на <code>&amp;T</code>. Поскольку вид мог бы не быть <code>Sized</code>, мы должны использовать его за каким-либо указателем. В данном случае мы выбрали ссылку.</p>
 <p>Далее мы поговорим о функциях и замыканиях!</p>

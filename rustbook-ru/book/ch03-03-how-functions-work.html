@@ -179,38 +179,62 @@
 <p>Функции широко распространены в коде Rust. Вы уже познакомились с одной из самых важных функций в языке: функцией <code>main</code>, которая является точкой входа большинства программ. Вы также видели ключевое слово <code>fn</code>, позволяющее объявлять новые функции.</p>
 <p>Код Rust использует <em>змеиный регистр (snake case)</em> как основной стиль для имён функций и переменных, в котором все буквы строчные, а символ подчёркивания разделяет слова. Вот программа, содержащая пример определения функции:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-16-functions/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    println!("Hello, world!");
+
+    another_function();
+}
+
+fn another_function() {
+    println!("Another function.");
+}</code></pre></pre>
 <p>Для определения функции в Rust необходимо указать <code>fn</code>, за которым следует имя функции и набор круглых скобок. Фигурные скобки указывают сборщику, где начинается и заканчивается тело функции.</p>
 <p>Мы можем вызвать любую функцию, которую мы определили ранее, введя её имя и набор скобок следом. Поскольку в программе определена <code>another_function</code>, её можно вызвать из функции <code>main</code>. Обратите внимание, что <code>another_function</code> определена <em>после</em> функции <code>main</code> в исходном коде; мы могли бы определить её и раньше. Rust не важно, где вы определяете свои функции, главное, чтобы они были определены где-то в той области видимости, которую может видеть вызывающий их код.</p>
 <p>Создадим новый двоичный проект с названием <em>functions</em> для дальнейшего изучения функций. Поместите пример <code>another_function</code> в файл <em>src/main.rs</em> и запустите его. Вы должны увидеть следующий вывод:</p>
-<pre><code class="language-console">{{#include ../listings/ch03-common-programming-concepts/no-listing-16-functions/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running `target/debug/functions`
+Hello, world!
+Another function.
 </code></pre>
 <p>Строки выполняются в том порядке, в котором они расположены в функции <code>main</code>. Сначала печатается сообщение "Hello, world!", а затем вызывается <code>another_function</code>, которая также печатает сообщение.</p>
 <h3 id="Свойства-функции"><a class="header" href="#Свойства-функции">Свойства функции</a></h3>
 <p>Мы можем определить функции, имеющие <em>свойства</em>, которые представляют собой особые переменные, являющиеся частью сигнатуры функции. Когда у функции есть свойства, необходимо предоставить ей определенные значения этих свойств. Технически определенные значения называются <em>переменные</em>, но в повседневном общении люди обычно используют слова <em>свойство</em> и <em>переменная</em> как взаимозаменяемые либо для переменных в определении функции, либо для определенных значений, передаваемых при вызове функции.</p>
 <p>В этой исполнения <code>another_function</code> мы добавляем свойство:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-17-functions-with-parameters/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    another_function(5);
+}
+
+fn another_function(x: i32) {
+    println!("The value of x is: {x}");
+}</code></pre></pre>
 <p>Попробуйте запустить эту программу. Должны получить следующий результат:</p>
-<pre><code class="language-console">{{#include ../listings/ch03-common-programming-concepts/no-listing-17-functions-with-parameters/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.21s
+     Running `target/debug/functions`
+The value of x is: 5
 </code></pre>
 <p>Объявление <code>another_function</code> содержит один свойство с именем <code>x</code>. Вид <code>x</code> задан как <code>i32</code>. Когда мы передаём <code>5</code> в <code>another_function</code>, макрос <code>println!</code> помещает <code>5</code> на место пары фигурных скобок, содержащих <code>x</code> в строке формата.</p>
 <p>В сигнатурах функций вы <em>обязаны</em> указывать вид каждого свойства. Это намеренное решение в дизайне Rust: требование аннотаций видов в определениях функций позволяет сборщику в дальнейшем избежать необходимости использовать их в других местах кода, чтобы определить, какой вид вы имеете в виду. Сборщик также может выдавать более полезные сообщения об ошибках, если он знает, какие виды ожидает функция.</p>
 <p>При определении нескольких свойств, разделяйте объявления свойств запятыми, как показано ниже:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-18-functions-with-multiple-parameters/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    print_labeled_measurement(5, 'h');
+}
+
+fn print_labeled_measurement(value: i32, unit_label: char) {
+    println!("The measurement is: {value}{unit_label}");
+}</code></pre></pre>
 <p>Этот пример создаёт функцию под именем <code>print_labeled_measurement</code> с двумя свойствами. Первый свойство называется <code>value</code> с видом <code>i32</code>. Второй называется <code>unit_label</code> и имеет вид <code>char</code>. Затем функция печатает текст, содержащий <code>value</code> и <code>unit_label</code>.</p>
 <p>Попробуем запустить этот код. Замените текущую программу проекта <em>functions</em> в файле <em>src/main.rs</em> на предыдущий пример и запустите его с помощью <code>cargo run</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch03-common-programming-concepts/no-listing-18-functions-with-multiple-parameters/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/functions`
+The measurement is: 5h
 </code></pre>
 <p>Поскольку мы вызвали функцию с <code>5</code> в качестве значения для <code>value</code> и <code>'h'</code> в качестве значения для <code>unit_label</code>, вывод программы содержит эти значения.</p>
 <h3 id="Указания-и-выражения"><a class="header" href="#Указания-и-выражения">Указания и выражения</a></h3>
@@ -221,25 +245,54 @@
 </ul>
 <p>На самом деле мы уже использовали указания и выражения. Создание переменной и присвоение ей значения с помощью ключевого слова <code>let</code> является оператором. В Приложении 3-1, <code>let y = 6;</code> — это указание.</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/listing-03-01/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let y = 6;
+}</code></pre></pre>
 <p><span class="caption">Приложение 3-1: Объявление функции <code>main</code>, содержащей одну указанию</span></p>
 <p>Определения функций также являются указанием. Весь предыдущий пример сам по себе является указанием.</p>
 <p>Указания не возвращают значения. Следовательно вы не можете присвоить <code>let</code> указанию другой переменной, как это пытается сделать следующий код. Вы получите ошибку:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-19-statements-vs-expressions/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = (let y = 6);
+}</code></pre>
 <p>Если вы запустите эту программу, то ошибка будет выглядеть так:</p>
-<pre><code class="language-console">{{#include ../listings/ch03-common-programming-concepts/no-listing-19-statements-vs-expressions/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+error: expected expression, found `let` statement
+ --&gt; src/main.rs:2:14
+  |
+2 |     let x = (let y = 6);
+  |              ^^^
+  |
+  = note: only supported directly in conditions of `if` and `while` expressions
+
+warning: unnecessary parentheses around assigned value
+ --&gt; src/main.rs:2:13
+  |
+2 |     let x = (let y = 6);
+  |             ^         ^
+  |
+  = note: `#[warn(unused_parens)]` on by default
+help: remove these parentheses
+  |
+2 -     let x = (let y = 6);
+2 +     let x = let y = 6;
+  |
+
+warning: `functions` (bin "functions") generated 1 warning
+error: could not compile `functions` (bin "functions") due to 1 previous error; 1 warning emitted
 </code></pre>
 <p>Указание <code>let y = 6</code> не возвращает значение, поэтому не с чем связать переменную <code>x</code>. Это отличается от поведения в других языках, таких как C и Ruby, где присваивание возвращает присвоенное значение. В таких языках можно писать код <code>x = y = 6</code> и обе переменные <code>x</code> и <code>y</code> будут иметь значение <code>6</code>. Но в Rust не так.</p>
 <p>Выражения вычисляют значение и составляют большую часть остального кода, который вы напишете на Rust. Рассмотрим математическую действие, к примеру <code>5 + 6</code>, которая является выражением, вычисляющим значение <code>11</code>. Выражения могут быть частью указаний: в приложении 3-1 <code>6</code> в указания <code>let y = 6;</code> является выражением, которое вычисляется в значение <code>6</code>. Вызов функции — это выражение. Вызов макроса — это выражение. Новый разделобласти видимости, созданный с помощью фигурных скобок, представляет собой выражение, например:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-20-blocks-are-expressions/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let y = {
+        let x = 3;
+        x + 1
+    };
+
+    println!("The value of y is: {y}");
+}</code></pre></pre>
 <p>Это выражение:</p>
 <pre><code class="language-rust ignore">{
     let x = 3;
@@ -249,12 +302,21 @@
 <h3 id="Функции-с-возвращаемыми-значениями"><a class="header" href="#Функции-с-возвращаемыми-значениями">Функции с возвращаемыми значениями</a></h3>
 <p>Функции могут возвращать значения коду, который их вызывает. Мы не называем возвращаемые значения, но мы должны объявить их вид после стрелки ( <code>-&gt;</code> ). В Rust возвращаемое значение функции является синонимом значения конечного выражения в разделе тела функции. Вы можете раньше выйти из функции и вернуть значение, используя ключевое слово <code>return</code> и указав значение, но большинство функций неявно возвращают последнее выражение. Вот пример такой функции:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-21-function-return-values/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn five() -&gt; i32 {
+    5
+}
+
+fn main() {
+    let x = five();
+
+    println!("The value of x is: {x}");
+}</code></pre></pre>
 <p>В коде функции <code>five</code> нет вызовов функций, макросов или даже указаний  <code>let</code> — есть только одно число <code>5</code>. Это является абсолютно корректной функцией в Rust. Заметьте, что возвращаемый вид у данной функции определён как <code>-&gt; i32</code>. Попробуйте запустить этот код. Вывод будет таким:</p>
-<pre><code class="language-console">{{#include ../listings/ch03-common-programming-concepts/no-listing-21-function-return-values/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target/debug/functions`
+The value of x is: 5
 </code></pre>
 <p>Значение <code>5</code> в <code>five</code> является возвращаемым функцией значением, поэтому возвращаемый вид - <code>i32</code>. Рассмотрим пример более подробно. Здесь есть два важных момента: во-первых, строка <code>let x = five();</code> показывает использование возвращаемого функцией значения для объявления переменной. Так как функция <code>five</code> возвращает <code>5</code>, то эта строка эквивалентна следующей:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -264,15 +326,41 @@
 <p>Во-вторых, у функции <code>five</code> нет свойств и определён вид возвращаемого значения, но тело функции представляет собой одинокую <code>5</code> без точки с запятой, потому что это выражение, значение которого мы хотим вернуть.</p>
 <p>Рассмотрим другой пример:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-22-function-parameter-and-return/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = plus_one(5);
+
+    println!("The value of x is: {x}");
+}
+
+fn plus_one(x: i32) -&gt; i32 {
+    x + 1
+}</code></pre></pre>
 <p>Запуск кода напечатает <code>The value of x is: 6</code>. Но если поставить точку с запятой в конце строки, содержащей <code>x + 1</code>, превратив её из выражения в указанию, мы получим ошибку:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-23-statements-dont-return-values/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = plus_one(5);
+
+    println!("The value of x is: {x}");
+}
+
+fn plus_one(x: i32) -&gt; i32 {
+    x + 1;
+}</code></pre>
 <p>Сборка данного кода вызывает следующую ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch03-common-programming-concepts/no-listing-23-statements-dont-return-values/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:7:24
+  |
+7 | fn plus_one(x: i32) -&gt; i32 {
+  |    --------            ^^^ expected `i32`, found `()`
+  |    |
+  |    implicitly returns `()` as its body has no tail or `return` expression
+8 |     x + 1;
+  |          - help: remove this semicolon to return this value
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `functions` (bin "functions") due to 1 previous error
 </code></pre>
 <p>Основное сообщение об ошибке, <code>несовпадение видов</code>, раскрывает ключевую проблему этого кода. Определение функции <code>plus_one</code> сообщает, что будет возвращено <code>i32</code>, но указания не вычисляются в значение, что и выражается единичным видом <code>()</code>. Следовательно, ничего не возвращается, что противоречит определению функции и приводит к ошибке. В этом выводе Rust выдаёт сообщение, которое, возможно, поможет исправить эту проблему: он предлагает удалить точку с запятой для устранения ошибки.</p>
 

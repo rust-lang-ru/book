@@ -182,25 +182,88 @@
 <pre><code class="language-rust ignore">fn first_word(s: &amp;String) -&gt; ?</code></pre>
 <p>Функция <code>first_word</code> имеет <code>&amp;String</code> в качестве свойства. Мы не хотим владения, так что всё в порядке. Но что мы должны вернуть? На самом деле у нас нет способа говорить о <em>части</em> строки. Однако мы могли бы вернуть порядковый казательконца слова, обозначенного пробелом. Давайте попробуем, как показано в Приложении 4-7.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn first_word(s: &amp;String) -&gt; usize {
+    let bytes = s.as_bytes();
+
+    for (i, &amp;item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return i;
+        }
+    }
+
+    s.len()
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p><span class="caption">Приложение 4-7. Функция <code>first_word</code>, возвращающая значение порядкового казателя байта в свойство <code>String</code></span></p>
 <p>Поскольку нам нужно просмотреть <code>String</code> поэлементно и проверить, является ли значение пробелом, мы преобразуем нашу <code>String</code> в массив байтов с помощью способа <code>as_bytes</code>.</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:as_bytes}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">fn first_word(s: &amp;String) -&gt; usize {
+</span>    let bytes = s.as_bytes();
+<span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span><span class="boring">        if item == b' ' {
+</span><span class="boring">            return i;
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    s.len()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
 <p>Далее, мы создаём <em>повторитель</em> по массиву байт используя способ <code>iter</code>:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:iter}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">fn first_word(s: &amp;String) -&gt; usize {
+</span><span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span>    for (i, &amp;item) in bytes.iter().enumerate() {
+<span class="boring">        if item == b' ' {
+</span><span class="boring">            return i;
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    s.len()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
 <p>Мы обсудим повторители более подробно в <a href="ch13-02-iterators.html">Главе 13</a><!-- ignore -->. На данный момент знайте, что <code>iter</code> — это способ, который возвращает каждый элемент в собрания, а <code>enumerate</code> оборачивает результат <code>iter</code> и вместо этого возвращает каждый элемент как часть кортежа. Первый элемент кортежа, возвращаемый из <code>enumerate</code>, является порядковым казателем, а второй элемент — ссылкой на элемент. Это немного удобнее, чем вычислять порядковый казательсамостоятельно.</p>
 <p>Поскольку способ <code>enumerate</code> возвращает кортеж, мы можем использовать шаблоны для деструктурирования этого кортежа. Мы подробнее обсудим шаблоны в <a href="ch06-02-match.html#patterns-that-bind-to-values">Главе 6.</a><!-- ignore -->. В цикле <code>for</code> мы указываем шаблон, имеющий <code>i</code> для порядкового казателя в кортеже и <code>&amp;item</code> для одного байта в кортеже. Поскольку мы получаем ссылку на элемент из <code>.iter().enumerate()</code>, мы используем <code>&amp;</code> в шаблоне.</p>
 <p>Внутри цикла <code>for</code> мы ищем байт, представляющий пробел, используя синтаксис байтового литерала. Если мы находим пробел, мы возвращаем позицию. В противном случае мы возвращаем длину строки с помощью <code>s.len()</code>.</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-07/src/main.rs:inside_for}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">fn first_word(s: &amp;String) -&gt; usize {
+</span><span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span>        if item == b' ' {
+            return i;
+        }
+    }
+
+    s.len()
+<span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
 <p>Теперь у нас есть способ узнать порядковый казательбайта указывающего на конец первого слова в строке, но есть проблема. Мы возвращаем сам <code>usize</code>, но это число имеет значение только в среде <code>&amp;String</code>. Другими словами, поскольку это значение отдельное от <code>String</code>, то нет заверения, что оно все ещё будет действительным в будущем. Рассмотрим программу из приложения 4-8, которая использует функцию <code>first_word</code> приложения 4-7.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-08/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn first_word(s: &amp;String) -&gt; usize {
+</span><span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span><span class="boring">        if item == b' ' {
+</span><span class="boring">            return i;
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    s.len()
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let mut s = String::from("hello world");
+
+    let word = first_word(&amp;s); // word will get the value 5
+
+    s.clear(); // this empties the String, making it equal to ""
+
+    // word still has the value 5 here, but there's no more string that
+    // we could meaningfully use the value 5 with. word is now totally invalid!
+}</code></pre></pre>
 <p><span class="caption">Приложение 4-8. Сохранение результата вызова функции <code>first_word</code> и последующего изменения содержимого <code>String</code></span></p>
 <p>Данная программа собирается без ошибок и будет успешно работать, даже после того как мы воспользуемся переменной <code>word</code> после вызова <code>s.clear()</code>. Так как значение <code>word</code> совсем не связано с состоянием переменной <code>s</code>, то <code>word</code> сохраняет своё значение <code>5</code> без изменений. Мы бы могли воспользоваться значением <code>5</code> чтобы получить первое слово из переменной <code>s</code>, но это приведёт к ошибке, потому что содержимое <code>s</code> изменилось после того как мы сохранили <code>5</code> в переменной <code>word</code> (стало пустой строкой в вызове <code>s.clear()</code>).</p>
 <p>Необходимость беспокоиться о том, что порядковый казательв переменной <code>word</code> не синхронизируется с данными в переменной  <code>s</code> является утомительной и подверженной ошибкам! Управление этими порядковыми указателями становится ещё более хрупким, если мы напишем функцию <code>second_word</code>. Её сигнатура могла бы выглядеть так:</p>
@@ -209,9 +272,11 @@
 <p>К счастью в Rust есть решение данной проблемы: строковые срезы.</p>
 <h3 id="Строковые-срезы"><a class="header" href="#Строковые-срезы">Строковые срезы</a></h3>
 <p>Строковый срез - это ссылка на часть строки <code>String</code> и он выглядит следующим образом:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-17-slice/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s = String::from("hello world");
+
+    let hello = &amp;s[0..5];
+    let world = &amp;s[6..11];
 <span class="boring">}</span></code></pre></pre>
 <p>Вместо ссылки на всю <code>String</code> <code>hello</code> является ссылкой на часть <code>String</code>, указанную в дополнительном куске кода <code>[0..5]</code>. Мы создаём срезы, используя рядв квадратных скобках, указав <code>[starting_index..ending_index]</code>, где <code>starting_index</code> — это первая позиция, а<code>ending_index</code> конечный_порядковый казатель— это на единицу больше, чем последняя позиция в срезе. Внутри структура данных среза хранит начальную позицию и длину среза, что соответствует <code>ending_index</code> минус <code>starting_index</code>. Итак, в случае <code>let world = &amp;s[6..11];</code>, <code>world</code> будет срезом, содержащим указатель на байт с порядковым казателем 6 <code>s</code> со значением длины <code>5</code>.</p>
 <p>Рисунок 4-6 отображает это на диаграмме.</p>
@@ -250,19 +315,63 @@ let slice = &amp;s[..];
 </blockquote>
 <p>Давайте используем полученную сведения и перепишем способ <code>first_word</code> так, чтобы он возвращал срез. Для обозначения вида "срез строки" существует запись <code>&amp;str</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-18-first-word-slice/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn first_word(s: &amp;String) -&gt; &amp;str {
+    let bytes = s.as_bytes();
+
+    for (i, &amp;item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &amp;s[0..i];
+        }
+    }
+
+    &amp;s[..]
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p>Мы получаем порядковый казательконца слова так же, как в приложении 4.7, ища первое вхождение пробела. Когда мы находим пробел, мы возвращаем фрагмент строки, используя начало строки и порядковый казательпробела в качестве начального и конечного порядковых указателей.</p>
 <p>Теперь, когда мы вызываем <code>first_word</code>, мы возвращаем одно значение, привязанное к основным данным. Значение состоит из ссылки на начальную точку среза и количества элементов в срезе.</p>
 <p>Подобным образом можно переписать и второй способ <code>second_word</code>:</p>
 <pre><code class="language-rust ignore">fn second_word(s: &amp;String) -&gt; &amp;str {</code></pre>
 <p>Теперь у нас есть простой API, который гораздо сложнее испортить, потому что сборщик заверяет, что ссылки в <code>String</code> останутся действительными. Помните ошибку в программе в приложении 4-8, когда мы получили порядковый казательдо конца первого слова, но затем очистили строку, так что наш порядковый казательстал недействительным? Этот код был логически неправильным, но не показывал немедленных ошибок. Проблемы проявятся позже, если мы попытаемся использовать порядковый казательпервого слова с пустой строкой. Срезы делают эту ошибку невозможной и сообщают нам о проблеме с нашим кодом гораздо раньше. Так, использование исполнения способа <code>first_word</code> со срезом вернёт ошибку сборки:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-19-slice-error/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn first_word(s: &amp;String) -&gt; &amp;str {
+</span><span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span><span class="boring">        if item == b' ' {
+</span><span class="boring">            return &amp;s[0..i];
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    &amp;s[..]
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let mut s = String::from("hello world");
+
+    let word = first_word(&amp;s);
+
+    s.clear(); // error!
+
+    println!("the first word is: {word}");
+}</code></pre>
 <p>Ошибка сборки:</p>
-<pre><code class="language-console">{{#include ../listings/ch04-understanding-ownership/no-listing-19-slice-error/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+  --&gt; src/main.rs:18:5
+   |
+16 |     let word = first_word(&amp;s);
+   |                           -- immutable borrow occurs here
+17 |
+18 |     s.clear(); // error!
+   |     ^^^^^^^^^ mutable borrow occurs here
+19 |
+20 |     println!("the first word is: {word}");
+   |                                  ------ immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership` (bin "ownership") due to 1 previous error
 </code></pre>
 <p>Напомним из правил заимствования, что если у нас есть неизменяемая ссылка на что-то, мы не можем также взять изменяемую ссылку. Поскольку для <code>clear</code> необходимо обрезать <code>String</code>, необходимо получить изменяемую ссылку. <code>println!</code> после вызова <code>clear</code> использует ссылку в <code>word</code>, поэтому неизменяемая ссылка в этот момент всё ещё должна быть активной. Rust запрещает одновременное существование изменяемой ссылки в формате <code>clear</code> и неизменяемой ссылки в <code>word</code>, и сборка завершается ошибкой. Rust не только упростил использование нашего API, но и устранил целый класс ошибок во время сборки!</p>
 <!-- Old heading. Do not remove or links may break. -->
@@ -278,15 +387,74 @@ let slice = &amp;s[..];
 <p>Знание того, что вы можете брать срезы литералов и <code>String</code> значений, приводит нас к ещё одному улучшению <code>first_word</code>, и это его сигнатура:</p>
 <pre><code class="language-rust ignore">fn first_word(s: &amp;String) -&gt; &amp;str {</code></pre>
 <p>Более опытный пользователь Rustacean вместо этого написал бы сигнатуру, показанную в приложении 4.9, потому что это позволяет нам использовать одну и ту же функцию как для значений <code>&amp;String</code>, так и для значений <code>&amp;str</code>.</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore">fn first_word(s: &amp;str) -&gt; &amp;str {
+<span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span><span class="boring">        if item == b' ' {
+</span><span class="boring">            return &amp;s[0..i];
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    &amp;s[..]
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let my_string = String::from("hello world");
+</span><span class="boring">
+</span><span class="boring">    // `first_word` works on slices of `String`s, whether partial or whole
+</span><span class="boring">    let word = first_word(&amp;my_string[0..6]);
+</span><span class="boring">    let word = first_word(&amp;my_string[..]);
+</span><span class="boring">    // `first_word` also works on references to `String`s, which are equivalent
+</span><span class="boring">    // to whole slices of `String`s
+</span><span class="boring">    let word = first_word(&amp;my_string);
+</span><span class="boring">
+</span><span class="boring">    let my_string_literal = "hello world";
+</span><span class="boring">
+</span><span class="boring">    // `first_word` works on slices of string literals, whether partial or whole
+</span><span class="boring">    let word = first_word(&amp;my_string_literal[0..6]);
+</span><span class="boring">    let word = first_word(&amp;my_string_literal[..]);
+</span><span class="boring">
+</span><span class="boring">    // Because string literals *are* string slices already,
+</span><span class="boring">    // this works too, without the slice syntax!
+</span><span class="boring">    let word = first_word(my_string_literal);
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 4-9: Улучшение функции <code>first_word</code> используя вид строкового среза для свойства <code>s</code></span></p>
 <p>Если у нас есть фрагмент строки, мы можем передать его напрямую. Если у нас есть <code>String</code>, мы можем передать часть <code>String</code> или ссылку на <code>String</code>. Эта гибкость использует преимущества <em>приведения deref</em>, функции, которую мы рассмотрим в <a href="ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods">разделе «Неявное приведение Deref с функциями и способами».</a><!-- ignore --> раздел главы 15.</p>
 <p>Определение функции для получения фрагмента строки вместо ссылки на <code>String</code> делает наш API более общим и полезным без потери какой-либо функциональности:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-09/src/main.rs:usage}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn first_word(s: &amp;str) -&gt; &amp;str {
+</span><span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span><span class="boring">        if item == b' ' {
+</span><span class="boring">            return &amp;s[0..i];
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    &amp;s[..]
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let my_string = String::from("hello world");
+
+    // `first_word` works on slices of `String`s, whether partial or whole
+    let word = first_word(&amp;my_string[0..6]);
+    let word = first_word(&amp;my_string[..]);
+    // `first_word` also works on references to `String`s, which are equivalent
+    // to whole slices of `String`s
+    let word = first_word(&amp;my_string);
+
+    let my_string_literal = "hello world";
+
+    // `first_word` works on slices of string literals, whether partial or whole
+    let word = first_word(&amp;my_string_literal[0..6]);
+    let word = first_word(&amp;my_string_literal[..]);
+
+    // Because string literals *are* string slices already,
+    // this works too, without the slice syntax!
+    let word = first_word(my_string_literal);
+}</code></pre></pre>
 <h3 id="Другие-срезы"><a class="header" href="#Другие-срезы">Другие срезы</a></h3>
 <p>Срезы строк, как вы можете себе представить, отличительны для строк. Но есть и более общий вид среза. Рассмотрим этот массив:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]

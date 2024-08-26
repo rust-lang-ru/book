@@ -180,10 +180,50 @@
 <h3 id="Подражание-медленного-запроса-в-текущей-реализации-сервера"><a class="header" href="#Подражание-медленного-запроса-в-текущей-реализации-сервера">Подражание медленного запроса в текущей реализации сервера</a></h3>
 <p>Мы посмотрим, как запрос с медленной обработкой может повлиять на другие запросы, сделанные к серверу в текущей реализации. В приложении 20-10 реализована обработка запроса к ресурсу <em>/sleep</em> с эмуляцией медленного ответа, при которой сервер будет ждать 5 секунд перед тем, как ответить.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust no_run">use std::{
+    fs,
+    io::{prelude::*, BufReader},
+    net::{TcpListener, TcpStream},
+    thread,
+    time::Duration,
+};
+// --snip--
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-10/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+</span><span class="boring">
+</span><span class="boring">    for stream in listener.incoming() {
+</span><span class="boring">        let stream = stream.unwrap();
+</span><span class="boring">
+</span><span class="boring">        handle_connection(stream);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span>
+fn handle_connection(mut stream: TcpStream) {
+    // --snip--
+
+<span class="boring">    let buf_reader = BufReader::new(&amp;mut stream);
+</span><span class="boring">    let request_line = buf_reader.lines().next().unwrap().unwrap();
+</span><span class="boring">
+</span>    let (status_line, filename) = match &amp;request_line[..] {
+        "GET / HTTP/1.1" =&gt; ("HTTP/1.1 200 OK", "hello.html"),
+        "GET /sleep HTTP/1.1" =&gt; {
+            thread::sleep(Duration::from_secs(5));
+            ("HTTP/1.1 200 OK", "hello.html")
+        }
+        _ =&gt; ("HTTP/1.1 404 NOT FOUND", "404.html"),
+    };
+
+    // --snip--
+<span class="boring">
+</span><span class="boring">    let contents = fs::read_to_string(filename).unwrap();
+</span><span class="boring">    let length = contents.len();
+</span><span class="boring">
+</span><span class="boring">    let response =
+</span><span class="boring">        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+</span><span class="boring">
+</span><span class="boring">    stream.write_all(response.as_bytes()).unwrap();
+</span>}</code></pre></pre>
 <p><span class="caption">Приложение 20-10: Подражание медленного запроса с помощью 5-секундной задержки</span></p>
 <p>Мы переключились с <code>if</code> на <code>match</code>, так как теперь у нас есть три случая. Нам придётся явно сопоставить срез от <code>request_line</code> для проверки совпадения шаблона со строковыми литералами; <code>match</code> не делает самостоятельно е ссылки и разыменования, как это делает способ равенства.</p>
 <p>Первая ветка совпадает с разделом <code>if</code> из приложения 20-9. Вторая ветка соответствует запросу <em>/sleep</em> . Когда этот запрос получен, сервер заснёт на 5 секунд, прежде чем отдать успешную HTML-страницу. Третья ветка совпадает с разделом <code>else</code> из приложения 20-9.</p>
@@ -202,10 +242,47 @@
 <h4 id="Порождение-потока-для-каждого-запроса"><a class="header" href="#Порождение-потока-для-каждого-запроса">Порождение потока для каждого запроса</a></h4>
 <p>Сначала давайте рассмотрим, как мог бы выглядеть код, если бы он создавал бы новый поток для каждого соединения. Как упоминалось ранее, мы не планируем использовать этот способ в окончательной реализации, из-за возможных проблем при потенциально неограниченном числе порождённых потоков. Это лишь отправная точка, с которой начнёт работу наш многопоточный сервер. Затем мы улучшим код, добавив пул потоков, и тогда разницу между этими двумя решениями будет легче заметить. В приложении 20-11 показаны изменения, которые нужно внести в код <code>main</code>, чтобы порождать новый поток для обработки каждого входящего соединения внутри цикла <code>for</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-11/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">use std::{
+</span><span class="boring">    fs,
+</span><span class="boring">    io::{prelude::*, BufReader},
+</span><span class="boring">    net::{TcpListener, TcpStream},
+</span><span class="boring">    thread,
+</span><span class="boring">    time::Duration,
+</span><span class="boring">};
+</span><span class="boring">
+</span>fn main() {
+    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+
+    for stream in listener.incoming() {
+        let stream = stream.unwrap();
+
+        thread::spawn(|| {
+            handle_connection(stream);
+        });
+    }
+}
+<span class="boring">
+</span><span class="boring">fn handle_connection(mut stream: TcpStream) {
+</span><span class="boring">    let buf_reader = BufReader::new(&amp;mut stream);
+</span><span class="boring">    let request_line = buf_reader.lines().next().unwrap().unwrap();
+</span><span class="boring">
+</span><span class="boring">    let (status_line, filename) = match &amp;request_line[..] {
+</span><span class="boring">        "GET / HTTP/1.1" =&gt; ("HTTP/1.1 200 OK", "hello.html"),
+</span><span class="boring">        "GET /sleep HTTP/1.1" =&gt; {
+</span><span class="boring">            thread::sleep(Duration::from_secs(5));
+</span><span class="boring">            ("HTTP/1.1 200 OK", "hello.html")
+</span><span class="boring">        }
+</span><span class="boring">        _ =&gt; ("HTTP/1.1 404 NOT FOUND", "404.html"),
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    let contents = fs::read_to_string(filename).unwrap();
+</span><span class="boring">    let length = contents.len();
+</span><span class="boring">
+</span><span class="boring">    let response =
+</span><span class="boring">        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+</span><span class="boring">
+</span><span class="boring">    stream.write_all(response.as_bytes()).unwrap();
+</span><span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 20-11: Порождение нового потока для каждого соединения</span></p>
 <p>Как вы изучили в главе 16, функция <code>thread::spawn</code> создаст новый поток и затем запустит код замыкания в этом новом потоке. Если вы запустите этот код и загрузите <em>/sleep</em> в своём браузере, а затем загрузите <em>/</em> в двух других вкладках браузера, вы действительно увидите, что запросам к <em>/</em> не приходится ждать завершения <em>/sleep</em>. Но, как мы уже упоминали, это в какой-то момент приведёт к сильному снижению производительности системы, так как вы будете создавать новые потоки без каких-либо ограничений.</p>
 <!-- Old headings. Do not remove or links may break. -->
@@ -213,31 +290,147 @@
 <h4 id="Создание-конечного-числа-потоков"><a class="header" href="#Создание-конечного-числа-потоков">Создание конечного числа потоков</a></h4>
 <p>Мы хотим, чтобы наш пул потоков работал подобным, знакомым образом, чтобы переключение с потоков на пул потоков не требовало больших изменений в коде использующем наш API. В приложении 20-12 показан гипотетический внешняя оболочка для структуры <code>ThreadPool</code>, который мы хотим использовать вместо <code>thread::spawn</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch20-web-server/listing-20-12/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::{
+</span><span class="boring">    fs,
+</span><span class="boring">    io::{prelude::*, BufReader},
+</span><span class="boring">    net::{TcpListener, TcpStream},
+</span><span class="boring">    thread,
+</span><span class="boring">    time::Duration,
+</span><span class="boring">};
+</span><span class="boring">
+</span>fn main() {
+    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let pool = ThreadPool::new(4);
+
+    for stream in listener.incoming() {
+        let stream = stream.unwrap();
+
+        pool.execute(|| {
+            handle_connection(stream);
+        });
+    }
+}
+<span class="boring">
+</span><span class="boring">fn handle_connection(mut stream: TcpStream) {
+</span><span class="boring">    let buf_reader = BufReader::new(&amp;mut stream);
+</span><span class="boring">    let request_line = buf_reader.lines().next().unwrap().unwrap();
+</span><span class="boring">
+</span><span class="boring">    let (status_line, filename) = match &amp;request_line[..] {
+</span><span class="boring">        "GET / HTTP/1.1" =&gt; ("HTTP/1.1 200 OK", "hello.html"),
+</span><span class="boring">        "GET /sleep HTTP/1.1" =&gt; {
+</span><span class="boring">            thread::sleep(Duration::from_secs(5));
+</span><span class="boring">            ("HTTP/1.1 200 OK", "hello.html")
+</span><span class="boring">        }
+</span><span class="boring">        _ =&gt; ("HTTP/1.1 404 NOT FOUND", "404.html"),
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    let contents = fs::read_to_string(filename).unwrap();
+</span><span class="boring">    let length = contents.len();
+</span><span class="boring">
+</span><span class="boring">    let response =
+</span><span class="boring">        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+</span><span class="boring">
+</span><span class="boring">    stream.write_all(response.as_bytes()).unwrap();
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 20-12: Наш наилучший внешняя оболочка <code>ThreadPool</code></span></p>
 <p>Мы используем <code>ThreadPool::new</code>, чтобы создать новый пул потоков с конфигурируемым числом потоков, в данном случае четырьмя. Затем в цикле <code>for</code> функция <code>pool.execute</code> имеет внешнюю оболочку, похожий на <code>thread::spawn</code>, в том смысле, что он так же принимает замыкание, код которого пул должен выполнить для каждого соединения. Нам нужно реализовать <code>pool.execute</code>, чтобы он принимал замыкание и передавал его потоку из пула для выполнения. Этот код пока не ссобирается, но мы постараемся, чтобы сборщик помог нам это исправить.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="building-the-threadpool-struct-using-compiler-driven-development"></a></p>
 <h4 id="Создание-threadpool-с-помощью-разработки-управляемой-сборщиком"><a class="header" href="#Создание-threadpool-с-помощью-разработки-управляемой-сборщиком">Создание <code>ThreadPool</code> с помощью разработки, управляемой сборщиком</a></h4>
 <p>Внесите изменения приложения 20-12 в файл <em>src/main.rs</em>, а затем давайте воспользуемся ошибками сборщика из приказы <code>cargo check</code> для управления нашей разработкой. Вот первая ошибка, которую мы получаем:</p>
-<pre><code class="language-console">{{#include ../listings/ch20-web-server/listing-20-12/output.txt}}
+<pre><code class="language-console">$ cargo check
+    Checking hello v0.1.0 (file:///projects/hello)
+error[E0433]: failed to resolve: use of undeclared type `ThreadPool`
+  --&gt; src/main.rs:11:16
+   |
+11 |     let pool = ThreadPool::new(4);
+   |                ^^^^^^^^^^ use of undeclared type `ThreadPool`
+
+For more information about this error, try `rustc --explain E0433`.
+error: could not compile `hello` (bin "hello") due to 1 previous error
 </code></pre>
 <p>Замечательно! Ошибка говорит о том, что нам нужен вид или модуль <code>ThreadPool</code>, поэтому мы сейчас его создадим. Наша реализация <code>ThreadPool</code> не будет зависеть от того, что делает наш веб-сервер. Итак, давайте переделаем крейт <code>hello</code> из двоичного в библиотечный, чтобы хранить там нашу реализацию <code>ThreadPool</code>. После того, как мы переключимся в библиотечный крейт, мы также сможем использовать отдельную библиотеку пула потоков для любой подходящей работы, а не только для обслуживания веб-запросов.</p>
 <p>Создайте файл <em>src/lib.rs</em>, который содержит следующий код, который является простейшим определением структуры <code>ThreadPool</code>, которое мы можем иметь на данный момент:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub struct ThreadPool;</code></pre>
 <p>Затем изменените файл <em>main.rs</em>, чтобы внести <code>ThreadPool</code>  из библиотечного крейта в текущую область видимости, добавив следующий код в начало <em>src/main.rs</em>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore">use hello::ThreadPool;
+<span class="boring">use std::{
+</span><span class="boring">    fs,
+</span><span class="boring">    io::{prelude::*, BufReader},
+</span><span class="boring">    net::{TcpListener, TcpStream},
+</span><span class="boring">    thread,
+</span><span class="boring">    time::Duration,
+</span><span class="boring">};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+</span><span class="boring">    let pool = ThreadPool::new(4);
+</span><span class="boring">
+</span><span class="boring">    for stream in listener.incoming() {
+</span><span class="boring">        let stream = stream.unwrap();
+</span><span class="boring">
+</span><span class="boring">        pool.execute(|| {
+</span><span class="boring">            handle_connection(stream);
+</span><span class="boring">        });
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn handle_connection(mut stream: TcpStream) {
+</span><span class="boring">    let buf_reader = BufReader::new(&amp;mut stream);
+</span><span class="boring">    let request_line = buf_reader.lines().next().unwrap().unwrap();
+</span><span class="boring">
+</span><span class="boring">    let (status_line, filename) = match &amp;request_line[..] {
+</span><span class="boring">        "GET / HTTP/1.1" =&gt; ("HTTP/1.1 200 OK", "hello.html"),
+</span><span class="boring">        "GET /sleep HTTP/1.1" =&gt; {
+</span><span class="boring">            thread::sleep(Duration::from_secs(5));
+</span><span class="boring">            ("HTTP/1.1 200 OK", "hello.html")
+</span><span class="boring">        }
+</span><span class="boring">        _ =&gt; ("HTTP/1.1 404 NOT FOUND", "404.html"),
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    let contents = fs::read_to_string(filename).unwrap();
+</span><span class="boring">    let length = contents.len();
+</span><span class="boring">
+</span><span class="boring">    let response =
+</span><span class="boring">        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+</span><span class="boring">
+</span><span class="boring">    stream.write_all(response.as_bytes()).unwrap();
+</span><span class="boring">}</span></code></pre>
 <p>Этот код по-прежнему не будет работать, но давайте проверим его ещё раз, чтобы получить следующую ошибку, которую нам нужно устранить:</p>
-<pre><code class="language-console">{{#include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/output.txt}}
+<pre><code class="language-console">$ cargo check
+    Checking hello v0.1.0 (file:///projects/hello)
+error[E0599]: no function or associated item named `new` found for struct `ThreadPool` in the current scope
+  --&gt; src/main.rs:12:28
+   |
+12 |     let pool = ThreadPool::new(4);
+   |                            ^^^ function or associated item not found in `ThreadPool`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `hello` (bin "hello") due to 1 previous error
 </code></pre>
 <p>Эта ошибка указывает, что далее нам нужно создать ассоциированную функцию с именем <code>new</code> для <code>ThreadPool</code>. Мы также знаем, что <code>new</code> должна иметь один свойство, который может принимать <code>4</code> в качестве переменной и должен возвращать экземпляр <code>ThreadPool</code>. Давайте реализуем простейшую функцию <code>new</code>, которая будет иметь эти характеристики:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub struct ThreadPool;
+
+impl ThreadPool {
+    pub fn new(size: usize) -&gt; ThreadPool {
+        ThreadPool
+    }
+}</code></pre>
 <p>Мы выбираем <code>usize</code> в качестве вида свойства <code>size</code>, потому что мы знаем, что отрицательное число потоков не имеет никакого смысла. Мы также знаем, что мы будем использовать число 4 в качестве количества элементов в собрания потоков, для чего предназначен вид <code>usize</code>, как обсуждалось в разделе <a href="ch03-02-data-types.html#integer-types">"Целочисленные виды"</a><!--  --> главы 3.</p>
 <p>Давайте проверим код ещё раз:</p>
-<pre><code class="language-console">{{#include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/output.txt}}
+<pre><code class="language-console">$ cargo check
+    Checking hello v0.1.0 (file:///projects/hello)
+error[E0599]: no method named `execute` found for struct `ThreadPool` in the current scope
+  --&gt; src/main.rs:17:14
+   |
+17 |         pool.execute(|| {
+   |         -----^^^^^^^ method not found in `ThreadPool`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `hello` (bin "hello") due to 1 previous error
 </code></pre>
 <p>Теперь мы ошибка возникает из-за того, что у нас нет способа <code>execute</code> в структуре <code>ThreadPool</code>. Вспомните раздел <a href="#creating-a-finite-number-of-threads">"Создание конечного числа потоков"</a><!-- ignore -->, в котором мы решили, что наш пул потоков должен иметь внешнюю оболочку, похожий на <code>thread::spawn</code>. Кроме того, мы реализуем функцию <code>execute</code>, чтобы она принимала замыкание и передавала его свободному потоку из пула для запуска.</p>
 <p>Мы определим способ <code>execute</code> у <code>ThreadPool</code>, принимающий замыкание в качестве свойства. Вспомните из раздела <a href="ch13-01-closures.html#moving-captured-values-out-of-the-closure-and-the-fn-traits">"Перемещение захваченных значений из замыканий и трейты <code>Fn</code>"</a> <!-- ignore --> главы 13 сведения о том, что мы можем принимать замыкания в качестве свойств тремя различными типажами: <code>Fn</code> , <code>FnMut</code> и <code>FnOnce</code>. Нам нужно решить, какой вид замыкания использовать здесь. Мы знаем, что в конечном счёте мы сделаем что-то похожее на реализацию встроенной библиотеки <code>thread::spawn</code>, поэтому мы можем посмотреть, какие ограничения накладывает на свой свойство сигнатура функции <code>thread::spawn</code>. Документация показывает следующее:</p>
@@ -249,10 +442,25 @@
 <p>Свойство вида <code>F</code> - это как раз то, что нас важно; свойство вида <code>T</code> относится к возвращаемому значению и нам он не важен. Можно увидеть, что <code>spawn</code> использует <code>FnOnce</code> в качестве ограничения типажа у <code>F</code>. Возможно это как раз то, чего мы хотим, так как в конечном итоге мы передадим полученный в <code>execute</code> переменная в функцию <code>spawn</code>. Дополнительную уверенность в том, что <code>FnOnce</code> - это именно тот типаж, который мы хотим использовать, нам даёт факт, что поток для выполнения запроса будет выполнять замыкание этого запроса только один раз, что соответствует части  <code>Once</code> ("единожды") в названии типажа <code>FnOnce</code>.</p>
 <p>Свойство вида <code>F</code> также имеет ограничение типажа <code>Send</code> и ограничение времени жизни <code>'static</code>, которые полезны в нашей ситуации: нам нужен <code>Send</code> для передачи замыкания из одного потока в другой и <code>'static</code>, потому что мы не знаем, сколько времени поток будет выполняться. Давайте создадим способ <code>execute</code> для <code>ThreadPool</code>, который будет принимать обобщённый свойство вида <code>F</code> со следующими ограничениями:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/no-listing-03-define-execute/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct ThreadPool;
+</span><span class="boring">
+</span>impl ThreadPool {
+    // --snip--
+<span class="boring">    pub fn new(size: usize) -&gt; ThreadPool {
+</span><span class="boring">        ThreadPool
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn execute&lt;F&gt;(&amp;self, f: F)
+    where
+        F: FnOnce() + Send + 'static,
+    {
+    }
+}</code></pre>
 <p>Мы по-прежнему используем <code>()</code> после <code>FnOnce</code> потому что типаж <code>FnOnce</code> представляет замыкание, которое не принимает свойств и возвращает единичный вид <code>()</code>. Также как и при определении функций, вид возвращаемого значения в сигнатуре может быть опущен, но даже если у нас нет свойств, нам все равно нужны скобки.</p>
 <p>Опять же, это самая простая реализация способа <code>execute</code>: она ничего не делает, мы просто пытаемся сделать код собираемым. Давайте проверим снова:</p>
-<pre><code class="language-console">{{#include ../listings/ch20-web-server/no-listing-03-define-execute/output.txt}}
+<pre><code class="language-console">$ cargo check
+    Checking hello v0.1.0 (file:///projects/hello)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.24s
 </code></pre>
 <p>Сейчас мы получаем только предупреждения, что означает, что код собирается! Но обратите внимание, если вы попробуете <code>cargo run</code> и сделаете запрос в браузере, вы увидите ошибки в браузере, которые мы видели в начале главы. Наша библиотека на самом деле ещё не вызывает замыкание, переданное в <code>execute</code>!</p>
 <blockquote>
@@ -261,7 +469,29 @@
 <h4 id="Проверка-количества-потоков-в-new"><a class="header" href="#Проверка-количества-потоков-в-new">Проверка количества потоков в <code>new</code></a></h4>
 <p>Мы ничего не делаем с свойствами <code>new</code> и <code>execute</code>. Давайте реализуем тела этих функций с нужным нам поведением. Для начала давайте подумаем о <code>new</code>. Ранее мы выбрали беззнаковый вид для свойства <code>size</code>, потому что пул с отрицательным числом потоков не имеет смысла. Пул с нулём потоков также не имеет смысла, однако ноль - это вполне допустимое значение <code>usize</code>. Мы добавим код для проверки того, что <code>size</code> больше нуля, прежде чем вернуть экземпляр <code>ThreadPool</code>, и заставим программу паниковать, если она получит ноль, используя макрос <code>assert!</code>, как показано в приложении 20-13.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-13/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct ThreadPool;
+</span><span class="boring">
+</span>impl ThreadPool {
+    /// Create a new ThreadPool.
+    ///
+    /// The size is the number of threads in the pool.
+    ///
+    /// # Panics
+    ///
+    /// The `new` function will panic if the size is zero.
+    pub fn new(size: usize) -&gt; ThreadPool {
+        assert!(size &gt; 0);
+
+        ThreadPool
+    }
+
+    // --snip--
+<span class="boring">    pub fn execute&lt;F&gt;(&amp;self, f: F)
+</span><span class="boring">    where
+</span><span class="boring">        F: FnOnce() + Send + 'static,
+</span><span class="boring">    {
+</span><span class="boring">    }
+</span>}</code></pre>
 <p><span class="caption">Приложение 20-13: Реализация <code>ThreadPool::new</code> с аварийным завершениям работы, если <code>size</code> равен нулю</span></p>
 <p>Мы добавили немного документации для нашей структуры <code>ThreadPool</code> с помощью комментариев. Обратите внимание, что мы следовали хорошим практикам документирования, добавив раздел, в котором указывается ситуация, при которой функция может аварийно завершаться, как это обсуждалось в главе 14. Попробуйте запустить <code>cargo doc --open</code> и кликнуть на структуру <code>ThreadPool</code>, чтобы увидеть как выглядит сгенерированная документация для <code>new</code>!</p>
 <p>Вместо добавления макроса <code>assert!</code>, как мы здесь сделали, мы могли бы преобразовать функцию <code>new</code> в функцию <code>build</code> таким образом, чтобы она возвращала <code>Result</code> , подобно тому, как мы делали в функции <code>Config::new</code> проекта ввода/вывода в приложении 12-9. Но в данном случае мы решили, что попытка создания пула потоков без указания хотя бы одного потока должна быть непоправимой ошибкой. Если вы чувствуете такое стремление, попробуйте написать функцию <code>build</code>  с сигнатурой ниже, для сравнения с функцией <code>new</code>:</p>
@@ -276,7 +506,40 @@
 <p>Функция <code>spawn</code> возвращает вид <code>JoinHandle&lt;T&gt;</code>, где <code>T</code> является видом, который возвращает замыкание. Давайте попробуем использовать <code>JoinHandle</code> и посмотрим, что произойдёт. В нашем случае замыкания, которые мы передаём пулу потоков, будут обрабатывать соединение и не будут возвращать ничего, поэтому <code>T</code> будет единичным (unit) видом <code>()</code>.</p>
 <p>Код в приложении 20-14 ссобирается, но пока не создаст ни одного потока. Мы изменили определение <code>ThreadPool</code> так, чтобы он содержал вектор экземпляров <code>thread::JoinHandle&lt;()&gt;</code>, инициализировали вектор ёмкостью <code>size</code>, установили цикл <code>for</code>, который будет выполнять некоторый код для создания потоков, и вернули экземпляр <code>ThreadPool</code>, содержащий их.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore not_desired_behavior">{{#rustdoc_include ../listings/ch20-web-server/listing-20-14/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore not_desired_behavior">use std::thread;
+
+pub struct ThreadPool {
+    threads: Vec&lt;thread::JoinHandle&lt;()&gt;&gt;,
+}
+
+impl ThreadPool {
+    // --snip--
+<span class="boring">    /// Create a new ThreadPool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// The size is the number of threads in the pool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Panics
+</span><span class="boring">    ///
+</span><span class="boring">    /// The `new` function will panic if the size is zero.
+</span>    pub fn new(size: usize) -&gt; ThreadPool {
+        assert!(size &gt; 0);
+
+        let mut threads = Vec::with_capacity(size);
+
+        for _ in 0..size {
+            // create some threads and store them in the vector
+        }
+
+        ThreadPool { threads }
+    }
+    // --snip--
+<span class="boring">
+</span><span class="boring">    pub fn execute&lt;F&gt;(&amp;self, f: F)
+</span><span class="boring">    where
+</span><span class="boring">        F: FnOnce() + Send + 'static,
+</span><span class="boring">    {
+</span><span class="boring">    }
+</span>}</code></pre>
 <p><span class="caption">Приложение 20-14: Создание вектора в <code>ThreadPool</code> для хранения потоков</span></p>
 <p>Мы включили <code>std::thread</code> в область видимости библиотечного крейта, потому что мы используем <code>thread::JoinHandle</code> в качестве вида элементов вектора в <code>ThreadPool</code>.</p>
 <p>После получения корректного значения size, наш <code>ThreadPool</code> создаёт новый вектор, который может содержать <code>size</code> элементов. Функция <code>with_capacity</code> выполняет ту же задачу, что и <code>Vec::new</code>, но с важным отличием: она заранее выделяет необходимый объём памяти в векторе. Поскольку мы знаем, что нам нужно хранить <code>size</code> элементов в векторе, предварительное выделение памяти для этих элементов будет немного более эффективным, чем использование <code>Vec::new</code>, при котором размер вектора будет увеличиваться по мере вставки элементов.</p>
@@ -295,7 +558,53 @@
 <p>Если вы готовы принять вызов, попробуйте реализовать эти изменения самостоятельно, не глядя на код в приложении 20-15.</p>
 <p>Готовы? Вот приложение 20-15 с одним из способов сделать указанные ранее изменения.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-15/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground">use std::thread;
+
+pub struct ThreadPool {
+    workers: Vec&lt;Worker&gt;,
+}
+
+impl ThreadPool {
+    // --snip--
+<span class="boring">    /// Create a new ThreadPool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// The size is the number of threads in the pool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Panics
+</span><span class="boring">    ///
+</span><span class="boring">    /// The `new` function will panic if the size is zero.
+</span>    pub fn new(size: usize) -&gt; ThreadPool {
+        assert!(size &gt; 0);
+
+        let mut workers = Vec::with_capacity(size);
+
+        for id in 0..size {
+            workers.push(Worker::new(id));
+        }
+
+        ThreadPool { workers }
+    }
+    // --snip--
+<span class="boring">
+</span><span class="boring">    pub fn execute&lt;F&gt;(&amp;self, f: F)
+</span><span class="boring">    where
+</span><span class="boring">        F: FnOnce() + Send + 'static,
+</span><span class="boring">    {
+</span><span class="boring">    }
+</span>}
+
+struct Worker {
+    id: usize,
+    thread: thread::JoinHandle&lt;()&gt;,
+}
+
+impl Worker {
+    fn new(id: usize) -&gt; Worker {
+        let thread = thread::spawn(|| {});
+
+        Worker { id, thread }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 20-15: Изменение <code>ThreadPool</code> для хранения экземпляров <code>Worker</code> вместо непосредственного хранения потоков</span></p>
 <p>Мы изменили название поля в <code>ThreadPool</code> с <code>threads</code> на <code>workers</code>, поскольку теперь оно содержит экземпляры <code>Worker</code> вместо экземпляров <code>JoinHandle&lt;()&gt;</code>. Мы используем счётчик в цикле <code>for</code> для передачи цифрового определителя в качестве переменной <code>Worker::new</code>, и сохраняем каждый новый <code>Worker</code> в векторе с именем <code>workers</code>.</p>
 <p>Внешний код (вроде нашего сервера в <em>src/bin/main.rs</em>) не обязательно должен знать подробности реализации, касающиеся использования структуры <code>Worker</code> внутри <code>ThreadPool</code>, поэтому мы делаем структуру <code>Worker</code> и её функцию <code>new</code> приватными. Функция <code>Worker::new</code> использует заданный нами <code>id</code> и сохраняет экземпляр <code>JoinHandle&lt;()&gt;</code>, который создаётся при порождении нового потока с пустым замыканием.</p>
@@ -316,34 +625,359 @@
 </ol>
 <p>Давайте начнём с создания потока в <code>ThreadPool::new</code> и удержания отправляющей стороны в экземпляре <code>ThreadPool</code>, как показано в приложении 20-16. В структуре <code>Job</code> сейчас ничего не содержится, но это будет вид элемента, который мы отправляем в поток.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-16/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground">use std::{sync::mpsc, thread};
+
+pub struct ThreadPool {
+    workers: Vec&lt;Worker&gt;,
+    sender: mpsc::Sender&lt;Job&gt;,
+}
+
+struct Job;
+
+impl ThreadPool {
+    // --snip--
+<span class="boring">    /// Create a new ThreadPool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// The size is the number of threads in the pool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Panics
+</span><span class="boring">    ///
+</span><span class="boring">    /// The `new` function will panic if the size is zero.
+</span>    pub fn new(size: usize) -&gt; ThreadPool {
+        assert!(size &gt; 0);
+
+        let (sender, receiver) = mpsc::channel();
+
+        let mut workers = Vec::with_capacity(size);
+
+        for id in 0..size {
+            workers.push(Worker::new(id));
+        }
+
+        ThreadPool { workers, sender }
+    }
+    // --snip--
+<span class="boring">
+</span><span class="boring">    pub fn execute&lt;F&gt;(&amp;self, f: F)
+</span><span class="boring">    where
+</span><span class="boring">        F: FnOnce() + Send + 'static,
+</span><span class="boring">    {
+</span><span class="boring">    }
+</span>}
+<span class="boring">
+</span><span class="boring">struct Worker {
+</span><span class="boring">    id: usize,
+</span><span class="boring">    thread: thread::JoinHandle&lt;()&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Worker {
+</span><span class="boring">    fn new(id: usize) -&gt; Worker {
+</span><span class="boring">        let thread = thread::spawn(|| {});
+</span><span class="boring">
+</span><span class="boring">        Worker { id, thread }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 20-16: Модификация <code>ThreadPool</code> для хранения отправляющей части потока, который отправляет экземпляры <code>Job</code></span></p>
 <p>В <code>ThreadPool::new</code> мы создаём наш новый поток и сохраняем в пуле его отправляющую сторону. Код успешно ссобирается.</p>
 <p>Давайте попробуем передавать принимающую сторону потока каждому "работнику" (структуре Worker), когда пул потоков создаёт поток. Мы знаем, что хотим использовать получающую часть потока в потоке, порождаемым "работником", поэтому мы будем ссылаться на свойство <code>receiver</code> в замыкании. Код 20-17 пока не собирается.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch20-web-server/listing-20-17/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::{sync::mpsc, thread};
+</span><span class="boring">
+</span><span class="boring">pub struct ThreadPool {
+</span><span class="boring">    workers: Vec&lt;Worker&gt;,
+</span><span class="boring">    sender: mpsc::Sender&lt;Job&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Job;
+</span><span class="boring">
+</span>impl ThreadPool {
+    // --snip--
+<span class="boring">    /// Create a new ThreadPool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// The size is the number of threads in the pool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Panics
+</span><span class="boring">    ///
+</span><span class="boring">    /// The `new` function will panic if the size is zero.
+</span>    pub fn new(size: usize) -&gt; ThreadPool {
+        assert!(size &gt; 0);
+
+        let (sender, receiver) = mpsc::channel();
+
+        let mut workers = Vec::with_capacity(size);
+
+        for id in 0..size {
+            workers.push(Worker::new(id, receiver));
+        }
+
+        ThreadPool { workers, sender }
+    }
+    // --snip--
+<span class="boring">
+</span><span class="boring">    pub fn execute&lt;F&gt;(&amp;self, f: F)
+</span><span class="boring">    where
+</span><span class="boring">        F: FnOnce() + Send + 'static,
+</span><span class="boring">    {
+</span><span class="boring">    }
+</span>}
+
+// --snip--
+
+<span class="boring">
+</span><span class="boring">struct Worker {
+</span><span class="boring">    id: usize,
+</span><span class="boring">    thread: thread::JoinHandle&lt;()&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Worker {
+    fn new(id: usize, receiver: mpsc::Receiver&lt;Job&gt;) -&gt; Worker {
+        let thread = thread::spawn(|| {
+            receiver;
+        });
+
+        Worker { id, thread }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 20-17: Передача принимающей части потока "работникам"</span></p>
 <p>Мы внесли несколько небольших и простых изменений: мы передаём принимающую часть потока в <code>Worker::new</code>, а затем используем его внутри замыкания.</p>
 <p>При попытке проверить код, мы получаем ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch20-web-server/listing-20-17/output.txt}}
+<pre><code class="language-console">$ cargo check
+    Checking hello v0.1.0 (file:///projects/hello)
+error[E0382]: use of moved value: `receiver`
+  --&gt; src/lib.rs:26:42
+   |
+21 |         let (sender, receiver) = mpsc::channel();
+   |                      -------- move occurs because `receiver` has type `std::sync::mpsc::Receiver&lt;Job&gt;`, which does not implement the `Copy` trait
+...
+25 |         for id in 0..size {
+   |         ----------------- inside of this loop
+26 |             workers.push(Worker::new(id, receiver));
+   |                                          ^^^^^^^^ value moved here, in previous iteration of loop
+   |
+note: consider changing this parameter type in method `new` to borrow instead if owning the value isn't necessary
+  --&gt; src/lib.rs:47:33
+   |
+47 |     fn new(id: usize, receiver: mpsc::Receiver&lt;Job&gt;) -&gt; Worker {
+   |        --- in this method       ^^^^^^^^^^^^^^^^^^^ this parameter takes ownership of the value
+help: consider moving the expression out of the loop so it is only moved once
+   |
+25 ~         let mut value = Worker::new(id, receiver);
+26 ~         for id in 0..size {
+27 ~             workers.push(value);
+   |
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `hello` (lib) due to 1 previous error
 </code></pre>
 <p>Код пытается передать <code>receiver</code> нескольким экземплярам <code>Worker</code>. Это не сработает, поскольку, как вы можете помнить из главы 16: реализация потока, которую предоставляет Rust - несколько <em>производителей</em>, один <em>потребитель</em>. Это означает, что мы не можем просто клонировать принимающую сторону потока, чтобы исправить этот код. Кроме этого, мы не хотим отправлять одно и то же сообщение нескольким потребителям, поэтому нам нужен единый список сообщений для множества обработчиков, чтобы каждое сообщение обрабатывалось лишь один раз.</p>
 <p>Кроме того, удаление задачи из очереди потока включает изменение <code>receiver</code>, поэтому потокам необходим безопасный способ делиться и изменять <code>receiver</code>, в противном случае мы можем получить условия гонки (как описано в главе 16).</p>
 <p>Вспомните умные указатели, которые обсуждались в главе 16: чтобы делиться владением между несколькими потоками и разрешать потокам изменять значение, нам нужно использовать вид <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>. Вид <code>Arc</code> позволит нескольким "работникам" владеть получателем (receiver), а <code>Mutex</code> заверяет что только один "работник" сможет получить задание (job) от получателя за раз. Приложение 20-18 показывает изменения, которые мы должны сделать.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-18/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground">use std::{
+    sync::{mpsc, Arc, Mutex},
+    thread,
+};
+// --snip--
+
+<span class="boring">pub struct ThreadPool {
+</span><span class="boring">    workers: Vec&lt;Worker&gt;,
+</span><span class="boring">    sender: mpsc::Sender&lt;Job&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Job;
+</span><span class="boring">
+</span>impl ThreadPool {
+    // --snip--
+<span class="boring">    /// Create a new ThreadPool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// The size is the number of threads in the pool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Panics
+</span><span class="boring">    ///
+</span><span class="boring">    /// The `new` function will panic if the size is zero.
+</span>    pub fn new(size: usize) -&gt; ThreadPool {
+        assert!(size &gt; 0);
+
+        let (sender, receiver) = mpsc::channel();
+
+        let receiver = Arc::new(Mutex::new(receiver));
+
+        let mut workers = Vec::with_capacity(size);
+
+        for id in 0..size {
+            workers.push(Worker::new(id, Arc::clone(&amp;receiver)));
+        }
+
+        ThreadPool { workers, sender }
+    }
+
+    // --snip--
+<span class="boring">
+</span><span class="boring">    pub fn execute&lt;F&gt;(&amp;self, f: F)
+</span><span class="boring">    where
+</span><span class="boring">        F: FnOnce() + Send + 'static,
+</span><span class="boring">    {
+</span><span class="boring">    }
+</span>}
+
+// --snip--
+
+<span class="boring">struct Worker {
+</span><span class="boring">    id: usize,
+</span><span class="boring">    thread: thread::JoinHandle&lt;()&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Worker {
+    fn new(id: usize, receiver: Arc&lt;Mutex&lt;mpsc::Receiver&lt;Job&gt;&gt;&gt;) -&gt; Worker {
+        // --snip--
+<span class="boring">        let thread = thread::spawn(|| {
+</span><span class="boring">            receiver;
+</span><span class="boring">        });
+</span><span class="boring">
+</span><span class="boring">        Worker { id, thread }
+</span>    }
+}</code></pre>
 <p><span class="caption">Приложение 20-18. Совместное использование приёмника в "работниках" с применением <code>Arc</code> и <code>Mutex</code></span></p>
 <p>В <code>ThreadPool::new</code> мы помещаем принимающую сторону потока внутрь <code>Arc</code> и <code>Mutex</code>. Для каждого нового "работника" мы клонируем <code>Arc</code>, чтобы увеличить счётчик ссылок так, что "работники" могут разделять владение принимающей стороной потока.</p>
 <p>С этими изменениями код собирается! Мы подбираемся к цели!</p>
 <h4 id="Реализация-способа-execute"><a class="header" href="#Реализация-способа-execute">Реализация способа <code>execute</code></a></h4>
 <p>Давайте реализуем наконец способ <code>execute</code> у структуры <code>ThreadPool</code>. Мы также изменим вид <code>Job</code> со структуры на псевдоним вида для типаж-объекта, который будет содержать вид замыкания, принимаемый способом <code>execute</code>. Как описано в разделе <a href="ch19-04-advanced-types.html#creating-type-synonyms-with-type-aliases">"Создание синонимов вида с помощью псевдонимов типа"</a><!-- ignore --> главы 19, псевдонимы видов позволяют делать длинные виды короче, облегчая их использование. Посмотрите на приложение 20-19.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-19/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">use std::{
+</span><span class="boring">    sync::{mpsc, Arc, Mutex},
+</span><span class="boring">    thread,
+</span><span class="boring">};
+</span><span class="boring">
+</span><span class="boring">pub struct ThreadPool {
+</span><span class="boring">    workers: Vec&lt;Worker&gt;,
+</span><span class="boring">    sender: mpsc::Sender&lt;Job&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>// --snip--
+
+type Job = Box&lt;dyn FnOnce() + Send + 'static&gt;;
+
+impl ThreadPool {
+    // --snip--
+<span class="boring">    /// Create a new ThreadPool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// The size is the number of threads in the pool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Panics
+</span><span class="boring">    ///
+</span><span class="boring">    /// The `new` function will panic if the size is zero.
+</span><span class="boring">    pub fn new(size: usize) -&gt; ThreadPool {
+</span><span class="boring">        assert!(size &gt; 0);
+</span><span class="boring">
+</span><span class="boring">        let (sender, receiver) = mpsc::channel();
+</span><span class="boring">
+</span><span class="boring">        let receiver = Arc::new(Mutex::new(receiver));
+</span><span class="boring">
+</span><span class="boring">        let mut workers = Vec::with_capacity(size);
+</span><span class="boring">
+</span><span class="boring">        for id in 0..size {
+</span><span class="boring">            workers.push(Worker::new(id, Arc::clone(&amp;receiver)));
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        ThreadPool { workers, sender }
+</span><span class="boring">    }
+</span>
+    pub fn execute&lt;F&gt;(&amp;self, f: F)
+    where
+        F: FnOnce() + Send + 'static,
+    {
+        let job = Box::new(f);
+
+        self.sender.send(job).unwrap();
+    }
+}
+
+// --snip--
+<span class="boring">
+</span><span class="boring">struct Worker {
+</span><span class="boring">    id: usize,
+</span><span class="boring">    thread: thread::JoinHandle&lt;()&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Worker {
+</span><span class="boring">    fn new(id: usize, receiver: Arc&lt;Mutex&lt;mpsc::Receiver&lt;Job&gt;&gt;&gt;) -&gt; Worker {
+</span><span class="boring">        let thread = thread::spawn(|| {
+</span><span class="boring">            receiver;
+</span><span class="boring">        });
+</span><span class="boring">
+</span><span class="boring">        Worker { id, thread }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 20-19: Создание псевдонима вида <code>Job</code> для указателя <code>Box</code>, содержащего каждое замыкание и затем отправляющее задание (job) в поток</span></p>
 <p>После создания нового экземпляра <code>Job</code> с замыканием, полученным в <code>execute</code>, мы посылаем его через отправляющий конец потока. На тот случай, если отправка не удастся, вызываем <code>unwrap</code> у <code>send</code>. Это может произойти, например, если мы остановим выполнение всех наших потоков, что означает, что принимающая сторона прекратила получать новые сообщения. На данный момент мы не можем остановить выполнение наших потоков: наши потоки будут функционировать до тех пор, пока существует пул. Причина, по которой мы используем <code>unwrap</code>, заключается в том, что, хотя мы знаем, что сбой не произойдёт, сборщик этого не знает.</p>
 <p>Но мы ещё не закончили! В "работнике" (worker) наше замыкание, переданное в <code>thread::spawn</code> все ещё <em>ссылается</em> только на принимающую сторону потока. Вместо этого нам нужно, чтобы замыкание работало в бесконечном цикле, запрашивая задание у принимающей части потока и выполняя задание, когда оно принято. Давайте внесём изменения, показанные в приложении 20-20 внутри <code>Worker::new</code>.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-20/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">use std::{
+</span><span class="boring">    sync::{mpsc, Arc, Mutex},
+</span><span class="boring">    thread,
+</span><span class="boring">};
+</span><span class="boring">
+</span><span class="boring">pub struct ThreadPool {
+</span><span class="boring">    workers: Vec&lt;Worker&gt;,
+</span><span class="boring">    sender: mpsc::Sender&lt;Job&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">type Job = Box&lt;dyn FnOnce() + Send + 'static&gt;;
+</span><span class="boring">
+</span><span class="boring">impl ThreadPool {
+</span><span class="boring">    /// Create a new ThreadPool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// The size is the number of threads in the pool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Panics
+</span><span class="boring">    ///
+</span><span class="boring">    /// The `new` function will panic if the size is zero.
+</span><span class="boring">    pub fn new(size: usize) -&gt; ThreadPool {
+</span><span class="boring">        assert!(size &gt; 0);
+</span><span class="boring">
+</span><span class="boring">        let (sender, receiver) = mpsc::channel();
+</span><span class="boring">
+</span><span class="boring">        let receiver = Arc::new(Mutex::new(receiver));
+</span><span class="boring">
+</span><span class="boring">        let mut workers = Vec::with_capacity(size);
+</span><span class="boring">
+</span><span class="boring">        for id in 0..size {
+</span><span class="boring">            workers.push(Worker::new(id, Arc::clone(&amp;receiver)));
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        ThreadPool { workers, sender }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn execute&lt;F&gt;(&amp;self, f: F)
+</span><span class="boring">    where
+</span><span class="boring">        F: FnOnce() + Send + 'static,
+</span><span class="boring">    {
+</span><span class="boring">        let job = Box::new(f);
+</span><span class="boring">
+</span><span class="boring">        self.sender.send(job).unwrap();
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Worker {
+</span><span class="boring">    id: usize,
+</span><span class="boring">    thread: thread::JoinHandle&lt;()&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>// --snip--
+
+impl Worker {
+    fn new(id: usize, receiver: Arc&lt;Mutex&lt;mpsc::Receiver&lt;Job&gt;&gt;&gt;) -&gt; Worker {
+        let thread = thread::spawn(move || loop {
+            let job = receiver.lock().unwrap().recv().unwrap();
+
+            println!("Worker {id} got a job; executing.");
+
+            job();
+        });
+
+        Worker { id, thread }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 20-20: Получение и выполнение заданий в потоке "работника"</span></p>
 <p>Здесь мы сначала вызываем <code>lock</code> у <code>receiver</code>, чтобы получить мьютекс, а затем вызываем <code>unwrap</code>, чтобы аварийно завершить работу при любых ошибках. Захват блокировки может завершиться неудачей, если мьютекс находится в <em>отравленном</em> состоянии (poisoned state), что может произойти, если какой-то другой поток завершился аварийно, удерживая блокировку, вместо снятия блокировки. В этой ситуации вызвать <code>unwrap</code> для аварийного завершения потока вполне оправдано. Не стесняйтесь заменить <code>unwrap</code> на <code>expect</code> с сообщением об ошибке, которое имеет для вас значение.</p>
 <p>Если мы получили блокировку мьютекса, мы вызываем <code>recv</code>, чтобы получить <code>Job</code> из потока. Последний вызов <code>unwrap</code> позволяет миновать любые ошибки, которые могут возникнуть, если поток, управляющий отправитель, прекратил функционировать, подобно тому, как способ <code>send</code> возвращает <code>Err</code>, если получатель не принимает сообщение.</p>
@@ -397,7 +1031,71 @@ Worker 2 got a job; executing.
 </blockquote>
 <p>После изучения цикла <code>while let</code> в главе 18 вы можете удивиться, почему мы не написали код рабочего потока (worker thread), как показано в приложении 20-22.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore not_desired_behavior">{{#rustdoc_include ../listings/ch20-web-server/listing-20-21/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore not_desired_behavior"><span class="boring">use std::{
+</span><span class="boring">    sync::{mpsc, Arc, Mutex},
+</span><span class="boring">    thread,
+</span><span class="boring">};
+</span><span class="boring">
+</span><span class="boring">pub struct ThreadPool {
+</span><span class="boring">    workers: Vec&lt;Worker&gt;,
+</span><span class="boring">    sender: mpsc::Sender&lt;Job&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">type Job = Box&lt;dyn FnOnce() + Send + 'static&gt;;
+</span><span class="boring">
+</span><span class="boring">impl ThreadPool {
+</span><span class="boring">    /// Create a new ThreadPool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// The size is the number of threads in the pool.
+</span><span class="boring">    ///
+</span><span class="boring">    /// # Panics
+</span><span class="boring">    ///
+</span><span class="boring">    /// The `new` function will panic if the size is zero.
+</span><span class="boring">    pub fn new(size: usize) -&gt; ThreadPool {
+</span><span class="boring">        assert!(size &gt; 0);
+</span><span class="boring">
+</span><span class="boring">        let (sender, receiver) = mpsc::channel();
+</span><span class="boring">
+</span><span class="boring">        let receiver = Arc::new(Mutex::new(receiver));
+</span><span class="boring">
+</span><span class="boring">        let mut workers = Vec::with_capacity(size);
+</span><span class="boring">
+</span><span class="boring">        for id in 0..size {
+</span><span class="boring">            workers.push(Worker::new(id, Arc::clone(&amp;receiver)));
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        ThreadPool { workers, sender }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn execute&lt;F&gt;(&amp;self, f: F)
+</span><span class="boring">    where
+</span><span class="boring">        F: FnOnce() + Send + 'static,
+</span><span class="boring">    {
+</span><span class="boring">        let job = Box::new(f);
+</span><span class="boring">
+</span><span class="boring">        self.sender.send(job).unwrap();
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Worker {
+</span><span class="boring">    id: usize,
+</span><span class="boring">    thread: thread::JoinHandle&lt;()&gt;,
+</span><span class="boring">}
+</span>// --snip--
+
+impl Worker {
+    fn new(id: usize, receiver: Arc&lt;Mutex&lt;mpsc::Receiver&lt;Job&gt;&gt;&gt;) -&gt; Worker {
+        let thread = thread::spawn(move || {
+            while let Ok(job) = receiver.lock().unwrap().recv() {
+                println!("Worker {id} got a job; executing.");
+
+                job();
+            }
+        });
+
+        Worker { id, thread }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 20-22: Иная реализация <code>Worker::new</code> с использованием <code>while let</code></span></p>
 <p>Этот код собирается и запускается, но не даёт желаемого поведения: медленный запрос всё равно приведёт к тому, что другие запросы будут ждать обработки. Причина здесь несколько тоньше: структура <code>Mutex</code> не имеет публичного способа <code>unlock</code>, так как владение блокировкой основано на времени жизни <code>MutexGuard&lt;T&gt;</code> внутри <code>LockResult&lt;MutexGuard&lt;T&gt;&gt;</code>, которое возвращает способ <code>lock</code>. Во время сборки анализатор заимствований может проследить за выполнением правила, согласно которому к ресурсу, охраняемому <code>Mutex</code>, нельзя получить доступ пока мы удерживаем блокировку. Однако в этой реализация мы также можем получить ситуацию, когда блокировка будет удерживаться дольше, чем предполагалось, если мы не будем внимательно учитывать время жизни <code>MutexGuard&lt;T&gt;</code>.</p>
 <p>Код в приложении 20-20, использующий <code>let job = receiver.lock().unwrap().recv().unwrap();</code> работает, потому что при использовании <code>let</code> любые промежуточные значения, используемые в выражении справа от знака равенства, немедленно уничтожаются после завершения указания <code>let</code>. Однако <code>while let</code> (и <code>if let</code> и <code>match</code>) не удаляет временные значения до конца связанного раздела. Таким образом, в приложении 20-21 блокировка не снимается в течение всего времени вызова <code>job()</code>, что означает, что другие работники не могут получать задания.</p>

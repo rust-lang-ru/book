@@ -182,38 +182,110 @@
 <p>Вы можете задать определённую логику, которая будет выполняться, когда значение выходит за пределы области видимости, реализовав признак <code>Drop</code>. Типаж <code>Drop</code> требует от вас реализации одного способа <code>drop</code>, который принимает изменяемую ссылку на <code>self</code>. Чтобы увидеть, когда Rust вызывает <code>drop</code>, давайте реализуем <code>drop</code> с помощью указаний <code>println!</code>.</p>
 <p>В приложении 15-14 показана структура <code>CustomSmartPointer</code>, единственной уникальной функциональностью которой является печать <code>Dropping CustomSmartPointer!</code>, когда экземпляр выходит из области видимости, чтобы показать, когда Rust выполняет функцию <code>drop</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-14/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&amp;mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+    }
+}
+
+fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("my stuff"),
+    };
+    let d = CustomSmartPointer {
+        data: String::from("other stuff"),
+    };
+    println!("CustomSmartPointers created.");
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-14: Структура <code>CustomSmartPointer</code>, реализующая типаж <code>Drop</code>, куда мы поместим наш код очистки</span></p>
 <p>Типаж <code>Drop</code> включён в прелюдию, поэтому нам не нужно вводить его в область видимости. Мы реализуем типаж <code>Drop</code> для <code>CustomSmartPointer</code> и реализуем способ <code>drop</code>, который будет вызывать <code>println!</code>. Тело функции <code>drop</code> - это место, где должна располагаться вся логика, которую вы захотите выполнять, когда экземпляр вашего вида выйдет из области видимости. Мы печатаем здесь текст, чтобы наглядно отобразить, когда Rust вызовет <code>drop</code>.</p>
 <p>В <code>main</code> мы создаём два экземпляра <code>CustomSmartPointer</code> и затем печатаем <code>CustomSmartPointers created</code> . В конце <code>main</code> наши экземпляры <code>CustomSmartPointer</code> выйдут из области видимости и Rust вызовет код, который мы добавили в способ <code>drop</code>, который и напечатает наше окончательное сообщение. Обратите внимание, что нам не нужно вызывать способ <code>drop</code> явно.</p>
 <p>Когда мы запустим эту программу, мы увидим следующий вывод:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-14/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling drop-example v0.1.0 (file:///projects/drop-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running `target/debug/drop-example`
+CustomSmartPointers created.
+Dropping CustomSmartPointer with data `other stuff`!
+Dropping CustomSmartPointer with data `my stuff`!
 </code></pre>
 <p>Rust самостоятельно вызывал <code>drop</code> в момент выхода наших экземпляров из области видимости, тем самым выполнив заданный нами код. Переменные удаляются в обратном порядке их создания, поэтому <code>d</code> была удалена до <code>c</code>. Цель этого примера — дать вам наглядное представление о том, как работает способ <code>drop</code>; в типичных случаях вы будете задавать код очистки, который должен выполнить ваш вид, а не печатать сообщение.</p>
 <h3 id="Раннее-удаление-значения-с-помощью-stdmemdrop"><a class="header" href="#Раннее-удаление-значения-с-помощью-stdmemdrop">Раннее удаление значения с помощью <code>std::mem::drop</code></a></h3>
 <p>К сожалению, отключение функции самостоятельного удаления с помощью <code>drop</code> является не простым. Отключение <code>drop</code> обычно не требуется; весь смысл типажа <code>Drop</code> в том, чтобы о функции позаботились самостоятельно . Иногда, однако, вы можете захотеть очистить значение рано. Одним из примеров является использование умных указателей, которые управляют блокировками: вы могли бы потребовать принудительный вызов способа <code>drop</code> который снимает блокировку, чтобы другой код в той же области видимости мог получить блокировку. Rust не позволяет вызвать способ типажа <code>Drop</code> вручную; вместо этого вы должны вызвать функцию <code>std::mem::drop</code> предоставляемую встроенной библиотекой, если хотите принудительно удалить значение до конца области видимости.</p>
 <p>Если попытаться вызвать способ <code>drop</code> типажа <code>Drop</code> вручную, изменяя функцию <code>main</code> приложения 15-14 так, как показано в приложении 15-15, мы получим ошибку сборщика:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-15/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">struct CustomSmartPointer {
+</span><span class="boring">    data: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Drop for CustomSmartPointer {
+</span><span class="boring">    fn drop(&amp;mut self) {
+</span><span class="boring">        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("some data"),
+    };
+    println!("CustomSmartPointer created.");
+    c.drop();
+    println!("CustomSmartPointer dropped before the end of main.");
+}</code></pre>
 <p><span class="caption">Приложение 15-15: Попытка вызвать способ <code>drop</code> из трейта <code>Drop</code> вручную для досрочной очистки</span></p>
 <p>Когда мы попытаемся собрать этот код, мы получим ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-15/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling drop-example v0.1.0 (file:///projects/drop-example)
+error[E0040]: explicit use of destructor method
+  --&gt; src/main.rs:16:7
+   |
+16 |     c.drop();
+   |       ^^^^ explicit destructor calls not allowed
+   |
+help: consider using `drop` function
+   |
+16 |     drop(c);
+   |     +++++ ~
+
+For more information about this error, try `rustc --explain E0040`.
+error: could not compile `drop-example` (bin "drop-example") due to 1 previous error
 </code></pre>
 <p>Это сообщение об ошибке говорит, что мы не можем явно вызывать <code>drop</code>. В сообщении об ошибке используется термин <em>деструктор (destructor)</em>, который является общим термином программирования для функции, которая очищает экземпляр. <em>Деструктор</em> подобен <em>конструктору</em>, который создаёт экземпляр. Функция <code>drop</code> в Rust является определённым деструктором.</p>
 <p>Rust не позволяет обращаться к <code>drop</code> напрямую, потому что он все равно самостоятельно вызовет <code>drop</code> в конце <code>main</code>. Это вызвало бы ошибку <em>double free</em>, потому что в этом случае Rust попытался бы дважды очистить одно и то же значение.</p>
 <p>Невозможно отключить самостоятельную подстановку вызова <code>drop</code>, когда значение выходит из области видимости, и нельзя вызвать способ <code>drop</code> напрямую. Поэтому, если нам нужно принудительно избавиться от значения раньше времени, следует использовать функцию <code>std::mem::drop</code>.</p>
 <p>Функция <code>std::mem::drop</code> отличается от способа <code>drop</code> трейта <code>Drop</code>. Мы вызываем её, передавая в качестве переменной значение, которое хотим принудительно уничтожить. Функция находится в прелюдии, поэтому мы можем изменить <code>main</code> в приложении 15-15 так, чтобы вызвать функцию <code>drop</code>, как показано в приложении 15-16:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-16/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct CustomSmartPointer {
+</span><span class="boring">    data: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Drop for CustomSmartPointer {
+</span><span class="boring">    fn drop(&amp;mut self) {
+</span><span class="boring">        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("some data"),
+    };
+    println!("CustomSmartPointer created.");
+    drop(c);
+    println!("CustomSmartPointer dropped before the end of main.");
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-16: Вызов <code>std::mem::drop</code> для принудительного удаления значения до того, как оно выйдет из области видимости</span></p>
 <p>Выполнение данного кода выведет следующий результат::</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-16/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling drop-example v0.1.0 (file:///projects/drop-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running `target/debug/drop-example`
+CustomSmartPointer created.
+Dropping CustomSmartPointer with data `some data`!
+CustomSmartPointer dropped before the end of main.
 </code></pre>
 <p>Текст <code>Dropping CustomSmartPointer with data </code>some data<code>!</code>, напечатанный между <code>CustomSmartPointer created.</code> и текстом <code>CustomSmartPointer dropped before the end of main.</code>, показывает, что код способа <code>drop</code> вызывается для удаления <code>c</code> в этой точке.</p>
 <p>Вы можете использовать код, указанный в реализации типажа <code>Drop</code>, чтобы сделать очистку удобной и безопасной: например, вы можете использовать её для создания своего собственного менеджера памяти! С помощью типажа <code>Drop</code> и системы владения Rust не нужно целенаправленно заботиться о том, чтобы освобождать ресурсы, потому что Rust делает это самостоятельно .</p>

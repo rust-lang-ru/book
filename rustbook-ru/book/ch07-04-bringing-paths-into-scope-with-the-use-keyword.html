@@ -179,47 +179,136 @@
 <p>Необходимость записывать пути к функциям вызова может показаться неудобной и повторяющейся. В приложении 7-7 независимо от того, выбирали ли мы абсолютный или относительный путь к функции <code>add_to_waitlist</code> , каждый раз, когда мы хотели вызвать <code>add_to_waitlist</code> , нам приходилось также указывать <code>front_of_house</code> и <code>hosting</code> . К счастью, есть способ упростить этот процесс: мы можем один раз создать псевдоним на путь при помощи ключевого слова <code>use</code>, а затем использовать более короткое имя везде в области видимости.</p>
 <p>В приложении 7-11 мы подключили модуль <code>crate::front_of_house::hosting</code> в область действия функции <code>eat_at_restaurant</code>, поэтому нам достаточно только указать <code>hosting::add_to_waitlist</code> для вызова функции <code>add_to_waitlist</code> внутри <code>eat_at_restaurant</code>.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground test_harness">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-11/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
+}</code></pre>
 <p><span class="caption">Приложение 7-11. Добавление модуля в область видимости при помощи <code>use</code></span></p>
 <p>Добавление <code>use</code> и пути в область видимости подобно созданию символической ссылки в файловой системе. С добавлением <code>use crate::front_of_house::hosting</code> в корневой модуль крейта, <code>hosting</code> становится допустимым именем в этой области, как если бы модуль <code>hosting</code> был определён в корневом модуле крейта. Пути, подключённые в область видимости с помощью <code>use</code>, также проверяются на доступность, как и любые другие пути.</p>
 <p>Обратите внимание, что <code>use</code> создаёт псевдоним только для той именно области, в которой это объявление <code>use</code> и находится. В приложении 7-12 функция <code>eat_at_restaurant</code> перемещается в новый дочерний модуль с именем <code>customer</code>, область действия которого отличается от области действия указания <code>use</code>, поэтому тело функции не будет собираться:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground test_harness does_not_compile ignore">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-12/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground test_harness does_not_compile ignore">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+use crate::front_of_house::hosting;
+
+mod customer {
+    pub fn eat_at_restaurant() {
+        hosting::add_to_waitlist();
+    }
+}</code></pre>
 <p><span class="caption">Приложение 7-12. Указание <code>use</code> применяется только в её собственной области видимости</span></p>
 <p>Ошибка сборщика показывает, что данный псевдоним не может использоваться в модуле <code>customer</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch07-managing-growing-projects/listing-07-12/output.txt}}
+<pre><code class="language-console">$ cargo build
+   Compiling restaurant v0.1.0 (file:///projects/restaurant)
+error[E0433]: failed to resolve: use of undeclared crate or module `hosting`
+  --&gt; src/lib.rs:11:9
+   |
+11 |         hosting::add_to_waitlist();
+   |         ^^^^^^^ use of undeclared crate or module `hosting`
+   |
+help: consider importing this module through its public re-export
+   |
+10 +     use crate::hosting;
+   |
+
+warning: unused import: `crate::front_of_house::hosting`
+ --&gt; src/lib.rs:7:5
+  |
+7 | use crate::front_of_house::hosting;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+For more information about this error, try `rustc --explain E0433`.
+warning: `restaurant` (lib) generated 1 warning
+error: could not compile `restaurant` (lib) due to 1 previous error; 1 warning emitted
 </code></pre>
 <p>Обратите внимание, что есть также предупреждение о том, что <code>use</code> не используется в своей области! Чтобы решить эту проблему, можно переместить <code>use</code> в модуль <code>customer</code>, или же можно сослаться на псевдоним в родительском модуле с помощью <code>super::hosting</code> в дочернем модуле <code>customer</code>.</p>
 <h3 id="Создание-идиоматических-путей-с-use"><a class="header" href="#Создание-идиоматических-путей-с-use">Создание идиоматических путей с <code>use</code></a></h3>
 <p>В приложении 7-11 вы могли бы задаться вопросом, почему мы указали  <code>use crate::front_of_house::hosting</code>, а затем вызвали <code>hosting::add_to_waitlist</code> внутри <code>eat_at_restaurant</code> вместо указания в  <code>use</code> полного пути прямо до функции <code>add_to_waitlist</code> для получения того же результата, что в приложении 7-13.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground test_harness">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-13/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+use crate::front_of_house::hosting::add_to_waitlist;
+
+pub fn eat_at_restaurant() {
+    add_to_waitlist();
+}</code></pre>
 <p><span class="caption">Приложение 7-13: Добавление функции <code>add_to_waitlist</code> в область видимости с <code>use</code> неидиоматическим способом</span></p>
 <p>Хотя приложениеи 7-11 и 7-13 выполняют одну и ту же задачу, приложение 7-11 является идиоматическим способом подключения функции в область видимости с помощью <code>use</code>. Подключение родительского модуля функции в область видимости при помощи <code>use</code> означает, что мы должны указывать родительский модуль при вызове функции. Указание родительского модуля при вызове функции даёт понять, что функция не определена местно, но в то же время сводя к минимуму повторение полного пути. В коде приложения 7-13 не ясно, где именно определена <code>add_to_waitlist</code>.</p>
 <p>С другой стороны, при подключении структур, перечислений и других элементов используя <code>use</code>, идиоматически правильным будет указывать полный путь. Приложение 7-14 показывает идиоматический способ подключения структуры встроенной библиотеки <code>HashMap</code> в область видимости двоичного крейта.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-14/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    map.insert(1, 2);
+}</code></pre></pre>
 <p><span class="caption">Приложение 7-14. Включение <code>HashMap</code> в область видимости идиоматическим способом</span></p>
 <p>За этой идиомой нет веской причины: это просто соглашение, которое появилось само собой. Люди привыкли читать и писать код на Rust таким образом.</p>
 <p>Исключением из этой идиомы является случай, когда мы подключаем два элемента с одинаковыми именами в область видимости используя указанию <code>use</code> — Rust просто не позволяет этого сделать. Приложение 7-15 показывает, как подключить в область действия два вида с одинаковыми именами <code>Result</code>, но из разных родительских модулей и как на них ссылаться.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-15/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground">use std::fmt;
+use std::io;
+
+fn function1() -&gt; fmt::Result {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}
+
+fn function2() -&gt; io::Result&lt;()&gt; {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}</code></pre>
 <p><span class="caption">Приложение 7-15. Для включения двух видов с одинаковыми именами в одну область видимости необходимо использовать их родительские модули.</span></p>
 <p>Как видите, использование имени родительских модулей позволяет различать два вида <code>Result</code>. Если бы вместо этого мы указали <code>use std::fmt::Result</code> и <code>use std::io::Result</code>, мы бы имели два вида <code>Result</code> в одной области видимости, и Rust не смог бы понять какой из двух <code>Result</code> мы имели в виду, когда нашёл бы их употребление в коде.</p>
 <h3 id="Предоставление-новых-имён-с-помощью-ключевого-слова-as"><a class="header" href="#Предоставление-новых-имён-с-помощью-ключевого-слова-as">Предоставление новых имён с помощью ключевого слова <code>as</code></a></h3>
 <p>Есть другое решение проблемы добавления двух видов с одинаковыми именами в одну и ту же область видимости используя <code>use</code>: после пути можно указать <code>as</code> и новое местное имя (псевдоним) для вида. Приложение 7-16 показывает как по-другому написать код из приложения 7-15, путём переименования одного из двух видов <code>Result</code> используя <code>as</code>.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-16/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground">use std::fmt::Result;
+use std::io::Result as IoResult;
+
+fn function1() -&gt; Result {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}
+
+fn function2() -&gt; IoResult&lt;()&gt; {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}</code></pre>
 <p><span class="caption">Приложение 7-16: Переименование вида, когда он включён в область видимости с помощью ключевого слова <code>as</code></span></p>
 <p>Во второй указания <code>use</code> мы выбрали новое имя <code>IoResult</code> для вида <code>std::io::Result</code>, которое теперь не будет конфликтовать с видом <code>Result</code> из <code>std::fmt</code>, который также подключён в область видимости. Приложения 7-15 и 7-16 считаются идиоматичными, поэтому выбор за вами!</p>
 <h3 id="Реэкспорт-имён-с-pub-use"><a class="header" href="#Реэкспорт-имён-с-pub-use">Реэкспорт имён с <code>pub use</code></a></h3>
 <p>Когда мы подключаем имя в область видимости, используя ключевое слово <code>use</code>, то имя, доступное в новой области видимости, является приватным. Чтобы позволить коду, который вызывает наш код, ссылаться на это имя, как если бы оно было определено в области видимости данного кода, можно объединить <code>pub</code> и <code>use</code>. Этот способ называется <em>реэкспортом (re-exporting)</em>, потому что мы подключаем элемент в область видимости, но также делаем этот элемент доступным для подключения в других областях видимости.</p>
 <p>Приложение 7-17 показывает код из приложения 7-11, где <code>use</code> в корневом модуле заменено на <code>pub use</code>.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground test_harness">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-17/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+pub use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
+}</code></pre>
 <p><span class="caption">Приложение 7-17. Предоставление имени для использования любым кодом из новой области при помощи <code>pub use</code></span></p>
 <p>До этого изменения внешний код должен был вызывать функцию <code>add_to_waitlist</code> , используя путь <code>restaurant::front_of_house::hosting::add_to_waitlist()</code> . Теперь, когда это объявление <code>pub use</code> повторно экспортировало модуль <code>hosting</code> из корневого модуля, внешний код теперь может использовать вместо него путь <code>restaurant::hosting::add_to_waitlist()</code> .</p>
 <p>Реэкспорт полезен, когда внутренняя структура вашего кода отличается от того, как программисты, вызывающие ваш код, думают о предметной области. Например, по подобию с рестораном люди, управляющие им, думают о «передней части дома» и «задней части дома». Но клиенты, посещающие ресторан, вероятно, не будут думать о частях ресторана в таких терминах. Используя <code>pub use</code> , мы можем написать наш код с одной структурой, но сделать общедоступной другую структуру. Благодаря этому наша библиотека хорошо организована для программистов, работающих над библиотекой, и для программистов, вызывающих библиотеку. Мы рассмотрим ещё один пример <code>pub use</code> и его влияние на документацию вашего крейта в разделе <a href="ch14-02-publishing-to-crates-io.html#exporting-a-convenient-public-api-with-pub-use" data-md-type="link">«Экспорт удобного общедоступного API с <code>pub use</code>»</a><!-- ignore --> Главы 14.</p>
@@ -231,11 +320,30 @@
 * ch14-03-cargo-workspaces.md
 -->
 <p><span class="filename">Файл: Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch02-guessing-game-tutorial/listing-02-02/Cargo.toml:9:}}
+<pre><code class="language-toml">rand = "0.8.5"
 </code></pre>
 <p>Добавление <code>rand</code> в качестве зависимости в <em>Cargo.toml</em> указывает Cargo загрузить пакет <code>rand</code> и все его зависимости из <a href="https://crates.io/">crates.io</a> и сделать <code>rand</code> доступным для нашего проекта.</p>
 <p>Затем, чтобы подключить определения <code>rand</code> в область видимости нашего пакета, мы добавили строку <code>use</code> начинающуюся с названия пакета <code>rand</code> и списка элементов, которые мы хотим подключить в область видимости. Напомним, что в разделе <a href="ch02-00-guessing-game-tutorial.html#generating-a-random-number">"Генерация случайного числа"</a><!-- ignore --> Главы 2, мы подключили трейт <code>Rng</code> в область видимости и вызвали функцию <code>rand::thread_rng</code>:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-03/src/main.rs:ch07-04}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::io;
+</span>use rand::Rng;
+
+fn main() {
+<span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span>    let secret_number = rand::thread_rng().gen_range(1..=100);
+<span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {guess}");
+</span>}</code></pre>
 <p>Члены сообщества Rust сделали много пакетов доступными на ресурсе <a href="https://crates.io/">crates.io</a>, и добавление любого из них в ваш пакет включает в себя одни и те же шаги: добавить внешние пакеты в файл <em>Cargo.toml</em> вашего пакета, использовать <code>use</code> для подключения элементов внешних пакетов в область видимости.</p>
 <p>Обратите внимание, что стандартная библиотека <code>std</code> также является крейтом, внешним по отношению к нашему пакету. Поскольку стандартная библиотека поставляется с языком Rust, нам не нужно изменять <em>Cargo.toml</em> для подключения <code>std</code>. Но нам нужно ссылаться на неё при помощи <code>use</code>, чтобы добавить элементы оттуда в область видимости нашего пакета. Например, с <code>HashMap</code> мы использовали бы эту строку:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -246,19 +354,77 @@
 <h3 id="Использование-вложенных-путей-для-уменьшения-длинных-списков-use"><a class="header" href="#Использование-вложенных-путей-для-уменьшения-длинных-списков-use">Использование вложенных путей для уменьшения длинных списков <code>use</code></a></h3>
 <p>Если мы используем несколько элементов, определённых в одном крейте или в том же модуле, то перечисление каждого элемента в отдельной строке может занимать много вертикального пространства в файле. Например, эти две указания <code>use</code> используются в программе угадывания числа (приложение 2-4) для подключения элементов из <code>std</code> в область видимости:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch07-managing-growing-projects/no-listing-01-use-std-unnested/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span>// --snip--
+use std::cmp::Ordering;
+use std::io;
+// --snip--
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {guess}");
+</span><span class="boring">
+</span><span class="boring">    match guess.cmp(&amp;secret_number) {
+</span><span class="boring">        Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">        Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">        Ordering::Equal =&gt; println!("You win!"),
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p>Вместо этого, мы можем использовать вложенные пути, чтобы добавить эти элементы в область видимости одной строкой. Мы делаем это, как показано в приложении 7-18, указывая общую часть пути, за которой следуют два двоеточия, а затем фигурные скобки вокруг списка тех частей продолжения пути, которые отличаются.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-18/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span>// --snip--
+use std::{cmp::Ordering, io};
+// --snip--
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    let guess: u32 = guess.trim().parse().expect("Please type a number!");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {guess}");
+</span><span class="boring">
+</span><span class="boring">    match guess.cmp(&amp;secret_number) {
+</span><span class="boring">        Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">        Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">        Ordering::Equal =&gt; println!("You win!"),
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 7-18. Указание вложенного пути для добавления нескольких элементов с одинаковым префиксом в область видимости</span></p>
 <p>В больших программах, подключение множества элементов из одного пакета или модуля с использованием вложенных путей может значительно сократить количество необходимых отдельных указаний <code>use</code>!</p>
 <p>Можно использовать вложенный путь на любом уровне, что полезно при объединении двух указаний <code>use</code>, которые имеют общую часть пути. Например, в приложении 7-19 показаны две указания <code>use</code>: одна подключает <code>std::io</code>, а другая подключает <code>std::io::Write</code> в область видимости.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-19/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">use std::io;
+use std::io::Write;</code></pre>
 <p><span class="caption">Приложение 7-19: Две указания <code>use</code>, в которых один путь является частью другого</span></p>
 <p>Общей частью этих двух путей является <code>std::io</code>, и это полный первый путь. Чтобы объединить эти два пути в одной указания <code>use</code>, мы можем использовать ключевое слово <code>self</code> во вложенном пути, как показано в приложении 7-20.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-20/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">use std::io::{self, Write};</code></pre>
 <p><span class="caption">Приложение 7-20: Объединение путей из Приложения 7-19 в одну указанию <code>use</code></span></p>
 <p>Эта строка подключает <code>std::io</code> и <code>std::io::Write</code> в область видимости.</p>
 <h3 id="Оператор--glob"><a class="header" href="#Оператор--glob">Оператор * (glob)</a></h3>

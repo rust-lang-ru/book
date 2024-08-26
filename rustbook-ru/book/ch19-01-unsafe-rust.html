@@ -204,23 +204,32 @@
 </ul>
 <p>Отказавшись от этих заверений, вы можете обменять безопасность  на большую производительность или возможность взаимодействия с другим языком или оборудованием, где заверения Rust не применяются.</p>
 <p>В приложении 19-1 показано, как создать неизменяемый и изменяемый сырой указатель из ссылок.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-01/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut num = 5;
+
+    let r1 = &amp;num as *const i32;
+    let r2 = &amp;mut num as *mut i32;
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 19-1: Создание необработанных указателей из ссылок</span></p>
 <p>Обратите внимание, что мы не используем ключевое слово <code>unsafe</code> в этом коде. Можно создавать сырые указатели в безопасном коде; мы просто не можем разыменовывать сырые указатели за пределами небезопасного раздела, как вы увидите чуть позже.</p>
 <p>Мы создали сырые указатели, используя <code>as</code> для приведения неизменяемой и изменяемой ссылки к соответствующим им видам сырых указателей. Поскольку мы создали их непосредственно из ссылок, которые обязательно являются действительными, мы знаем, что эти определенные сырые указатели являются действительными, но мы не можем делать такое же предположение о любом сыром указателе.</p>
 <p>Чтобы отобразить это, создадим сырой указатель, в достоверности которого мы не можем быть так уверены. В приложении 19-2 показано, как создать необработанный указатель на произвольное место в памяти. Попытка использовать произвольную память является непредсказуемой: по этому адресу могут быть данные, а могут и не быть, сборщик может оптимизировать код так, что доступа к памяти не будет, или программа может завершиться с ошибкой сегментации. Обычно нет веских причин писать такой код, но это возможно.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-02/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let address = 0x012345usize;
+    let r = address as *const i32;
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 19-2: Создание сырого указателя на произвольный адрес памяти</span></p>
 <p>Напомним, что можно создавать сырые указатели в безопасном коде, но нельзя <em>разыменовывать</em> сырые указатели и читать данные, на которые они указывают. В приложении 19-3 мы используем оператор разыменования <code>*</code> для сырого указателя, который требует <code>unsafe</code> раздела.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-03/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut num = 5;
+
+    let r1 = &amp;num as *const i32;
+    let r2 = &amp;mut num as *mut i32;
+
+    unsafe {
+        println!("r1 is: {}", *r1);
+        println!("r2 is: {}", *r2);
+    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 19-3: Разыменование сырых указателей в разделе <code>unsafe</code></span></p>
 <p>Создание указателей безопасно. Только при попытке доступа к объекту по адресу в указателе мы можем получить недопустимое значение.</p>
@@ -229,45 +238,114 @@
 <h3 id="Вызов-небезопасной-функции-или-способа"><a class="header" href="#Вызов-небезопасной-функции-или-способа">Вызов небезопасной функции или способа</a></h3>
 <p>Второй вид действий, которые можно выполнять в небезопасном разделе - это вызов небезопасных функций. Небезопасные функции и способы выглядят точно так же, как обычные функции и способы, но перед остальным определением у них есть дополнительное <code>unsafe</code>. Ключевое слово <code>unsafe</code> в данном среде указывает на то, что к функции предъявляются требования, которые мы должны соблюдать при вызове этой функции, поскольку Rust не может обеспечить, что мы их выполняем. Вызывая небезопасную функцию внутри раздела <code>unsafe</code>, мы говорим, что прочитали документацию к этой функции и берём на себя ответственность за соблюдение её условий.</p>
 <p>Вот небезопасная функция с именем <code>dangerous</code> которая ничего не делает в своём теле:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-01-unsafe-fn/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    unsafe fn dangerous() {}
+
+    unsafe {
+        dangerous();
+    }
 <span class="boring">}</span></code></pre></pre>
 <p>Мы должны вызвать функцию <code>dangerous</code> в отдельном <code>unsafe</code> разделе. Если мы попробуем вызвать <code>dangerous</code> без <code>unsafe</code> раздела, мы получим ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch19-advanced-features/output-only-01-missing-unsafe/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling unsafe-example v0.1.0 (file:///projects/unsafe-example)
+error[E0133]: call to unsafe function `dangerous` is unsafe and requires unsafe function or block
+ --&gt; src/main.rs:4:5
+  |
+4 |     dangerous();
+  |     ^^^^^^^^^^^ call to unsafe function
+  |
+  = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `unsafe-example` (bin "unsafe-example") due to 1 previous error
 </code></pre>
 <p>С помощью раздела <code>unsafe</code> мы сообщаем Rust, что прочитали документацию к функции, поняли, как правильно её использовать, и убедились, что выполняем контракт функции.</p>
 <p>Тела небезопасных функций являются фактически <code>unsafe</code> разделами, поэтому для выполнения других небезопасных действий внутри небезопасной функции не нужно добавлять ещё один <code>unsafe</code> блок.</p>
 <h4 id="Создание-безопасных-абстракций-вокруг-небезопасного-кода"><a class="header" href="#Создание-безопасных-абстракций-вокруг-небезопасного-кода">Создание безопасных абстракций вокруг небезопасного кода</a></h4>
 <p>То, что функция содержит небезопасный код, не означает, что мы должны пометить всю функцию как небезопасную. На самом деле, обёртывание небезопасного кода в безопасную функцию - это обычная абстракция. В качестве примера рассмотрим функцию <code>split_at_mut</code> из встроенной библиотеки, которая требует некоторого небезопасного кода. Рассмотрим, как мы могли бы её реализовать. Этот безопасный способ определён для изменяемых срезов: он берет один срез и превращает его в два, разделяя срез по порядковому казателю, указанному в качестве переменной. В приложении 19-4 показано, как использовать <code>split_at_mut</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-04/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut v = vec![1, 2, 3, 4, 5, 6];
+
+    let r = &amp;mut v[..];
+
+    let (a, b) = r.split_at_mut(3);
+
+    assert_eq!(a, &amp;mut [1, 2, 3]);
+    assert_eq!(b, &amp;mut [4, 5, 6]);
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 19-4: Использование безопасной функции <code>split_at_mut</code></span></p>
 <p>Эту функцию нельзя реализовать, используя только безопасный Rust. Попытка реализации могла бы выглядеть примерно как в приложении 19-5, который не собирается. Для простоты мы реализуем <code>split_at_mut</code> как функцию, а не как способ, и только для значений вида <code>i32</code>, а не обобщённого вида <code>T</code>.</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-05/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">fn split_at_mut(values: &amp;mut [i32], mid: usize) -&gt; (&amp;mut [i32], &amp;mut [i32]) {
+    let len = values.len();
+
+    assert!(mid &lt;= len);
+
+    (&amp;mut values[..mid], &amp;mut values[mid..])
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let mut vector = vec![1, 2, 3, 4, 5, 6];
+</span><span class="boring">    let (left, right) = split_at_mut(&amp;mut vector, 3);
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 19-5: Попытка реализации <code>split_at_mut</code> с использованием только безопасного Rust</span></p>
 <p>Эта функция сначала получает общую длину среза. Затем она проверяет (assert), что порядковый указатель, переданный в качестве свойства, находится в границах среза, сравнивая его с длиной. Assert означает, что если мы передадим порядковый указатель, который больше, чем длина среза, функция запаникует ещё до попытки использования этого порядкового указателя.</p>
 <p>Затем мы возвращаем два изменяемых фрагмента в кортеже: один от начала исходного фрагмента до <code>mid</code> порядкового казателя (не включая сам mid), а другой - от <code>mid</code> (включая сам mid) до конца фрагмента.</p>
 <p>При попытке собрать код в приложении 19-5, мы получим ошибку.</p>
-<pre><code class="language-console">{{#include ../listings/ch19-advanced-features/listing-19-05/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling unsafe-example v0.1.0 (file:///projects/unsafe-example)
+error[E0499]: cannot borrow `*values` as mutable more than once at a time
+ --&gt; src/main.rs:6:31
+  |
+1 | fn split_at_mut(values: &amp;mut [i32], mid: usize) -&gt; (&amp;mut [i32], &amp;mut [i32]) {
+  |                         - let's call the lifetime of this reference `'1`
+...
+6 |     (&amp;mut values[..mid], &amp;mut values[mid..])
+  |     --------------------------^^^^^^--------
+  |     |     |                   |
+  |     |     |                   second mutable borrow occurs here
+  |     |     first mutable borrow occurs here
+  |     returning this value requires that `*values` is borrowed for `'1`
+  |
+  = help: use `.split_at_mut(position)` to obtain two mutable non-overlapping sub-slices
+
+For more information about this error, try `rustc --explain E0499`.
+error: could not compile `unsafe-example` (bin "unsafe-example") due to 1 previous error
 </code></pre>
 <p>Анализатор заимствований Rust не может понять, что мы заимствуем различные части среза, он понимает лишь, что мы хотим осуществить заимствование частей одного среза дважды. Заимствование различных частей среза в принципе нормально, потому что они не перекрываются, но Rust недостаточно умён, чтобы это понять. Когда мы знаем, что код верный, но Rust этого не понимает, значит пришло время прибегнуть к небезопасному коду.</p>
 <p>Приложение 19-6 отображает, как можно использовать <code>unsafe</code> блок, сырой указатель и вызовы небезопасных функций чтобы <code>split_at_mut</code> заработала:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust">use std::slice;
+
+fn split_at_mut(values: &amp;mut [i32], mid: usize) -&gt; (&amp;mut [i32], &amp;mut [i32]) {
+    let len = values.len();
+    let ptr = values.as_mut_ptr();
+
+    assert!(mid &lt;= len);
+
+    unsafe {
+        (
+            slice::from_raw_parts_mut(ptr, mid),
+            slice::from_raw_parts_mut(ptr.add(mid), len - mid),
+        )
+    }
+}
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-06/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let mut vector = vec![1, 2, 3, 4, 5, 6];
+</span><span class="boring">    let (left, right) = split_at_mut(&amp;mut vector, 3);
+</span><span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 19-6. Использование небезопасного кода в реализации функции <code>split_at_mut</code></span></p>
 <p>Напомним, из раздела <a href="ch04-03-slices.html#the-slice-type">"Вид срез"</a><!-- ignore --> главы 4, что срезы состоят из указателя на некоторые данные и длины. Мы используем способ <code>len</code> для получения длины среза и способ <code>as_mut_ptr</code> для доступа к сырому указателю среза. Поскольку у нас есть изменяемый срез на значения вида <code>i32</code>, функция <code>as_mut_ptr</code> возвращает сырой указатель вида <code>*mut i32</code>, который мы сохранили в переменной <code>ptr</code>.</p>
 <p>Далее проверяем, что порядковый казатель<code>mid</code> находится в границах среза. Затем мы обращаемся к небезопасному коду: функция <code>slice::from_raw_parts_mut</code> принимает сырой указатель, длину и создаёт срез. Мы используем эту функцию для создания среза, начинающегося с <code>ptr</code> и имеющего длину в <code>mid</code> элементов. Затем мы вызываем способ <code>add</code> у <code>ptr</code> с <code>mid</code> в качестве переменной, чтобы получить сырой указатель, который начинается с <code>mid</code>, и создаём срез, используя этот указатель и оставшееся количество элементов после <code>mid</code> в качестве длины.</p>
 <p>Функция <code>slice::from_raw_parts_mut</code> является небезопасной, потому что она принимает необработанный указатель и должна полагаться на то, что этот указатель действителен. Способ <code>add</code> для необработанных указателей также небезопасен, поскольку он должен считать, что местоположение смещения также является действительным указателем. Поэтому мы были вынуждены разместить <code>unsafe</code> разделвокруг наших вызовов <code>slice::from_raw_parts_mut</code> и <code>add</code>, чтобы иметь возможность вызвать их. Посмотрев на код и добавив утверждение, что <code>mid</code> должен быть меньше или равен <code>len</code>, мы можем сказать, что все необработанные указатели, используемые в разделе <code>unsafe</code>, будут корректными указателями на данные внутри среза. Это приемлемое и уместное использование <code>unsafe</code>.</p>
 <p>Обратите внимание, что нам не нужно помечать результирующую функцию <code>split_at_mut</code> как <code>unsafe</code>, и мы можем вызвать эту функцию из безопасного Rust. Мы создали безопасную абстракцию для небезопасного кода с помощью реализации функции, которая использует код <code>unsafe</code> раздела безопасным образом, поскольку она создаёт только допустимые указатели из данных, к которым эта функция имеет доступ.</p>
 <p>Напротив, использование <code>slice::from_raw_parts_mut</code> в приложении 19-7 приведёт к вероятному сбою при использовании среза. Этот код использует произвольный адрес памяти и создаёт срез из 10000 элементов.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-07/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::slice;
+
+    let address = 0x01234usize;
+    let r = address as *mut i32;
+
+    let values: &amp;[i32] = unsafe { slice::from_raw_parts_mut(r, 10000) };
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 19-7: Создание среза из произвольного адреса памяти</span></p>
 <p>Мы не владеем памятью в этом произвольном месте, и нет никакой заверения, что созданный этим кодом фрагмент содержит допустимые значения <code>i32</code>. Попытка использовать <code>values</code> так, как будто это допустимый срез, приводит к неопределённому поведению.</p>
@@ -275,10 +353,15 @@
 <p>Иногда вашему коду на языке Rust может потребоваться взаимодействие с кодом, написанным на другом языке. Для этого в Rust есть ключевое слово <code>extern</code>, которое облегчает создание и использование <em>внешней оболочки внешних функций (Foreign Function Interface - FFI)</em>. FFI - это способ для языка программирования определить функции и позволить другому (внешнему) языку программирования вызывать эти функции.</p>
 <p>Приложение 19-8 отображает, как настроить встраивание с функцией <code>abs</code> из встроенной библиотеки C. Функции, объявленные внутри разделов <code>extern</code>, всегда небезопасны для вызова из кода Rust. Причина в том, что другие языки не обеспечивают соблюдение правил и заверений Rust, Rust также не может проверить заверения, поэтому ответственность за безопасность ложится на программиста.</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-08/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">extern "C" {
+    fn abs(input: i32) -&gt; i32;
+}
+
+fn main() {
+    unsafe {
+        println!("Absolute value of -3 according to C: {}", abs(-3));
+    }
+}</code></pre></pre>
 <p><span class="caption">Приложение 19-8: Объявление и вызов <code>extern</code> функции, написанной на другом языке программирования</span></p>
 <p>Внутри раздела <code>extern "C"</code> мы перечисляем имена и сигнатуры внешних функций из другого языка, которые мы хотим вызвать. Часть <code>"C"</code> определяет какой <em>application binary interface</em> (ABI - двоичный внешняя оболочка приложений) использует внешняя функция. Внешнюю оболочку ABI определяет как вызвать функцию на уровне ассемблера. Использование ABI <code>"C"</code> является наиболее часто используемым и следует правилам ABI внешней оболочки языка Си.</p>
 <blockquote>
@@ -298,27 +381,44 @@ pub extern "C" fn call_from_c() {
 <p>В этой книге мы ещё не говорили о <em>вездесущих переменных</em>, которые Rust поддерживает, но с которыми могут возникнуть проблемы из-за действующих в Rust правил владения. Если два потока обращаются к одной и той же изменяемой вездесущей переменной, это может привести к гонке данных.</p>
 <p>Вездесущие переменные в Rust называют <em>статическими</em> (static). Приложение 19-9 отображает пример объявления и использования в качестве значения статической переменной, имеющей вид строкового среза:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-09/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">static HELLO_WORLD: &amp;str = "Hello, world!";
+
+fn main() {
+    println!("name is: {HELLO_WORLD}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 19-9: Определение и использование неизменяемой статической переменной</span></p>
 <p>Статические переменные похожи на константы, которые мы обсуждали в разделе <a href="ch03-01-variables-and-mutability.html#constants">“Различия между переменными и константами”</a><!-- ignore --> главы 3. Имена статических переменных по общему соглашению пишутся в нотации <code>SCREAMING_SNAKE_CASE</code>, и мы <em>должны</em> указывать вид переменной, которым в данном случае является <code>&amp;'static str</code>. Статические переменные могут хранить только ссылки со временем жизни <code>'static</code>, это означает что сборщик Rust может вывести время жизни и нам не нужно прописывать его явно. Доступ к неизменяемой статической переменной является безопасным.</p>
 <p>Тонкое различие между константами и неизменяемыми статическими переменными заключается в том, что значения в статической переменной имеют фиксированный адрес в памяти. При использовании значения всегда будут доступны одни и те же данные. Константы, с другой стороны, могут повторять свои данные при каждом использовании. Ещё одно отличие заключается в том, что статические переменные могут быть изменяемыми. Обращение к изменяемым статическим переменным и их изменение является <em>небезопасным</em>. В приложении 19-10 показано, как объявить, получить доступ и модифицировать изменяемую статическую переменную с именем <code>COUNTER</code>.</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-10/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">static mut COUNTER: u32 = 0;
+
+fn add_to_count(inc: u32) {
+    unsafe {
+        COUNTER += inc;
+    }
+}
+
+fn main() {
+    add_to_count(3);
+
+    unsafe {
+        println!("COUNTER: {COUNTER}");
+    }
+}</code></pre></pre>
 <p><span class="caption">Приложение 19-10: Чтение из изменяемой статической переменной или запись в неё небезопасны</span></p>
 <p>Как и с обычными переменными, мы определяем изменяемость с помощью ключевого слова <code>mut</code>. Любой код, который читает из или пишет в переменную <code>COUNTER</code> должен находиться в <code>unsafe</code> разделе. Этот код собирается и печатает <code>COUNTER: 3</code>, как и следовало ожидать, потому что выполняется в одном потоке. Наличие нескольких потоков с доступом к <code>COUNTER</code> приведёт к ситуации гонки данных.</p>
 <p>Наличие изменяемых данных, которые доступны вездесуще, делает трудным реализацию заверения отсутствия гонок данных, поэтому Rust считает изменяемые статические переменные небезопасными. Там, где это возможно, предпочтительно использовать техники многопоточности и умные указатели, ориентированные на многопоточное исполнение, которые мы обсуждали в главе 16. Таким образом, сборщик сможет проверить, что обращение к данным, доступным из разных потоков, выполняется безопасно.</p>
 <h3 id="Реализация-небезопасных-типажей"><a class="header" href="#Реализация-небезопасных-типажей">Реализация небезопасных типажей</a></h3>
 <p>Мы можем использовать <code>unsafe</code> для реализации небезопасного трейта. Трейт является небезопасным, если хотя бы один из его способов имеет некоторый инвариант, который сборщик не может проверить. Мы объявляем трейты <code>unsafe</code>, добавляя ключевое слово <code>unsafe</code> перед <code>trait</code> и помечая реализацию трейта как <code>unsafe</code>, как показано в приложении 19-11.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-11/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">unsafe trait Foo {
+    // methods go here
+}
+
+unsafe impl Foo for i32 {
+    // method implementations go here
+}
+
+fn main() {}</code></pre></pre>
 <p><span class="caption">Приложение 19-11: Определение и реализация небезопасного трейта</span></p>
 <p>Используя <code>unsafe impl</code>, мы даём обещание поддерживать инварианты, которые сборщик не может проверить.</p>
 <p>Для примера вспомним маркерные типажи <code>Sync</code> и <code>Send</code>, которые мы обсуждали в разделе <a data-md-type="raw_html" href="ch16-04-extensible-concurrency-sync-and-send.html#extensible-concurrency-with-the-sync-and-send-traits">"Расширяемый параллелизм с помощью типажей <code>Sync</code> и <code>Send</code>"</a><!-- ignore --> главы 16: сборщик реализует эти типажи самостоятельно , если наши виды полностью состоят из видов <code>Send</code> и <code>Sync</code>. Если мы создадим вид, который содержит вид, не являющийся <code>Send</code> или <code>Sync</code>, такой, как сырой указатель, и мы хотим пометить этот вид как <code>Send</code> или <code>Sync</code>, мы должны использовать <code>unsafe</code> блок. Rust не может проверить, что наш вид поддерживает заверения того, что он может быть безопасно передан между потоками или доступен из нескольких потоков; поэтому нам нужно добавить эти проверки вручную и указать это с помощью <code>unsafe</code>.</p>

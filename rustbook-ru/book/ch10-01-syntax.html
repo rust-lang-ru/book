@@ -181,10 +181,43 @@
 <p>Когда мы объявляем функцию с обобщёнными видами, мы размещаем обобщённые виды в сигнатуре функции, где мы обычно указываем виды данных переменных и возвращаемого значения. Используя обобщённые виды, мы делаем код более гибким и предоставляем большую функциональность при вызове нашей функции, предотвращая повторение кода.</p>
 <p>Рассмотрим пример с функцией <code>largest</code>. Приложение 10-4 показывает две функции, каждая из которых находит самое большое значение в срезе своего вида. Позже мы объединим их в одну функцию, использующую обобщённые виды данных.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-04/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn largest_i32(list: &amp;[i32]) -&gt; &amp;i32 {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn largest_char(list: &amp;[char]) -&gt; &amp;char {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest_i32(&amp;number_list);
+    println!("The largest number is {result}");
+<span class="boring">    assert_eq!(*result, 100);
+</span>
+    let char_list = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest_char(&amp;char_list);
+    println!("The largest char is {result}");
+<span class="boring">    assert_eq!(*result, 'y');
+</span>}</code></pre></pre>
 <p><span class="caption">Приложение 10-4: две функции, отличающиеся только именем и видом обрабатываемых данных</span></p>
 <p>Функция <code>largest_i32</code> уже встречалась нам: мы извлекли её в приложении 10-3, когда боролись с повторением кода — она находит наибольшее значение вида <code>i32</code> в срезе. Функция <code>largest_char</code> находит самое большое значение вида <code>char</code> в срезе. Тело у этих функций одинаковое, поэтому давайте избавимся от повторяемлшл кода, используя свойство обобщённого вида в одной функции.</p>
 <p>Для свойствоизации видов данных в новой объявляемой функции нам нужно дать имя обобщённому виду — так же, как мы это делаем для переменных функций. Можно использовать любой определитель для имени свойства вида, но мы будем использовать <code>T</code>, потому что по соглашению имена свойств в Rust должны быть короткими (обычно длиной в один символ), а именование видов в Rust делается в нотации UpperCamelCase. Сокращение слова «type» до одной буквы <code>T</code> является стандартным выбором большинства программистов, использующих язык Rust.</p>
@@ -193,34 +226,99 @@
 <p>Объявление читается так: функция <code>largest</code> является обобщённой по виду <code>T</code>. Эта функция имеет один свойство с именем <code>list</code>, который является срезом значений с видом данных <code>T</code>. Функция <code>largest</code> возвращает значение этого же вида <code>T</code>.</p>
 <p>Приложение 10-5 показывает определение функции <code>largest</code> с использованием обобщённых видов данных в её сигнатуре. Приложение также показывает, как мы можем вызвать функцию со срезом данных вида <code>i32</code> или <code>char</code>. Данный код пока не будет собираться, но мы исправим это к концу раздела.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-05/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">fn largest&lt;T&gt;(list: &amp;[T]) -&gt; &amp;T {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest(&amp;number_list);
+    println!("The largest number is {result}");
+
+    let char_list = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest(&amp;char_list);
+    println!("The largest char is {result}");
+}</code></pre>
 <p><span class="caption">Приложение 10-5: функция <code>largest</code>, использующая свойства обобщённого типа; пока ещё не собирается</span></p>
 <p>Если мы соберем программу сейчас, мы получим следующую ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-05/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0369]: binary operation `&gt;` cannot be applied to type `&amp;T`
+ --&gt; src/main.rs:5:17
+  |
+5 |         if item &gt; largest {
+  |            ---- ^ ------- &amp;T
+  |            |
+  |            &amp;T
+  |
+help: consider restricting type parameter `T`
+  |
+1 | fn largest&lt;T: std::cmp::PartialOrd&gt;(list: &amp;[T]) -&gt; &amp;T {
+  |             ++++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0369`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
 </code></pre>
 <p>В подсказке упоминается <code>std::cmp::PartialOrd</code>, который является <em>типажом</em>. Мы поговорим про типажи в следующем разделе. Сейчас ошибка в функции <code>largest</code> указывает, что функция не будет работать для всех возможных видов <code>T</code>. Так как мы хотим сравнивать значения вида <code>T</code> в теле функции, мы можем использовать только те виды, данные которых можно упорядочить: можем упорядочить — значит, можем и сравнить. Чтобы можно было задействовать сравнения, стандартная библиотека имеет типаж <code>std::cmp::PartialOrd</code>, который вы можете реализовать для видов (смотрите дополнение С для большей сведений про данный типаж). Следуя совету в сообщении сборщика, ограничим вид <code>T</code> теми вариантами, которые поддерживают типаж <code>PartialOrd</code>, и тогда пример успешно  ссобирается, так как стандартная библиотека реализует <code>PartialOrd</code> как для вида <code>i32</code>, так и для вида <code>char</code>.</p>
 <h3 id="В-определении-структур"><a class="header" href="#В-определении-структур">В определении структур</a></h3>
 <p>Мы также можем определить структуры, использующие обобщённые виды в одном или нескольких своих полях, с помощью синтаксиса <code>&lt;&gt;</code>. Приложение 10-6 показывает, как определить структуру <code>Point&lt;T&gt;</code>, чтобы хранить поля координат <code>x</code> и <code>y</code> любого вида данных.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-06/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+fn main() {
+    let integer = Point { x: 5, y: 10 };
+    let float = Point { x: 1.0, y: 4.0 };
+}</code></pre></pre>
 <p><span class="caption">Приложение 10-6: структура <code>Point</code>, содержащая поля <code>x</code> и <code>y</code> вида <code>T</code></span></p>
 <p>Синтаксис использования обобщённых видов в определении структуры очень похож на синтаксис в определении функции. Сначала мы объявляем имена видов свойств внутри треугольных скобок сразу после названия структуры. Затем мы можем использовать обобщённые виды в определении структуры в тех местах, где ранее мы указывали бы определенные виды.</p>
 <p>Так как мы используем только один обобщённый вид данных для определения структуры <code>Point&lt;T&gt;</code>, это определение означает, что структура <code>Point&lt;T&gt;</code> является обобщённой с видом <code>T</code>, и <em>оба</em> поля <code>x</code> и <code>y</code> имеют одинаковый вид, каким бы он не являлся. Если мы создадим экземпляр структуры <code>Point&lt;T&gt;</code> со значениями разных видов, как показано в приложении 10-7, наш код не ссобирается.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-07/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">struct Point&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+fn main() {
+    let wont_work = Point { x: 5, y: 4.0 };
+}</code></pre>
 <p><span class="caption">Приложение 10-7: поля <code>x</code> и <code>y</code> должны быть одного вида, так как они имеют один и тот же обобщённый вид <code>T</code></span></p>
 <p>В этом примере, когда мы присваиваем целочисленное значение 5 переменной <code>x</code> , мы сообщаем сборщику, что обобщённый вид <code>T</code> будет целым числом для этого экземпляра <code>Point&lt;T&gt;</code>. Затем, когда мы указываем значение 4.0 (имеющее вид, отличный от целого числа) для <code>y</code>, который по нашему определению должен иметь тот же вид, что и <code>x</code>, мы получим ошибку несоответствия видов:</p>
-<pre><code class="language-console">{{#include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-07/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:7:38
+  |
+7 |     let wont_work = Point { x: 5, y: 4.0 };
+  |                                      ^^^ expected integer, found floating-point number
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
 </code></pre>
 <p>Чтобы определить структуру <code>Point</code>, где оба значения <code>x</code> и <code>y</code> являются обобщёнными, но различными видами, можно использовать несколько свойств обобщённого вида. Например, в приложении 10-8 мы изменим определение <code>Point</code> таким образом, чтобы оно использовало обобщённые виды <code>T</code> и <code>U</code>, где <code>x</code> имеет вид <code>T</code> а <code>y</code> имеет вид <code>U</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-08/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;T, U&gt; {
+    x: T,
+    y: U,
+}
+
+fn main() {
+    let both_integer = Point { x: 5, y: 10 };
+    let both_float = Point { x: 1.0, y: 4.0 };
+    let integer_and_float = Point { x: 5, y: 4.0 };
+}</code></pre></pre>
 <p><span class="caption">Приложение 10-8: структура <code>Point&lt;T, U&gt;</code> обобщена для двух видов, так что <code>x</code> и <code>y</code> могут быть значениями разных видов</span></p>
 <p>Теперь разрешены все показанные экземпляры вида <code>Point</code>! В объявлении можно использовать сколь угодно много свойств обобщённого вида, но если делать это в большом количестве, код будет тяжело читать. Если в вашем коде требуется много обобщённых видов, возможно, стоит разбить его на более мелкие части.</p>
 <h3 id="В-определениях-перечислений"><a class="header" href="#В-определениях-перечислений">В определениях перечислений</a></h3>
@@ -246,27 +344,75 @@
 <h3 id="В-определении-способов"><a class="header" href="#В-определении-способов">В определении способов</a></h3>
 <p>Мы можем реализовать способы для структур и перечислений (как мы делали в главе 5) и в определениях этих способов также использовать обобщённые виды. В приложении 10-9 показана структура <code>Point&lt;T&gt;</code>, которую мы определили в приложении 10-6, с добавленным для неё способом <code>x</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-09/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+impl&lt;T&gt; Point&lt;T&gt; {
+    fn x(&amp;self) -&gt; &amp;T {
+        &amp;self.x
+    }
+}
+
+fn main() {
+    let p = Point { x: 5, y: 10 };
+
+    println!("p.x = {}", p.x());
+}</code></pre></pre>
 <p><span class="caption">Приложение 10-9: Реализация способа с именем <code>x</code> у структуры <code>Point&lt;T&gt;</code>, которая будет возвращать ссылку на поле <code>x</code> вида <code>T</code></span></p>
 <p>Здесь мы определили способ с именем <code>x</code> у структуры <code>Point&lt;T&gt;</code>, который возвращает ссылку на данные в поле <code>x</code>.</p>
 <p>Обратите внимание, что мы должны объявить <code>T</code> сразу после <code>impl</code> .  В этом случае мы можем использовать <code>T</code> для указания на то, что реализуем способ для вида <code>Point&lt;T&gt;</code>. Объявив <code>T</code> универсальным видом сразу после <code>impl</code> , Rust может определить, что вид в угловых скобках в <code>Point</code> является универсальным, а не определенным видом. Мы могли бы выбрать другое имя для этого обобщённого свойства, отличное от имени, использованного в определении структуры, но обычно используют одно и то же имя. Способы, написанные внутри раздела <code>impl</code> , который использует обобщённый вид, будут определены для любого экземпляра вида, независимо от того, какой определенный вид в конечном итоге будет подставлен вместо этого обобщённого.</p>
 <p>Мы можем также указать ограничения, какие обобщённые виды разрешено использовать при определении способов. Например, мы могли бы реализовать способы только для экземпляров вида <code>Point&lt;f32&gt;</code>, а не для экземпляров <code>Point&lt;T&gt;</code>, в которых используется произвольный обобщённый вид. В приложении 10-10 мы используем определенный вид <code>f32</code>, что означает, что мы не определяем никакие виды после <code>impl</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct Point&lt;T&gt; {
+</span><span class="boring">    x: T,
+</span><span class="boring">    y: T,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Point&lt;T&gt; {
+</span><span class="boring">    fn x(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.x
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Point&lt;f32&gt; {
+    fn distance_from_origin(&amp;self) -&gt; f32 {
+        (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-10/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let p = Point { x: 5, y: 10 };
+</span><span class="boring">
+</span><span class="boring">    println!("p.x = {}", p.x());
+</span><span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 10-10: раздел<code>impl</code>, который применяется только к структуре, имеющей определенный вид для свойства обобщённого вида <code>T</code></span></p>
 <p>Этот код означает, что вид <code>Point&lt;f32&gt;</code> будет иметь способ с именем <code>distance_from_origin</code>, а другие экземпляры <code>Point&lt;T&gt;</code>, где <code>T</code> имеет вид, отличный от <code>f32</code>, не будут иметь этого способа. Способ вычисляет, насколько далеко наша точка находится от точки с координатами (0.0, 0.0), и использует математические действия, доступные только для видов с плавающей точкой.</p>
 <p>Свойства обобщённого вида, которые мы используем в определении структуры, не всегда совпадают с подобиями, использующимися в сигнатурах способов этой структуры. Чтобы пример был более очевидным, в приложении 10-11 используются обобщённые виды <code>X1</code> и <code>Y1</code> для определения структуры <code>Point</code> и виды <code>X2</code> <code>Y2</code> для сигнатуры способа <code>mixup</code>. Способ создаёт новый экземпляр структуры <code>Point</code>, где значение <code>x</code> берётся из <code>self</code> <code>Point</code> (имеющей вид <code>X1</code>), а значение <code>y</code> - из переданной структуры <code>Point</code> (где эта переменная имеет вид <code>Y2</code>).</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-11/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;X1, Y1&gt; {
+    x: X1,
+    y: Y1,
+}
+
+impl&lt;X1, Y1&gt; Point&lt;X1, Y1&gt; {
+    fn mixup&lt;X2, Y2&gt;(self, other: Point&lt;X2, Y2&gt;) -&gt; Point&lt;X1, Y2&gt; {
+        Point {
+            x: self.x,
+            y: other.y,
+        }
+    }
+}
+
+fn main() {
+    let p1 = Point { x: 5, y: 10.4 };
+    let p2 = Point { x: "Hello", y: 'c' };
+
+    let p3 = p1.mixup(p2);
+
+    println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
+}</code></pre></pre>
 <p><span class="caption">Приложение 10-11: способ, использующий обобщённые виды, отличающиеся от видов, используемых в определении структуры</span></p>
 <p>В функции <code>main</code> мы определили вид <code>Point</code>, который имеет вид <code>i32</code> для <code>x</code> (со значением <code>5</code> ) и вид <code>f64</code> для <code>y</code> (со значением <code>10.4</code>). Переменная <code>p2</code> является структурой <code>Point</code>, которая имеет строковый срез для <code>x</code> (со значением <code>«Hello»</code>) и <code>char</code> для <code>y</code> (со значением <code>c</code>). Вызов <code>mixup</code> на <code>p1</code> с переменнаяом <code>p2</code> создаст для нас экземпляр структуры <code>p3</code>, который будет иметь вид <code>i32</code> для <code>x</code> (потому что <code>x</code> взят из <code>p1</code>). Переменная <code>p3</code> будет иметь вид <code>char</code>  для  <code>y</code> (потому что <code>y</code> взят из <code>p2</code>). Вызов макроса <code>println! </code> выведет <code>p3.x = 5, p3.y = c</code>.</p>
 <p>Цель этого примера — отобразить ситуацию, в которой некоторые обобщённые свойства объявлены с помощью <code>impl</code>, а некоторые объявлены в определении способа. Здесь обобщённые свойства <code>X1</code> и <code>Y1</code> объявляются после <code>impl</code>, потому что они относятся к определению структуры. Обобщённые свойства <code>X2</code> и <code>Y2</code> объявляются после <code>fn mixup</code>, так как они относятся только к способу.</p>

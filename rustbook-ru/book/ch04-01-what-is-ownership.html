@@ -204,9 +204,12 @@
 </span>let s = "hello";
 <span class="boring">}</span></code></pre></pre>
 <p>Переменная <code>s</code> относится к строковому литералу, где значение строки жёстко прописано в тексте нашей программы. Переменная действительна с момента её объявления до конца текущей <em>области видимости</em>. В приложении 4-1 показана программа с комментариями, указывающими, где допустима переменная <code>s</code> .</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-01/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    {                      // s is not valid here, it’s not yet declared
+        let s = "hello";   // s is valid from this point forward
+
+        // do stuff with s
+    }                      // this scope is now over, and s is no longer valid
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 4-1: переменная и область действия, в которой она допустима</span></p>
 <p>Другими словами, здесь есть два важных момента:</p>
@@ -225,9 +228,12 @@
 <span class="boring">}</span></code></pre></pre>
 <p>Оператор "Двойное двоеточие" <code>::</code> позволяет использовать пространство имён данной именно функции <code>from</code> с видом <code>String</code>, а не какое-то иное имя, такое как <code>string_from</code>. Мы обсудим этот синтаксис более подробно в разделе <a href="ch05-03-method-syntax.html#method-syntax">«Синтаксис способа»</a>. раздел <!-- ignore --> Главы 5, и в ходе обсуждения пространств имён с модулями в <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html"> «Пути для обращения к элементу в дереве модулей»</a><!-- ignore --> в главе 7.</p>
 <p>Строка такого вида <em>может</em> быть изменяема:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-01-can-mutate-string/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+
+    s.push_str(", world!"); // push_str() appends a literal to a String
+
+    println!("{s}"); // This will print `hello, world!`
 <span class="boring">}</span></code></pre></pre>
 <p>В чем же тут разница? Почему строку <code>String</code> можно изменить, а литералы — нельзя? Разница заключается в том, как эти два вида работают с памятью.</p>
 <h3 id="Память-и-способы-её-выделения"><a class="header" href="#Память-и-способы-её-выделения">Память и способы её выделения</a></h3>
@@ -240,9 +246,13 @@
 <p>Первая часть выполняется нами: когда мы вызываем <code>String::from</code>, его реализация запрашивает необходимую память. Это работает довольно похоже во всех языках программирования.</p>
 <p>Однако вторая часть отличается. В языках со <em>сборщиком мусора (GC)</em>, память, которая больше не используется, отслеживается и очищается с его помощью — нам не нужно об этом думать. В большинстве языков без сборщика мусора мы обязаны сами определять, когда память больше не используется, и вызывать код для явного её освобождения, точно так же, как мы делали это для её запроса. Правильное выполнение этого процесса исторически было сложной проблемой программирования. Если мы забудем освободить память, она будет потеряна. Если мы сделаем это слишком рано, у нас будет недопустимая переменная. Сделать это дважды — тоже будет ошибкой. Нам нужно соединить ровно один <code>allocate</code> ровно с одним <code>free</code>.</p>
 <p>Rust выбирает другой путь: память самостоятельно возвращается, как только владеющая памятью переменная выходит из области видимости. Вот исполнение примера с областью видимости из приложения 4-1, в котором используется вид <code>String</code> вместо строкового литерала:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-02-string-scope/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    {
+        let s = String::from("hello"); // s is valid from this point forward
+
+        // do stuff with s
+    }                                  // this scope is now over, and s is no
+                                       // longer valid
 <span class="boring">}</span></code></pre></pre>
 <p>Существует естественный момент, когда мы можем вернуть память, необходимую нашему <code>String</code>, обратно распределителю — когда <code>s</code> выходит за пределы области видимости. Когда переменная выходит за пределы области видимости, Rust вызывает для нас особую функцию. Эта функция называется <a href="../std/ops/trait.Drop.html#tymethod.drop"><code>drop</code></a><!-- ignore -->, и именно здесь автор <code>String</code> может поместить код для возврата памяти. Rust самостоятельно вызывает <code>drop</code> после закрывающей фигурной скобки.</p>
 <blockquote>
@@ -253,16 +263,16 @@
 <p><a id="ways-variables-and-data-interact-move"></a></p>
 <h4 id="Взаимодействие-переменных-и-данных-с-помощью-перемещения"><a class="header" href="#Взаимодействие-переменных-и-данных-с-помощью-перемещения">Взаимодействие переменных и данных с помощью перемещения</a></h4>
 <p>Несколько переменных могут по-разному взаимодействовать с одними и теми же данными в Rust. Давайте рассмотрим пример использования целого числа в приложении 4-2.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-02/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 5;
+    let y = x;
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 4-2. Присвоение целочисленного значения переменной <code>x</code> переменной <code>y</code></span></p>
 <p>Мы можем догадаться, что делает этот код: «привязать значение <code>5</code> к <code>x</code>; затем сделать копию значения в <code>x</code> и привязать его к <code>y</code>». Теперь у нас есть две переменные: <code>x</code> и <code>y</code>, и обе равны <code>5</code>. Это то, что происходит на самом деле, потому что целые числа — это простые значения с известным фиксированным размером, и эти два значения <code>5</code> помещаются в стек.</p>
 <p>Теперь рассмотрим исполнение с видом <code>String</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-03-string-move/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+    let s2 = s1;
 <span class="boring">}</span></code></pre></pre>
 <p>Это выглядит очень похоже, поэтому мы можем предположить, что происходит то же самое: вторая строка сделает копию значения в <code>s1</code> и привяжет его к <code>s2</code>. Но это не совсем так.</p>
 <p>Взгляните на рисунок 4-1, чтобы увидеть, что происходит со <code>String</code> под капотом. <code>String</code> состоит из трёх частей, показанных слева: указатель на память, в которой хранится содержимое строки, длина и ёмкость. Эта группа данных хранится в стеке. Справа — память в куче, которая содержит содержимое.</p>
@@ -277,9 +287,34 @@
 <p><span class="caption">Рисунок 4-3: другой вариант того, что может сделать <code>s2 = s1</code>, если Rust также скопирует данные кучи</span></p>
 <p>Ранее мы сказали, что когда переменная выходит за пределы области видимости, Rust самостоятельно вызывает функцию <code>drop</code> и очищает память в куче для данной переменной. Но на рис. 4.2 оба указателя данных указывают на одно и то же место. Это проблема: когда переменные <code>s2</code> и <code>s1</code> выходят из области видимости, они обе будут пытаться освободить одну и ту же память в куче. Это известно как <em>ошибка двойного освобождения (double free)</em> и является одной из ошибок безопасности памяти, упоминаемых ранее. Освобождение памяти дважды может привести к повреждению памяти, что потенциально может привести к уязвимостям безопасности.</p>
 <p>Чтобы обеспечить безопасность памяти, после строки <code>let s2 = s1;</code> , Rust считает <code>s1</code> более недействительным. Следовательно, Rust не нужно ничего освобождать, когда <code>s1</code> выходит за пределы области видимости. Посмотрите, что происходит, когда вы пытаетесь использовать <code>s1</code> после создания <code>s2</code> ; это не сработает:</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-04-cant-use-after-move/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+    let s2 = s1;
+
+    println!("{s1}, world!");
+<span class="boring">}</span></code></pre>
 <p>Вы получите похожую ошибку, потому что Rust не позволяет вам использовать недействительную ссылку:</p>
-<pre><code class="language-console">{{#include ../listings/ch04-understanding-ownership/no-listing-04-cant-use-after-move/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0382]: borrow of moved value: `s1`
+ --&gt; src/main.rs:5:15
+  |
+2 |     let s1 = String::from("hello");
+  |         -- move occurs because `s1` has type `String`, which does not implement the `Copy` trait
+3 |     let s2 = s1;
+  |              -- value moved here
+4 |
+5 |     println!("{s1}, world!");
+  |               ^^^^ value borrowed here after move
+  |
+  = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider cloning the value if the performance cost is acceptable
+  |
+3 |     let s2 = s1.clone();
+  |                ++++++++
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `ownership` (bin "ownership") due to 1 previous error
 </code></pre>
 <p>Если вы слышали термины <em>поверхностное копирование</em> и <em>глубокое копирование</em> при работе с другими языками, концепция копирования указателя, длины и ёмкости без копирования данных, вероятно, звучит как создание поверхностной копии. Но поскольку Rust также аннулирует первую переменную, вместо того, чтобы называть это поверхностным копированием, это называется <em>перемещением</em>. В этом примере мы бы сказали, что <code>s1</code> был <em>перемещён</em> в <code>s2</code>. Итак, что на самом деле происходит, показано на рисунке 4-4.</p>
 <img alt="Три таблицы: таблицы s1 и s2, представляющие эти строки в стеке соответственно, и обе указывающие на одни и те же строковые данные в куче. Таблица s1 выделена серым цветом, потому что s1 больше недействительна; только s2 можно использовать для доступа к данным кучи." src="img/trpl04-04.svg" class="center" style="width: 50%;">
@@ -291,17 +326,21 @@
 <h4 id="Взаимодействие-переменных-и-данных-с-помощью-клонирования"><a class="header" href="#Взаимодействие-переменных-и-данных-с-помощью-клонирования">Взаимодействие переменных и данных с помощью клонирования</a></h4>
 <p>Если мы <em>хотим</em> глубоко скопировать данные кучи <code>String</code>, а не только данные стека, мы можем использовать общий способ, называемый <code>clone</code>. Мы обсудим синтаксис способов в главе 5, но поскольку способы являются общей чертой многих языков программирования, вы, вероятно, уже встречались с ними.</p>
 <p>Вот пример работы способа <code>clone</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-05-clone/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+    let s2 = s1.clone();
+
+    println!("s1 = {s1}, s2 = {s2}");
 <span class="boring">}</span></code></pre></pre>
 <p>Это отлично работает и очевидно приводит к поведению, представленному на рисунке 4-3, где данные кучи <em>были</em> скопированы.</p>
 <p>Когда вы видите вызов <code>clone</code>, вы знаете о выполнении некоторого кода, который может быть дорогим. В то же время использование <code>clone</code> является визуальным индикатором того, что тут происходит что-то нестандартное.</p>
 <h4 id="Стековые-данные-копирование"><a class="header" href="#Стековые-данные-копирование">Стековые данные: копирование</a></h4>
 <p>Это ещё одна особенность о которой мы ранее не говорили. Этот код, часть которого была показа ранее в приложении 4-2, использует целые числа. Он работает без ошибок:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-06-copy/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 5;
+    let y = x;
+
+    println!("x = {x}, y = {y}");
 <span class="boring">}</span></code></pre></pre>
 <p>Но этот код, кажется, противоречит тому, что мы только что узнали: у нас нет вызова <code>clone</code>, но <code>x</code> всё ещё действителен и не был перемещён в <code>y</code>.</p>
 <p>Причина в том, что такие виды, как целые числа, размер которых известен во время сборки, полностью хранятся в стеке, поэтому копии фактических значений создаются быстро. Это означает, что нет причин, по которым мы хотели бы предотвратить доступность <code>x</code> после того, как создадим переменную <code>y</code>. Другими словами, здесь нет разницы между глубоким и поверхностным копированием, поэтому вызов <code>clone</code> ничем не отличается от обычного поверхностного копирования, и мы можем его опустить.</p>
@@ -318,28 +357,81 @@
 <h3 id="Владение-и-функции"><a class="header" href="#Владение-и-функции">Владение и функции</a></h3>
 <p>Механика передачи значения функции подобна тому, что происходит при присвоении значения переменной. Передача переменной в функцию приведёт к перемещению или копированию, как и присваивание. В приложении 4-3 есть пример с некоторыми изложениями, показывающими, где переменные входят в область видимости и выходят из неё.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-03/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s = String::from("hello");  // s comes into scope
+
+    takes_ownership(s);             // s's value moves into the function...
+                                    // ... and so is no longer valid here
+
+    let x = 5;                      // x comes into scope
+
+    makes_copy(x);                  // x would move into the function,
+                                    // but i32 is Copy, so it's okay to still
+                                    // use x afterward
+
+} // Here, x goes out of scope, then s. But because s's value was moved, nothing
+  // special happens.
+
+fn takes_ownership(some_string: String) { // some_string comes into scope
+    println!("{some_string}");
+} // Here, some_string goes out of scope and `drop` is called. The backing
+  // memory is freed.
+
+fn makes_copy(some_integer: i32) { // some_integer comes into scope
+    println!("{some_integer}");
+} // Here, some_integer goes out of scope. Nothing special happens.</code></pre></pre>
 <p><span class="caption">Приложение 4-3. Функции с аннотированными владельцами и областью действия</span></p>
 <p>Если попытаться использовать <code>s</code> после вызова <code>takes_ownership</code>, Rust выдаст ошибку времени сборки. Такие статические проверки защищают от ошибок. Попробуйте добавить код в <code>main</code>, который использует переменную <code>s</code> и <code>x</code>, чтобы увидеть где их можно использовать и где правила владения предотвращают их использование.</p>
 <h3 id="Возвращение-значений-и-область-видимости"><a class="header" href="#Возвращение-значений-и-область-видимости">Возвращение значений и область видимости</a></h3>
 <p>Возвращаемые значения также могут передавать право владения. В приложении 4-4 показан пример функции, возвращающей некоторое значение, с такими же изложениями, как в приложении 4-3.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-04/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s1 = gives_ownership();         // gives_ownership moves its return
+                                        // value into s1
+
+    let s2 = String::from("hello");     // s2 comes into scope
+
+    let s3 = takes_and_gives_back(s2);  // s2 is moved into
+                                        // takes_and_gives_back, which also
+                                        // moves its return value into s3
+} // Here, s3 goes out of scope and is dropped. s2 was moved, so nothing
+  // happens. s1 goes out of scope and is dropped.
+
+fn gives_ownership() -&gt; String {             // gives_ownership will move its
+                                             // return value into the function
+                                             // that calls it
+
+    let some_string = String::from("yours"); // some_string comes into scope
+
+    some_string                              // some_string is returned and
+                                             // moves out to the calling
+                                             // function
+}
+
+// This function takes a String and returns one
+fn takes_and_gives_back(a_string: String) -&gt; String { // a_string comes into
+                                                      // scope
+
+    a_string  // a_string is returned and moves out to the calling function
+}</code></pre></pre>
 <p><span class="caption">Приложение 4-4: передача права владения на возвращаемые значения</span></p>
 <p>Владение переменной каждый раз следует одному и тому же шаблону: присваивание значения другой переменной перемещает его. Когда переменная, содержащая данные в куче, выходит из области видимости, содержимое в куче будет очищено функцией <code>drop</code>, если только данные не были перемещены во владение другой переменной.</p>
 <p>Хотя это работает, получение права владения, а затем возвращение владения каждой функцией немного утомительно. Что, если мы хотим, чтобы функция использовала значение, но не становилась владельцем? Очень раздражает, что всё, что мы передаём, также должно быть передано обратно, если мы хотим использовать это снова, в дополнение к любым данным, полученным из тела функции, которые мы также можем захотеть вернуть.</p>
 <p>Rust позволяет нам возвращать несколько значений с помощью кортежа, как показано в приложении 4-5.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-05/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s1 = String::from("hello");
+
+    let (s2, len) = calculate_length(s1);
+
+    println!("The length of '{s2}' is {len}.");
+}
+
+fn calculate_length(s: String) -&gt; (String, usize) {
+    let length = s.len(); // len() returns the length of a String
+
+    (s, length)
+}</code></pre></pre>
 <p><span class="caption">Приложение 4-5: возврат права владения на свойства</span></p>
 <p>Но это слишком высокопарно и многословно для концепции, которая должна быть общей. К счастью для нас, в Rust есть возможность использовать значение без передачи права владения, называемая <em>ссылками</em>.</p>
 

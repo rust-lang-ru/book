@@ -179,35 +179,84 @@
 <p>Чтобы понять, когда нам может понадобиться использование структур, давайте напишем программу, которая вычисляет площадь прямоугольника. Мы начнём с использования одиночных переменных, а затем будем улучшать программу до использования структур.</p>
 <p>Давайте создадим новый проект программы при помощи Cargo и назовём его <em>rectangles</em>. Наша программа будет получать на вход длину и ширину прямоугольника в пикселях и затем рассчитывать площадь прямоугольника. Приложение 5-8 показывает один из коротких вариантов кода, который позволит нам сделать именно то, что надо, в файле проекта <em>src/main.rs</em>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/src/main.rs:all}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let width1 = 30;
+    let height1 = 50;
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        area(width1, height1)
+    );
+}
+
+fn area(width: u32, height: u32) -&gt; u32 {
+    width * height
+}</code></pre></pre>
 <p><span class="caption">Приложение 5-8: вычисление площади прямоугольника, заданного отдельными переменными ширины и высоты</span></p>
 <p>Теперь запустим программу, используя <code>cargo run</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
+     Running `target/debug/rectangles`
+The area of the rectangle is 1500 square pixels.
 </code></pre>
 <p>Этот код успешно вычисляет площадь прямоугольника, вызывая функцию <code>area</code> с каждым измерением, но мы можем улучшить его ясность и читабельность.</p>
 <p>Проблема данного способа очевидна из сигнатуры <code>area</code>:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    let width1 = 30;
+</span><span class="boring">    let height1 = 50;
+</span><span class="boring">
+</span><span class="boring">    println!(
+</span><span class="boring">        "The area of the rectangle is {} square pixels.",
+</span><span class="boring">        area(width1, height1)
+</span><span class="boring">    );
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn area(width: u32, height: u32) -&gt; u32 {
+<span class="boring">    width * height
+</span><span class="boring">}</span></code></pre>
 <p>Функция <code>area</code> должна вычислять площадь одного прямоугольника, но функция, которую мы написали, имеет два свойства, и нигде в нашей программе не ясно, что эти свойства взаимосвязаны. Было бы более читабельным и управляемым сгруппировать ширину и высоту вместе. В разделе <a href="ch03-02-data-types.html#the-tuple-type">«Кортежи»</a><!-- ignore --> главы 3 мы уже обсуждали один из способов сделать это — использовать кортежи.</p>
 <h3 id="Рефакторинг-при-помощи-кортежей"><a class="header" href="#Рефакторинг-при-помощи-кортежей">Рефакторинг при помощи кортежей</a></h3>
 <p>Приложение 5-9 — это другая исполнение программы, использующая кортежи.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-09/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let rect1 = (30, 50);
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        area(rect1)
+    );
+}
+
+fn area(dimensions: (u32, u32)) -&gt; u32 {
+    dimensions.0 * dimensions.1
+}</code></pre></pre>
 <p><span class="caption">Приложение 5-9: определение ширины и высоты прямоугольника с помощью кортежа</span></p>
 <p>С одной стороны, эта программа лучше. Кортежи позволяют добавить немного структуры, и теперь мы передаём только один переменная. Но с другой стороны, эта исполнение менее понятна: кортежи не называют свои элементы, поэтому нам приходится упорядочивать части кортежа, что делает наше вычисление менее очевидным.</p>
 <p>Если мы перепутаем местами ширину с высотой при расчёте площади, то это не имеет значения. Но если мы хотим нарисовать прямоугольник на экране, то это уже будет важно! Мы должны помнить, что ширина  <code>width</code> находится в кортеже с порядковым казателем <code>0</code>, а высота <code>height</code> — с порядковым казателем <code>1</code>. Если кто-то другой поработал бы с кодом, ему бы пришлось разобраться в этом и также помнить про порядок. Легко забыть и перепутать эти значения — и это вызовет ошибки, потому что данный код не передаёт наши намерения.</p>
 <h3 id="Рефакторинг-при-помощи-структур-добавим-больше-смысла"><a class="header" href="#Рефакторинг-при-помощи-структур-добавим-больше-смысла">Рефакторинг при помощи структур: добавим больше смысла</a></h3>
 <p>Мы используем структуры, чтобы добавить смысл данным при помощи назначения им осмысленных имён . Мы можем переделать используемый кортеж в структуру с единым именем для сущности и частными названиями её частей, как показано в приложении 5-10.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-10/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        area(&amp;rect1)
+    );
+}
+
+fn area(rectangle: &amp;Rectangle) -&gt; u32 {
+    rectangle.width * rectangle.height
+}</code></pre></pre>
 <p><span class="caption">Приложение 5-10: определение структуры <code>Rectangle</code></span></p>
 <p>Здесь мы определили структуру и дали ей имя <code>Rectangle</code>. Внутри фигурных скобок определили поля как <code>width</code> и <code>height</code>, оба — вида <code>u32</code>. Затем в <code>main</code> создали определенный экземпляр <code>Rectangle</code> с шириной в <code>30</code> и высотой в <code>50</code> единиц.</p>
 <p>Наша функция <code>area</code> теперь определена с одним свойствоом, названным <code>rectangle</code>, чей вид является неизменяемым заимствованием структуры <code>Rectangle</code>. Как упоминалось в главе 4, необходимо заимствовать структуру, а не передавать её во владение. Таким образом функция <code>main</code> сохраняет <code>rect1</code> в собственности и может использовать её дальше. По этой причине мы и используем <code>&amp;</code> в сигнатуре и в месте вызова функции.</p>
@@ -215,46 +264,100 @@
 <h3 id="Добавление-полезной-функциональности-при-помощи-выводимых-типажей"><a class="header" href="#Добавление-полезной-функциональности-при-помощи-выводимых-типажей">Добавление полезной функциональности при помощи выводимых типажей</a></h3>
 <p>Было бы полезно иметь возможность печатать экземпляр <code>Rectangle</code> во время отладки программы и видеть значения всех полей. Приложение 5-11 использует макрос <a href="https://doc.rust-lang.org/std/macro.println.html"><code>println!</code></a><!-- ignore -->, который мы уже использовали в предыдущих главах. Тем не менее, это не работает.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {}", rect1);
+}</code></pre>
 <p><span class="caption">Приложение 5-11: Попытка вывести значения экземпляра <code>Rectangle</code></span></p>
 <p>При сборки этого кода мы получаем ошибку с сообщением:</p>
-<pre><code class="language-text">{{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/output.txt:3}}
+<pre><code class="language-text">error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
 </code></pre>
 <p>Макрос <code>println!</code> умеет выполнять множество видов форматирования, и по умолчанию фигурные скобки в <code>println!</code> означают использование форматирование, известное как типаж <code>Display</code>. Его вывод предназначен для непосредственного использования конечным пользователем. Примитивные виды, изученные ранее, по умолчанию реализуют типаж <code>Display</code>, потому что есть только один способ отобразить число <code>1</code> или любой другой примитивный вид. Но для структур форматирование <code>println!</code> менее очевидно, потому что есть гораздо больше способов отображения: Вы хотите запятые или нет? Вы хотите печатать фигурные скобки? Должны ли отображаться все поля? Из-за этой неоднозначности Rust не пытается  угадать, что нам нужно, а структуры не имеют встроенной реализации <code>Display</code> для использования в <code>println!</code> с заполнителем <code>{}</code>.</p>
 <p>Продолжив чтение текста ошибки, мы найдём полезное замечание:</p>
-<pre><code class="language-text">{{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/output.txt:9:10}}
+<pre><code class="language-text">   = help: the trait `std::fmt::Display` is not implemented for `Rectangle`
+   = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
 </code></pre>
 <p>Давайте попробуем! Вызов макроса <code>println!</code> теперь будет выглядеть так <code>println!("rect1 is {:?}", rect1);</code>. Ввод спецификатора <code>:?</code> внутри фигурных скобок говорит макросу <code>println!</code>, что мы хотим использовать другой формат вывода, известный как <code>Debug</code>. Типаж <code>Debug</code> позволяет печатать структуру способом, удобным для разработчиков, чтобы видеть значение во время отладки кода.</p>
 <p>Соберем код с этими изменениями. Упс! Мы всё ещё получаем ошибку:</p>
-<pre><code class="language-text">{{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-01-debug/output.txt:3}}
+<pre><code class="language-text">error[E0277]: `Rectangle` doesn't implement `Debug`
 </code></pre>
 <p>Снова сборщик даёт нам полезное замечание:</p>
-<pre><code class="language-text">{{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-01-debug/output.txt:9:10}}
+<pre><code class="language-text">   = help: the trait `Debug` is not implemented for `Rectangle`
+   = note: add `#[derive(Debug)]` to `Rectangle` or manually `impl Debug for Rectangle`
 </code></pre>
 <p>Rust <em>реализует</em> функциональность для печати отладочной сведений, но <em>не включает (не выводит) её по умолчанию</em>. Мы должны явно включить эту функциональность для нашей структуры. Чтобы это сделать, добавляем внешний атрибут <code>#[derive(Debug)]</code> сразу перед определением структуры, как показано в приложении 5-12.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-12/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {rect1:?}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 5-12: добавление атрибута для вывода типажа <code>Debug</code> и печати экземпляра <code>Rectangle</code> с отладочным форматированием</span></p>
 <p>Теперь при запуске программы мы не получим ошибок и увидим следующий вывод:</p>
-<pre><code class="language-console">{{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-12/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target/debug/rectangles`
+rect1 is Rectangle { width: 30, height: 50 }
 </code></pre>
 <p>Отлично! Это не самый красивый вывод, но он показывает значения всех полей экземпляра, которые определённо помогут при отладке. Когда у нас более крупные структуры, то полезно иметь более простой для чтения вывод; в таких случаях можно использовать код <code>{:#?}</code> вместо <code>{:?}</code> в строке макроса <code>println!</code>. В этом примере использование стиля <code>{:#?}</code> приведёт к такому выводу:</p>
-<pre><code class="language-console">{{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-02-pretty-debug/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target/debug/rectangles`
+rect1 is Rectangle {
+    width: 30,
+    height: 50,
+}
 </code></pre>
 <p>Другой способ распечатать значение в формате <code>Debug</code> — использовать макрос <a href="../std/macro.dbg.html"><code>dbg!</code></a><!-- ignore -->, который становится владельцем выражения (в отличие от <code>println!</code>, принимающего ссылку), печатает номер файла и строки, где происходит вызов макроса <code>dbg!</code>, вместе с результирующим значением этого выражения и возвращает владение на значение.</p>
 <blockquote>
 <p>Примечание: при вызове макроса <code>dbg!</code> выполняется печать в стандартный поток ошибок (<code>stderr</code>), в отличие от <code>println!</code>, который использует стандартный поток вывода в окно вывода (<code>stdout</code>). Подробнее о <code>stderr</code> и <code>stdout</code> мы поговорим в разделе <a href="ch12-06-writing-to-stderr-instead-of-stdout.html">«Запись сообщений об ошибках в стандартный вывод ошибок вместо принятого вывода» главы 12</a><!-- ignore -->.</p>
 </blockquote>
 <p>Вот пример, когда нас важно значение, которое присваивается полю <code>width</code>, а также значение всей структуры в <code>rect1</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-05-dbg-macro/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let scale = 2;
+    let rect1 = Rectangle {
+        width: dbg!(30 * scale),
+        height: 50,
+    };
+
+    dbg!(&amp;rect1);
+}</code></pre></pre>
 <p>Можем написать макрос <code>dbg!</code> вокруг выражения <code>30 * scale</code>, потому что <code>dbg!</code> возвращает владение значения выражения. Поле <code>width</code> получит то же значение, как если бы у нас не было вызова <code>dbg!</code>. Мы не хотим, чтобы макрос <code>dbg!</code> становился владельцем <code>rect1</code>, поэтому используем ссылку на <code>rect1</code> в следующем вызове. Вот как выглядит вывод этого примера:</p>
-<pre><code class="language-console">{{#include ../listings/ch05-using-structs-to-structure-related-data/no-listing-05-dbg-macro/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running `target/debug/rectangles`
+[src/main.rs:10:16] 30 * scale = 60
+[src/main.rs:14:5] &amp;rect1 = Rectangle {
+    width: 60,
+    height: 50,
+}
 </code></pre>
 <p>Мы можем увидеть, что первый отладочный вывод поступил из строки 10 <em>src/main.rs</em>, там, где мы отлаживаем выражение <code>30 * scale</code>, и его результирующее значение равно 60 (<code>Debug</code> форматирование, реализованное для целых чисел, заключается в печати только их значения). Вызов <code>dbg!</code> в строке 14 <em>src/main.rs</em> выводит значение <code>&amp;rect1</code>, которое является структурой <code>Rectangle</code>. В этом выводе используется красивое форматирование <code>Debug</code> вида <code>Rectangle</code>. Макрос <code>dbg!</code> может быть очень полезен, когда вы пытаетесь понять, что делает ваш код!</p>
 <p>В дополнение к <code>Debug</code>, Rust предоставил нам ряд типажей, которые мы можем использовать с атрибутом <code>derive</code> для добавления полезного поведения к нашим пользовательским видам. Эти типажи и их поведение перечислены в <a href="appendix-03-derivable-traits.html">приложении C</a><!-- ignore -->. Мы расскажем, как реализовать эти трейты с пользовательским поведением, а также как создать свои собственные трейты в главе 10. Кроме того, есть много других атрибутов помимо <code>derive</code>; для получения дополнительной сведений смотрите <a href="https://doc.rust-lang.org/reference/attributes.html">раздел “Атрибуты” справочника Rust</a>.</p>

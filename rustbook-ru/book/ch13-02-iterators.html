@@ -178,16 +178,22 @@
                         <h2 id="Обработка-последовательности-элементов-с-помощью-повторителей"><a class="header" href="#Обработка-последовательности-элементов-с-помощью-повторителей">Обработка последовательности элементов с помощью повторителей</a></h2>
 <p>Использование паттерна Повторитель помогает при необходимости поочерёдного выполнения какой-либо действия над элементами последовательности. Повторитель отвечает за логику перебора элементов и определение момента завершения последовательности. Используя повторители, вам не нужно самостоятельно реализовывать всю эту логику.</p>
 <p>В Rust повторители <em>ленивые (lazy)</em>, то есть они не делают ничего, пока вы не вызовете особые способы, потребляющие повторитель, чтобы задействовать его. Например, код в приложении 13-10 создаёт повторительэлементов вектора <code>v1</code>, вызывая способ <code>iter</code>, определённый у <code>Vec&lt;T&gt;</code>. Сам по себе этот код не делает ничего полезного.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch13-functional-features/listing-13-10/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 13-10: Создание повторителя</span></p>
 <p>Повторитель хранится в переменной <code>v1_iter</code>. Создав повторитель, мы можем использовать его различными способами. В приложении 3-5 главы 3 мы совершали обход элементов массива используя цикл <code>for</code> для выполнения какого-то кода над каждым из его элементов. Под капотом это неявно создавало, а затем потребляло повторитель, но до сих пор мы не касались того, как именно это работает.</p>
 <p>В примере из приложения 13-11 мы отделили создание повторителя от его использования в цикле for. В цикле for, использующем повторительв v1_iter, каждый элемент повторителя участвует только в одной повторения цикла, в ходе которой выводится на экран его значение.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch13-functional-features/listing-13-11/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+
+    for val in v1_iter {
+        println!("Got: {val}");
+    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 13-11: Использование повторителя в цикле <code>for</code></span></p>
 <p>В языках, стандартные библиотеки которых не предоставляют повторители, вы, скорее всего, напишите эту же функциональность так: создадите переменную со значением 0 затем, в цикле, использовав её для получения элемента вектора по порядковому казателю, будете увеличивать её значение, и так, пока оно не достигнет числа равного количеству элементов в векторе.</p>
@@ -208,7 +214,20 @@
 <p>Типаж <code>Iterator</code> требует, чтобы разработчики определяли только один способ: способ <code>next</code>, который возвращает один элемент повторителя за раз обёрнутый в вариант <code>Some</code> и когда повторение завершена, возвращает <code>None</code>.</p>
 <p>Мы можем вызывать способ <code>next</code> у повторителей напрямую; в приложении 13-12 показано, какие значения возвращаются при повторных вызовах <code>next</code> у повторителя, созданного из вектора.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch13-functional-features/listing-13-12/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span>    #[test]
+    fn iterator_demonstration() {
+        let v1 = vec![1, 2, 3];
+
+        let mut v1_iter = v1.iter();
+
+        assert_eq!(v1_iter.next(), Some(&amp;1));
+        assert_eq!(v1_iter.next(), Some(&amp;2));
+        assert_eq!(v1_iter.next(), Some(&amp;3));
+        assert_eq!(v1_iter.next(), None);
+    }
+<span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 13-12: Вызов способа <code>next</code> повторителя</span></p>
 <p>Обратите внимание, что нам нужно сделать переменную <code>v1_iter</code> изменяемой: вызов способа <code>next</code> повторителя изменяет внутреннее состояние повторителя, которое повторительиспользует для отслеживания того, где он находится в последовательности. Другими словами, этот код <em>потребляет</em> (consume) или использует повторитель. Каждый вызов <code>next</code> потребляет элемент из повторителя. Нам не нужно было делать изменяемой <code>v1_iter</code> при использовании цикла <code>for</code>, потому что цикл забрал во владение <code>v1_iter</code> и сделал её изменяемой неявно для нас.</p>
 <p>Заметьте также, что значения, которые мы получаем при вызовах <code>next</code> являются неизменяемыми ссылками на значения в векторе. Способ <code>iter</code> создаёт повторительпо неизменяемым ссылкам. Если мы хотим создать повторитель, который становится владельцем <code>v1</code> и возвращает принадлежащие ему значения, мы можем вызвать <code>into_iter</code> вместо <code>iter</code>. Точно так же, если мы хотим перебирать изменяемые ссылки, мы можем вызвать <code>iter_mut</code> вместо <code>iter</code>.</p>
@@ -216,28 +235,61 @@
 <p>У типажа <code>Iterator</code> есть несколько способов, реализация которых по умолчанию предоставляется встроенной библиотекой; вы можете узнать об этих способах, просмотрев документацию API встроенной библиотеки для <code>Iterator</code>. Некоторые из этих способов вызывают <code>next</code> в своём определении, поэтому вам необходимо реализовать способ <code>next</code> при реализации типажа <code>Iterator</code>.</p>
 <p>Способы, вызывающие <code>next</code>, называются <em>потребляющими адаптерами</em>, поскольку их вызов потребляет повторитель. Примером может служить способ <code>sum</code>, который забирает во владение повторительи перебирает элементы, многократно вызывая <code>next</code>, тем самым потребляя повторитель. В процессе повторения он добавляет каждый элемент к текущей сумме и возвращает итоговое значение по завершении повторения. В приложении 13-13 приведён тест, отображающий использование способа <code>sum</code>:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch13-functional-features/listing-13-13/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span>    #[test]
+    fn iterator_sum() {
+        let v1 = vec![1, 2, 3];
+
+        let v1_iter = v1.iter();
+
+        let total: i32 = v1_iter.sum();
+
+        assert_eq!(total, 6);
+    }
+<span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 13-13: Вызов способа <code>sum</code> для получения суммы всех элементов в повторителе</span></p>
 <p>Мы не можем использовать <code>v1_iter</code> после вызова способа <code>sum</code>, потому что <code>sum</code> забирает во владение повторительу которого вызван способ.</p>
 <h3 id="Способы-которые-создают-другие-повторители"><a class="header" href="#Способы-которые-создают-другие-повторители">Способы, которые создают другие повторители</a></h3>
 <p><em>Адаптеры повторителей</em> - это способы, определённые для трейта <code>Iterator</code>, которые не потребляют повторитель. Вместо этого они создают различные повторители, изменяя некоторые особенности исходного повторителя.</p>
 <p>В приложении 13-14 показан пример вызова способа адаптера повторителя <code>map</code>, который принимает замыкание и вызывает его для каждого элемента по мере повторения элементов. Способ <code>map</code> возвращает новый повторитель, который создаёт изменённые элементы. Замыкание здесь создаёт новый повторитель, в котором каждый элемент из вектора будет увеличен на 1:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust not_desired_behavior"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch13-functional-features/listing-13-14/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust not_desired_behavior"><span class="boring">fn main() {
+</span>    let v1: Vec&lt;i32&gt; = vec![1, 2, 3];
+
+    v1.iter().map(|x| x + 1);
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 13-14: Вызов адаптера повторителя <code>map</code> для создания нового повторителя</span></p>
 <p>Однако этот код выдаёт предупреждение:</p>
-<pre><code class="language-console">{{#include ../listings/ch13-functional-features/listing-13-14/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling iterators v0.1.0 (file:///projects/iterators)
+warning: unused `Map` that must be used
+ --&gt; src/main.rs:4:5
+  |
+4 |     v1.iter().map(|x| x + 1);
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: iterators are lazy and do nothing unless consumed
+  = note: `#[warn(unused_must_use)]` on by default
+help: use `let _ = ...` to ignore the resulting value
+  |
+4 |     let _ = v1.iter().map(|x| x + 1);
+  |     +++++++
+
+warning: `iterators` (bin "iterators") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.47s
+     Running `target/debug/iterators`
 </code></pre>
 <p>Код в приложении 13-14 ничего не делает; указанное нами замыкание никогда не вызывается. Предупреждение напоминает нам, почему: адаптеры повторителей ленивы, и здесь нам нужно потребить повторитель.</p>
 <p>Чтобы устранить это предупреждение и потребить повторитель, мы воспользуемся способом <code>collect</code>, который мы использовали в главе 12 с <code>env::args</code> в приложении 12-1. Этот способ потребляет повторительи собирает полученные значения в собрание указанного вида.</p>
 <p>В приложении 13-15 мы собираем в вектор результаты перебора повторителя, который возвращается в результате вызова <code>map</code>. Этот вектор в итоге будет содержать каждый элемент исходного вектора, увеличенный на 1.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch13-functional-features/listing-13-15/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1: Vec&lt;i32&gt; = vec![1, 2, 3];
+
+    let v2: Vec&lt;_&gt; = v1.iter().map(|x| x + 1).collect();
+
+    assert_eq!(v2, vec![2, 3, 4]);
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 13-15: Вызов способа <code>map</code> для создания нового повторителя, а затем вызов способа <code>collect</code> для потребления нового повторителя и создания вектора</span></p>
 <p>Поскольку <code>map</code> принимает замыкание, мы можем указать любую действие, которую хотим выполнить над каждым элементом. Это отличный пример того, как замыкания позволяют задавать желаемое поведение, используя при этом особенности повторения, которые обеспечивает трейт <code>Iterator</code>.</p>
@@ -247,7 +299,54 @@
 <p>В этом примере мы будем использовать способ <code>filter</code>, который принимает замыкание. Замыкание получает элемент из повторителя и возвращает <code>bool</code>. Если замыкание возвращает <code>true</code>, значение будет включено в повторение, создаваемую <code>filter</code>. Если замыкание возвращает <code>false</code>, значение не будет включено.</p>
 <p>В приложении 13-16 мы используем <code>filter</code> с замыканием, которое захватывает переменную <code>shoe_size</code> из своего окружения для повторения по собрания экземпляров структуры <code>Shoe</code>. Он будет возвращать обувь только указанного размера.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch13-functional-features/listing-13-16/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">#[derive(PartialEq, Debug)]
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+fn shoes_in_size(shoes: Vec&lt;Shoe&gt;, shoe_size: u32) -&gt; Vec&lt;Shoe&gt; {
+    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn filters_by_size() {
+        let shoes = vec![
+            Shoe {
+                size: 10,
+                style: String::from("sneaker"),
+            },
+            Shoe {
+                size: 13,
+                style: String::from("sandal"),
+            },
+            Shoe {
+                size: 10,
+                style: String::from("boot"),
+            },
+        ];
+
+        let in_my_size = shoes_in_size(shoes, 10);
+
+        assert_eq!(
+            in_my_size,
+            vec![
+                Shoe {
+                    size: 10,
+                    style: String::from("sneaker")
+                },
+                Shoe {
+                    size: 10,
+                    style: String::from("boot")
+                },
+            ]
+        );
+    }
+}</code></pre>
 <p><span class="caption">Приложение 13-16. Использование способа <code>filter</code> с замыканием, фиксирующим <code>shoe_size</code></span></p>
 <p>Функция <code>shoes_in_size</code> принимает в качестве свойств вектор с экземплярами обуви и размер обуви, а возвращает вектор, содержащий только обувь указанного размера.</p>
 <p>В теле <code>shoes_in_my_size</code> мы вызываем <code>into_iter</code> чтобы создать повторитель, который становится владельцем вектора. Затем мы вызываем <code>filter</code>, чтобы превратить этот повторительв другой, который содержит только элементы, для которых замыкание возвращает <code>true</code>.</p>

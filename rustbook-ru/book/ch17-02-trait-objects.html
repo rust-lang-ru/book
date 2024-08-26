@@ -185,45 +185,181 @@
 <p>Мы упоминали, что в Rust мы воздерживаемся называть структуры и перечисления «объектами», чтобы отличать их от объектов в других языках. В структуре или перечислении данные в полях структуры и поведение в разделах <code>impl</code> разделены, тогда как в других языках данные и поведение объединены в одну концепцию, часто обозначающуюся как объект. Тем не менее, типаж-объекты <em>являются</em> более похожими на объекты на других языках, в том смысле, что они сочетают в себе данные и поведение. Но типаж-объекты отличаются от традиционных объектов тем, что не позволяют добавлять данные к типаж-объекту. Типаж-объекты обычно не настолько полезны, как объекты в других языках: их определенная цель - обеспечить абстракцию через общее поведение.</p>
 <p>В приложении 17.3 показано, как определить типаж с именем <code>Draw</code> с помощью одного способа с именем <code>draw</code>:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-03/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub trait Draw {
+    fn draw(&amp;self);
+}</code></pre>
 <p><span class="caption">Приложение 17-3: Определение типажа <code>Draw</code></span></p>
 <p>Этот синтаксис должен выглядеть знакомым из наших дискуссий о том, как определять типажи в главе 10. Далее следует новый синтаксис: в приложении 17.4 определена структура с именем <code>Screen</code>, которая содержит вектор с именем <code>components</code>. Этот вектор имеет вид <code>Box&lt;dyn Draw&gt;</code>, который и является типаж-объектом; это замена для любого вида внутри <code>Box</code> который реализует типаж <code>Draw</code>.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-04/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct Screen {
+    pub components: Vec&lt;Box&lt;dyn Draw&gt;&gt;,
+}</code></pre>
 <p><span class="caption">Приложение 17-4: Определение структуры <code>Screen</code> с полем <code>components</code>, которое является вектором типаж-объектов, которые реализуют типаж <code>Draw</code></span></p>
 <p>В структуре <code>Screen</code>, мы определим способ <code>run</code>, который будет вызывать способ <code>draw</code> каждого элемента вектора <code>components</code>, как показано в приложении 17-5:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-05/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Screen {
+</span><span class="boring">    pub components: Vec&lt;Box&lt;dyn Draw&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Screen {
+    pub fn run(&amp;self) {
+        for component in self.components.iter() {
+            component.draw();
+        }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 17-5: Реализация способа <code>run</code> у структуры  <code>Screen</code>, который вызывает способ <code>draw</code> каждого компонента из вектора</span></p>
 <p>Это работает иначе, чем определение структуры, которая использует свойство общего вида с ограничениями типажа. Обобщённый свойство вида может быть заменён только одним определенным видом, тогда как типаж-объекты позволяют нескольким определенным видам замещать типаж-объект во время выполнения. Например, мы могли бы определить структуру <code>Screen</code> используя общий вид и ограничение типажа, как показано в приложении 17-6:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-06/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct Screen&lt;T: Draw&gt; {
+    pub components: Vec&lt;T&gt;,
+}
+
+impl&lt;T&gt; Screen&lt;T&gt;
+where
+    T: Draw,
+{
+    pub fn run(&amp;self) {
+        for component in self.components.iter() {
+            component.draw();
+        }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 17-6: Иная реализация структуры <code>Screen</code> и способа <code>run</code>, используя обобщённый вид и ограничения типажа</span></p>
 <p>Это вариант ограничивает нас экземпляром <code>Screen</code>, который имеет список компонентов всех видов <code>Button</code> или всех видов <code>TextField</code>. Если у вас когда-либо будут только однородные собрания, использование обобщений и ограничений типажа является предпочтительным, поскольку определения будут мономорфизированы во время сборки для использования с определенными видами.</p>
 <p>С другой стороны, с помощью способа, использующего типаж-объекты, один экземпляр <code>Screen</code> может содержать <code>Vec&lt;T&gt;</code> который содержит <code>Box&lt;Button&gt;</code>, также как и <code>Box&lt;TextField&gt;</code>. Давайте посмотрим как это работает, а затем поговорим о влиянии на производительность во время выполнения.</p>
 <h3 id="Реализации-типажа"><a class="header" href="#Реализации-типажа">Реализации типажа</a></h3>
 <p>Теперь мы добавим несколько видов, реализующих типаж <code>Draw</code>. Мы объявим вид <code>Button</code>. Опять же, фактическая реализация библиотеки GUI выходит за рамки этой книги, поэтому тело способа <code>draw</code> не будет иметь никакой полезной реализации. Чтобы представить, как может выглядеть такая реализация, структура <code>Button</code> может иметь поля для <code>width</code>, <code>height</code> и <code>label</code>, как показано в приложении 17-7:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch17-oop/listing-17-07/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Screen {
+</span><span class="boring">    pub components: Vec&lt;Box&lt;dyn Draw&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Screen {
+</span><span class="boring">    pub fn run(&amp;self) {
+</span><span class="boring">        for component in self.components.iter() {
+</span><span class="boring">            component.draw();
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct Button {
+    pub width: u32,
+    pub height: u32,
+    pub label: String,
+}
+
+impl Draw for Button {
+    fn draw(&amp;self) {
+        // code to actually draw a button
+    }
+}</code></pre>
 <p><span class="caption">Приложение 17-7: Структура <code>Button</code> реализует типаж <code>Draw</code></span></p>
 <p>Поля <code>width</code>, <code>height</code> и <code>label</code> структуры <code>Button</code> будут отличаться от, например, полей других компонентов вроде вида <code>TextField</code>, которая могла бы иметь те же поля плюс поле <code>placeholder</code>. Каждый из видов, который мы хотим нарисовать на экране будет реализовывать типаж <code>Draw</code>, но будет использовать отличающийся код способа <code>draw</code> для определения как именно рисовать определенный вид, например <code>Button</code> в этом примере (без фактического кода GUI, который выходит за рамки этой главы). Например, вид <code>Button</code> может иметь дополнительный раздел<code>impl</code>, содержащий способы, относящиеся к тому, что происходит, когда пользователь нажимает кнопку. Эти варианты способов не будут применяться к видам вроде <code>TextField</code>.</p>
 <p>Если кто-то использующий нашу библиотеку решает реализовать структуру <code>SelectBox</code>, которая имеет <code>width</code>, <code>height</code> и поля <code>options</code>, он реализует также и типаж <code>Draw</code> для вида <code>SelectBox</code>, как показано в приложении 17-8:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch17-oop/listing-17-08/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore">use gui::Draw;
+
+struct SelectBox {
+    width: u32,
+    height: u32,
+    options: Vec&lt;String&gt;,
+}
+
+impl Draw for SelectBox {
+    fn draw(&amp;self) {
+        // code to actually draw a select box
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
 <p><span class="caption">Приложение 17-8: Другой крейт, использующий <code>gui</code> и реализующий типаж <code>Draw</code> у структуры <code>SelectBox</code></span></p>
 <p>Пользователь нашей библиотеки теперь может написать свою функцию <code>main</code> для создания экземпляра <code>Screen</code>. К экземпляру <code>Screen</code> он может добавить <code>SelectBox</code> и <code>Button</code>, поместив каждый из них в <code>Box&lt;T&gt;</code>, чтобы он стал типаж-объектом. Затем он может вызвать способ <code>run</code> у экземпляра <code>Screen</code>, который вызовет <code>draw</code> для каждого из компонентов. Приложение 17-9 показывает эту реализацию:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch17-oop/listing-17-09/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use gui::Draw;
+</span><span class="boring">
+</span><span class="boring">struct SelectBox {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">    options: Vec&lt;String&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Draw for SelectBox {
+</span><span class="boring">    fn draw(&amp;self) {
+</span><span class="boring">        // code to actually draw a select box
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>use gui::{Button, Screen};
+
+fn main() {
+    let screen = Screen {
+        components: vec![
+            Box::new(SelectBox {
+                width: 75,
+                height: 10,
+                options: vec![
+                    String::from("Yes"),
+                    String::from("Maybe"),
+                    String::from("No"),
+                ],
+            }),
+            Box::new(Button {
+                width: 50,
+                height: 10,
+                label: String::from("OK"),
+            }),
+        ],
+    };
+
+    screen.run();
+}</code></pre>
 <p><span class="caption">Приложение 17-9: Использование типаж-объектов для хранения значений разных видов, реализующих один и тот же типаж</span></p>
 <p>Когда мы писали библиотеку, мы не знали, что кто-то может добавить вид <code>SelectBox</code>, но наша реализация <code>Screen</code> могла работать с новым видом и рисовать его, потому что <code>SelectBox</code> реализует типаж <code>Draw</code>, что означает, что он реализует способ <code>draw</code>.</p>
 <p>Эта концепция, касающаяся только сообщений, на которые значение отвечает, в отличие от определенного вида у значения, подобна концепции <em>duck typing</em> в изменяемых типизированных языках: если что-то ходит как утка и крякает как утка, то она должна быть утка! В реализации способа <code>run</code> у <code>Screen</code> в приложении 17-5, <code>run</code> не нужно знать каким будет определенный вид каждого компонента. Он не проверяет, является ли компонент экземпляром <code>Button</code> или <code>SelectBox</code>, он просто вызывает способ <code>draw</code> компонента. Указав <code>Box&lt;dyn Draw&gt;</code> в качестве вида значений в векторе <code>components</code>, мы определили <code>Screen</code> для значений у которых мы можем вызвать способ <code>draw</code>.</p>
 <p>Преимущество использования типаж-объектов и системы видов Rust для написания кода, похожего на код с использованием концепции duck typing состоит в том, что нам не нужно во время выполнения  проверять реализует ли значение в векторе определенный способ или беспокоиться о получении ошибок, если значение не реализует способ, мы все равно вызываем способ. Rust не ссобирает наш код, если значения не реализуют типаж, который нужен типаж-объектам.</p>
 <p>Например, в приложении 17-10 показано, что произойдёт, если мы попытаемся создать <code>Screen</code> с <code>String</code> в качестве его компонента:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch17-oop/listing-17-10/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use gui::Screen;
+
+fn main() {
+    let screen = Screen {
+        components: vec![Box::new(String::from("Hi"))],
+    };
+
+    screen.run();
+}</code></pre>
 <p><span class="caption">Приложение 17-10: Попытка использования вида, который не реализует типаж для типаж-объекта</span></p>
 <p>Мы получим ошибку, потому что <code>String</code> не реализует типаж <code>Draw</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch17-oop/listing-17-10/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling gui v0.1.0 (file:///projects/gui)
+error[E0277]: the trait bound `String: Draw` is not satisfied
+ --&gt; src/main.rs:5:26
+  |
+5 |         components: vec![Box::new(String::from("Hi"))],
+  |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Draw` is not implemented for `String`
+  |
+  = help: the trait `Draw` is implemented for `Button`
+  = note: required for the cast from `Box&lt;String&gt;` to `Box&lt;dyn Draw&gt;`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `gui` (bin "gui") due to 1 previous error
 </code></pre>
 <p>Эта ошибка даёт понять, что либо мы передаём в компонент <code>Screen</code> что-то, что мы не собирались передавать и мы тогда должны передать другой вид, либо мы должны реализовать типаж <code>Draw</code> у вида <code>String</code>, чтобы <code>Screen</code> мог вызывать <code>draw</code> у него.</p>
 <h3 id="Типаж-объекты-выполняют-изменяемую-управление-связывание"><a class="header" href="#Типаж-объекты-выполняют-изменяемую-управление-связывание">Типаж-объекты выполняют изменяемую управление (связывание)</a></h3>

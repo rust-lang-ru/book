@@ -181,25 +181,44 @@
 <p>В этом разделе мы рассмотрим основной API хеш-карт. Остальной набор полезных функций скрывается в объявлении вида <code>HashMap&lt;K, V&gt;</code>. Как и прежде, советуем обратиться к документации по встроенной библиотеке для получения дополнительной сведений.</p>
 <h3 id="Создание-новой-хеш-карты"><a class="header" href="#Создание-новой-хеш-карты">Создание новой хеш-карты</a></h3>
 <p>Создать пустую хеш-карту можно с помощью <code>new</code>, а добавить в неё элементы - с помощью <code>insert</code>. В приложении 8-20 мы отслеживаем счёт двух приказов, синей <em>Blue</em> и жёлтой <em>Yellow</em>. Синяя приказ набрала 10 очков, а жёлтая приказ - 50.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-20/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-20: Создание новой хеш-карты и вставка в неё пары ключей и значений</span></p>
 <p>Обратите внимание, что нужно сначала указать строку <code>use std::collections::HashMap;</code> для её подключения из собраний встроенной библиотеки. Из трёх собраний данная является наименее используемой, поэтому она не подключается в область видимости функцией самостоятельного импорта (prelude). Хеш-карты также имеют меньшую поддержку со стороны встроенной библиотеки; например, нет встроенного макроса для их конструирования.</p>
 <p>Подобно векторам, хеш-карты хранят свои данные в куче. Здесь вид <code>HashMap</code> имеет в качестве вида ключей <code>String</code>, а в качестве вида значений вид <code>i32</code>. Как и векторы, HashMap однородны: все ключи должны иметь одинаковый вид и все значения должны иметь тоже одинаковый вид.</p>
 <h3 id="Доступ-к-данным-в-hashmap"><a class="header" href="#Доступ-к-данным-в-hashmap">Доступ к данным в HashMap<a name="accessing-values-in-a-hash-map"></a></a></h3>
 <p>Мы можем получить значение из HashMap по ключу, с помощью метода <code>get</code>, как показано в приложении 8-21.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-21/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+
+    let team_name = String::from("Blue");
+    let score = scores.get(&amp;team_name).copied().unwrap_or(0);
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-21: Доступ к очкам приказы "Blue", которые хранятся в хеш-карте</span></p>
 <p>Здесь <code>score</code> будет иметь количество очков, связанное с приказом "Blue", результат будет <code>10</code>. Способ <code>get</code> возвращает <code>Option&lt;&amp;V&gt;</code>; если для какого-то ключа нет значения в HashMap, <code>get</code> вернёт <code>None</code>. Из-за такого подхода программе следует обрабатывать <code>Option</code>, вызывая <code>copied</code> для получения <code>Option&lt;i32&gt;</code> вместо <code>Option&lt;&amp;i32&gt;</code>, затем <code>unwrap_or</code> для установки <code>score</code> в ноль, если scores не содержит данных по этому ключу.</p>
 <p>Мы можем перебирать каждую пару ключ/значение в HashMap таким же образом, как мы делали с векторами, используя цикл <code>for</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/no-listing-03-iterate-over-hashmap/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+
+    for (key, value) in &amp;scores {
+        println!("{key}: {value}");
+    }
 <span class="boring">}</span></code></pre></pre>
 <p>Этот код будет печатать каждую пару в произвольном порядке:</p>
 <pre><code class="language-text">Yellow: 50
@@ -207,9 +226,16 @@ Blue: 10
 </code></pre>
 <h3 id="Хеш-карты-и-владение"><a class="header" href="#Хеш-карты-и-владение">Хеш-карты и владение</a></h3>
 <p>Для видов, которые реализуют типаж <code>Copy</code>, например <code>i32</code>, значения копируются в HashMap. Для значений со владением, таких как <code>String</code>, значения  будут перемещены в хеш-карту и она станет владельцем этих значений, как показано в приложении 8-22.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-22/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let field_name = String::from("Favorite color");
+    let field_value = String::from("Blue");
+
+    let mut map = HashMap::new();
+    map.insert(field_name, field_value);
+    // field_name and field_value are invalid at this point, try using them and
+    // see what compiler error you get!
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-22: Показывает, что ключи и значения находятся во владении HashMap, как только они были вставлены</span></p>
 <p>Мы не можем использовать переменные <code>field_name</code> и <code>field_value</code> после того, как их значения были перемещены в HashMap вызовом метода <code>insert</code>.</p>
@@ -219,9 +245,15 @@ Blue: 10
 <p>Когда вы хотите изменить данные в хеш-карте, необходимо решить, как обрабатывать случай, когда ключ уже имеет назначенное значение. Можно заменить старое значение новым, полностью пренебрегая старое. Можно сохранить старое значение и пренебрегать новое, или добавлять новое значение, если только ключ <em>ещё не</em> имел значения. Или можно было бы объединить старое значение и новое значение. Давайте посмотрим, как сделать каждый из вариантов!</p>
 <h4 id="Перезапись-старых-значений"><a class="header" href="#Перезапись-старых-значений">Перезапись старых значений</a></h4>
 <p>Если мы вставим ключ и значение в HashMap, а затем вставим тот же ключ с новым значением, то старое значение связанное с этим ключом, будет заменено на новое. Даже несмотря на то, что код в приложении 8-23 вызывает <code>insert</code> дважды, хеш-карта будет содержать только одну пару ключ/значение, потому что мы вставляем значения для одного и того же ключа - ключа приказы "Blue".</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-23/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Blue"), 25);
+
+    println!("{scores:?}");
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-23: Замена значения, хранимого в определенном ключе</span></p>
 <p>Код напечатает <code>{"Blue": 25}</code>. Начальное значение <code>10</code> было перезаписано.</p>
@@ -230,18 +262,35 @@ Blue: 10
 <h4 id="Вставка-значения-только-в-том-случае-когда-ключ-не-имеет-значения"><a class="header" href="#Вставка-значения-только-в-том-случае-когда-ключ-не-имеет-значения">Вставка значения только в том случае, когда ключ не имеет значения</a></h4>
 <p>Обычно проверяют, существует ли определенный ключ в хеш-карте со значением, а затем предпринимаются следующие действия: если ключ существует в хеш-карте, существующее значение должно оставаться таким, какое оно есть. Если ключ не существует, то вставляют его и значение для него.</p>
 <p>Хеш-карты имеют для этого особый API, называемый <code>entry</code> , который принимает ключ для проверки в качестве входного свойства. Возвращаемое значение метода <code>entry</code> - это перечисление <code>Entry</code>, с двумя вариантами: первый представляет значение, которое может существовать, а второй говорит о том, что значение отсутствует. Допустим, мы хотим проверить, имеется ли ключ и связанное с ним значение для приказы "Yellow". Если хеш-карта не имеет значения для такого ключа, то мы хотим вставить значение 50. То же самое мы хотим проделать и для приказы "Blue". Используем API <code>entry</code> в коде приложения 8-24.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-24/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Blue"), 10);
+
+    scores.entry(String::from("Yellow")).or_insert(50);
+    scores.entry(String::from("Blue")).or_insert(50);
+
+    println!("{scores:?}");
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-24: Использование метода <code>entry</code> для вставки значения только в том случае, когда ключ не имеет значения</span></p>
 <p>Способ <code>or_insert</code> определён в <code>Entry</code> так, чтобы возвращать изменяемую ссылку на соответствующее значение ключа внутри варианта перечисления <code>Entry</code>, когда этот ключ существует, а если его нет, то вставлять свойство в качестве нового значения этого ключа и возвращать изменяемую ссылку на новое значение. Эта техника намного чище, чем самостоятельное написание логики и, кроме того, она более безопасна и согласуется с правилами заимствования.</p>
 <p>При выполнении кода приложения 8-24 будет напечатано <code>{"Yellow": 50, "Blue": 10}</code>. Первый вызов <code>метода entry</code> вставит ключ для приказы "Yellow" со значением 50, потому что для жёлтой приказы ещё не имеется значения в HashMap. Второй вызов <code>entry</code> не изменит хеш-карту, потому что для ключа приказы "Blue" уже имеется значение 10.</p>
 <h4 id="Создание-нового-значения-на-основе-старого-значения"><a class="header" href="#Создание-нового-значения-на-основе-старого-значения">Создание нового значения на основе старого значения</a></h4>
 <p>Другим распространённым вариантом использования хеш-карт является поиск значения по ключу, а затем обновление этого значения на основе старого значения. Например, в приложении 8-25 показан код, который подсчитывает, сколько раз определённое слово встречается в некотором тексте. Мы используем HashMap со словами в качестве ключей и увеличиваем соответствующее слову значение, чтобы отслеживать, сколько раз мы встретили это слово. Если мы впервые встретили слово, то сначала вставляем значение 0.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-25/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let text = "hello world wonderful world";
+
+    let mut map = HashMap::new();
+
+    for word in text.split_whitespace() {
+        let count = map.entry(word).or_insert(0);
+        *count += 1;
+    }
+
+    println!("{map:?}");
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-25: Подсчёт количества вхождений слов с использованием хеш-карты, которая хранит слова и счётчики</span></p>
 <p>Этот код напечатает <code>{"world": 2, "hello": 1, "wonderful": 1}</code>. Если вы увидите, что пары ключ/значение печатаются в другом порядке, то вспомните, что мы писали в секции <a href="#accessing-values-in-a-hash-map">"Доступ к данным в HashMap"</a><!-- ignore -->, что повторение по хеш-карте происходит в произвольном порядке.</p>

@@ -189,22 +189,146 @@
 <h3 id="Написание-теста-с-ошибкой"><a class="header" href="#Написание-теста-с-ошибкой">Написание теста с ошибкой</a></h3>
 <p>Поскольку они нам больше не нужны, давайте удалим указания с <code>println!</code>, которые мы использовали для проверки поведения программы в <em>src/lib.rs</em> и <em>src/main.rs</em>. Затем в <em>src/lib.rs</em> мы добавим модуль <code>tests</code> с тестовой функцией, как делали это в <a href="ch11-01-writing-tests.html#the-anatomy-of-a-test-function">главе 11</a><!-- ignore -->. Тестовая функция определяет поведение, которое мы хотим проверить в функции <code>search</code>: она должна принимать запрос и текст для поиска, а возвращать только те строки из текста, которые содержат запрос. В приложении 12-15 показан этот тест, который пока не собирается.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-15/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.";
+
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+    }
+}</code></pre>
 <p><span class="caption">Приложение 12-15: Создание безуспешного теста для функции <code>search</code>, которую мы хотим создать</span></p>
 <p>Этот тест ищет строку <code>"duct"</code>. Текст, в котором мы ищем, состоит из трёх строк, только одна из которых содержит <code>"duct"</code> (обратите внимание, что обратная косая черта после открывающей двойной кавычки говорит Rust не помещать символ новой строки в начало содержимого этого строкового литерала). Мы проверяем, что значение, возвращаемое функцией <code>search</code>, содержит только ожидаемую нами строку.</p>
 <p>Мы не можем запустить этот тест и увидеть сбой, потому что тест даже не собирается: функции <code>search</code> ещё не существует! В соответствии с принципами TDD мы добавим ровно столько кода, чтобы тест собирался и запускался, добавив определение функции <code>search</code>, которая всегда возвращает пустой вектор, как показано в приложении 12-16. Потом тест должен собраться и потерпеть неудачу при запуске, потому что пустой вектор не равен вектору, содержащему строку <code>"safe, fast, productive."</code></p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-16/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    vec![]
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 12-16. Определение функции <code>search</code>, достаточное, чтобы тест собрался</span></p>
 <p>Заметьте, что в сигнатуре <code>search</code> нужно явно указать время жизни <code>'a</code> для переменной <code>contents</code> и возвращаемого значения. Напомним из <a href="ch10-03-lifetime-syntax.html">Главы 10</a><!-- ignore -->, что свойства времени жизни указывают с временем жизни какого переменной связано время жизни возвращаемого значения. В данном случае мы говорим, что возвращаемый вектор должен содержать срезы строк, ссылающиеся на содержимое переменной <code>contents</code> (а не переменной <code>query</code>).</p>
 <p>Другими словами, мы говорим Rust, что данные, возвращаемые функцией <code>search</code>, будут жить до тех пор, пока живут данные, переданные в функцию <code>search</code> через переменная <code>contents</code>. Это важно! Чтобы ссылки были действительными, данные, на которые ссылаются <em>с помощью</em> срезов тоже должны быть действительными; если сборщик предполагает, что мы делаем строковые срезы переменной <code>query</code>, а не переменной <code>contents</code>, он неправильно выполнит проверку безопасности.</p>
 <p>Если мы забудем изложении времени жизни и попробуем собрать эту функцию, то получим следующую ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/output-only-02-missing-lifetimes/output.txt}}
+<pre><code class="language-console">$ cargo build
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+error[E0106]: missing lifetime specifier
+  --&gt; src/lib.rs:28:51
+   |
+28 | pub fn search(query: &amp;str, contents: &amp;str) -&gt; Vec&lt;&amp;str&gt; {
+   |                      ----            ----         ^ expected named lifetime parameter
+   |
+   = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `query` or `contents`
+help: consider introducing a named lifetime parameter
+   |
+28 | pub fn search&lt;'a&gt;(query: &amp;'a str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+   |              ++++         ++                 ++              ++
+
+For more information about this error, try `rustc --explain E0106`.
+error: could not compile `minigrep` (lib) due to 1 previous error
 </code></pre>
 <p>Rust не может понять, какой из двух переменных нам нужен, поэтому нужно сказать ему об этом. Так как <code>contents</code> является тем переменнаяом, который содержит весь наш текст, и мы хотим вернуть части этого текста, которые совпали при поиске, мы понимаем, что <code>contents</code> является переменнаяом, который должен быть связан с возвращаемым значением временем жизни.</p>
 <p>Другие языки программирования не требуют от вас связывания в сигнатуре переменных с возвращаемыми значениями, но после определённой практики вам станет проще. Можете сравнить этот пример с разделом <a href="ch10-03-lifetime-syntax.html#validating-references-with-lifetimes">«Проверка ссылок с временами жизни»</a><!-- ignore --> главы 10.</p>
 <p>Запустим тест:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/listing-12-16/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.97s
+     Running unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 1 test
+test tests::one_result ... FAILED
+
+failures:
+
+---- tests::one_result stdout ----
+thread 'tests::one_result' panicked at src/lib.rs:44:9:
+assertion `left == right` failed
+  left: ["safe, fast, productive."]
+ right: []
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::one_result
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <p>Отлично. Наш тест не сработал, как мы и ожидали. Давайте сделаем так, чтобы он срабатывал!</p>
 <h3 id="Написание-кода-для-прохождения-теста"><a class="header" href="#Написание-кода-для-прохождения-теста">Написание кода для прохождения теста</a></h3>
@@ -220,38 +344,278 @@
 <h4 id="Перебор-строк-с-помощью-способа-lines"><a class="header" href="#Перебор-строк-с-помощью-способа-lines">Перебор строк с помощью способа <code>lines</code></a></h4>
 <p>В Rust есть полезный способ для построчной повторения строк, удобно названный <code>lines</code>, как показано в приложении 12-17. Обратите внимание, код пока не собирается.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-17/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    for line in contents.lines() {
+        // do something with line
+    }
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 12-17: Повторение по каждой строке из <code>contents</code></span></p>
 <p>Способ <code>lines</code> возвращает повторитель. Мы подробно поговорим об повторителях в <a href="ch13-02-iterators.html">Главе 13</a><!-- ignore -->, но вспомните, что вы видели этот способ использования повторителя в <a href="ch03-05-control-flow.html#looping-through-a-collection-with-for">Приложении 3-5</a><!-- ignore -->, где мы использовали цикл <code>for</code> с повторителем, чтобы выполнить некоторый код для каждого элемента в собрания.</p>
 <h4 id="Поиск-в-каждой-строке-текста-запроса"><a class="header" href="#Поиск-в-каждой-строке-текста-запроса">Поиск в каждой строке текста запроса</a></h4>
 <p>Далее мы проверяем, содержит ли текущая строка нашу искомую строку. К счастью, у строк есть полезный способ <code>contains</code>, который именно это и делает! Добавьте вызов способа <code>contains</code> в функции <code>search</code>, как показано в приложении 12-18. Обратите внимание, что это все ещё не собирается.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-18/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    for line in contents.lines() {
+        if line.contains(query) {
+            // do something with line
+        }
+    }
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 12-18. Добавление проверки, содержится ли <code>query</code> в строке</span></p>
 <p>На данный момент мы наращиваем функциональность. Чтобы заставить это собираться, нам нужно вернуть значение из тела функции, как мы указали в сигнатуре функции.</p>
 <h4 id="Сохранение-совпавшей-строки"><a class="header" href="#Сохранение-совпавшей-строки">Сохранение совпавшей строки</a></h4>
 <p>Чтобы завершить эту функцию, нам нужен способ сохранить совпадающие строки, которые мы хотим вернуть. Для этого мы можем создать изменяемый вектор перед циклом <code>for</code> и вызывать способ <code>push</code> для сохранения <code>line</code> в векторе. После цикла <code>for</code> мы возвращаем вектор, как показано в приложении 12-19.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-19/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+
+    results
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 12-19: Сохраняем совпавшие строки, чтобы впоследствии их можно было вернуть</span></p>
 <p>Теперь функция <code>search</code> должна возвратить только строки, содержащие <code>query</code>, и тест должен пройти. Запустим его:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/listing-12-19/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.22s
+     Running unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 1 test
+test tests::one_result ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests minigrep
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 </code></pre>
 <p>Наш тест пройден, значит он работает!</p>
 <p>На этом этапе мы могли бы рассмотреть возможности изменения реализации функции поиска, сохраняя прохождение тестов и поддерживая имеющуюся функциональность. Код в функции поиска не так уж плох, но он не использует некоторые полезные функции повторителей. Вернёмся к этому примеру в <a href="ch13-02-iterators.html">главе 13</a><!-- ignore -->, где будем исследовать повторители подробно, и посмотрим как его улучшить.</p>
 <h4 id="Использование-функции-search-в-функции-run"><a class="header" href="#Использование-функции-search-в-функции-run">Использование функции <code>search</code> в функции <code>run</code></a></h4>
 <p>Теперь, когда функция <code>search</code> работает и протестирована, нужно вызвать <code>search</code> из нашей функции <code>run</code>. Нам нужно передать значение <code>config.query</code> и <code>contents</code>, которые <code>run</code> читает из файла, в функцию <code>search</code>. Тогда <code>run</code> напечатает каждую строку, возвращаемую из <code>search</code>:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/no-listing-02-using-search-in-run/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let contents = fs::read_to_string(config.file_path)?;
+
+    for line in search(&amp;config.query, &amp;contents) {
+        println!("{line}");
+    }
+
+    Ok(())
+}
+<span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p>Мы по-прежнему используем цикл <code>for</code> для возврата каждой строки из функции <code>search</code> и её печати.</p>
 <p>Теперь вся программа должна работать! Давайте попробуем сначала запустить её со словом «frog», которое должно вернуть только одну строчку из стихотворения Эмили Дикинсон:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/no-listing-02-using-search-in-run/output.txt}}
+<pre><code class="language-console">$ cargo run -- frog poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
+     Running `target/debug/minigrep frog poem.txt`
+How public, like a frog
 </code></pre>
 <p>Здорово! Теперь давайте попробуем слово, которое будет соответствовать нескольким строкам, например «body»:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/output-only-03-multiple-matches/output.txt}}
+<pre><code class="language-console">$ cargo run -- body poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep body poem.txt`
+I'm nobody! Who are you?
+Are you nobody, too?
+How dreary to be somebody!
 </code></pre>
 <p>И наконец, давайте удостоверимся, что мы не получаем никаких строк, когда ищем слово, отсутствующее в стихотворении, например «monomorphization»:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/output-only-04-no-matches/output.txt}}
+<pre><code class="language-console">$ cargo run -- monomorphization poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep monomorphization poem.txt`
 </code></pre>
 <p>Отлично! Мы создали собственную мини-исполнение классического средства и научились тому, как структурировать приложения. Мы также немного узнали о файловом вводе и выводе, временах жизни, тестировании и разборе переменных приказной строки.</p>
 <p>Чтобы завершить этот проект, мы кратко выполним пару вещей: как работать с переменными окружения и как печатать в стандартный поток ошибок, обе из которых полезны при написании окно выводаных программ.</p>

@@ -187,13 +187,56 @@
 <p>Мы покажем два способа вызова функции <code>add_to_waitlist</code> из новой функции <code>eat_at_restaurant</code>, определённой в корневом модуле крейта. Эти пути правильные, но остаётся ещё одна проблема, которая не позволит этому примеру собраться как есть. Мы скоро объясним почему.</p>
 <p>Функция <code>eat_at_restaurant</code> является частью общедоступного API нашего библиотечного крейта, поэтому мы помечаем её ключевым словом <code>pub</code>. В разделе <a data-md-type="raw_html" href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">"Раскрываем приватные пути с помощью ключевого слова <code>pub</code>"</a><!-- ignore --> мы рассмотрим более подробно <code>pub</code>.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-03/src/lib.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">mod front_of_house {
+    mod hosting {
+        fn add_to_waitlist() {}
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Absolute path
+    crate::front_of_house::hosting::add_to_waitlist();
+
+    // Relative path
+    front_of_house::hosting::add_to_waitlist();
+}</code></pre>
 <p><span class="caption">Приложение 7-3. Вызов функции <code>add_to_waitlist</code> с использованием абсолютного и относительного пути</span></p>
 <p>При первом вызове функции <code>add_to_waitlist</code> из <code>eat_at_restaurant</code> мы используем абсолютный путь. Функция <code>add_to_waitlist</code> определена в том же крейте, что и <code>eat_at_restaurant</code>, и это означает, что мы можем использовать ключевое слово <code>crate</code> в начале абсолютного пути. Затем мы добавляем каждый из последующих дочерних модулей, пока не составим путь до <code>add_to_waitlist</code>. Вы можете представить себе файловую систему с такой же структурой: мы указываем путь <code>/front_of_house/hosting/add_to_waitlist</code> для запуска программы <code>add_to_waitlist</code>; использование имени <code>crate</code> в качестве корневого модуля крейта подобно использованию <code>/</code> для указания корня файловой системы в вашей оболочке.</p>
 <p>Второй раз, когда мы вызываем <code>add_to_waitlist</code> из <code>eat_at_restaurant</code>, мы используем относительный путь. Путь начинается с имени модуля <code>front_of_house</code>, определённого на том же уровне дерева модулей, что и <code>eat_at_restaurant</code>. Для эквивалентной файловой системы использовался бы путь <code>front_of_house/hosting/add_to_waitlist</code>. Начало пути с имени модуля означает, что путь является относительным.</p>
 <p>Выбор, использовать относительный или абсолютный путь, является решением, которое вы примете на основании вашего проекта. Решение должно зависеть от того, с какой вероятностью вы переместите объявление элемента отдельно от или вместе с кодом использующим этот элемент. Например, в случае перемещения модуля <code>front_of_house</code> и его функции <code>eat_at_restaurant</code> в другой модуль с именем <code>customer_experience</code>, будет необходимо обновить абсолютный путь до <code>add_to_waitlist</code>, но относительный путь всё равно будет действителен. Однако, если мы переместим отдельно функцию <code>eat_at_restaurant</code> в модуль с именем <code>dining</code>, то абсолютный путь вызова <code>add_to_waitlist</code> останется прежним, а относительный путь нужно будет обновить. Мы предпочитаем указывать абсолютные пути, потому что это позволяет проще перемещать определения кода и вызовы элементов независимо друг от друга.</p>
 <p>Давайте попробуем собрать код из приложения 7-3 и выяснить, почему он ещё не собирается. Ошибка, которую мы получаем, показана в приложении 7-4.</p>
-<pre><code class="language-console">{{#include ../listings/ch07-managing-growing-projects/listing-07-03/output.txt}}
+<pre><code class="language-console">$ cargo build
+   Compiling restaurant v0.1.0 (file:///projects/restaurant)
+error[E0603]: module `hosting` is private
+ --&gt; src/lib.rs:9:28
+  |
+9 |     crate::front_of_house::hosting::add_to_waitlist();
+  |                            ^^^^^^^  --------------- function `add_to_waitlist` is not publicly re-exported
+  |                            |
+  |                            private module
+  |
+note: the module `hosting` is defined here
+ --&gt; src/lib.rs:2:5
+  |
+2 |     mod hosting {
+  |     ^^^^^^^^^^^
+
+error[E0603]: module `hosting` is private
+  --&gt; src/lib.rs:12:21
+   |
+12 |     front_of_house::hosting::add_to_waitlist();
+   |                     ^^^^^^^  --------------- function `add_to_waitlist` is not publicly re-exported
+   |                     |
+   |                     private module
+   |
+note: the module `hosting` is defined here
+  --&gt; src/lib.rs:2:5
+   |
+2  |     mod hosting {
+   |     ^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0603`.
+error: could not compile `restaurant` (lib) due to 2 previous errors
 </code></pre>
 <p><span class="caption">Приложение 7-4. Ошибки сборки при сборке кода из приложения 7-3</span></p>
 <p>Сообщения об ошибках говорят о том, что модуль <code>hosting</code> является приватным. Другими словами, у нас есть правильные пути к модулю <code>hosting</code> и функции <code>add_to_waitlist</code>, но Rust не позволяет нам использовать их, потому что у него нет доступа к приватным разделам. В Rust все элементы (функции, способы, структуры, перечисления, модули и константы) по умолчанию являются приватными для родительских модулей. Если вы хотите сделать элемент, например функцию или структуру, приватным, вы помещаете его в модуль.</p>
@@ -202,17 +245,68 @@
 <h3 id="Раскрываем-приватные-пути-с-помощью-ключевого-слова-pub"><a class="header" href="#Раскрываем-приватные-пути-с-помощью-ключевого-слова-pub">Раскрываем приватные пути с помощью ключевого слова <code>pub</code><a id="exposing-paths-with-the-pub-keyword"></a></a></h3>
 <p>Давайте вернёмся к ошибке в приложении 7-4, которая говорит, что модуль <code>hosting</code> является приватным. Мы хотим, чтобы функция <code>eat_at_restaurant</code> из родительского модуля имела доступ к функции <code>add_to_waitlist</code> в дочернем модуле, поэтому мы помечаем модуль <code>hosting</code> ключевым словом <code>pub</code>, как показано в приложении 7-5.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-05/src/lib.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">mod front_of_house {
+    pub mod hosting {
+        fn add_to_waitlist() {}
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Absolute path
+    crate::front_of_house::hosting::add_to_waitlist();
+
+    // Relative path
+    front_of_house::hosting::add_to_waitlist();
+}</code></pre>
 <p><span class="caption">Приложение 7-5. Объявление модуля <code>hosting</code> как <code>pub</code> для его использования из <code>eat_at_restaurant</code></span></p>
 <p>К сожалению, код в приложении 7-5 всё ещё приводит к ошибке, как показано в приложении 7-6.</p>
-<pre><code class="language-console">{{#include ../listings/ch07-managing-growing-projects/listing-07-05/output.txt}}
+<pre><code class="language-console">$ cargo build
+   Compiling restaurant v0.1.0 (file:///projects/restaurant)
+error[E0603]: function `add_to_waitlist` is private
+ --&gt; src/lib.rs:9:37
+  |
+9 |     crate::front_of_house::hosting::add_to_waitlist();
+  |                                     ^^^^^^^^^^^^^^^ private function
+  |
+note: the function `add_to_waitlist` is defined here
+ --&gt; src/lib.rs:3:9
+  |
+3 |         fn add_to_waitlist() {}
+  |         ^^^^^^^^^^^^^^^^^^^^
+
+error[E0603]: function `add_to_waitlist` is private
+  --&gt; src/lib.rs:12:30
+   |
+12 |     front_of_house::hosting::add_to_waitlist();
+   |                              ^^^^^^^^^^^^^^^ private function
+   |
+note: the function `add_to_waitlist` is defined here
+  --&gt; src/lib.rs:3:9
+   |
+3  |         fn add_to_waitlist() {}
+   |         ^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0603`.
+error: could not compile `restaurant` (lib) due to 2 previous errors
 </code></pre>
 <p><span class="caption">Приложение 7-6: Ошибки сборки при сборке кода в приложении 7-5</span></p>
 <p>Что произошло? Добавление ключевого слова <code>pub</code> перед <code>mod hosting</code> сделало модуль общедоступным. После этого изменения, если мы можем получить доступ к модулю <code>front_of_house</code>, то мы можем получить доступ к модулю <code>hosting</code>. Но <em>содержимое</em> модуля <code>hosting</code> всё ещё является приватным: превращение модуля в общедоступный модуль не делает его содержимое общедоступным. Ключевое слово <code>pub</code> позволяет внешнему коду в модулях-предках обращаться только к модулю, без доступа ко внутреннему коду. Поскольку модули являются дополнениями, мы мало что можем сделать, просто сделав модуль общедоступным; нам нужно пойти дальше и сделать один или несколько элементов в модуле общедоступными.</p>
 <p>Ошибки в приложении 7-6 говорят, что функция <code>add_to_waitlist</code> является приватной. Правила приватности применяются к структурам, перечислениям, функциям и способам, также как и к модулям.</p>
 <p>Давайте также сделаем функцию <code>add_to_waitlist</code> общедоступной, добавив ключевое слово <code>pub</code> перед её определением, как показано в приложении 7-7.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground test_harness">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-07/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Absolute path
+    crate::front_of_house::hosting::add_to_waitlist();
+
+    // Relative path
+    front_of_house::hosting::add_to_waitlist();
+}</code></pre>
 <p><span class="caption">Приложение 7-7. Добавление ключевого слова <code>pub</code> к <code>mod hosting</code> и к <code>fn add_to_waitlist</code> позволяет нам вызывать функцию из <code>eat_at_restaurant</code></span></p>
 <p>Теперь код собирается! Чтобы понять, почему добавление ключевого слова <code>pub</code> позволяет нам использовать эти пути для <code>add_to_waitlist</code> в соответствии с правилами приватности, давайте рассмотрим абсолютный и относительный пути.</p>
 <p>В случае абсолютного пути мы начинаем с <code>crate</code>, корня дерева модулей нашего крейта. Модуль <code>front_of_house</code> определён в корневом модуле крейта. Хотя <code>front_of_house</code> не является общедоступным, но поскольку функция <code>eat_at_restaurant</code> определена в том же модуле, что и <code>front_of_house</code> (то есть, <code>eat_at_restaurant</code> и <code>front_of_house</code> являются потомками одного родителя), мы можем ссылаться на <code>front_of_house</code> из <code>eat_at_restaurant</code>. Далее идёт модуль <code>hosting</code>, помеченный как <code>pub</code>. Мы можем получить доступ к родительскому модулю модуля <code>hosting</code>, поэтому мы можем получить доступ и к <code>hosting</code>. Наконец, функция <code>add_to_waitlist</code> помечена как <code>pub</code>, и так как мы можем получить доступ к её родительскому модулю, то вызов этой функции разрешён!</p>
@@ -228,19 +322,64 @@
 <p>Также можно построить относительные пути, которые начинаются в родительском модуле, используя ключевое слово <code>super</code> в начале пути. Это похоже на синтаксис начала пути файловой системы <code>..</code>. Использование <code>super</code> позволяет нам сослаться на элемент, который, как мы знаем, находится в родительском модуле, что может упростить переупорядочение дерева модулей, чем когда модуль тесно связан с родителем, но родитель может когда-нибудь быть перемещён в другое место в дереве модулей.</p>
 <p>Рассмотрим код в приложении 7-8, где моделируется ситуация, в которой повар исправляет неправильный заказ и лично приносит его клиенту. Функция <code>fix_incorrect_order</code> вызывает функцию <code>deliver_order</code>, определённую в родительском модуле, указывая путь к <code>deliver_order</code>, начинающийся с <code>super</code>:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground test_harness">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-08/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground test_harness">fn deliver_order() {}
+
+mod back_of_house {
+    fn fix_incorrect_order() {
+        cook_order();
+        super::deliver_order();
+    }
+
+    fn cook_order() {}
+}</code></pre>
 <p><span class="caption">Приложение 7-8: Вызов функции с использованием относительного пути, начинающегося с <code>super</code></span></p>
 <p>Функция <code>fix_incorrect_order</code> находится в модуле <code>back_of_house</code>, поэтому мы можем использовать <code>super</code> для перехода к родительскому модулю модуля <code>back_of_house</code>, который в этом случае является <code>crate</code>, корневым модулем. В этом модуле мы ищем <code>deliver_order</code> и находим его. Успех! Мы думаем, что модуль <code>back_of_house</code> и функция <code>deliver_order</code>, скорее всего, останутся в тех же родственных отношениях друг с другом, и должны будут перемещены вместе, если мы решим реорганизовать дерево модулей крейта. Поэтому мы использовали <code>super</code>, чтобы в будущем у нас было меньше мест для обновления кода, если этот код будет перемещён в другой модуль.</p>
 <h3 id="Делаем-общедоступными-структуры-и-перечисления"><a class="header" href="#Делаем-общедоступными-структуры-и-перечисления">Делаем общедоступными структуры и перечисления</a></h3>
 <p>Мы также можем использовать <code>pub</code> для обозначения структур и перечислений как общедоступных, но есть несколько дополнительных подробностей использования <code>pub</code> со структурами и перечислениями. Если мы используем <code>pub</code> перед определением структуры, мы делаем структуру общедоступной, но поля структуры по-прежнему остаются приватными. Мы можем сделать каждое поле общедоступным или нет в каждом определенном случае. В приложении 7-9 мы определили общедоступную структуру <code>back_of_house::Breakfast</code> с общедоступным полем <code>toast</code> и с приватным полем <code>seasonal_fruit</code>. Это моделирует случай в ресторане, когда клиент может выбрать вид хлеба, который подаётся с едой, а шеф-повар решает какие фрукты сопровождают еду, исходя из того, что сезонно и что есть в наличии. Доступные фрукты быстро меняются, поэтому клиенты не могут выбирать фрукты или даже увидеть, какие фрукты они получат.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-09/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">mod back_of_house {
+    pub struct Breakfast {
+        pub toast: String,
+        seasonal_fruit: String,
+    }
+
+    impl Breakfast {
+        pub fn summer(toast: &amp;str) -&gt; Breakfast {
+            Breakfast {
+                toast: String::from(toast),
+                seasonal_fruit: String::from("peaches"),
+            }
+        }
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Order a breakfast in the summer with Rye toast
+    let mut meal = back_of_house::Breakfast::summer("Rye");
+    // Change our mind about what bread we'd like
+    meal.toast = String::from("Wheat");
+    println!("I'd like {} toast please", meal.toast);
+
+    // The next line won't compile if we uncomment it; we're not allowed
+    // to see or modify the seasonal fruit that comes with the meal
+    // meal.seasonal_fruit = String::from("blueberries");
+}</code></pre>
 <p><span class="caption">Приложение 7-9: Структура с общедоступными и приватными полями</span></p>
 <p>Поскольку поле <code>toast</code> в структуре <code>back_of_house::Breakfast</code> является открытым, то в функции <code>eat_at_restaurant</code> можно писать и читать поле <code>toast</code>, используя точечную нотацию. Обратите внимание, что мы не можем использовать поле <code>seasonal_fruit</code> в <code>eat_at_restaurant</code>, потому что <code>seasonal_fruit</code> является приватным. Попробуйте убрать комментирование с последней строки для значения поля <code>seasonal_fruit</code>, чтобы увидеть какую ошибку вы получите!</p>
 <p>Также обратите внимание, что поскольку <code>back_of_house::Breakfast</code> имеет приватное поле, то структура должна предоставить публичную ассоциированную функцию, которая создаёт экземпляр <code>Breakfast</code> (мы назвали её <code>summer</code>). Если <code>Breakfast</code> не имел бы такой функции, мы бы не могли создать экземпляр <code>Breakfast</code> внутри <code>eat_at_restaurant</code>, потому что мы не смогли бы установить значение приватного поля <code>seasonal_fruit</code> в функции <code>eat_at_restaurant</code>.</p>
 <p>В отличии от структуры, если мы сделаем общедоступным перечисление, то все его варианты будут общедоступными. Нужно только указать <code>pub</code> перед ключевым словом <code>enum</code>, как показано в приложении 7-10.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-10/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">mod back_of_house {
+    pub enum Appetizer {
+        Soup,
+        Salad,
+    }
+}
+
+pub fn eat_at_restaurant() {
+    let order1 = back_of_house::Appetizer::Soup;
+    let order2 = back_of_house::Appetizer::Salad;
+}</code></pre>
 <p><span class="caption">Приложение 7-10. Определяя перечисление общедоступным мы делаем все его варианты общедоступными</span></p>
 <p>Поскольку мы сделали общедоступным перечисление <code>Appetizer</code>, то можно использовать варианты <code>Soup</code> и <code>Salad</code> в функции <code>eat_at_restaurant</code>.</p>
 <p>Перечисления не очень полезны, если их варианты не являются общедоступными: было бы досадно каждый раз аннотировать все варианты перечисления как <code>pub</code>. По этой причине по умолчанию варианты перечислений являются общедоступными. Структуры часто полезны, если их поля не являются общедоступными, поэтому поля структуры следуют общему правилу, согласно которому, всё по умолчанию является приватным, если не указано <code>pub</code>.</p>

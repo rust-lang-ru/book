@@ -199,7 +199,18 @@
 <p>Мы также могли использовать макрос <code>vec!</code> для создания вектора из двух целых чисел или вектора из пяти строковых срезов. Мы не смогли бы использовать функцию, чтобы сделать то же самое, потому что мы не знали бы заранее количество или вид значений.</p>
 <p>В приложении 19-28 приведено несколько упрощённое определение макроса <code>vec!</code>.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-28/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">#[macro_export]
+macro_rules! vec {
+    ( $( $x:expr ),* ) =&gt; {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            temp_vec
+        }
+    };
+}</code></pre>
 <p><span class="caption">Приложение 19-28: Упрощённая исполнение определения макроса <code>vec!</code></span></p>
 <blockquote>
 <p>Примечание: фактическое определение макроса <code>vec!</code> в встроенной библиотеке содержит код для предварительного выделения правильного объёма памяти. Этот код является оптимизацией, которую мы здесь не используем, чтобы сделать пример проще.</p>
@@ -236,16 +247,38 @@ pub fn some_name(input: TokenStream) -&gt; TokenStream {
 <h3 id="Как-написать-пользовательский-derive-макрос"><a class="header" href="#Как-написать-пользовательский-derive-макрос">Как написать пользовательский <code>derive</code> макрос</a></h3>
 <p>Давайте создадим крейт с именем <code>hello_macro</code>, который определяет типаж с именем <code>HelloMacro</code> и имеет одну с ним ассоциированную функцию с именем <code>hello_macro</code>. Вместо того, чтобы пользователи нашего крейта самостоятельно реализовывали типаж <code>HelloMacro</code> для каждого из своих видов, мы предоставим им процедурный макрос, чтобы они могли аннотировать свой вид с помощью атрибута <code>#[derive(HelloMacro)]</code> и получили реализацию по умолчанию для функции <code>hello_macro</code>. Реализация по умолчанию выведет <code>Hello, Macro! My name is TypeName!</code>, где <code>TypeName</code> - это имя вида, для которого был определён этот типаж. Другими словами, мы напишем крейт, использование которого позволит другому программисту писать код показанный в приложении 19-30.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-30/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use hello_macro::HelloMacro;
+use hello_macro_derive::HelloMacro;
+
+#[derive(HelloMacro)]
+struct Pancakes;
+
+fn main() {
+    Pancakes::hello_macro();
+}</code></pre>
 <p><span class="caption">Приложение 19-30: Код, который сможет писать пользователь нашего крейта при использовании нашего процедурного макроса</span></p>
 <p>Этот код напечатает <code>Hello, Macro! My name is Pancakes!</code>, когда мы закончим. Первый шаг - создать новый, библиотечный крейт так:</p>
 <pre><code class="language-console">$ cargo new hello_macro --lib
 </code></pre>
 <p>Далее, мы определим типаж <code>HelloMacro</code> и ассоциированную с ним функцию:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-20-impl-hellomacro-for-pancakes/hello_macro/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub trait HelloMacro {
+    fn hello_macro();
+}</code></pre>
 <p>У нас есть типаж и его функция. На этом этапе пользователь крейта может реализовать типаж для достижения желаемой функциональности, так:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-20-impl-hellomacro-for-pancakes/pancakes/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore">use hello_macro::HelloMacro;
+
+struct Pancakes;
+
+impl HelloMacro for Pancakes {
+    fn hello_macro() {
+        println!("Hello, Macro! My name is Pancakes!");
+    }
+}
+
+fn main() {
+    Pancakes::hello_macro();
+}</code></pre>
 <p>Тем не менее, ему придётся написать разделреализации для каждого вида, который он хотел использовать вместе с <code>hello_macro</code>; а мы хотим избавить их от необходимости делать эту работу.</p>
 <p>Кроме того, мы пока не можем предоставить функцию <code>hello_macro</code> с реализацией по умолчанию, которая будет печатать имя вида, для которого реализован типаж: Rust не имеет возможностей рефлексии (reflection), поэтому он не может выполнить поиск имени вида во время выполнения кода. Нам нужен макрос для генерации кода во время сборки.</p>
 <p>Следующим шагом является определение процедурного макроса. На момент написания этой статьи процедурные макросы должны быть в собственном крейте. Со временем это ограничение может быть отменено. Соглашение о структурировании крейтов и макросов является следующим: для крейта с именем <code>foo</code>, его пользовательский, крейт с выводимым процедурным макросом называется <code>foo_derive</code>. Давайте начнём с создания нового крейта с именем <code>hello_macro_derive</code> внутри проекта <code>hello_macro</code>:</p>
@@ -254,11 +287,27 @@ pub fn some_name(input: TokenStream) -&gt; TokenStream {
 <p>Наши два крейта тесно связаны, поэтому мы создаём процедурный макрос-крейт в каталоге крейта <code>hello_macro</code>. Если мы изменим определение типажа в <code>hello_macro</code>, то нам придётся также изменить реализацию процедурного макроса в <code>hello_macro_derive</code>. Два крейта нужно будет опубликовать отдельно и программисты, использующие эти крейты, должны будут добавить их как зависимости, а затем добавить их в область видимости. Мы могли вместо этого сделать так, что крейт <code>hello_macro</code> использует <code>hello_macro_derive</code> как зависимость и реэкспортирует код процедурного макроса. Однако то, как мы структурировали проект, делает возможным программистам использовать <code>hello_macro</code> даже если они не хотят <code>derive</code> функциональность.</p>
 <p>Нам нужно объявить крейт <code>hello_macro_derive</code> как процедурный макрос-крейт. Также понадобятся функционал из крейтов <code>syn</code> и <code>quote</code>, как вы увидите через мгновение, поэтому нам нужно добавить их как зависимости. Добавьте следующее в файл <em>Cargo.toml</em> для <code>hello_macro_derive</code>:</p>
 <p><span class="filename">Файл: hello_macro_derive/Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch19-advanced-features/listing-19-31/hello_macro/hello_macro_derive/Cargo.toml:6:12}}
+<pre><code class="language-toml">[lib]
+proc-macro = true
+
+[dependencies]
+syn = "2.0"
+quote = "1.0"
 </code></pre>
 <p>Чтобы начать определение процедурного макроса, поместите код приложения 19-31 в ваш файл <em>src/lib.rs</em> крейта <code>hello_macro_derive</code>. Обратите внимание, что этот код не ссобирается пока мы не добавим определение для функции <code>impl_hello_macro</code>.</p>
 <p><span class="filename">Файл: hello_macro_derive/src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-31/hello_macro/hello_macro_derive/src/lib.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use proc_macro::TokenStream;
+use quote::quote;
+
+#[proc_macro_derive(HelloMacro)]
+pub fn hello_macro_derive(input: TokenStream) -&gt; TokenStream {
+    // Construct a representation of Rust code as a syntax tree
+    // that we can manipulate
+    let ast = syn::parse(input).unwrap();
+
+    // Build the trait implementation
+    impl_hello_macro(&amp;ast)
+}</code></pre>
 <p><span class="caption">Приложение 19-31: Код, который потребуется в большинстве процедурных макро крейтов для обработки Rust кода</span></p>
 <p>Обратите внимание, что мы разделили код на функцию <code>hello_macro_derive</code>, которая отвечает за синтаксический анализ <code>TokenStream</code> и функцию <code>impl_hello_macro</code>, которая отвечает за преобразование синтаксического дерева: это делает написание процедурного макроса удобнее. Код во внешней функции ( <code>hello_macro_derive</code> в данном случае) будет одинаковым для почти любого процедурного макрос крейта, который вы видите или создаёте. Код, который вы указываете в теле внутренней функции (в данном случае <code>impl_hello_macro</code> ) будет отличаться в зависимости от цели вашего процедурного макроса.</p>
 <p>Мы представили три новых крейта: <code>proc_macro</code> <a href="https://crates.io/crates/syn"><code>syn</code></a> и <a href="https://crates.io/crates/quote"><code>quote</code></a>. Макрос <code>proc_macro</code> поставляется с Rust, поэтому нам не нужно было добавлять его в зависимости внутри <em>Cargo.toml</em>. Макрос <code>proc_macro</code> - это API сборщика, который позволяет нам читать и манипулировать Rust кодом из нашего кода.</p>
@@ -288,7 +337,30 @@ pub fn some_name(input: TokenStream) -&gt; TokenStream {
 <p>Возможно, вы заметили, что мы вызываем <code>unwrap</code> чтобы выполнить панику в функции <code>hello_macro_derive</code>, если вызов функции <code>syn::parse</code> потерпит неудачу. Наш процедурный макрос должен паниковать при ошибках, потому что функции <code>proc_macro_derive</code> должны возвращать <code>TokenStream</code>, а не вид <code>Result</code> для соответствия API процедурного макроса. Мы упростили этот пример с помощью <code>unwrap</code>, но в рабочем коде вы должны предоставить более определенные сообщения об ошибках, если что-то пошло не правильно, используя <code>panic!</code> или <code>expect</code>.</p>
 <p>Теперь, когда у нас есть код для преобразования аннотированного Rust кода из <code>TokenStream</code> в экземпляр <code>DeriveInput</code>, давайте сгенерируем код реализующий типаж <code>HelloMacro</code> у аннотированного вида, как показано в приложении 19-33.</p>
 <p><span class="filename">Файл: hello_macro_derive/src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-33/hello_macro/hello_macro_derive/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use proc_macro::TokenStream;
+</span><span class="boring">use quote::quote;
+</span><span class="boring">
+</span><span class="boring">#[proc_macro_derive(HelloMacro)]
+</span><span class="boring">pub fn hello_macro_derive(input: TokenStream) -&gt; TokenStream {
+</span><span class="boring">    // Construct a representation of Rust code as a syntax tree
+</span><span class="boring">    // that we can manipulate
+</span><span class="boring">    let ast = syn::parse(input).unwrap();
+</span><span class="boring">
+</span><span class="boring">    // Build the trait implementation
+</span><span class="boring">    impl_hello_macro(&amp;ast)
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn impl_hello_macro(ast: &amp;syn::DeriveInput) -&gt; TokenStream {
+    let name = &amp;ast.ident;
+    let gen = quote! {
+        impl HelloMacro for #name {
+            fn hello_macro() {
+                println!("Hello, Macro! My name is {}!", stringify!(#name));
+            }
+        }
+    };
+    gen.into()
+}</code></pre>
 <p><span class="caption">Приложение 19-33: Реализация типажа <code>HelloMacro</code> с использованием проанализированного кода Rust.</span></p>
 <p>Мы получаем экземпляр структуры <code>Ident</code> содержащий имя (определитель) аннотированного вида с использованием <code>ast.ident</code>. Структура в приложении 19-32 показывает, что когда мы запускаем функцию <code>impl_hello_macro</code> для кода из приложения 19-30, то получаемый <code>ident</code> будет иметь поле <code>ident</code> со значением <code>"Pancakes"</code>. Таким образом, переменная <code>name</code> в приложении 19-33 будет содержать экземпляр структуры <code>Ident</code>, что при печати выдаст строку <code>"Pancakes"</code>, что является именем структуры в приложении 19-30.</p>
 <p>Макрос <code>quote!</code> позволяет определить код Rust, который мы хотим вернуть. Сборщик ожидает что-то отличное от прямого результата выполнения макроса <code>quote!</code>, поэтому нужно преобразовать его в <code>TokenStream</code>. Мы делаем это путём вызова способа <code>into</code>, который использует промежуточное представление и возвращает значение требуемого вида <code>TokenStream</code>.</p>
@@ -296,7 +368,8 @@ pub fn some_name(input: TokenStream) -&gt; TokenStream {
 <p>Мы хотим, чтобы наш процедурный макрос генерировал реализацию нашего типажа <code>HelloMacro</code> для вида, который аннотировал пользователь, который мы можем получить, используя <code>#name</code>. Реализация типажа имеет одну функцию <code>hello_macro</code>, тело которой содержит функциональность, которую мы хотим предоставить: напечатать <code>Hello, Macro! My name is</code> с именем аннотированного вида.</p>
 <p>Макрос <code>stringify!</code> используемый здесь, встроен в Rust. Он принимает Rust выражение, такое как <code>1 + 2</code> и во время сборки сборщик превращает выражение в строковый литерал, такой как <code>"1 + 2"</code>. Он отличается от макросов <code>format!</code> или <code>println!</code>, которые вычисляют выражение, а затем превращают результат в виде вида <code>String</code>. Существует возможность того, что введённый <code>#name</code> может оказаться выражением для печати буквально как есть, поэтому здесь мы используем <code>stringify!</code>. Использование <code>stringify!</code> также экономит выделение памяти путём преобразования <code>#name</code> в строковый литерал во время сборки.</p>
 <p>На этом этапе приказ <code>cargo build</code> должна завершиться успешно для обоих <code>hello_macro</code> и <code>hello_macro_derive</code>. Давайте подключим эти крейты к коду в приложении 19-30, чтобы увидеть процедурный макрос в действии! Создайте новый двоичный проект в каталоге ваших <em>проектов</em> с использованием приказы <code>cargo new pancakes</code>. Нам нужно добавить <code>hello_macro</code> и <code>hello_macro_derive</code> в качестве зависимостей для крейта <code>pancakes</code> в файл <em>Cargo.toml</em>. Если вы публикуете свои исполнения <code>hello_macro</code> и <code>hello_macro_derive</code> на сайт <a href="https://crates.io/">crates.io</a>, они будут обычными зависимостями; если нет, вы можете указать их как <code>path</code> зависимости следующим образом:</p>
-<pre><code class="language-toml">{{#include ../listings/ch19-advanced-features/no-listing-21-pancakes/pancakes/Cargo.toml:7:9}}
+<pre><code class="language-toml">hello_macro = { path = "../hello_macro" }
+hello_macro_derive = { path = "../hello_macro/hello_macro_derive" }
 </code></pre>
 <p>Поместите код в приложении 19-30 в <em>src/main.rs</em> и выполните <code>cargo run</code>: он должен вывести <code>Hello, Macro! My name is Pancakes!</code>. Реализация типажа <code>HelloMacro</code> из процедурного макроса была включена без необходимости его реализации крейтом <code>pancakes</code>; <code>#[derive(HelloMacro)]</code> добавил реализацию типажа.</p>
 <p>Далее давайте рассмотрим, как другие виды процедурных макросов отличаются от пользовательских выводимых макросов.</p>

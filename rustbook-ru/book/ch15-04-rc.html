@@ -188,19 +188,52 @@
 <p>Мы создадим список <code>a</code>, содержащий 5 и затем 10. Затем мы создадим ещё два списка: <code>b</code> начинающийся с 3 и <code>c</code> начинающийся с 4. Оба списка <code>b</code> и <code>c</code> затем продолжать первый список <code>a</code>, содержащий 5 и 10. Другими словами, оба списка будут разделять первый список, содержащий 5 и 10.</p>
 <p>Попытка реализовать этот сценарий, используя определение <code>List</code> с видом <code>Box&lt;T&gt;</code> не будет работать, как показано в приложении 15-17:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-17/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">enum List {
+    Cons(i32, Box&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+
+fn main() {
+    let a = Cons(5, Box::new(Cons(10, Box::new(Nil))));
+    let b = Cons(3, Box::new(a));
+    let c = Cons(4, Box::new(a));
+}</code></pre>
 <p><span class="caption">Приложение 15-17: Отображение того, что нельзя иметь два списка, использующих <code>Box&lt;T&gt;</code>, которые пытаются совместно владеть третьим списком</span></p>
 <p>При сборки этого кода, мы получаем эту ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-17/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+error[E0382]: use of moved value: `a`
+  --&gt; src/main.rs:11:30
+   |
+9  |     let a = Cons(5, Box::new(Cons(10, Box::new(Nil))));
+   |         - move occurs because `a` has type `List`, which does not implement the `Copy` trait
+10 |     let b = Cons(3, Box::new(a));
+   |                              - value moved here
+11 |     let c = Cons(4, Box::new(a));
+   |                              ^ value used here after move
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `cons-list` (bin "cons-list") due to 1 previous error
 </code></pre>
 <p>Варианты <code>Cons</code> владеют данными, которые они содержат, поэтому, когда мы создаём список <code>b</code>, то <code>a</code> перемещается в <code>b</code>, а <code>b</code> становится владельцем <code>a</code>. Затем, мы пытаемся использовать <code>a</code> снова при создании <code>c</code>, но нам не разрешают, потому что <code>a</code> был перемещён.</p>
 <p>Мы могли бы изменить определение <code>Cons</code>, чтобы вместо этого хранить ссылки, но тогда нам пришлось бы указывать свойства времени жизни. Указывая свойства времени жизни, мы бы указали, что каждый элемент в списке будет жить как минимум столько же, сколько и весь список. Это относится к элементам и спискам в приложении 15.17, но не во всех сценариях.</p>
 <p>Вместо этого мы изменим наше определение вида <code>List</code> так, чтобы использовать <code>Rc&lt;T&gt;</code> вместо <code>Box&lt;T&gt;</code>, как показано в приложении 15-18. Каждый вариант <code>Cons</code> теперь будет содержать значение и вид <code>Rc&lt;T&gt;</code>, указывающий на <code>List</code>. Когда мы создадим <code>b</code> то, вместо того чтобы стал владельцем <code>a</code>, мы будем клонировать <code>Rc&lt;List&gt;</code> который содержит <code>a</code>, тем самым увеличивая количество ссылок с единицы до двойки и позволяя переменным <code>a</code> и <code>b</code> разделять владение на данные в виде <code>Rc&lt;List&gt;</code>. Мы также клонируем <code>a</code> при создании <code>c</code>, увеличивая количество ссылок с двух до трёх. Каждый раз, когда мы вызываем <code>Rc::clone</code>, счётчик ссылок на данные внутри <code>Rc&lt;List&gt;</code> будет увеличиваться и данные не будут очищены, если на них нет нулевых ссылок.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-18/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">enum List {
+    Cons(i32, Rc&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::rc::Rc;
+
+fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    let b = Cons(3, Rc::clone(&amp;a));
+    let c = Cons(4, Rc::clone(&amp;a));
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-18: Определение <code>List</code>, использующее <code>Rc&lt;T&gt;</code></span></p>
 <p>Нам нужно добавить указанию <code>use</code>, чтобы подключить вид <code>Rc&lt;T&gt;</code> в область видимости, потому что он не входит в список самостоятельного импорта прелюдии. В <code>main</code>, мы создаём список владеющий 5 и 10, сохраняем его в новом <code>Rc&lt;List&gt;</code> переменной <code>a</code>. Затем при создании <code>b</code> и <code>c</code>, мы называем функцию <code>Rc::clone</code> и передаём ей ссылку на <code>Rc&lt;List&gt;</code> как переменная <code>a</code>.</p>
 <p>Мы могли бы вызвать <code>a.clone()</code>, а не <code>Rc::clone(&amp;a)</code>, но в Rust принято использовать <code>Rc::clone</code> в таком случае. Внутренняя реализация <code>Rc::clone</code> не делает глубокого копирования всех данных, как это происходит в видах большинства реализаций <code>clone</code>. Вызов <code>Rc::clone</code> только увеличивает счётчик ссылок, что не занимает много времени. Глубокое копирование данных может занимать много времени. Используя <code>Rc::clone</code> для подсчёта ссылок, можно визуально различать виды клонирования с глубоким копированием и клонирования, которые увеличивают количество ссылок. При поиске  в коде проблем с производительностью нужно рассмотреть только  клонирование с глубоким копированием и пренебрегать вызовы <code>Rc::clone</code> .</p>
@@ -208,14 +241,36 @@
 <p>Давайте изменим рабочий пример в приложении 15-18, чтобы увидеть как изменяется число ссылок при создании и удалении ссылок на <code>Rc&lt;List&gt;</code> внутри переменной <code>a</code>.</p>
 <p>В приложении 15-19 мы изменим <code>main</code> так, чтобы она имела внутреннюю область видимости вокруг списка <code>c</code>; тогда мы сможем увидеть, как меняется счётчик ссылок при выходе <code>c</code> из внутренней области видимости.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-19/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum List {
+</span><span class="boring">    Cons(i32, Rc&lt;List&gt;),
+</span><span class="boring">    Nil,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">use crate::List::{Cons, Nil};
+</span><span class="boring">use std::rc::Rc;
+</span><span class="boring">
+</span>fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    println!("count after creating a = {}", Rc::strong_count(&amp;a));
+    let b = Cons(3, Rc::clone(&amp;a));
+    println!("count after creating b = {}", Rc::strong_count(&amp;a));
+    {
+        let c = Cons(4, Rc::clone(&amp;a));
+        println!("count after creating c = {}", Rc::strong_count(&amp;a));
+    }
+    println!("count after c goes out of scope = {}", Rc::strong_count(&amp;a));
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-19: Печать количества ссылок</span></p>
 <p>В каждой части программы, где количество ссылок меняется, мы выводим количество ссылок, которое получаем, вызывая функцию <code>Rc::strong_count</code>. Эта функция названа <code>strong_count</code>, а не <code>count</code>, потому что вид <code>Rc&lt;T&gt;</code> также имеет <code>weak_count</code>; мы увидим, для чего используется <code>weak_count</code> в разделе <a data-md-type="raw_html" href="ch15-06-reference-cycles.html#preventing-reference-cycles-turning-an-rct-into-a-weakt">"Предотвращение циклических ссылок: Превращение <code>Rc&lt;T&gt;</code> в <code data-md-type="raw_html">Weak&lt;T&gt;</code>"</a><!-- ignore -->.</p>
 <p>Код выводит в окно вывода:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-19/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.45s
+     Running `target/debug/cons-list`
+count after creating a = 1
+count after creating b = 2
+count after creating c = 3
+count after c goes out of scope = 2
 </code></pre>
 <p>Можно увидеть, что <code>Rc&lt;List&gt;</code> в переменной <code>a</code> имеет начальный счётчик ссылок равный 1; затем каждый раз при вызове <code>clone</code> счётчик увеличивается на 1. Когда <code>c</code> выходит из области видимости, счётчик уменьшается на 1. Нам не нужно вызывать функцию уменьшения счётчика ссылок, как при вызове <code>Rc::clone</code> для увеличения счётчика ссылок: реализация <code>Drop</code> самостоятельно уменьшает счётчик ссылок, когда значение <code>Rc&lt;T&gt;</code> выходит из области видимости.</p>
 <p>В этом примере мы не наблюдаем того, что когда <code>b</code>, а затем <code>a</code> выходят из области видимости в конце <code>main</code>, счётчик становится равным 0, и <code>Rc&lt;List&gt;</code> полностью очищается. Использование <code>Rc&lt;T&gt;</code> позволяет одному значению иметь несколько владельцев, а счётчик заверяет, что значение остаётся действительным до тех пор, пока любой из владельцев ещё существует.</p>

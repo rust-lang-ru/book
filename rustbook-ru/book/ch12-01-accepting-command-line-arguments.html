@@ -189,10 +189,12 @@ $ cd minigrep
 <p>Чтобы <code>minigrep</code> мог воспринимать значения переменных приказной строки, которые мы ему передаём, нам понадобится функция <code>std::env::args</code>, входящая в стандартную библиотеку Rust. Эта функция возвращает повторительпеременных приказной строки, переданных в <code>minigrep</code>. Мы подробно рассмотрим повторители в <a href="ch13-00-functional-features.html">главе 13</a><!-- ignore -->. Пока вам достаточно знать две вещи об повторителях: повторители генерируют серию значений, и мы можем вызвать способ <code>collect</code> у повторителя, чтобы создать из него собрание, например вектор, который будет содержать все элементы, произведённые повторителем.</p>
 <p>Код представленный в Приложении 12-1 позволяет вашей программе <code>minigrep</code> читать любые переданные ей переменные приказной строки, а затем собирать значения в вектор.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-01/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::env;
+
+fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+    dbg!(args);
+}</code></pre></pre>
 <p><span class="caption">Приложение 12-1: Собираем переменные приказной строки в вектор и выводим их на печать</span></p>
 <p>Сначала мы вводим модуль <code>std::env</code> в область видимости с помощью указания <code>use</code>, чтобы мы могли использовать его функцию <code>args</code>. Обратите внимание, что функция <code>std::env::args</code> вложена в два уровня модулей. Как мы обсуждали в <a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#creating-idiomatic-use-paths">главе 7</a><!-- ignore -->, в случаях, когда нужная функция оказывается вложенной в более чем один модуль, советуется выносить в область видимости родительский модуль, а не функцию. Таким образом, мы можем легко использовать другие функции из <code>std::env</code>. Это менее двусмысленно, чем добавление <code>use std::env::args</code> и последующий вызов функции только с <code>args</code>, потому что <code>args</code> может быть легко принят за функцию, определённую в текущем модуле.</p>
 <blockquote>
@@ -201,19 +203,48 @@ $ cd minigrep
 </blockquote>
 <p>В первой строке кода функции <code>main</code> мы вызываем <code>env::args</code> и сразу используем способ <code>collect</code>, чтобы превратить повторительв вектор содержащий все полученные значения. Мы можем использовать функцию <code>collect</code> для создания многих видов собраний, поэтому мы явно аннотируем вид <code>args</code> чтобы указать, что мы хотим вектор строк. Хотя нам очень редко нужно аннотировать виды в Rust, <code>collect</code> - это одна из функций, с которой вам часто нужна изложение вида, потому что Rust не может сам вывести какую собрание вы хотите.</p>
 <p>И в заключение мы печатаем вектор с помощью отладочного макроса. Попробуем запустить код сначала без переменных, а затем с двумя переменнойми:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/listing-12-01/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running `target/debug/minigrep`
+[src/main.rs:5:5] args = [
+    "target/debug/minigrep",
+]
 </code></pre>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/output-only-01-with-args/output.txt}}
+<pre><code class="language-console">$ cargo run -- needle haystack
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.57s
+     Running `target/debug/minigrep needle haystack`
+[src/main.rs:5:5] args = [
+    "target/debug/minigrep",
+    "needle",
+    "haystack",
+]
 </code></pre>
 <p>Обратите внимание, что первое значение в векторе <code>"target/debug/minigrep"</code> является названием нашего двоичного файла. Это соответствует поведению списка переменных в Си, позволяя программам использовать название с которым они были вызваны при выполнении. Часто бывает удобно иметь доступ к имени программы, если вы хотите распечатать его в сообщениях или изменить поведение программы в зависимости от того, какой псевдоним приказной строки был использован для вызова программы. Но для целей этой главы, мы пропренебрегаем его и сохраним только два переменной, которые нам нужны.</p>
 <h3 id="Сохранения-значений-переменных-в-переменные"><a class="header" href="#Сохранения-значений-переменных-в-переменные">Сохранения значений переменных в переменные</a></h3>
 <p>На текущий момент программа может получить доступ к значениям, указанным в качестве переменных приказной строки. Теперь нам требуется сохранять значения этих двух переменных в переменных, чтобы мы могли использовать их в остальных частях программы. Мы сделаем это в приложении 12-2.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust should_panic noplayground">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-02/src/main.rs}}</code></pre>
+<pre><code class="language-rust should_panic noplayground">use std::env;
+
+fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let query = &amp;args[1];
+    let file_path = &amp;args[2];
+
+    println!("Searching for {query}");
+    println!("In file {file_path}");
+}</code></pre>
 <p><span class="caption">Приложение 12-2: Создание переменных для хранения значений переменных искомой подстроки и пути к файлу</span></p>
 <p>Как видно из распечатки вектора, имя программы занимает первое значение в векторе по адресу <code>args[0]</code>, значит, переменные начинаются с порядкового казателя <code>1</code>. Первый переменная <code>minigrep</code> - это строка, которую мы ищем, поэтому мы помещаем ссылку на первый переменная в переменную <code>query</code>. Вторым переменнаяом является путь к файлу, поэтому мы помещаем ссылку на второй переменная в переменную <code>file_path</code>.</p>
 <p>Для проверки корректности работы нашей программы, значения переменных выводятся в окно вывода. Далее, запустим нашу программу со следующими переменнойми: <code>test</code> и <code>sample.txt</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/listing-12-02/output.txt}}
+<pre><code class="language-console">$ cargo run -- test sample.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep test sample.txt`
+Searching for test
+In file sample.txt
 </code></pre>
 <p>Отлично, программа работает! Нам нужно чтобы значения переменных были сохранены в правильных переменных. Позже мы добавим обработку ошибок с некоторыми потенциальными ошибочными ситуациями, например, когда пользователь не предоставляет переменные; сейчас мы пропренебрегаем эту ситуацию и поработаем над добавлением возможности чтения файла.</p>
 

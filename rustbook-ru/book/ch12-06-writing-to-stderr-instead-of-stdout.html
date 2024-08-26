@@ -191,7 +191,24 @@
 <h3 id="Печать-ошибок-в-поток-ошибок"><a class="header" href="#Печать-ошибок-в-поток-ошибок">Печать ошибок в поток ошибок</a></h3>
 <p>Мы будем использовать код в приложении 12-24, чтобы изменить способ вывода сообщений об ошибках. Из-за рефакторинга, который мы делали ранее в этой главе, весь код, который печатает сообщения об ошибках, находится в одной функции: <code>main</code>. Стандартная библиотека предоставляет макрос <code>eprintln!</code>который печатает в стандартный поток ошибок, поэтому давайте изменим два места, где мы вызывали <code>println!</code> для печати ошибок, чтобы использовать <code>eprintln!</code> вместо этого.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-24/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span><span class="boring">use minigrep::Config;
+</span><span class="boring">
+</span>fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
+
+    if let Err(e) = minigrep::run(config) {
+        eprintln!("Application error: {e}");
+        process::exit(1);
+    }
+}</code></pre>
 <p><span class="caption">Запись сообщений об ошибках в Standard Error вместо Standard Output используя <code>eprintln!</code></span></p>
 <p>Давайте снова запустим программу таким же образом, без каких-либо переменных и перенаправим стандартный вывод с помощью <code>&gt;</code>:</p>
 <pre><code class="language-console">$ cargo run &gt; output.txt

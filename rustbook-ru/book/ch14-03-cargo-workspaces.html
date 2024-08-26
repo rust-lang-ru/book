@@ -184,7 +184,11 @@ $ cd add
 </code></pre>
 <p>Далее в каталоге <em>add</em> мы создадим файл <em>Cargo.toml</em>, который будет определять настройку всего рабочего окружения. В этом файле не будет секции <code>[package]</code>. Вместо этого он будет начинаться с секции <code>[workspace]</code>, которая позволит нам добавить модули в рабочее пространство, указав путь к пакету с нашим двоичным крейтом; в данном случае этот путь - <em>adder</em>:</p>
 <p><span class="filename">Файл: Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch14-more-about-cargo/no-listing-01-workspace-with-adder-crate/add/Cargo.toml}}
+<pre><code class="language-toml">[workspace]
+
+members = [
+    "adder",
+]
 </code></pre>
 <p>Затем мы создадим исполняемый крейт <code>adder</code>, запустив приказ <code>cargo new</code> в каталоге <em>add</em>:</p>
 <!-- manual-regeneration
@@ -209,7 +213,12 @@ copy output below
 <h3 id="Добавление-второго-крейта-в-рабочее-пространство"><a class="header" href="#Добавление-второго-крейта-в-рабочее-пространство">Добавление второго крейта в рабочее пространство</a></h3>
 <p>Далее давайте создадим ещё одного участника пакета в рабочей области и назовём его <code>add_one</code>. Внесите изменения в <em>Cargo.toml</em> верхнего уровня так, чтобы указать путь <em>add_one</em> в списке <code>members</code>:</p>
 <p><span class="filename">Файл: Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch14-more-about-cargo/no-listing-02-workspace-with-two-crates/add/Cargo.toml}}
+<pre><code class="language-toml">[workspace]
+
+members = [
+    "adder",
+    "add_one",
+]
 </code></pre>
 <p>Затем сгенерируйте новый крейт библиотеки с именем <code>add_one</code>:</p>
 <!-- manual-regeneration
@@ -236,15 +245,23 @@ copy output below
 </code></pre>
 <p>В файле <em>add_one/src/lib.rs</em> добавим функцию <code>add_one</code>:</p>
 <p><span class="filename">Файл: add_one/src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch14-more-about-cargo/no-listing-02-workspace-with-two-crates/add/add_one/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}</code></pre>
 <p>Теперь мы можем сделать так, чтобы пакет <code>adder</code> с нашим исполняемым файлом зависел от пакета <code>add_one</code>, содержащего нашу библиотеку. Сначала нам нужно добавить зависимость пути от <code>add_one</code> в <em>adder/Cargo.toml</em>.</p>
 <p><span class="filename">Файл: adder/Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch14-more-about-cargo/no-listing-02-workspace-with-two-crates/add/adder/Cargo.toml:6:7}}
+<pre><code class="language-toml">[dependencies]
+add_one = { path = "../add_one" }
 </code></pre>
 <p>Cargo не исходит из того, что крейты в рабочем пространстве могут зависеть друг от друга, поэтому нам необходимо явно указать отношения зависимости.</p>
 <p>Далее, давайте используем функцию <code>add_one</code> (из крейта <code>add_one</code>) в крейте <code>adder</code>. Откройте файл <em>adder/src/main.rs</em> и добавьте строку <code>use</code> в верхней части, чтобы ввести в область видимости новый библиотечный крейт <code>add_one</code>. Затем измените функцию <code>main</code> для вызова функции <code>add_one</code>, как показано в приложении 14-7.</p>
 <p><span class="filename">Файл: adder/src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-07/add/adder/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore">use add_one;
+
+fn main() {
+    let num = 10;
+    println!("Hello, world! {num} plus one is {}!", add_one::add_one(num));
+}</code></pre>
 <p><span class="caption">Приложение 14-7: Использование функционала библиотечного крейта <code>add-one</code> в крейте <code>adder</code></span></p>
 <p>Давайте соберём  рабочее пространство, запустив приказ <code>cargo build</code> в каталоге верхнего уровня <em>add</em>!</p>
 <!-- manual-regeneration
@@ -277,7 +294,8 @@ Hello, world! 10 plus one is 11!
 * ch07-04-bringing-paths-into-scope-with-the-use-keyword.md
 -->
 <p><span class="filename">Файл: add_one/Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch14-more-about-cargo/no-listing-03-workspace-with-external-dependency/add/add_one/Cargo.toml:6:7}}
+<pre><code class="language-toml">[dependencies]
+rand = "0.8.5"
 </code></pre>
 <p>Теперь мы можем добавить <code>use rand;</code> в файл  <em>add_one/src/lib.rs</em> и сделать сборку рабочего пространства, запустив <code>cargo build</code> в каталоге <em>add</em>, что загрузит и ссобирает <code>rand</code> крейт:</p>
 <!-- manual-regeneration
@@ -322,7 +340,19 @@ error[E0432]: unresolved import `rand`
 <h4 id="Добавление-теста-в-рабочее-пространство"><a class="header" href="#Добавление-теста-в-рабочее-пространство">Добавление теста в рабочее пространство</a></h4>
 <p>В качестве ещё одного улучшения давайте добавим тест функции <code>add_one::add_one</code> в <code>add_one</code>:</p>
 <p><span class="filename">Файл: add_one/src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add/add_one/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        assert_eq!(3, add_one(2));
+    }
+}</code></pre>
 <p>Теперь запустите <code>cargo test</code> в каталоге верхнего уровня <em>add</em>. Запуск <code>cargo test</code> в рабочем пространстве, структурированном подобно этому, запустит тесты для всех крейтов в рабочем пространстве:</p>
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add

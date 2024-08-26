@@ -182,7 +182,19 @@
 <p>Правильноное документирование ваших пакетов поможет другим пользователям знать, как и когда их использовать, поэтому стоит потратить время на написание документации. В главе 3 мы обсуждали, как комментировать код Rust, используя две косые черты, <code>//</code>. В Rust также есть особый вид комментариев к документации, который обычно называется <em>комментарием к документации</em>, который генерирует документацию HTML. HTML-код отображает содержимое комментариев к документации для публичных элементов API, предназначенных для программистов, увлеченных в знании того, как <em>использовать</em> вашу библиотеку, в отличие от того, как она <em>реализована</em>.</p>
 <p>Комментарии к документации используют три слеша, <code>///</code> вместо двух и поддерживают нотацию Markdown для форматирования текста. Размещайте комментарии к документации непосредственно перед элементом, который они документируют. В приложении 14-1 показаны комментарии к документации для функции <code>add_one</code> в библиотеке с именем <code>my_crate</code>:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-01/src/lib.rs}}</code></pre>
+<pre><code class="language-rust ignore">/// Adds one to the number given.
+///
+/// # Examples
+///
+/// ```
+/// let arg = 5;
+/// let answer = my_crate::add_one(arg);
+///
+/// assert_eq!(6, answer);
+/// ```
+pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}</code></pre>
 <p><span class="caption">Приложение 14-1: Комментарий к документации для функции</span></p>
 <p>Здесь мы даём описание того, что делает функция <code>add_one</code>, начинаем раздел с заголовка <code>Examples</code>, а затем предоставляем код, который отображает, как использовать функцию <code>add_one</code>. Мы можем сгенерировать документацию HTML из этого комментария к документации, запустив <code>cargo doc</code>. Этот приказ запускает средство <code>rustdoc</code>, поставляемый с Rust, и помещает сгенерированную HTML-документацию в каталог <em>target/doc</em>.</p>
 <p>Для удобства, запустив <code>cargo doc --open</code>, мы создадим HTML для документации вашей текущей библиотеки (а также документацию для всех зависимостей вашей библиотеки) и откроем результат в веб-браузере. Перейдите к функции <code>add_one</code> и вы увидите, как отображается текст в комментариях к документации, что показано на рисунке 14-1:</p>
@@ -215,7 +227,25 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <p>Стиль комментариев к документам <code>//!</code> добавляет документацию к элементу, содержащему комментарии, а не к элементам, следующим за комментариями. Обычно мы используем эти комментарии внутри корневого файла крейта (по соглашению <em>src/lib.rs</em> ) или внутри модуля для документирования крейта или модуля в целом.</p>
 <p>Например, чтобы добавить документацию, описывающую назначение <code>my_crate</code> , содержащего функцию <code>add_one</code> , мы добавляем комментарии к документации, начинающиеся с <code>//!</code> в начало файла <em>src/lib.rs</em> , как показано в приложении 14-2:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-02/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore">//! # My Crate
+//!
+//! `my_crate` is a collection of utilities to make performing certain
+//! calculations more convenient.
+
+/// Adds one to the number given.
+// --snip--
+<span class="boring">///
+</span><span class="boring">/// # Examples
+</span><span class="boring">///
+</span><span class="boring">/// ```
+</span><span class="boring">/// let arg = 5;
+</span><span class="boring">/// let answer = my_crate::add_one(arg);
+</span><span class="boring">///
+</span><span class="boring">/// assert_eq!(6, answer);
+</span><span class="boring">/// ```
+</span><span class="boring">pub fn add_one(x: i32) -&gt; i32 {
+</span><span class="boring">    x + 1
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 14-2: Документация для крейта <code>my_crate</code> в целом</span></p>
 <p>Обратите внимание, что после последней строки, начинающейся с <code>//!</code>, нет никакого кода. Поскольку мы начали комментарии с <code>//!</code> вместо <code>///</code>, мы документируем элемент, который содержит этот комментарий, а не элемент, который следует за этим комментарием. В данном случае таким элементом является файл <em>src/lib.rs</em>, который является корнем crate. Эти комментарии описывают весь крейт.</p>
 <p>Когда мы запускаем <code>cargo doc --open</code>, эти комментарии будут отображаться на первой странице документации для <code>my_crate</code> над списком публичных элементов в библиотеке, как показано на рисунке 14-2:</p>
@@ -228,7 +258,36 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <p>Хорошей новостью является то, что если структура <em>не</em> удобна для использования другими из другой библиотеки, вам не нужно перестраивать внутреннюю организацию: вместо этого вы можете реэкспортировать элементы, чтобы сделать публичную структуру, отличную от вашей внутренней структуры, используя <code>pub use</code>. Реэкспорт берет открытый элемент в одном месте и делает его публичным в другом месте, как если бы он был определён в другом месте.</p>
 <p>Например, скажем, мы создали библиотеку с именем <code>art</code> для моделирования художественных концепций. Внутри этой библиотеки есть два модуля: модуль <code>kinds</code> содержащий два перечисления с именами <code>PrimaryColor</code> и <code>SecondaryColor</code> и модуль <code>utils</code>, содержащий функцию с именем <code>mix</code>, как показано в приложении 14-3:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground test_harness">{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-03/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground test_harness">//! # Art
+//!
+//! A library for modeling artistic concepts.
+
+pub mod kinds {
+    /// The primary colors according to the RYB color model.
+    pub enum PrimaryColor {
+        Red,
+        Yellow,
+        Blue,
+    }
+
+    /// The secondary colors according to the RYB color model.
+    pub enum SecondaryColor {
+        Orange,
+        Green,
+        Purple,
+    }
+}
+
+pub mod utils {
+    use crate::kinds::*;
+
+    /// Combines two primary colors in equal amounts to create
+    /// a secondary color.
+    pub fn mix(c1: PrimaryColor, c2: PrimaryColor) -&gt; SecondaryColor {
+        // --snip--
+<span class="boring">        unimplemented!();
+</span>    }
+}</code></pre>
 <p><span class="caption">Приложение 14-3: Библиотека <code>art</code> с элементами, организованными в модули <code>kinds</code> и <code>utils</code></span></p>
 <p>На рисунке 14-3 показано, как будет выглядеть титульная страница документации для этого крейта, сгенерированный <code>cargo doc</code>:</p>
  <img alt="Предоставлена Документация для библиотеки `art` с реэкспортом на первой странице" src="img/trpl14-03.png" class="center">
@@ -236,19 +295,68 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <p>Обратите внимание, что виды <code>PrimaryColor</code> и <code>SecondaryColor</code> не указаны на главной странице, равно как и функция <code>mix</code>. Мы должны нажать <code>kinds</code> и <code>utils</code>, чтобы увидеть их.</p>
 <p>В другой библиотеке, которая зависит от этой библиотеки, потребуются операторы <code>use</code>, которые подключают элементы из <code>art</code> в область видимости, определяя структуру модуля, которая определена в данный момент. В приложении 14-4 показан пример крейта, в котором используются элементы <code>PrimaryColor</code> и <code>mix</code> из крейта <code>art</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-04/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore">use art::kinds::PrimaryColor;
+use art::utils::mix;
+
+fn main() {
+    let red = PrimaryColor::Red;
+    let yellow = PrimaryColor::Yellow;
+    mix(red, yellow);
+}</code></pre>
 <p><span class="caption">Приложение 14-4: Крейт использующий элементы из крейта <code>art</code> с экспортированной внутренней структурой</span></p>
 <p>Автору кода в приложении 14-4, который использует крейт <code>art</code>, пришлось выяснить, что <code>PrimaryColor</code> находится в модуле <code>kinds</code>, а <code>mix</code> - в модуле <code>utils</code>. Структура модуля <code>art</code> крейта больше подходит для разработчиков, работающих над <code>art</code> крейтом, чем для тех, кто его использует. Внутренняя структура не содержит никакой полезной сведений для того, кто пытается понять, как использовать крейт <code>art</code>, а скорее вызывает путаницу, поскольку разработчики, использующие его, должны понять, где искать, и должны указывать имена модулей в выражениях <code>use</code>.</p>
 <p>Чтобы удалить внутреннюю организацию из общедоступного API, мы можем изменить код крейта <code>art</code> в приложении 14-3, чтобы добавить операторы <code>pub use</code> для повторного реэкспорта элементов на верхнем уровне, как показано в приложении 14-5:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-05/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore">//! # Art
+//!
+//! A library for modeling artistic concepts.
+
+pub use self::kinds::PrimaryColor;
+pub use self::kinds::SecondaryColor;
+pub use self::utils::mix;
+
+pub mod kinds {
+    // --snip--
+<span class="boring">    /// The primary colors according to the RYB color model.
+</span><span class="boring">    pub enum PrimaryColor {
+</span><span class="boring">        Red,
+</span><span class="boring">        Yellow,
+</span><span class="boring">        Blue,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    /// The secondary colors according to the RYB color model.
+</span><span class="boring">    pub enum SecondaryColor {
+</span><span class="boring">        Orange,
+</span><span class="boring">        Green,
+</span><span class="boring">        Purple,
+</span><span class="boring">    }
+</span>}
+
+pub mod utils {
+    // --snip--
+<span class="boring">    use crate::kinds::*;
+</span><span class="boring">
+</span><span class="boring">    /// Combines two primary colors in equal amounts to create
+</span><span class="boring">    /// a secondary color.
+</span><span class="boring">    pub fn mix(c1: PrimaryColor, c2: PrimaryColor) -&gt; SecondaryColor {
+</span><span class="boring">        SecondaryColor::Orange
+</span><span class="boring">    }
+</span>}</code></pre>
 <p><span class="caption">Приложение 14-5: Добавление операторов <code>pub use</code> для реэкспорта элементов</span></p>
 <p>Документация API, которую <code>cargo doc</code> генерирует для этой библиотеки, теперь будет перечислять и связывать реэкспорты на главной странице, как показано на рисунке 14-4, упрощая поиск видов <code>PrimaryColor</code>, <code>SecondaryColor</code> и функции <code>mix</code>.</p>
  <img alt="HTML-документация с комментарием для библиотеки в целом" src="img/trpl14-04.png" class="center">
 <p><span class="caption">Рисунок 14-4: Первая страница документации для <code>art</code>,  которая перечисляет реэкспорт</span></p>
 <p>Пользователи крейта <code>art</code> могут по-прежнему видеть и использовать внутреннюю структуру из приложения 14-3, как показано в приложении 14-4, или они могут использовать более удобную структуру в приложении 14-5, как показано в приложении 14-6:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch14-more-about-cargo/listing-14-06/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore">use art::mix;
+use art::PrimaryColor;
+
+fn main() {
+    // --snip--
+<span class="boring">    let red = PrimaryColor::Red;
+</span><span class="boring">    let yellow = PrimaryColor::Yellow;
+</span><span class="boring">    mix(red, yellow);
+</span>}</code></pre>
 <p><span class="caption">Приложение 14-6: Программа, использующая реэкспортированные элементы из крейта <code>art</code></span></p>
 <p>В случаях, когда имеется много вложенных модулей, реэкспорт видов на верхнем уровне с помощью <code>pub use</code> может существенно повысить удобство работы для людей, использующих крейт. Ещё одно распространённое использование <code>pub use</code> - это реэкспорт определений зависимого модуля в текущем крейте, чтобы сделать определения этого крейта частью публичного API вашего крейта.</p>
 <p>Создание полезной публичной структуры API - это больше искусство чем наука, и вы можете повторять, чтобы найти API, который лучше всего подойдёт вашим пользователям. Использование <code>pub use</code> даёт вам гибкость в том, как вы структурируете свою библиотеку внутри и отделяете эту внутреннюю структуру от того, что вы предоставляете пользователям. Посмотрите на код некоторых установленных крейтов, чтобы увидеть отличается ли их внутренняя структура от их публичного API.</p>

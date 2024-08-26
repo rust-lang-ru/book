@@ -186,50 +186,117 @@
 <h3 id="Следуя-за-указателем-на-значение"><a class="header" href="#Следуя-за-указателем-на-значение">Следуя за указателем на значение</a></h3>
 <p>Обычная ссылка - это разновидность указателя, а указатель можно рассматривать как своеобразную стрелочку направляющую к значению, хранящемуся в другом месте. В приложении 15-6 мы создаём ссылку на значение <code>i32</code>, а затем используем оператор разыменования для перехода от ссылки к значению:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-06/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;
+    let y = &amp;x;
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-6: Использование оператора разыменования для следования по ссылке к значению <code>i32</code></span></p>
 <p>Переменной <code>x</code> присвоено значение<code>5</code> вида <code>i32</code>. Мы установили в качестве значения <code>y</code> ссылку на <code>x</code>. Мы можем утверждать, что значение <code>x</code> равно <code>5</code>. Однако, если мы хотим сделать утверждение о значении в <code>y</code>, мы должны использовать <code>*y</code>, чтобы перейти по ссылке к значению, на которое она указывает (таким образом, происходит <em>разыменование</em>), для того чтобы сборщик при сравнении мог использовать фактическое значение. Как только мы разыменуем <code>y</code>, мы получим доступ к целочисленному значению, на которое указывает <code>y</code>, которое и будем сравнивать с <code>5</code>.</p>
 <p>Если бы мы попытались написать <code>assert_eq!(5, y);</code>, то получили ошибку сборки:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/output-only-01-comparing-to-reference/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling deref-example v0.1.0 (file:///projects/deref-example)
+error[E0277]: can't compare `{integer}` with `&amp;{integer}`
+ --&gt; src/main.rs:6:5
+  |
+6 |     assert_eq!(5, y);
+  |     ^^^^^^^^^^^^^^^^ no implementation for `{integer} == &amp;{integer}`
+  |
+  = help: the trait `PartialEq&lt;&amp;{integer}&gt;` is not implemented for `{integer}`
+  = note: this error originates in the macro `assert_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `deref-example` (bin "deref-example") due to 1 previous error
 </code></pre>
 <p>Сравнение числа и ссылки на число не допускается, потому что они различных видов. Мы должны использовать оператор разыменования, чтобы перейти по ссылке на значение, на которое она указывает.</p>
 <h3 id="Использование-boxt-как-ссылку"><a class="header" href="#Использование-boxt-как-ссылку">Использование <code>Box&lt;T&gt;</code> как ссылку</a></h3>
 <p>Мы можем переписать код в приложении 15-6, чтобы использовать <code>Box&lt;T&gt;</code> вместо ссылки; оператор разыменования, используемый для <code>Box&lt;T&gt;</code> в приложении 15-7, работает так же, как оператор разыменования, используемый для ссылки в приложении 15-6:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-07/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;
+    let y = Box::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-7: Использование оператора разыменования с видом <code>Box&lt;i32&gt;</code></span></p>
 <p>Основное различие между приложением 15-7 и приложением 15-6 заключается в том, что здесь мы устанавливаем <code>y</code> как экземпляр <code>Box&lt;T&gt;</code>, указывающий на скопированное значение <code>x</code>, а не как ссылку, указывающую на значение <code>x</code>. В последнем утверждении мы можем использовать оператор разыменования, чтобы проследовать за указателем <code>Box&lt;T&gt;</code> так же, как мы это делали, когда <code>y</code> был ссылкой. Далее мы рассмотрим, что особенного в <code>Box&lt;T&gt;</code>, что позволяет нам использовать оператор разыменования, определяя наш собственный вид.</p>
 <h3 id="Определение-собственного-умного-указателя"><a class="header" href="#Определение-собственного-умного-указателя">Определение собственного умного указателя</a></h3>
 <p>Давайте создадим умный указатель, похожий на вид <code>Box&lt;T&gt;</code> предоставляемый встроенной библиотекой, чтобы понять как поведение умных указателей отличается от поведения обычной ссылки. Затем мы рассмотрим вопрос, как добавить возможность использовать оператор разыменования.</p>
 <p>Вид <code>Box&lt;T&gt;</code> в конечном итоге определяется как структура кортежа с одним элементом, поэтому в приложении 15-8 подобным образом определяется <code>MyBox&lt;T&gt;</code>. Мы также определим функцию <code>new</code>, чтобы она соответствовала функции <code>new</code>, определённой в <code>Box&lt;T&gt;</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-08/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">struct MyBox&lt;T&gt;(T);
+
+impl&lt;T&gt; MyBox&lt;T&gt; {
+    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+        MyBox(x)
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p><span class="caption">Приложение 15-8: Определение вида <code>MyBox&lt;T&gt;</code></span></p>
 <p>Мы определяем структуру с именем <code>MyBox</code> и объявляем обобщённый свойство <code>T</code>, потому что мы хотим, чтобы наш вид хранил значения любого вида. Вид <code>MyBox</code> является структурой кортежа с одним элементом вида <code>T</code>. Функция <code>MyBox::new</code> принимает один свойство вида <code>T</code> и возвращает экземпляр <code>MyBox</code>, который содержит переданное значение.</p>
 <p>Давайте попробуем добавить функцию <code>main</code> из приложения 15-7 в приложение 15-8 и изменим её на использование вида <code>MyBox&lt;T&gt;</code>, который мы определили вместо <code>Box&lt;T&gt;</code>. Код в приложении 15-9 не будет собираться, потому что Rust не знает, как разыменовывать <code>MyBox</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-09/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let x = 5;
+    let y = MyBox::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre>
 <p><span class="caption">Приложение 15-9. Попытка использовать <code>MyBox&lt;T&gt;</code> таким же образом, как мы использовали ссылки и <code>Box&lt;T&gt;</code></span></p>
 <p>Вот результат ошибки сборки:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-09/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling deref-example v0.1.0 (file:///projects/deref-example)
+error[E0614]: type `MyBox&lt;{integer}&gt;` cannot be dereferenced
+  --&gt; src/main.rs:14:19
+   |
+14 |     assert_eq!(5, *y);
+   |                   ^^
+
+For more information about this error, try `rustc --explain E0614`.
+error: could not compile `deref-example` (bin "deref-example") due to 1 previous error
 </code></pre>
 <p>Наш вид <code>MyBox&lt;T&gt;</code> не может быть разыменован, потому что мы не реализовали эту возможность. Чтобы включить разыменование с помощью оператора <code>*</code>, мы реализуем типаж <code>Deref</code>.</p>
 <h3 id="Трактование-вида-как-ссылки-реализуя-типаж-deref"><a class="header" href="#Трактование-вида-как-ссылки-реализуя-типаж-deref">Трактование вида как ссылки реализуя типаж <code>Deref</code></a></h3>
 <p>Как обсуждалось в разделе <a href="ch10-02-traits.html#implementing-a-trait-on-a-type">“Реализация трейта для типа”</a><!--  --> Главы 10, для реализации типажа нужно предоставить реализации требуемых способов типажа. Типаж <code>Deref</code>, предоставляемый встроенной библиотекой требует от нас реализации одного способа с именем <code>deref</code>, который заимствует <code>self</code> и возвращает ссылку на внутренние данные. Приложение 15-10 содержит реализацию <code>Deref</code> добавленную к определению <code>MyBox</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust">use std::ops::Deref;
+
+impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+    type Target = T;
+
+    fn deref(&amp;self) -&gt; &amp;Self::Target {
+        &amp;self.0
+    }
+}
+<span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-10/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let x = 5;
+</span><span class="boring">    let y = MyBox::new(x);
+</span><span class="boring">
+</span><span class="boring">    assert_eq!(5, x);
+</span><span class="boring">    assert_eq!(5, *y);
+</span><span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 15-10: Реализация <code>Deref</code> для вида <code>MyBox&lt;T&gt;</code></span></p>
 <p>Синтаксис <code>type Target = T;</code> определяет связанный вид для использования у типажа <code>Deref</code>. Связанные виды - это немного другой способ объявления обобщённого свойства, но пока вам не нужно о них беспокоиться; мы рассмотрим их более подробно в главе 19.</p>
 <p>Мы заполним тело способа <code>deref</code> оператором <code>&amp;self.0 </code>, чтобы <code>deref</code> вернул ссылку на значение, к которому мы хотим получить доступ с помощью оператора <code>*</code>; вспомним из раздела <a href="ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types">"Using Tuple Structs without Named Fields to Create Different Types"</a><!-- ignore --> главы 5, что <code>.0</code> получает доступ к первому значению в кортежной структуре. Функция <code>main</code> в приложении 15-9, которая вызывает <code>*</code> для значения <code>MyBox&lt;T&gt;</code>, теперь собирается, и проверки проходят!</p>
@@ -244,25 +311,70 @@
 <p>Разыменованное приведение было добавлено в Rust, так что программистам, пишущим вызовы функций и способов, не нужно добавлять множество явных ссылок и разыменований с помощью использования <code>&amp;</code> и <code>*</code>. Функциональность разыменованного приведения также позволяет писать больше кода, который может работать как с ссылками, так и с умными указателями.</p>
 <p>Чтобы увидеть разыменованное приведение в действии, давайте воспользуемся видом <code>MyBox&lt;T&gt;</code> определённым в приложении 15-8, а также реализацию <code>Deref</code> добавленную в приложении 15-10. Приложение 15-11 показывает определение функции, у которой есть свойство вида срез строки:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-11/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn hello(name: &amp;str) {
+    println!("Hello, {name}!");
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
 <p><span class="caption">Приложение 15-11: Функция <code>hello</code> имеющая свойство  <code>name</code> вида <code>&amp;str</code></span></p>
 <p>Можно вызвать функцию <code>hello</code> со срезом строки в качестве переменной, например <code>hello("Rust");</code>. Разыменованное приведение делает возможным вызов <code>hello</code> со ссылкой на значение вида <code>MyBox&lt;String&gt;</code>, как показано в приложении 15-12.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-12/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::ops::Deref;
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+</span><span class="boring">    type Target = T;
+</span><span class="boring">
+</span><span class="boring">    fn deref(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.0
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn hello(name: &amp;str) {
+</span><span class="boring">    println!("Hello, {name}!");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&amp;m);
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-12: Вызов <code>hello</code> со ссылкой на значение <code>MyBox&lt;String&gt;</code>, которое работает из-за разыменованного приведения</span></p>
 <p>Здесь мы вызываем функцию <code>hello</code> с переменнаяом <code>&amp;m</code>, который является ссылкой на значение <code>MyBox&lt;String&gt;</code>. Поскольку мы реализовали типаж <code>Deref</code> для <code>MyBox&lt;T&gt;</code> в приложении 15-10, то Rust может преобразовать <code>&amp;MyBox&lt;String&gt;</code> в <code>&amp;String</code> вызывая <code>deref</code>. Стандартная библиотека предоставляет реализацию типажа <code>Deref</code> для вида <code>String</code>, которая возвращает срез строки, это описано в документации API типажа <code>Deref</code>. Rust снова вызывает <code>deref</code>, чтобы превратить <code>&amp;String</code> в <code>&amp;str</code>, что соответствует определению функции <code>hello</code>.</p>
 <p>Если бы Rust не реализовал разыменованное приведение, мы должны были бы написать код в приложении 15-13 вместо кода в приложении 15-12 для вызова способа <code>hello</code> со значением вида <code>&amp;MyBox&lt;String&gt;</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-13/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::ops::Deref;
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+</span><span class="boring">    type Target = T;
+</span><span class="boring">
+</span><span class="boring">    fn deref(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.0
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn hello(name: &amp;str) {
+</span><span class="boring">    println!("Hello, {name}!");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&amp;(*m)[..]);
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-13: Код, который нам пришлось бы написать, если бы в Rust не было разыменованного приведения ссылок</span></p>
 <p>Код <code>(*m)</code> разыменовывает <code>MyBox&lt;String&gt;</code> в <code>String</code>. Затем <code>&amp;</code> и <code>[..]</code> принимают строковый срез <code>String</code>, равный всей строке, чтобы соответствовать сигнатуре <code>hello</code>. Код без разыменованного приведения сложнее читать, писать и понимать со всеми этими символами. Разыменованное приведение позволяет Rust обрабатывать эти преобразования для нас самостоятельно .</p>
 <p>Когда типаж <code>Deref</code> определён для задействованных видов, Rust проанализирует виды и будет использовать <code>Deref::deref</code> столько раз, сколько необходимо, чтобы получить ссылку, соответствующую виду свойства. Количество раз, которое нужно вставить <code>Deref::deref</code> определяется во время сборки, поэтому использование разыменованного приведения не имеет накладных расходов во время выполнения!</p>

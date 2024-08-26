@@ -199,7 +199,31 @@
 <h4 id="Извлечение-парсера-переменных"><a class="header" href="#Извлечение-парсера-переменных">Извлечение парсера переменных</a></h4>
 <p>Мы извлечём функциональность для разбора переменных в функцию, которую вызовет <code>main</code> для подготовки к перемещению логики разбора приказной строки в файл <em>src/lib.rs</em>. Приложение 12-5 показывает новый запуск <code>main</code>, который вызывает новую функцию <code>parse_config</code>, которую мы определим сначала в <em>src/main.rs.</em></p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-05/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span>fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let (query, file_path) = parse_config(&amp;args);
+
+    // --snip--
+<span class="boring">
+</span><span class="boring">    println!("Searching for {query}");
+</span><span class="boring">    println!("In file {file_path}");
+</span><span class="boring">
+</span><span class="boring">    let contents = fs::read_to_string(file_path)
+</span><span class="boring">        .expect("Should have been able to read the file");
+</span><span class="boring">
+</span><span class="boring">    println!("With text:\n{contents}");
+</span>}
+
+fn parse_config(args: &amp;[String]) -&gt; (&amp;str, &amp;str) {
+    let query = &amp;args[1];
+    let file_path = &amp;args[2];
+
+    (query, file_path)
+}</code></pre>
 <p><span class="caption">Приложение 12-5: Выделение функции <code>parse_config</code> из <code>main</code></span></p>
 <p>Мы все ещё собираем переменные приказной строки в вектор, но вместо присваивания значение переменной с порядковым казателем 1 переменной <code>query</code> и значение переменной с порядковым казателем 2 переменной с именем <code>file_path</code> в функции <code>main</code>, мы передаём весь вектор в функцию <code>parse_config</code>. Функция <code>parse_config</code> затем содержит логику, которая определяет, какой переменная идёт в какую переменную и передаёт значения обратно в <code>main</code>. Мы все ещё создаём переменные <code>query</code> и <code>file_path</code> в <code>main</code>, но <code>main</code> больше не несёт ответственности за определение соответствия переменной приказной строки и соответствующей переменной.</p>
 <p>Эта доработка может показаться излишней для нашей маленькой программы, но мы проводим рефакторинг небольшими, постепенными шагами. После внесения этого изменения снова запустите программу и убедитесь, что анализ переменных все ещё работает. Также хорошо часто проверять прогресс, чтобы помочь определить причину проблем, когда они возникают.</p>
@@ -208,7 +232,36 @@
 <p>Ещё один индикатор, который показывает, что есть место для улучшения, это часть <code>config</code> из <code>parse_config</code>, что подразумевает, что два значения, которые мы возвращаем, связаны друг с другом и оба являются частью одного настроечного значения. В настоящее время мы не отражаем этого смысла в структуре данных, кроме группировки двух значений в кортеж; мы могли бы поместить оба значения в одну структуру и дать каждому из полей структуры понятное имя. Это облегчит будущую поддержку этого кода, чтобы понять, как различные значения относятся друг к другу и какое их назначение.</p>
 <p>В приложении 12-6 показаны улучшения функции <code>parse_config</code> .</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust should_panic noplayground">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-06/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust should_panic noplayground"><span class="boring">use std::env;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span>fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let config = parse_config(&amp;args);
+
+    println!("Searching for {}", config.query);
+    println!("In file {}", config.file_path);
+
+    let contents = fs::read_to_string(config.file_path)
+        .expect("Should have been able to read the file");
+
+    // --snip--
+<span class="boring">
+</span><span class="boring">    println!("With text:\n{contents}");
+</span>}
+
+struct Config {
+    query: String,
+    file_path: String,
+}
+
+fn parse_config(args: &amp;[String]) -&gt; Config {
+    let query = args[1].clone();
+    let file_path = args[2].clone();
+
+    Config { query, file_path }
+}</code></pre>
 <p><span class="caption">Приложение 12-6: Рефакторинг функции <code>parse_config</code>, чтобы возвращать экземпляр структуры <code>Config</code></span></p>
 <p>Мы добавили структуру с именем <code>Config</code> объявленную с полями назваными как <code>query</code> и <code>file_path</code>. Сигнатура <code>parse_config</code> теперь указывает, что она возвращает значение <code>Config</code>. В теле <code>parse_config</code>, где мы возвращали срезы строк, которые ссылаются на значения <code>String</code> в <code>args</code>, теперь мы определяем <code>Config</code> как содержащие собственные <code>String</code> значения. Переменная <code>args</code> в <code>main</code> является владельцем значений переменной и позволяют функции <code>parse_config</code> только одалживать их, что означает, что мы бы нарушили правила заимствования Rust, если бы <code>Config</code> попытался бы взять во владение значения в <code>args</code> .</p>
 <p>Мы можем управлять данными <code>String</code> разным количеством способов, но самый простой, хотя и отчасти неэффективный это вызвать способ <code>clone</code> у значений. Он сделает полную копию данных для экземпляра <code>Config</code> для владения, что занимает больше времени и памяти, чем сохранение ссылки на строку данных. Однако клонирование данных также делает наш код очень простым, потому что нам не нужно управлять временем жизни ссылок; в этом обстоятельстве, отказ от небольшой производительности, чтобы получить простоту, стоит небольших соглашениеа.</p>
@@ -221,22 +274,102 @@
 <p>Пока что мы извлекли логику, отвечающую за синтаксический анализ переменных приказной строки из <code>main</code> и поместили его в функцию <code>parse_config</code>. Это помогло нам увидеть, что значения <code>query</code> и <code>file_path</code> были связаны и что их отношения должны быть отражены в нашем коде. Затем мы добавили структуру <code>Config</code> в качестве названия связанных общей целью <code>query</code> и <code>file_path</code> и чтобы иметь возможность вернуть именованные значения как имена полей структуры из функции <code>parse_config</code>.</p>
 <p>Итак, теперь целью функции <code>parse_config</code> является создание экземпляра <code>Config</code>, мы можем изменить <code>parse_config</code> из простой функции на функцию названную <code>new</code>, которая связана со структурой <code>Config</code>. Выполняя это изменение мы сделаем код более идиоматичным. Можно создавать экземпляры видов в встроенной библиотеке, такие как <code>String</code> с помощью вызова <code>String::new</code>. Точно так же изменив название <code>parse_config</code> на название функции <code>new</code>, связанную с <code>Config</code>, мы будем уметь создавать экземпляры <code>Config</code>, вызывая <code>Config::new</code>. Приложение 12-7 показывает изменения, которые мы должны сделать.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust should_panic noplayground">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-07/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust should_panic noplayground"><span class="boring">use std::env;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span>fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let config = Config::new(&amp;args);
+<span class="boring">
+</span><span class="boring">    println!("Searching for {}", config.query);
+</span><span class="boring">    println!("In file {}", config.file_path);
+</span><span class="boring">
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)
+</span><span class="boring">        .expect("Should have been able to read the file");
+</span><span class="boring">
+</span><span class="boring">    println!("With text:\n{contents}");
+</span>
+    // --snip--
+}
+
+// --snip--
+
+<span class="boring">struct Config {
+</span><span class="boring">    query: String,
+</span><span class="boring">    file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Config {
+    fn new(args: &amp;[String]) -&gt; Config {
+        let query = args[1].clone();
+        let file_path = args[2].clone();
+
+        Config { query, file_path }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 12-7: Переименование <code>parse_config</code> в <code>Config::new</code></span></p>
 <p>Мы обновили <code>main</code> где вызывали <code>parse_config</code>, чтобы вместо этого вызывалась <code>Config::new</code>. Мы изменили имя <code>parse_config</code> на <code>new</code> и перенесли его внутрь раздела <code>impl</code>, который связывает функцию <code>new</code> с <code>Config</code>. Попробуйте снова собрать код, чтобы убедиться, что он работает.</p>
 <h3 id="Исправление-ошибок-обработки"><a class="header" href="#Исправление-ошибок-обработки">Исправление ошибок обработки</a></h3>
 <p>Теперь мы поработаем над исправлением обработки ошибок. Напомним, что попытки получить доступ к значениям в векторе <code>args</code> с порядковым казателем 1 или порядковым казателем 2 приведут к панике, если вектор содержит менее трёх элементов. Попробуйте запустить программу без каких-либо переменных; это будет выглядеть так:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/listing-12-07/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep`
+thread 'main' panicked at src/main.rs:27:21:
+index out of bounds: the len is 1 but the index is 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
 <p>Строка <code>index out of bounds: the len is 1 but the index is 1</code> является сообщением об ошибке предназначенной для программистов. Она не поможет нашим конечным пользователям понять, что случилось и что они должны сделать вместо этого. Давайте исправим это сейчас.</p>
 <h4 id="Улучшение-сообщения-об-ошибке"><a class="header" href="#Улучшение-сообщения-об-ошибке">Улучшение сообщения об ошибке</a></h4>
 <p>В приложении 12-8 мы добавляем проверку в функцию <code>new</code>, которая будет проверять, что срез достаточно длинный, перед попыткой доступа по порядковым указателям 1 и 2. Если срез не достаточно длинный, программа паникует и отображает улучшенное сообщение об ошибке.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-08/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let config = Config::new(&amp;args);
+</span><span class="boring">
+</span><span class="boring">    println!("Searching for {}", config.query);
+</span><span class="boring">    println!("In file {}", config.file_path);
+</span><span class="boring">
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)
+</span><span class="boring">        .expect("Should have been able to read the file");
+</span><span class="boring">
+</span><span class="boring">    println!("With text:\n{contents}");
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Config {
+</span><span class="boring">    query: String,
+</span><span class="boring">    file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span>    // --snip--
+    fn new(args: &amp;[String]) -&gt; Config {
+        if args.len() &lt; 3 {
+            panic!("not enough arguments");
+        }
+        // --snip--
+<span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Config { query, file_path }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 12-8: Добавление проверки количества переменных</span></p>
 <p>Этот код похож на <a href="ch09-03-to-panic-or-not-to-panic.html#creating-custom-types-for-validation">функцию <code>Guess::new</code> написанную в приложении 9-13</a>, где мы вызывали <code>panic!</code>, когда <code>value</code> переменной вышло за пределы допустимых значений. Здесь вместо проверки на рядзначений, мы проверяем, что длина <code>args</code> не менее 3 и остальная часть функции может работать при условии, что это условие было выполнено. Если в <code>args</code> меньше трёх элементов, это условие будет истинным и мы вызываем макрос <code>panic!</code> для немедленного завершения программы.</p>
 <p>Имея нескольких лишних строк кода в <code>new</code>, давайте запустим программу снова без переменных, чтобы увидеть, как выглядит ошибка:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/listing-12-08/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep`
+thread 'main' panicked at src/main.rs:26:13:
+not enough arguments
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
 <p>Этот вывод лучше: у нас теперь есть разумное сообщение об ошибке. Тем не менее, мы также имеем постороннюю сведения, которую мы не хотим предоставлять нашим пользователям. Возможно, использованная техника, которую мы использовали в приложении 9-13, не является лучшей для использования: вызов <code>panic!</code> больше подходит для программирования проблемы, чем решения проблемы, <a href="ch09-03-to-panic-or-not-to-panic.html#guidelines-for-error-handling">как обсуждалось в главе 9</a><!-- ignore -->. Вместо этого мы можем использовать другую технику, о которой вы узнали в главе 9 [возвращая <code>Result</code>]<!-- ignore -->, которая указывает либо на успех, либо на ошибку.</p>
 <!-- Old headings. Do not remove or links may break. -->
@@ -245,7 +378,40 @@
 <p>Мы можем вернуть значение <code>Result</code>, которое будет содержать экземпляр <code>Config</code> в успешном случае и опишет проблему в случае ошибки. Мы так же изменим функцию <code>new</code> на <code>build</code> потому что многие программисты ожидают что <code>new</code> никогда не завершится неудачей. Когда <code>Config::build</code> взаимодействует с <code>main</code>, мы можем использовать вид <code>Result</code> как сигнал возникновения проблемы. Затем мы можем изменить <code>main</code>, чтобы преобразовать вариант <code>Err</code> в более практичную ошибку для наших пользователей без окружающего текста вроде <code>thread 'main'</code> и <code>RUST_BACKTRACE</code>, что происходит при вызове <code>panic!</code>.</p>
 <p>Приложение 12-9 показывает изменения, которые нужно внести в возвращаемое значения функции <code>Config::build</code>, и в тело функции, необходимые для возврата вида <code>Result</code>. Заметьте, что этот код не ссобирается, пока мы не обновим <code>main</code>, что мы и сделаем в следующем приложении.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-09/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let config = Config::new(&amp;args);
+</span><span class="boring">
+</span><span class="boring">    println!("Searching for {}", config.query);
+</span><span class="boring">    println!("In file {}", config.file_path);
+</span><span class="boring">
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)
+</span><span class="boring">        .expect("Should have been able to read the file");
+</span><span class="boring">
+</span><span class="boring">    println!("With text:\n{contents}");
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Config {
+</span><span class="boring">    query: String,
+</span><span class="boring">    file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Config {
+    fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        if args.len() &lt; 3 {
+            return Err("not enough arguments");
+        }
+
+        let query = args[1].clone();
+        let file_path = args[2].clone();
+
+        Ok(Config { query, file_path })
+    }
+}</code></pre>
 <p><span class="caption">Приложение 12-9. Возвращение вида <code>Result</code> из <code>Config::build</code></span></p>
 <p>Наша функция <code>build</code> теперь возвращает <code>Result</code> с экземпляром <code>Config</code> в случае успеха и <code>&amp;'static str</code> в случае ошибки. Значения ошибок всегда будут строковыми литералами, которые имеют время жизни <code>'static</code>.</p>
 <p>Мы внесли два изменения в тело функции <code>build</code>: вместо вызова <code>panic!</code>, когда пользователь не передаёт достаточно переменных, мы теперь возвращаем <code>Err</code> значение и мы завернули возвращаемое значение <code>Config</code> в <code>Ok</code> . Эти изменения заставят функцию соответствовать своей новой сигнатуре вида.</p>
@@ -255,37 +421,249 @@
 <h4 id="Вызов-configbuild-и-обработка-ошибок"><a class="header" href="#Вызов-configbuild-и-обработка-ошибок">Вызов <code>Config::build</code> и обработка ошибок</a></h4>
 <p>Чтобы обработать ошибку и вывести более дружественное сообщение об ошибке, нам нужно обновить код <code>main</code> для обработки <code>Result</code>, возвращаемого из <code>Config::build</code> как показано в приложении 12-10. Мы также возьмём на себя ответственность за выход из программы приказной строки с ненулевым кодом ошибки <code>panic!</code> и реализуем это вручную. Не нулевой статус выхода - это соглашение, которое сигнализирует процессу, который вызывает нашу программу, что программа завершилась с ошибкой.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-10/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::fs;
+</span>use std::process;
+
+fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+        println!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
+
+    // --snip--
+<span class="boring">
+</span><span class="boring">    println!("Searching for {}", config.query);
+</span><span class="boring">    println!("In file {}", config.file_path);
+</span><span class="boring">
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)
+</span><span class="boring">        .expect("Should have been able to read the file");
+</span><span class="boring">
+</span><span class="boring">    println!("With text:\n{contents}");
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Config {
+</span><span class="boring">    query: String,
+</span><span class="boring">    file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 12-10. Выход с кодом ошибки если создание новой <code>Config</code> терпит неудачу</span></p>
 <p>В этом приложении мы использовали способ, который мы ещё не рассматривали подробно: <code>unwrap_or_else</code>, который в встроенной библиотеке определён как <code>Result&lt;T, E&gt;</code>. Использование <code>unwrap_or_else</code> позволяет нам определить некоторые пользовательские ошибки обработки, не содержащие <code>panic!</code>. Если <code>Result</code> является значением <code>Ok</code>, поведение этого способа подобно <code>unwrap</code>: возвращает внутреннее значение из обёртки <code>Ok</code>. Однако, если значение является значением <code>Err</code>, то этот способ вызывает код <em>замыкания</em>, которое является анонимной функцией, определённой заранее и передаваемую в качестве переменной в <code>unwrap_or_else</code>. Мы рассмотрим замыкания более подробно в <a href="ch13-00-functional-features.html">главе 13</a>. В данный момент, вам просто нужно знать, что <code>unwrap_or_else</code> передаст внутреннее значение <code>Err</code>, которое в этом случае является статической строкой <code>not enough arguments</code>, которое мы добавили в приложении 12-9, в наше замыкание как переменная <code>err</code> указанное между вертикальными линиями. Код в замыкании может затем использовать значение <code>err</code> при выполнении.</p>
 <p>Мы добавили новую строку <code>use</code>, чтобы подключить <code>process</code> из встроенной библиотеки в область видимости. Код в замыкании, который будет запущен в случае ошибки содержит только две строчки: мы печатаем значение <code>err</code> и затем вызываем <code>process::exit</code>. Функция <code>process::exit</code> немедленно остановит программу и вернёт номер, который был передан в качестве кода состояния выхода. Это похоже на обработку с помощью макроса <code>panic!</code>, которую мы использовали в приложении 12-8, но мы больше не получаем весь дополнительный вывод. Давай попробуем:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/listing-12-10/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target/debug/minigrep`
+Problem parsing arguments: not enough arguments
 </code></pre>
 <p>Замечательно! Этот вывод намного дружелюбнее для наших пользователей.</p>
 <h3 id="Извлечение-логики-из-main"><a class="header" href="#Извлечение-логики-из-main">Извлечение логики из <code>main</code></a></h3>
 <p>Теперь, когда мы закончили рефакторинг разбора настройке, давайте обратимся к логике программы. Как мы указали в разделе <a href="#separation-of-concerns-for-binary-projects">«Разделение ответственности в двоичных проектах»</a><!-- ignore -->, мы извлечём функцию с именем <code>run</code>, которая будет содержать всю логику, присутствующую в настоящее время в функции <code>main</code> и которая не связана с настройкой настройке или обработкой ошибок. Когда мы закончим, то <code>main</code> будет краткой, легко проверяемой и мы сможем написать тесты для всей остальной логики.</p>
 <p>Код 12-11 отображает извлечённую логику в функцию <code>run</code>. Мы делаем маленькое, инкрементальное приближение к извлечению функции. Код всё ещё сосредоточен в файле <em>src/main.rs</em>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-11/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::fs;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span>fn main() {
+    // --snip--
+
+<span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+</span><span class="boring">        println!("Problem parsing arguments: {err}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    });
+</span><span class="boring">
+</span>    println!("Searching for {}", config.query);
+    println!("In file {}", config.file_path);
+
+    run(config);
+}
+
+fn run(config: Config) {
+    let contents = fs::read_to_string(config.file_path)
+        .expect("Should have been able to read the file");
+
+    println!("With text:\n{contents}");
+}
+
+// --snip--
+<span class="boring">
+</span><span class="boring">struct Config {
+</span><span class="boring">    query: String,
+</span><span class="boring">    file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 12-11. Извлечение функции <code>run</code>, содержащей остальную логику программы</span></p>
 <p>Функция <code>run</code> теперь содержит всю оставшуюся логику из <code>main</code>, начиная от чтения файла. Функция <code>run</code> принимает экземпляр <code>Config</code> как переменная.</p>
 <h4 id="Возврат-ошибок-из-функции-run"><a class="header" href="#Возврат-ошибок-из-функции-run">Возврат ошибок из функции <code>run</code></a></h4>
 <p>Оставшаяся логика программы выделена в функцию <code>run</code>, где мы можем улучшить обработку ошибок как мы уже делали с <code>Config::build</code> в приложении 12-9. Вместо того, чтобы позволить программе паниковать с помощью вызова <code>expect</code>, функция <code>run</code> вернёт <code>Result&lt;T, E&gt;</code>, если что-то пойдёт не так. Это позволит далее окне выводадировать логику обработки ошибок в <code>main</code> удобным способом. Приложение 12-12 показывает изменения, которые мы должны внести в сигнатуру и тело <code>run</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-12/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::fs;
+</span><span class="boring">use std::process;
+</span>use std::error::Error;
+
+// --snip--
+
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+</span><span class="boring">        println!("Problem parsing arguments: {err}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    println!("Searching for {}", config.query);
+</span><span class="boring">    println!("In file {}", config.file_path);
+</span><span class="boring">
+</span><span class="boring">    run(config);
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let contents = fs::read_to_string(config.file_path)?;
+
+    println!("With text:\n{contents}");
+
+    Ok(())
+}
+<span class="boring">
+</span><span class="boring">struct Config {
+</span><span class="boring">    query: String,
+</span><span class="boring">    file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 12-12. Изменение функции <code>run</code> для возврата <code>Result</code></span></p>
 <p>Здесь мы сделали три значительных изменения. Во-первых, мы изменили вид возвращаемого значения функции <code>run</code> на <code>Result&lt;(), Box&lt;dyn Error&gt;&gt;</code> . Эта функция ранее возвращала вид <code>()</code> и мы сохраняли его как значение, возвращаемое в случае <code>Ok</code>.</p>
 <p>Для вида ошибки мы использовали <em>объект типаж</em> <code>Box&lt;dyn Error&gt;</code> (и вверху мы подключили вид <code>std::error::Error</code> в область видимости с помощью указания <code>use</code>). Мы рассмотрим типажи объектов в <a href="ch17-00-oop.html">главе 17</a><!-- ignore -->. Сейчас просто знайте, что <code>Box&lt;dyn Error&gt;</code> означает, что функция будет возвращать вид реализующий типаж <code>Error</code>, но не нужно указывать, какой именно будет вид возвращаемого значения. Это даёт возможность возвращать значения ошибок, которые могут быть разных видов в разных случаях. Ключевое слово <code>dyn</code> сокращение для слова «изменяемый».</p>
 <p>Во-вторых, мы убрали вызов <code>expect</code> в пользу использования оператора <code>?</code>, как мы обсудили в <a href="ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator">главе 9</a><!-- ignore -->. Скорее, чем вызывать <code>panic!</code> в случае ошибки, оператор <code>?</code> вернёт значение ошибки из текущей функции для вызывающего, чтобы он её обработал.</p>
 <p>В-третьих, функция <code>run</code> теперь возвращает значение <code>Ok</code> в случае успеха. В сигнатуре функции <code>run</code> успешный вид объявлен как <code>()</code>, который означает, что нам нужно обернуть значение единичного вида в значение <code>Ok</code>. Данный синтаксис <code>Ok(())</code> поначалу может показаться немного странным, но использование <code>()</code> выглядит как идиоматический способ указать, что мы вызываем <code>run</code> для его побочных эффектов; он не возвращает значение, которое нам нужно.</p>
 <p>Когда вы запустите этот код, он ссобирается, но отобразит предупреждение:</p>
-<pre><code class="language-console">{{#include ../listings/ch12-an-io-project/listing-12-12/output.txt}}
+<pre><code class="language-console">$ cargo run -- the poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+warning: unused `Result` that must be used
+  --&gt; src/main.rs:19:5
+   |
+19 |     run(config);
+   |     ^^^^^^^^^^^
+   |
+   = note: this `Result` may be an `Err` variant, which should be handled
+   = note: `#[warn(unused_must_use)]` on by default
+help: use `let _ = ...` to ignore the resulting value
+   |
+19 |     let _ = run(config);
+   |     +++++++
+
+warning: `minigrep` (bin "minigrep") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.71s
+     Running `target/debug/minigrep the poem.txt`
+Searching for the
+In file poem.txt
+With text:
+I'm nobody! Who are you?
+Are you nobody, too?
+Then there's a pair of us - don't tell!
+They'd banish us, you know.
+
+How dreary to be somebody!
+How public, like a frog
+To tell your name the livelong day
+To an admiring bog!
+
 </code></pre>
 <p>Rust говорит, что наш код пренебрег <code>Result</code> значение и значение <code>Result</code> может указывать на то, что произошла ошибка. Но мы не проверяем, была ли ошибка и сборщик напоминает нам, что мы, вероятно, хотели здесь выполнить некоторый код обработки ошибок! Давайте исправим эту проблему сейчас.</p>
 <h4 id="Обработка-ошибок-возвращённых-из-run-в-main"><a class="header" href="#Обработка-ошибок-возвращённых-из-run-в-main">Обработка ошибок, возвращённых из <code>run</code> в <code>main</code></a></h4>
 <p>Мы будем проверять и обрабатывать ошибки используя способику, подобную той, которую мы использовали для <code>Config::build</code> в приложении 12-10, но с небольшой разницей:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/no-listing-01-handling-errors-in-main/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span>fn main() {
+    // --snip--
+
+<span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+</span><span class="boring">        println!("Problem parsing arguments: {err}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    });
+</span><span class="boring">
+</span>    println!("Searching for {}", config.query);
+    println!("In file {}", config.file_path);
+
+    if let Err(e) = run(config) {
+        println!("Application error: {e}");
+        process::exit(1);
+    }
+}
+<span class="boring">
+</span><span class="boring">fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    println!("With text:\n{contents}");
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Config {
+</span><span class="boring">    query: String,
+</span><span class="boring">    file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p>Мы используем <code>if let</code> вместо <code>unwrap_or_else</code> чтобы проверить, возвращает ли <code>run</code> значение <code>Err</code> и вызывается <code>process::exit(1)</code>, если это так. Функция <code>run</code> не возвращает значение, которое мы хотим развернуть способом <code>unwrap</code>, таким же образом как <code>Config::build</code> возвращает экземпляр <code>Config</code>. Так как <code>run</code> возвращает <code>()</code> в случае успеха и мы заботимся только об обнаружении ошибки, то нам не нужно вызывать <code>unwrap_or_else</code>, чтобы вернуть развёрнутое значение, потому что оно будет только <code>()</code>.</p>
 <p>Тело функций <code>if let</code> и <code>unwrap_or_else</code> одинаковы в обоих случаях: мы печатаем ошибку и выходим.</p>
 <h3 id="Разделение-кода-на-библиотечный-крейт"><a class="header" href="#Разделение-кода-на-библиотечный-крейт">Разделение кода на библиотечный крейт</a></h3>
@@ -299,12 +677,63 @@
 </ul>
 <p>Содержимое <em>src/lib.rs</em> должно иметь сигнатуры, показанные в приложении 12-13 (мы опустили тела функций для краткости). Обратите внимание, что код не будет собираться пока мы не изменим <em>src/main.rs</em> в приложении 12-14.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-13/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use std::error::Error;
+use std::fs;
+
+pub struct Config {
+    pub query: String,
+    pub file_path: String,
+}
+
+impl Config {
+    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        // --snip--
+<span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span>    }
+}
+
+pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    // --snip--
+<span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    println!("With text:\n{contents}");
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span>}</code></pre>
 <p><span class="caption">Приложение 12-13. Перемещение <code>Config</code> и <code>run</code> в <em>src/lib.rs</em></span></p>
 <p>Мы добавили спецификатор доступа <code>pub</code> к структуре <code>Config</code>, а также её полям, к способу <code>build</code> и функции <code>run</code>. Теперь у нас есть библиотечный крейт, который содержит публичный API, который мы можем протестировать!</p>
 <p>Теперь нам нужно подключить код, который мы переместили в <em>src/lib.rs,</em> в область видимости двоичного крейта внутри <em>src/main.rs</em>, как показано в приложении 12-14.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-14/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore">use std::env;
+use std::process;
+
+use minigrep::Config;
+
+fn main() {
+    // --snip--
+<span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+</span><span class="boring">        println!("Problem parsing arguments: {err}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    println!("Searching for {}", config.query);
+</span><span class="boring">    println!("In file {}", config.file_path);
+</span><span class="boring">
+</span>    if let Err(e) = minigrep::run(config) {
+        // --snip--
+<span class="boring">        println!("Application error: {e}");
+</span><span class="boring">        process::exit(1);
+</span>    }
+}</code></pre>
 <p><span class="caption">Приложение 12-14. Использование крейта библиотеки <code>minigrep</code> внутри <em>src/main.rs</em></span></p>
 <p>Мы добавляем <code>use minigrep::Config</code> для подключения вида <code>Config</code> из крейта библиотеки в область видимости двоичного крейта и добавляем к имени функции <code>run</code> префикс нашего крейта. Теперь все функции должны быть подключены и должны работать. Запустите программу с <code>cargo run</code> и убедитесь, что все работает правильно.</p>
 <p>Уф! Было много работы, но мы настроены на будущий успех. Теперь проще обрабатывать ошибки и мы сделали код более модульным. С этого момента почти вся наша работа будет выполняться внутри <em>src/lib.rs</em>.</p>

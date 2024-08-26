@@ -187,10 +187,17 @@ $ cd hello
 </code></pre>
 <p>Дл начала добавьте код из приложения 20-1 в файл <em>src/main.rs</em>. Этот код будет прослушивать входящие TCP потоки по адресу <code>127.0.0.1:7878</code>. Когда сервер примет входящий поток, он напечатает <code>Connection established!</code> ("Соединение установлено!").</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-01/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust no_run">use std::net::TcpListener;
+
+fn main() {
+    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+
+    for stream in listener.incoming() {
+        let stream = stream.unwrap();
+
+        println!("Connection established!");
+    }
+}</code></pre></pre>
 <p><span class="caption">Приложение 20-1: Прослушивание входящих потоков и печать сообщения при получении потока</span></p>
 <p>Используя <code>TcpListener</code> мы можем слушать TCP соединения к адресу <code>127.0.0.1:7878</code>. В адресе, в его части перед двоеточием, сначала идёт IP-адрес, относящийся к вашему компьютеру (он одинаковый на каждом компьютере и не представляет определенный компьютер автора), а часть <code>7878</code> является портом. Мы выбрали этот порт по двум причинам: HTTP обычно не используется на этом порту, поэтому маловероятно, что наш сервер будет конфликтовать с каким-нибудь другим сервером, который может выполняться на вашей машине, и ещё 7878 - это слово <em>rust</em>, набранное на телефоне.</p>
 <p>Функция <code>bind</code> в этом сценарии работает так же, как функция <code>new</code>, поскольку она возвращает новый экземпляр <code>TcpListener</code> . Причина, по которой функция называется <code>bind</code> заключается в том, что в сетевой терминологии подключение к порту для прослушивания называется «привязка к порту» (“binding to a port”).</p>
@@ -209,10 +216,31 @@ $ cd hello
 <h3 id="Чтение-запросов"><a class="header" href="#Чтение-запросов">Чтение запросов</a></h3>
 <p>Реализуем функционал чтения запроса из браузера! Чтобы разделить части, связанные с получением соединения и последующим действием с ним, мы запустим новую функцию для обработки соединения. В этой новой функции <code>handle_connection</code> мы будем читать данные из потока TCP и распечатывать их, чтобы мы могли видеть данные, отправленные из браузера. Измените код, чтобы он выглядел как в приложении 20-2.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-02/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust no_run">use std::{
+    io::{prelude::*, BufReader},
+    net::{TcpListener, TcpStream},
+};
+
+fn main() {
+    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+
+    for stream in listener.incoming() {
+        let stream = stream.unwrap();
+
+        handle_connection(stream);
+    }
+}
+
+fn handle_connection(mut stream: TcpStream) {
+    let buf_reader = BufReader::new(&amp;mut stream);
+    let http_request: Vec&lt;_&gt; = buf_reader
+        .lines()
+        .map(|result| result.unwrap())
+        .take_while(|line| !line.is_empty())
+        .collect();
+
+    println!("Request: {http_request:#?}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 20-2: Чтение из <code>TcpStream</code> и печать данных</span></p>
 <p>Мы добавляем <code>std::io::prelude</code> и <code>std::io::BufReader</code> в область видимости, чтобы получить доступ к типажам и видам, которые позволяют нам читать и писать в поток. В цикле <code>for</code> функции <code>main</code> вместо вывода сообщения о том, что мы установили соединение, мы теперь вызываем новую функцию <code>handle_connection</code> и передаём ей <code>stream</code>.</p>
 <p>В функции <code>handle_connection</code> мы создаём новый экземпляр <code>BufReader</code>, который оборачивает изменяемую ссылку на <code>stream</code>. <code>BufReader</code> добавляет буферизацию, управляя вызовами способов типажа <code>std::io::Read</code> за нас.</p>
@@ -268,25 +296,88 @@ message-body
 </code></pre>
 <p>Код состояния 200 - это стандартный успешный ответ. Текст представляет собой крошечный успешный HTTP-ответ. Давайте запишем это в поток как наш ответ на успешный запрос! Из функции <code>handle_connection</code> удалите <code>println!</code> который печатал данные запроса и заменял их кодом из Приложения 20-3.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">use std::{
+</span><span class="boring">    io::{prelude::*, BufReader},
+</span><span class="boring">    net::{TcpListener, TcpStream},
+</span><span class="boring">};
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-03/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+</span><span class="boring">
+</span><span class="boring">    for stream in listener.incoming() {
+</span><span class="boring">        let stream = stream.unwrap();
+</span><span class="boring">
+</span><span class="boring">        handle_connection(stream);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn handle_connection(mut stream: TcpStream) {
+    let buf_reader = BufReader::new(&amp;mut stream);
+    let http_request: Vec&lt;_&gt; = buf_reader
+        .lines()
+        .map(|result| result.unwrap())
+        .take_while(|line| !line.is_empty())
+        .collect();
+
+    let response = "HTTP/1.1 200 OK\r\n\r\n";
+
+    stream.write_all(response.as_bytes()).unwrap();
+}</code></pre></pre>
 <p><span class="caption">Приложение 20-3: Запись крошечного успешного HTTP-ответа в поток</span></p>
 <p>Первый перевод строки определяет переменную <code>response</code>, которая содержит данные сообщения об успешном выполнении. Затем мы вызываем <code>as_bytes</code> в нашем <code>response</code>, чтобы преобразовать строковые данные в байты. Способ <code>write_all</code> в <code>stream</code> принимает вид <code>&amp;[u8]</code> и отправляет эти байты непосредственно получателю. Поскольку действие <code>write_all</code> может завершиться с ошибкой, мы, как и ранее, используем <code>unwrap</code> на любом потенциально ошибочном результате. И опять, в реальном приложении здесь вам нужно было бы добавить обработку ошибок.</p>
 <p>После этих изменений давайте запустим наш код и сделаем запрос. Мы больше не печатаем никаких данных в окно вызова, поэтому мы не увидим никакого вывода, кроме сообщений от Cargo. Когда вы загрузите <em>127.0.0.1:7878</em> в веб-браузере, вы должны получить пустую страницу вместо ошибки. Вы только что вручную написали код получения HTTP-запроса и отправки ответа на него!</p>
 <h3 id="Возвращение-реального-html"><a class="header" href="#Возвращение-реального-html">Возвращение реального HTML</a></h3>
 <p>Давайте реализуем функционал чего-нибудь большего, чем просто пустой страницы. Создайте новый файл <em>hello.html</em> в корне каталога вашего проекта, а не в каталоге <em>src</em> . Вы можете ввести любой HTML-код, который вам заблагорассудится; В приложении 20-4 показан один из вариантов.</p>
 <p><span class="filename">Файл: hello.html</span></p>
-<pre><code class="language-html">{{#include ../listings/ch20-web-server/listing-20-05/hello.html}}
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Hello!&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello!&lt;/h1&gt;
+    &lt;p&gt;Hi from Rust&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
 <p><span class="caption">Приложение 20-4: Пример HTML-файла для ответа на запрос</span></p>
 <p>Это простейший HTML5-документ с заголовком и каким-то текстом. Чтобы сервер возвращал его в ответ на полученный запрос, мы изменим <code>handle_connection</code>, как показано в приложении 20-5, чтобы считать HTML-файл, добавить его в ответ в качестве тела и отправить.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-05/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust no_run">use std::{
+    fs,
+    io::{prelude::*, BufReader},
+    net::{TcpListener, TcpStream},
+};
+// --snip--
+
+<span class="boring">fn main() {
+</span><span class="boring">    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+</span><span class="boring">
+</span><span class="boring">    for stream in listener.incoming() {
+</span><span class="boring">        let stream = stream.unwrap();
+</span><span class="boring">
+</span><span class="boring">        handle_connection(stream);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn handle_connection(mut stream: TcpStream) {
+    let buf_reader = BufReader::new(&amp;mut stream);
+    let http_request: Vec&lt;_&gt; = buf_reader
+        .lines()
+        .map(|result| result.unwrap())
+        .take_while(|line| !line.is_empty())
+        .collect();
+
+    let status_line = "HTTP/1.1 200 OK";
+    let contents = fs::read_to_string("hello.html").unwrap();
+    let length = contents.len();
+
+    let response =
+        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+
+    stream.write_all(response.as_bytes()).unwrap();
+}</code></pre></pre>
 <p><span class="caption">Приложение 20-5. Отправка содержимого <em>hello.html</em> в качестве тела ответа</span></p>
 <p>Мы добавили элемент <code>fs</code> в указанию <code>use</code>, чтобы включить в область видимости модуль файловой системы встроенной библиотеки. Код для чтения содержимого файла в строку должен выглядеть знакомым для вас; мы использовали его в главе 12, когда читали содержимое файла для нашего проекта ввода-вывода в приложении 12-4.</p>
 <p>Далее мы используем <code>format!</code> чтобы добавить содержимое файла в качестве тела ответа об успешном завершении. Чтобы обеспечить действительный HTTP-ответ, мы добавляем заголовок <code>Content-Length</code> который имеет размер тела нашего ответа, в данном случае размер <code>hello.html</code> .</p>
@@ -295,10 +386,41 @@ message-body
 <h3 id="Проверка-запроса-и-выборочное-возвращение-ответа"><a class="header" href="#Проверка-запроса-и-выборочное-возвращение-ответа">Проверка запроса и выборочное возвращение ответа</a></h3>
 <p>Сейчас наш веб-сервер возвращает HTML из файла независимо от того, что определенно запросил клиент. Давайте добавим проверку того, что браузер запрашивает <em>/</em>, прежде чем вернуть HTML-файл, и будем возвращать ошибку, если браузер запрашивает что-то постороннее. Для этого нам нужно модифицировать <code>handle_connection</code>, как показано в приложении 20-6. Новый код проверяет соответствует ли требуемый запросом ресурс с определителем <em>/</em>, и содержит разделы <code>if</code> и <code>else</code>, чтобы иначе обрабатывать другие запросы.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">use std::{
+</span><span class="boring">    fs,
+</span><span class="boring">    io::{prelude::*, BufReader},
+</span><span class="boring">    net::{TcpListener, TcpStream},
+</span><span class="boring">};
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-06/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+</span><span class="boring">
+</span><span class="boring">    for stream in listener.incoming() {
+</span><span class="boring">        let stream = stream.unwrap();
+</span><span class="boring">
+</span><span class="boring">        handle_connection(stream);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span>// --snip--
+
+fn handle_connection(mut stream: TcpStream) {
+    let buf_reader = BufReader::new(&amp;mut stream);
+    let request_line = buf_reader.lines().next().unwrap().unwrap();
+
+    if request_line == "GET / HTTP/1.1" {
+        let status_line = "HTTP/1.1 200 OK";
+        let contents = fs::read_to_string("hello.html").unwrap();
+        let length = contents.len();
+
+        let response = format!(
+            "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
+        );
+
+        stream.write_all(response.as_bytes()).unwrap();
+    } else {
+        // some other request
+    }
+}</code></pre></pre>
 <p><span class="caption">Приложение 20-6: Обрабатываем запросы для корневого ресурса <em>/</em> не так, как запросы для других ресурсов</span></p>
 <p>Мы будем рассматривать только первую строку HTTP-запроса, поэтому вместо того, чтобы читать весь запрос в вектор, мы вызываем <code>next</code> , чтобы получить первый элемент из повторителя. Первый вызов <code>unwrap</code> заботится об обработке <code>Option</code> и останавливает программу, если в повторителе нет элементов. Второй <code>unwrap</code> обрабатывает <code>Result</code> и имеет тот же эффект, что и <code>unwrap</code>, который был в <code>map</code>, добавленном в приложении 20-2.</p>
 <p>Затем мы проверяем переменную <code>request_line</code>, чтобы увидеть, равна ли она строке запроса, соответствующей запросу GET для пути <em>/</em> . Если это так, раздел<code>if</code> возвращает содержимое нашего HTML-файла.</p>
@@ -306,24 +428,105 @@ message-body
 <p>Запустите этот код сейчас и запросите <em>127.0.0.1:7878</em> ; вы должны получить HTML в <em>hello.html</em> . Если вы сделаете любой другой запрос, например <em>127.0.0.1:7878/something-else</em> , вы получите ошибку соединения, подобную той, которую вы видели при запуске кода из Приложения 20-1 и Приложения 20-2.</p>
 <p>Теперь давайте добавим код из приложения 20-7 в раздел<code>else</code> чтобы вернуть ответ с кодом состояния 404, который сигнализирует о том, что контент для запроса не найден. Мы также вернём HTML-код для страницы, отображаемой в браузере, с указанием ответа конечному пользователю.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">use std::{
+</span><span class="boring">    fs,
+</span><span class="boring">    io::{prelude::*, BufReader},
+</span><span class="boring">    net::{TcpListener, TcpStream},
+</span><span class="boring">};
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-07/src/main.rs:here}}
+</span><span class="boring">    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+</span><span class="boring">
+</span><span class="boring">    for stream in listener.incoming() {
+</span><span class="boring">        let stream = stream.unwrap();
+</span><span class="boring">
+</span><span class="boring">        handle_connection(stream);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn handle_connection(mut stream: TcpStream) {
+</span><span class="boring">    let buf_reader = BufReader::new(&amp;mut stream);
+</span><span class="boring">    let request_line = buf_reader.lines().next().unwrap().unwrap();
+</span><span class="boring">
+</span><span class="boring">    if request_line == "GET / HTTP/1.1" {
+</span><span class="boring">        let status_line = "HTTP/1.1 200 OK";
+</span><span class="boring">        let contents = fs::read_to_string("hello.html").unwrap();
+</span><span class="boring">        let length = contents.len();
+</span><span class="boring">
+</span><span class="boring">        let response = format!(
+</span><span class="boring">            "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
+</span><span class="boring">        );
+</span><span class="boring">
+</span><span class="boring">        stream.write_all(response.as_bytes()).unwrap();
+</span>    // --snip--
+    } else {
+        let status_line = "HTTP/1.1 404 NOT FOUND";
+        let contents = fs::read_to_string("404.html").unwrap();
+        let length = contents.len();
+
+        let response = format!(
+            "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
+        );
+
+        stream.write_all(response.as_bytes()).unwrap();
+    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение  20-7: Отвечаем кодом состояния 404 и страницей ошибки, если было запрошено что-то, отличающееся от ресурса <em>/</em></span></p>
 <p>Здесь ответ имеет строку состояния с кодом 404 и фразу причины <code>NOT FOUND</code>. Тело ответа будет HTML из файла <em>404.html</em>. Вам нужно создать файл <em>404.html</em> рядом с <em>hello.html</em> для этой страницы ошибки; снова не стесняйтесь использовать любой HTML код или пример HTML кода в приложении 20-8.</p>
 <p><span class="filename">Файл: 404.html</span></p>
-<pre><code class="language-html">{{#include ../listings/ch20-web-server/listing-20-07/404.html}}
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Hello!&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Oops!&lt;/h1&gt;
+    &lt;p&gt;Sorry, I don't know what you're asking for.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
 <p><span class="caption">Приложение 20-8. Пример содержимого страницы для отправки с любым ответом 404</span></p>
 <p>С этими изменениями снова запустите сервер. Запрос на <em>127.0.0.1:7878</em> должен возвращать содержимое <em>hello.html</em>, и любой другой запрос, как <em>127.0.0.1:7878/foo</em>, должен возвращать сообщение об ошибке HTML от <em>404.html</em>.</p>
 <h3 id="Рефакторинг"><a class="header" href="#Рефакторинг">Рефакторинг</a></h3>
 <p>На текущий момент разделы <code>if</code> и <code>else</code> во многом повторяются: они оба читают файлы и записывают содержимое файлов в поток. Разница лишь в строке состояния и имени файла. Давайте сделаем код более лаконичным, вынеся эти отличия в отдельные разделы <code>if</code> и <code>else</code>, в которых переменным будут присвоены значения строки состояния и имени файла; далее эти переменные мы сможем использовать в коде для чтения файла и создания ответа. В приложении 20-9 показан код после изменения объёмных разделов <code>if</code> и <code>else</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">use std::{
+</span><span class="boring">    fs,
+</span><span class="boring">    io::{prelude::*, BufReader},
+</span><span class="boring">    net::{TcpListener, TcpStream},
+</span><span class="boring">};
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-09/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+</span><span class="boring">
+</span><span class="boring">    for stream in listener.incoming() {
+</span><span class="boring">        let stream = stream.unwrap();
+</span><span class="boring">
+</span><span class="boring">        handle_connection(stream);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span>// --snip--
+
+fn handle_connection(mut stream: TcpStream) {
+    // --snip--
+<span class="boring">    let buf_reader = BufReader::new(&amp;mut stream);
+</span><span class="boring">    let request_line = buf_reader.lines().next().unwrap().unwrap();
+</span>
+    let (status_line, filename) = if request_line == "GET / HTTP/1.1" {
+        ("HTTP/1.1 200 OK", "hello.html")
+    } else {
+        ("HTTP/1.1 404 NOT FOUND", "404.html")
+    };
+
+    let contents = fs::read_to_string(filename).unwrap();
+    let length = contents.len();
+
+    let response =
+        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+
+    stream.write_all(response.as_bytes()).unwrap();
+}</code></pre></pre>
 <p><span class="caption">Приложение 20-9: Рефакторинг разделов <code>if</code> и <code>else</code>, чтобы они содержали только код, который отличается для каждого из случаев</span></p>
 <p>Теперь разделы <code>if</code> и <code>else</code> возвращают только соответствующие значения для строки состояния и имени файла в кортеже. Затем мы используем деструктурирование, чтобы присвоить эти два значения <code>status_line</code> и <code>filename</code> используя шаблон в указания <code>let</code>, как обсуждалось в главе 18.</p>
 <p>Ранее повторяющийся код теперь находится вне разделов <code>if</code> и <code>else</code> и использует переменные <code>status_line</code> и <code>filename</code>. Это позволяет легче увидеть разницу между этими двумя случаями и означает, что у нас есть только одно место для обновления кода, если захотим изменить работу чтения файлов и записи ответов. Поведение кода в приложении 20-9 будет таким же, как и в 20-8.</p>

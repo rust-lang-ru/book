@@ -180,26 +180,64 @@
 <p>Свойства функций, указания <code>let</code> и циклы <code>for</code> могут принимать только неопровержимые шаблоны, поскольку программа не может сделать ничего значимого, если значения не совпадают. А выражения <code>if let</code> и <code>while let</code> принимают опровержимые и неопровержимые шаблоны, но сборщик предостерегает от неопровержимых шаблонов, поскольку по определению они предназначены для обработки возможного сбоя: функциональность условного выражения заключается в его способности выполнять разный код в зависимости от успеха или неудачи.</p>
 <p>В общем случае, вам не нужно беспокоиться о разнице между опровержимыми (refutable) и неопровержимыми (irrefutable) шаблонами; тем не менее, вам необходимо ознакомиться с концепцией возможности опровержения, чтобы вы могли отреагировать на неё, увидев в сообщении об ошибке. В таких случаях вам потребуется изменить либо шаблон, либо конструкцию, с которой вы используете шаблон, в зависимости от предполагаемого поведения кода.</p>
 <p>Давайте посмотрим на пример того, что происходит, когда мы пытаемся использовать опровержимый шаблон, где Rust требует неопровержимый шаблон, и наоборот. В приложении 18-8 показана указание <code>let</code>, но для образца мы указали <code>Some(x)</code>, являющийся шаблоном, который можно опровергнуть. Как и следовало ожидать, этот код не будет собираться.</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-08/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let some_option_value: Option&lt;i32&gt; = None;
+</span>    let Some(x) = some_option_value;
+<span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 18-8: Попытка использовать опровержимый шаблон вместе с <code>let</code></span></p>
 <p>Если <code>some_option_value</code> было бы значением <code>None</code>, то оно не соответствовало бы шаблону <code>Some(x)</code>, что означает, что шаблон является опровержимым. Тем не менее, указание <code>let</code> может принимать только неопровержимый шаблон, потому что нет корректного кода, который может что-то сделать со значением <code>None</code>. Во время сборки Rust будет жаловаться на то, что мы пытались использовать опровержимый шаблон, для которого требуется неопровержимый шаблон:</p>
-<pre><code class="language-console">{{#include ../listings/ch18-patterns-and-matching/listing-18-08/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+error[E0005]: refutable pattern in local binding
+ --&gt; src/main.rs:3:9
+  |
+3 |     let Some(x) = some_option_value;
+  |         ^^^^^^^ pattern `None` not covered
+  |
+  = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
+  = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+  = note: the matched value is of type `Option&lt;i32&gt;`
+help: you might want to use `let else` to handle the variant that isn't matched
+  |
+3 |     let Some(x) = some_option_value else { todo!() };
+  |                                     ++++++++++++++++
+
+For more information about this error, try `rustc --explain E0005`.
+error: could not compile `patterns` (bin "patterns") due to 1 previous error
 </code></pre>
 <p>Поскольку мы не покрыли (и не могли покрыть!) каждое допустимое значение с помощью образца <code>Some(x)</code>, то Rust выдаёт ошибку сборки.</p>
 <p>Чтобы исправить проблему наличия опровержимого шаблона, там, где нужен неопровержимый шаблон, можно изменить код, использующий шаблон: вместо использования <code>let</code>, можно использовать <code>if let</code>. Затем, если шаблон не совпадает, выполнение кода внутри фигурных скобок будет пропущено, что даст возможность продолжить корректное выполнение. В приложении 18-9 показано, как исправить код из приложения 18-8.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-09/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let some_option_value: Option&lt;i32&gt; = None;
+</span>    if let Some(x) = some_option_value {
+        println!("{x}");
+    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 18-9. Использование <code>if let</code> и раздела с опровергнутыми шаблонами вместо <code>let</code></span></p>
 <p>Код исправлен! Этот код совершенно корректный, хотя это означает, что мы не можем использовать неопровержимый образец без получения ошибки. Если мы используем шаблон <code>if let</code>, который всегда будет совпадать, то для примера <code>x</code>, показанного в приложении 18-10, сборщик выдаст предупреждение.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-10/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    if let x = 5 {
+        println!("{x}");
+    };
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 18-10. Попытка использовать неопровержимый шаблон с <code>if let</code></span></p>
 <p>Rust жалуется, что не имеет смысла использовать <code>if let</code> с неопровержимым образцом:</p>
-<pre><code class="language-console">{{#include ../listings/ch18-patterns-and-matching/listing-18-10/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+warning: irrefutable `if let` pattern
+ --&gt; src/main.rs:2:8
+  |
+2 |     if let x = 5 {
+  |        ^^^^^^^^^
+  |
+  = note: this pattern will always match, so the `if let` is useless
+  = help: consider replacing the `if let` with a `let`
+  = note: `#[warn(irrefutable_let_patterns)]` on by default
+
+warning: `patterns` (bin "patterns") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
+     Running `target/debug/patterns`
+5
 </code></pre>
 <p>По этой причине совпадающие ветки выражений должны использовать опровержимые шаблоны, за исключением последнего, который должен сопоставлять любые оставшиеся значения с неопровержимым шаблоном. Rust позволяет нам использовать неопровержимый шаблон в <code>match</code> только с одной веткой, но этот синтаксис не особенно полезен и может быть заменён более простой указанием <code>let</code>.</p>
 <p>Теперь, когда вы знаете, где использовать шаблоны и разницу между опровержимыми и неопровержимыми шаблонами, давайте рассмотрим весь синтаксис, который мы можем использовать для создания шаблонов.</p>

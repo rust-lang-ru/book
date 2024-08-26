@@ -183,29 +183,40 @@
 <p>Вид <code>String</code> предоставляемый встроенной библиотекой Rust, не встроен в ядро языка и является расширяемым, изменяемым, владеющим, строковым видом в UTF-8 кодировке.  Когда Rustaceans говорят о "строках" то, они обычно имеют в виду виды <code>String</code> или строковые срезы <code>&amp;str</code>, а не просто один из них. Хотя этот раздел в основном посвящён <code>String</code>, оба вида усиленно используются в встроенной библиотеке Rust, оба, и <code>String</code> и строковые срезы, кодируются в UTF-8.</p>
 <h3 id="Создание-новых-строк"><a class="header" href="#Создание-новых-строк">Создание новых строк</a></h3>
 <p>Многие из тех же действий, которые доступны <code>Vec&lt;T&gt;</code> , доступны также в <code>String</code>, потому что <code>String</code> фактически реализован как обёртка вокруг вектора байтов с некоторыми дополнительными заверениями, ограничениями и возможностями. Примером функции, которая одинаково работает с <code>Vec&lt;T&gt;</code> и <code>String</code>, является функция  <code>new</code>, создающая новый экземпляр вида, и показана в Приложении 8-11.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-11/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::new();
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-11. Создание новой пустой <code>String</code> строки</span></p>
 <p>Эта строка создаёт новую пустую строковую переменную с именем <code>s</code>, в которую мы можем затем загрузить данные. Часто у нас есть некоторые начальные данные, которые мы хотим назначить строке. Для этого мы используем способ <code>to_string</code> доступный для любого вида, который реализует типаж <code>Display</code>, как у строковых литералов. Приложение 8-12 показывает два примера.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-12/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let data = "initial contents";
+
+    let s = data.to_string();
+
+    // the method also works on a literal directly:
+    let s = "initial contents".to_string();
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-12: Использование способа <code>to_string</code> для создания экземпляра вида <code>String</code>  из строкового литерала</span></p>
 <p>Эти выражения создают строку с  <code>initial contents</code>.</p>
 <p>Мы также можем использовать функцию <code>String::from</code> для создания <code>String</code>  из строкового литерала. Код приложения 8-13 является эквивалентным коду из приложения 8-12, который использует функцию <code>to_string</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-13/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s = String::from("initial contents");
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-13: Использование функции <code>String::from</code> для создания экземпляра вида <code>String</code> из строкового литерала</span></p>
 <p>Поскольку строки используются для очень многих вещей, можно использовать множество API для строк, предоставляющих множество возможностей. Некоторые из них могут показаться избыточными, но все они занимаются своим делом!  В данном случае <code>String::from</code> и <code>to_string</code> делают одно и тоже, поэтому выбор зависит от стиля который вам больше импонирует.</p>
 <p>Запомните, что строки хранятся в кодировке UTF-8, поэтому можно использовать любые правильно кодированные данные в них, как показано в приложении 8-14:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-14/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let hello = String::from("السلام عليكم");
+    let hello = String::from("Dobrý den");
+    let hello = String::from("Hello");
+    let hello = String::from("שלום");
+    let hello = String::from("नमस्ते");
+    let hello = String::from("こんにちは");
+    let hello = String::from("안녕하세요");
+    let hello = String::from("你好");
+    let hello = String::from("Olá");
+    let hello = String::from("Здравствуйте");
+    let hello = String::from("Hola");
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-14: Хранение приветствий в строках на разных языках</span></p>
 <p>Все это допустимые <code>String</code> значения.</p>
@@ -213,30 +224,33 @@
 <p>Строка <code>String</code> может увеличиваться в размере, а её содержимое может меняться, по подобию как содержимое <code>Vec&lt;T&gt;</code> при вставке в него большего количества данных. Кроме того, можно использовать оператор <code>+</code> или макрос <code>format!</code> для объединения значений <code>String</code>.</p>
 <h4 id="Присоединение-к-строке-с-помощью-push_str-и-push"><a class="header" href="#Присоединение-к-строке-с-помощью-push_str-и-push">Присоединение к строке с помощью <code>push_str</code> и <code>push</code></a></h4>
 <p>Мы можем нарастить <code>String</code> используя способ <code>push_str</code> который добавит в исходное значение новый строковый срез, как показано в приложении 8-15.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-15/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("foo");
+    s.push_str("bar");
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-15. Добавление среза строки к <code>String</code> с помощью способа <code>push_str</code></span></p>
 <p>После этих двух строк кода <code>s</code> будет содержать <code>foobar</code>. Способ <code>push_str</code> принимает строковый срез, потому что мы не всегда хотим владеть входным свойствоом. Например, код в приложении 8-16 показывает вариант, когда будет не желательно поведение, при котором мы не сможем использовать <code>s2</code> после его добавления к содержимому значения переменной <code>s1</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-16/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s1 = String::from("foo");
+    let s2 = "bar";
+    s1.push_str(s2);
+    println!("s2 is {s2}");
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-16: Использование среза строки после добавления её содержимого к другой <code>String</code></span></p>
 <p>Если способ <code>push_str</code> стал бы владельцем переменной<code>s2</code>, мы не смогли бы напечатать его значение в последней строке. Однако этот код работает так, как мы ожидали!</p>
 <p>Способ <code>push</code> принимает один символ в качестве свойства и добавляет его к <code>String</code>. В приложении 8-17 показан код, добавляющий букву “l” к <code>String</code> используя способ <code>push</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-17/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("lo");
+    s.push('l');
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-17: Добавление одного символа в <code>String</code> значение используя <code>push</code></span></p>
 <p>В результате <code>s</code> будет содержать <code>lol</code>.</p>
 <h4 id="Объединение-строк-с-помощью-оператора--или-макроса-format"><a class="header" href="#Объединение-строк-с-помощью-оператора--или-макроса-format">Объединение строк с помощью оператора <code>+</code> или макроса <code>format!</code></a></h4>
 <p>Часто хочется объединять две существующие строки. Один из возможных способов — это использование оператора <code>+</code> из приложения 8-18:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-18/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("Hello, ");
+    let s2 = String::from("world!");
+    let s3 = s1 + &amp;s2; // note s1 has been moved here and can no longer be used
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 8-18: Использование оператора <code>+</code> для объединения двух значений <code>String</code> в новое <code>String</code> значение</span></p>
 <p>Строка <code>s3</code> будет содержать <code>Hello, world!</code>. Причина того, что <code>s1</code> после добавления больше недействительна и причина, по которой мы использовали ссылку на <code>s2</code> имеют отношение к сигнатуре вызываемого способа при использовании оператора <code>+</code>. Оператор <code>+</code> использует способ <code>add</code>, чья сигнатура выглядит примерно так:</p>
@@ -246,35 +260,78 @@
 <p>Причина, по которой мы можем использовать <code>&amp;s2</code> в вызове <code>add</code> заключается в том, что сборщик может <em>принудительно привести (coerce)</em> переменная вида <code>&amp;String</code> к виду <code>&amp;str</code>. Когда мы вызываем способ <code>add</code> в Rust используется <em>принудительное приведение</em> (deref coercion), которое превращает <code>&amp;s2</code> в <code>&amp;s2[..]</code>. Мы подробно обсудим принудительное приведение в Главе 15. Так как <code>add</code> не забирает во владение свойство <code>s</code>, <code>s2</code> по прежнему будет действительной строкой <code>String</code> после применения действия.</p>
 <p>Во-вторых, как можно видеть в сигнатуре, <code>add</code> забирает во владение <code>self</code>, потому что  <code>self</code> <em>не имеет</em> <code>&amp;</code>. Это означает, что <code>s1</code> в приложении 8-18 будет перемещён в вызов <code>add</code> и больше не будет действителен после этого вызова. Не смотря на то, что код <code>let s3 = s1 + &amp;s2;</code> выглядит как будто он скопирует обе строки и создаёт новую, эта указание фактически забирает во владение переменную <code>s1</code>, присоединяет к ней копию содержимого <code>s2</code>, а затем возвращает владение результатом.  Другими словами, это выглядит как будто код создаёт множество копий, но это не так; данная реализация более эффективна, чем копирование.</p>
 <p>Если нужно объединить несколько строк, поведение оператора <code>+</code> становится громоздким:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/no-listing-01-concat-multiple-strings/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = s1 + "-" + &amp;s2 + "-" + &amp;s3;
 <span class="boring">}</span></code></pre></pre>
 <p>Здесь переменная <code>s</code> будет содержать <code>tic-tac-toe</code>. С множеством символов <code>+</code> и <code>"</code> становится трудно понять, что происходит. Для более сложного комбинирования строк можно использовать макрос <code>format!</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/no-listing-02-format/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = format!("{s1}-{s2}-{s3}");
 <span class="boring">}</span></code></pre></pre>
 <p>Этот код также устанавливает переменную <code>s</code> в значение <code>tic-tac-toe</code>. Макрос <code>format!</code> работает тем же способом что макрос <code>println!</code>, но вместо вывода на экран возвращает вид <code>String</code> с содержимым. Исполнение кода с использованием <code>format!</code> значительно легче читается, а также код, сгенерированный макросом <code>format!</code>, использует ссылки, а значит не забирает во владение ни один из его свойств.</p>
 <h3 id="Упорядочевание-в-строках"><a class="header" href="#Упорядочевание-в-строках">Упорядочевание в строках</a></h3>
 <p>Доступ к отдельным символам в строке, при помощи ссылки на них по порядковому казателю, является допустимой и распространённой операцией во многих других языках программирования. Тем не менее, если вы попытаетесь получить доступ к частям <code>String</code>, используя синтаксис упорядочевания в Rust, то вы получите ошибку. Рассмотрим неверный код в приложении 8-19.</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch08-common-collections/listing-08-19/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+    let h = s1[0];
+<span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 8-19: Попытка использовать синтаксис порядкового казателя со строкой</span></p>
 <p>Этот код приведёт к следующей ошибке:</p>
-<pre><code class="language-console">{{#include ../listings/ch08-common-collections/listing-08-19/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling collections v0.1.0 (file:///projects/collections)
+error[E0277]: the type `str` cannot be indexed by `{integer}`
+ --&gt; src/main.rs:3:16
+  |
+3 |     let h = s1[0];
+  |                ^ string indices are ranges of `usize`
+  |
+  = help: the trait `SliceIndex&lt;str&gt;` is not implemented for `{integer}`, which is required by `String: Index&lt;_&gt;`
+  = note: you can use `.chars().nth()` or `.bytes().nth()`
+          for more information, see chapter 8 in The Book: &lt;https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings&gt;
+  = help: the trait `SliceIndex&lt;[_]&gt;` is implemented for `usize`
+  = help: for that trait implementation, expected `[_]`, found `str`
+  = note: required for `String` to implement `Index&lt;{integer}&gt;`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `collections` (bin "collections") due to 1 previous error
 </code></pre>
 <p>Ошибка и примечание говорит, что в Rust строки не поддерживают упорядочевание. Но почему так? Чтобы ответить на этот вопрос, нужно обсудить то, как Rust хранит строки в памяти.</p>
 <h4 id="Внутреннее-представление"><a class="header" href="#Внутреннее-представление">Внутреннее представление</a></h4>
 <p>Вид <code>String</code> является оболочкой над видом  <code>Vec&lt;u8&gt;</code>. Давайте посмотрим на несколько закодированных корректным образом в UTF-8 строк из примера приложения 8-14. Начнём с этой:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-14/src/main.rs:spanish}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let hello = String::from("السلام عليكم");
+</span><span class="boring">    let hello = String::from("Dobrý den");
+</span><span class="boring">    let hello = String::from("Hello");
+</span><span class="boring">    let hello = String::from("שלום");
+</span><span class="boring">    let hello = String::from("नमस्ते");
+</span><span class="boring">    let hello = String::from("こんにちは");
+</span><span class="boring">    let hello = String::from("안녕하세요");
+</span><span class="boring">    let hello = String::from("你好");
+</span><span class="boring">    let hello = String::from("Olá");
+</span><span class="boring">    let hello = String::from("Здравствуйте");
+</span>    let hello = String::from("Hola");
 <span class="boring">}</span></code></pre></pre>
 <p>В этом случае <code>len</code> будет 4, что означает вектор, хранит строку "Hola" длиной 4 байта. Каждая из этих букв занимает 1 байт при кодировании в UTF-8. Но как насчёт следующей строки? (Обратите внимание, что эта строка начинается с заглавной кириллической "З", а не цифры 3.)</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch08-common-collections/listing-08-14/src/main.rs:russian}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let hello = String::from("السلام عليكم");
+</span><span class="boring">    let hello = String::from("Dobrý den");
+</span><span class="boring">    let hello = String::from("Hello");
+</span><span class="boring">    let hello = String::from("שלום");
+</span><span class="boring">    let hello = String::from("नमस्ते");
+</span><span class="boring">    let hello = String::from("こんにちは");
+</span><span class="boring">    let hello = String::from("안녕하세요");
+</span><span class="boring">    let hello = String::from("你好");
+</span><span class="boring">    let hello = String::from("Olá");
+</span>    let hello = String::from("Здравствуйте");
+<span class="boring">    let hello = String::from("Hola");
+</span><span class="boring">}</span></code></pre></pre>
 <p>Отвечая на вопрос, какова длина строки, вы можете ответить 12. Однако ответ Rust - 24, что равно числу байт, необходимых для кодирования «Здравствуйте» в UTF-8, так происходит, потому что каждое скалярное значение Unicode символа в этой строке занимает 2 байта памяти. Следовательно, порядковый казательпо байтам строки не всегда бы соответствовал действительному скалярному Unicode значению. Для отображения рассмотрим этот недопустимый код Rust:</p>
 <pre><code class="language-rust ignore does_not_compile">let hello = "Здравствуйте";
 let answer = &amp;hello[0];</code></pre>
@@ -305,7 +362,13 @@ let s = &amp;hello[0..4];
 <span class="boring">}</span></code></pre></pre>
 <p>Здесь переменная <code>s</code> будет вида <code>&amp;str</code> который содержит первые 4 байта строки. Ранее мы упоминали, что каждый из этих символов был по 2 байта, что означает, что <code>s</code> будет содержать <!-- yaspeller ignore:start -->"Зд"<!-- yaspeller ignore:end -->.</p>
 <p>Что бы произошло, если бы мы использовали <code>&amp;hello[0..1]</code>? Ответ: Rust бы запаниковал во время выполнения точно так же, как если бы обращались к недействительному порядковому указателю в векторе:</p>
-<pre><code class="language-console">{{#include ../listings/ch08-common-collections/output-only-01-not-char-boundary/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling collections v0.1.0 (file:///projects/collections)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/collections`
+thread 'main' panicked at src/main.rs:4:19:
+byte index 1 is not a char boundary; it is inside 'З' (bytes 0..2) of `Здравствуйте`
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
 <p>Вы должны использовать ряды для создания срезов строк с осторожностью, потому что это может привести к сбою вашей программы.</p>
 <h3 id="Способы-для-перебора-строк"><a class="header" href="#Способы-для-перебора-строк">Способы для перебора строк</a></h3>

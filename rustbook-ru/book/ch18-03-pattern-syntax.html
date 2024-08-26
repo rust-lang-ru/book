@@ -179,17 +179,31 @@
 <p>В этом разделе мы рассмотрим все виды допустимого синтаксиса в шаблонах и расскажем, когда и для чего вам может понадобиться каждый из них.</p>
 <h3 id="Сопоставление-с-литералом"><a class="header" href="#Сопоставление-с-литералом">Сопоставление с литералом</a></h3>
 <p>Как мы уже видели в главе 6, можно сопоставлять шаблоны с литералами напрямую. В следующем коде есть несколько примеров:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-01-literals/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 1;
+
+    match x {
+        1 =&gt; println!("one"),
+        2 =&gt; println!("two"),
+        3 =&gt; println!("three"),
+        _ =&gt; println!("anything"),
+    }
 <span class="boring">}</span></code></pre></pre>
 <p>Этот код печатает <code>one</code>, потому что значение в <code>x</code> равно 1. Данный синтаксис полезен, когда вы хотите, чтобы ваш код предпринял действие, если он получает определенное значение.</p>
 <h3 id="Сопоставление-именованных-переменных"><a class="header" href="#Сопоставление-именованных-переменных">Сопоставление именованных переменных</a></h3>
 <p>Именованные переменные - это неопровержимые (irrefutable) шаблоны, которые соответствуют любому значению и мы использовали их много раз в книге. Однако при использовании именованных переменных в выражениях <code>match</code> возникает сложность. Поскольку <code>match</code> начинает новую область видимости, то переменные, объявленные как часть шаблона внутри выражения <code>match</code>, будут затенять переменные с тем же именем вне конструкции <code>match</code> как и в случае со всеми переменными. В приложении 18-11 мы объявляем переменную с именем <code>x</code> со значением <code>Some(5)</code> и переменную <code>y</code> со значением <code>10</code>. Затем мы создаём выражение <code>match</code> для значения <code>x</code>. Посмотрите на шаблоны в ветках, <code>println!</code> в конце и попытайтесь выяснить, какой код будет напечатан прежде чем запускать его или читать дальше.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-11/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) =&gt; println!("Got 50"),
+        Some(y) =&gt; println!("Matched, y = {y}"),
+        _ =&gt; println!("Default case, x = {x:?}"),
+    }
+
+    println!("at the end: x = {x:?}, y = {y}");
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 18-11: Выражение <code>match</code> с веткой, которая добавляет затенённую переменную <code>y</code></span></p>
 <p>Давайте рассмотрим, что происходит, когда выполняется выражение <code>match</code>. Шаблон в первой ветке не соответствует определённому значению <code>x</code>, поэтому выполнение продолжается.</p>
@@ -199,23 +213,37 @@
 <p>Чтобы создать выражение <code>match</code>, которое сравнивает значения внешних <code>x</code> и <code>y</code>, вместо введения затенённой переменной нужно использовать условие в сопоставлении образца. Мы поговорим про условие в сопоставлении шаблона позже в разделе <a href="#extra-conditionals-with-match-guards">“Дополнительные условия в сопоставлении образца”</a><!--  -->.</p>
 <h3 id="Группа-шаблонов"><a class="header" href="#Группа-шаблонов">Группа шаблонов</a></h3>
 <p>В выражениях <code>match</code> можно сравнивать сразу с несколькими шаблонами, используя синтаксис <code>|</code>, который является оператором паттерна <em>or</em>. Например, в следующем примере мы сопоставляем значение <code>x</code> с ветвями match, первая из которых содержит оператор <em>or</em>, так что если значение <code>x</code> совпадёт с любым из значений в этой ветви, то будет выполнен её код:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-02-multiple-patterns/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 1;
+
+    match x {
+        1 | 2 =&gt; println!("one or two"),
+        3 =&gt; println!("three"),
+        _ =&gt; println!("anything"),
+    }
 <span class="boring">}</span></code></pre></pre>
 <p>Будет напечатано <code>one or two</code>.</p>
 <h3 id="Сопоставление-рядов-с-помощью-"><a class="header" href="#Сопоставление-рядов-с-помощью-">Сопоставление рядов с помощью <code>..=</code></a></h3>
 <p>Синтаксис <code>..=</code> позволяет нам выполнять сравнение с рядом значений. В следующем коде, когда в шаблоне найдётся совпадение с любым из значений заданного ряда, будет выполнена эта ветка:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-03-ranges/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 5;
+
+    match x {
+        1..=5 =&gt; println!("one through five"),
+        _ =&gt; println!("something else"),
+    }
 <span class="boring">}</span></code></pre></pre>
 <p>Если <code>x</code> равен 1, 2, 3, 4 или 5, то совпадение будет достигнуто в первой ветке. Этот синтаксис более удобен при указании нескольких значений для сравнения, чем использование оператора <code>|</code> для определения этой же идеи; если бы мы решили использовать <code>|</code>, нам пришлось бы написать <code>1 | 2 | 3 | 4 | 5</code>. Указание ряда намного короче, особенно если мы хотим подобрать, скажем, любое число от 1 до 1 000!</p>
 <p>Сборщик проверяет, что рядне является пустым во время сборки, и поскольку единственными видами, для которых Rust может определить, пуст рядили нет, являются <code>char</code> и числовые значения, ряды допускаются только с числовыми или <code>char</code> значениями.</p>
 <p>Вот пример использования рядов значений <code>char</code>:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-04-ranges-of-char/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 'c';
+
+    match x {
+        'a'..='j' =&gt; println!("early ASCII letter"),
+        'k'..='z' =&gt; println!("late ASCII letter"),
+        _ =&gt; println!("something else"),
+    }
 <span class="boring">}</span></code></pre></pre>
 <p>Rust может сообщить, что <code>'c'</code> находится в ряде первого шаблона и напечатать <code>early ASCII letter</code>.</p>
 <h3 id="Деструктуризация-для-получения-значений"><a class="header" href="#Деструктуризация-для-получения-значений">Деструктуризация для получения значений</a></h3>
@@ -223,26 +251,54 @@
 <h4 id="Деструктуризация-структуры"><a class="header" href="#Деструктуризация-структуры">Деструктуризация структуры</a></h4>
 <p>В приложении 18-12 показана структура <code>Point</code> с двумя полями <code>x</code> и <code>y</code>, которые мы можем разделить, используя шаблон с указанием <code>let</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-12/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x: a, y: b } = p;
+    assert_eq!(0, a);
+    assert_eq!(7, b);
+}</code></pre></pre>
 <p><span class="caption">Приложение 18-12: Разбиение полей структуры в отдельные переменные</span></p>
 <p>Этот код создаёт переменные <code>a</code> и <code>b</code> , которые сопоставляются значениям полей <code>x</code> и <code>y</code> структуры <code>p</code> . Этот пример показывает, что имена переменных в шаблоне не обязательно должны совпадать с именами полей структуры. Однако обычно имена переменных сопоставляются с именами полей, чтобы было легче запомнить, какие переменные взяты из каких полей. Из-за этого, а также из-за того, что строчка <code>let Point { x: x, y: y } = p;</code> содержит много повторения, в Rust ввели особое сокращение для шаблонов, соответствующих полям структуры: вам нужно только указать имя поля структуры, и тогда переменные, созданные из шаблона, будут иметь те же имена. Код в приложении 18-13 подобен коду в Приложении 18-12, но в шаблоне <code>let</code> создаются переменные <code>x</code> и <code>y</code>, вместо <code>a</code> и <code>b</code> .</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-13/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x, y } = p;
+    assert_eq!(0, x);
+    assert_eq!(7, y);
+}</code></pre></pre>
 <p><span class="caption">Приложение 18-13: Деструктуризация полей структуры с использованием сокращённой записи</span></p>
 <p>Этот код создаёт переменные <code>x</code> и <code>y</code>, которые соответствуют полям <code>x</code> и <code>y</code> из переменной <code>p</code>. В результате переменные <code>x</code> и <code>y</code> содержат значения из структуры <code>p</code>.</p>
 <p>А ещё, используя литеральные значения в шаблоне, мы можем деструктурировать, не создавая переменные для всех полей. Это даёт возможность, проверяя одни поля на соответствие определенным значениям, создавать переменные для деструктуризации других.</p>
 <p>В приложении 18-14 показано выражение <code>match</code>, которое разделяет значения <code>Point</code> на три случая: точки, которые лежат непосредственно на оси <code>x</code> (что верно, когда <code>y = 0</code>), на оси <code>y</code> (<code>x = 0</code>) или ни то, ни другое.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-14/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct Point {
+</span><span class="boring">    x: i32,
+</span><span class="boring">    y: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    match p {
+        Point { x, y: 0 } =&gt; println!("On the x axis at {x}"),
+        Point { x: 0, y } =&gt; println!("On the y axis at {y}"),
+        Point { x, y } =&gt; {
+            println!("On neither axis: ({x}, {y})");
+        }
+    }
+}</code></pre></pre>
 <p><span class="caption">Приложение 18-14: Деструктуризация и сопоставление с литералами в одном шаблоне</span></p>
 <p>Первая ветвь будет соответствовать любой точке, лежащей на оси <code>x</code>, если значение поля <code>y</code> будет соответствовать литералу <code>0</code>. Шаблон по-прежнему создаёт переменную <code>x</code>, которую мы сможем использовать в коде этой ветви.</p>
 <p>Подобно, вторая ветвь совпадёт с любой точкой на оси <code>y</code>, в случае, если значение поля <code>x</code> будет равно <code>0</code>, а для значения поля <code>y</code> будет создана переменная <code>y</code>. Третья ветвь не содержит никаких литералов, поэтому она соответствует любому другому <code>Point</code> и создаёт переменные как для поля <code>x</code>, так и для поля <code>y</code>.</p>
@@ -251,10 +307,31 @@
 <h4 id="Деструктуризация-перечислений"><a class="header" href="#Деструктуризация-перечислений">Деструктуризация перечислений</a></h4>
 <p>Мы уже деструктурировали перечисления в книге (см., например, приложение 6-5 главы 6), но<br>не обсуждали явно, что шаблон для деструктуризации перечисления должен соответствовать способу объявления данных, хранящихся в перечислении. Например, в приложении 18-15 мы используем перечисление <code>Message</code> из приложения 6-2 и пишем <code>match</code> с шаблонами, которые будут деструктурировать каждое внутреннее значение.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-15/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(0, 160, 255);
+
+    match msg {
+        Message::Quit =&gt; {
+            println!("The Quit variant has no data to destructure.");
+        }
+        Message::Move { x, y } =&gt; {
+            println!("Move in the x direction {x} and in the y direction {y}");
+        }
+        Message::Write(text) =&gt; {
+            println!("Text message: {text}");
+        }
+        Message::ChangeColor(r, g, b) =&gt; {
+            println!("Change the color to red {r}, green {g}, and blue {b}")
+        }
+    }
+}</code></pre></pre>
 <p><span class="caption">Приложение 18-15: Деструктуризация вариантов перечисления, содержащих разные виды значений</span></p>
 <p>Этот код напечатает <code>Change the color to red 0, green 160, and blue 255</code>. Попробуйте изменить значение переменной <code>msg</code>, чтобы увидеть выполнение кода в других ветках.</p>
 <p>Для вариантов перечисления без каких-либо данных, вроде <code>Message::Quit</code>, мы не можем деструктурировать значение, которого нет. Мы можем сопоставить только буквальное значение <code>Message::Quit</code> в этом шаблоне, но без переменных.</p>
@@ -262,17 +339,42 @@
 <p>Для вариантов перечисления, подобных кортежу, вроде <code>Message::Write</code>, который содержит кортеж с одним элементом и <code>Message::ChangeColor</code>, содержащему кортеж с тремя элементами, шаблон подобен тому, который мы указываем для сопоставления кортежей. Количество переменных в шаблоне должно соответствовать количеству элементов в варианте, который мы сопоставляем.</p>
 <h4 id="Деструктуризация-вложенных-структур-и-перечислений"><a class="header" href="#Деструктуризация-вложенных-структур-и-перечислений">Деструктуризация вложенных структур и перечислений</a></h4>
 <p>До сих пор все наши примеры сопоставляли структуры или перечисления на один уровень глубины, но сопоставление может работать и с вложенными элементами! Например, мы можем реорганизовать код в приложении 18-15 для поддержки цветов RGB и HSV в сообщении <code>ChangeColor</code> , как показано в приложении 18-16.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-16/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
+}
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(Color),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+
+    match msg {
+        Message::ChangeColor(Color::Rgb(r, g, b)) =&gt; {
+            println!("Change color to red {r}, green {g}, and blue {b}");
+        }
+        Message::ChangeColor(Color::Hsv(h, s, v)) =&gt; {
+            println!("Change color to hue {h}, saturation {s}, value {v}")
+        }
+        _ =&gt; (),
+    }
+}</code></pre></pre>
 <p><span class="caption">Приложение 18-16: Сопоставление со вложенными перечислениями</span></p>
 <p>Шаблон первой ветки в выражении <code>match</code> соответствует варианту перечисления <code>Message::ChangeColor</code>, который содержит вариант <code>Color::Rgb</code>; затем шаблон привязывается к трём внутренними значениями <code>i32</code>. Шаблон второй ветки также соответствует варианту перечисления <code>Message::ChangeColor</code>, но внутреннее перечисление соответствует варианту <code>Color::Hsv</code>. Мы можем указать эти сложные условия в одном выражении <code>match</code>, даже если задействованы два перечисления.</p>
 <h4 id="Деструктуризация-структур-и-кортежей"><a class="header" href="#Деструктуризация-структур-и-кортежей">Деструктуризация структур и кортежей</a></h4>
 <p>Можно смешивать, сопоставлять и вкладывать шаблоны деструктуризации ещё более сложными способами. В следующем примере показана сложная деструктуризация, где мы вкладываем структуры и кортежи внутрь кортежа и деструктурируем из него все примитивные значения:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-05-destructuring-structs-and-tuples/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    struct Point {
+</span><span class="boring">        x: i32,
+</span><span class="boring">        y: i32,
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    let ((feet, inches), Point { x, y }) = ((3, 10), Point { x: 3, y: -10 });
 <span class="boring">}</span></code></pre></pre>
 <p>Этот код позволяет нам разбивать сложные виды на составные части, чтобы мы могли использовать нужным нас значения по отдельности.</p>
 <p>Деструктуризация с помощью шаблонов - это удобный способ использования фрагментов значений, таких как как значение из каждого поля в структуре, по отдельности друг от друга.</p>
@@ -281,78 +383,147 @@
 <h4 id="Пренебрежение-всего-значения-с-помощью-шаблона-_"><a class="header" href="#Пренебрежение-всего-значения-с-помощью-шаблона-_">Пренебрежение всего значения с помощью шаблона <code>_</code></a></h4>
 <p>Мы использовали подчёркивание (<code>_</code>) в качестве шаблона подстановочного знака (wildcard), который будет сопоставляться с любом значением, но не будет привязываться к этому значению. Это особенно удобно в последней ветке выражения <code>match</code>, но мы также можем использовать его в любом шаблоне, в том числе в свойствах функции, как показано в приложении 18-17.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-17/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn foo(_: i32, y: i32) {
+    println!("This code only uses the y parameter: {y}");
+}
+
+fn main() {
+    foo(3, 4);
+}</code></pre></pre>
 <p><span class="caption">Приложение 18-15: Использование <code>_</code> в сигнатуре функции</span></p>
 <p>Этот код полностью пренебрегает значение <code>3</code>, переданное в качестве первого переменной, и выведет на печать <code>This code only uses the y parameter: 4</code>.</p>
 <p>В большинстве случаев, когда вам больше не нужен какой-то из свойств функции, вы можете изменить её сигнатуру, убрав неиспользуемый свойство. Пренебрежение свойства функции может быть особенно полезно в случаях когда, например, вы реализуете типаж с определённой сигнатурой, но тело функции в вашей реализации не нуждается в одном из свойств. В таком случае сборщик не будет выдавать предупреждения о неиспользуемых свойствах функции, как это было бы, если бы вы указали имя свойства.</p>
 <h4 id="Пренебрежение-частей-значения-с-помощью-вложенного-_"><a class="header" href="#Пренебрежение-частей-значения-с-помощью-вложенного-_">Пренебрежение частей значения с помощью вложенного <code>_</code></a></h4>
 <p>Также, <code>_</code> можно использовать внутри шаблонов, чтобы пренебрегать какую-то часть значения, например, когда мы хотим проверить только определённую подробность, а остальные свойства нам не понадобятся в коде, который нужно выполнить. В приложении 18-18 показан код, ответственный за управление значениями настроек. Согласно бизнес-требованиям, пользователь не может изменить установленное значение свойства, но может удалить его и задать ему новое значение, если на данный момент оно отсутствует.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-18/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut setting_value = Some(5);
+    let new_setting_value = Some(10);
+
+    match (setting_value, new_setting_value) {
+        (Some(_), Some(_)) =&gt; {
+            println!("Can't overwrite an existing customized value");
+        }
+        _ =&gt; {
+            setting_value = new_setting_value;
+        }
+    }
+
+    println!("setting is {setting_value:?}");
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 18-18: Использование подчёркивания в шаблонах, соответствующих вариантам <code>Some</code>, когда нам не нужно использовать значение внутри <code>Some</code></span></p>
 <p>Этот код будет печатать <code>Can't overwrite an existing customized value</code>, а затем <code>setting is Some(5)</code>. В первой ветке нам не нужно сопоставлять или использовать значения внутри варианта <code>Some</code>, но нам нужно проверить случай, когда <code>setting_value</code> и <code>new_setting_value</code> являются вариантом <code>Some</code>. В этом случае мы печатаем причину, почему мы не меняем значение <code>setting_value</code> и оно не меняется.</p>
 <p>Во всех других случаях (если либо <code>setting_value</code>, либо <code>new_setting_value</code> являются вариантом <code>None</code>), выраженных шаблоном <code>_</code> во второй ветке, мы хотим, чтобы <code>new_setting_value</code> стало равно <code>setting_value</code>.</p>
 <p>Мы также можем использовать подчёркивание в нескольких местах в одном шаблоне, чтобы пренебрегать определенные значения. Приложение 18-19 показывает пример пренебрежения второго и четвёртого значения в кортеже из пяти элементов.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-19/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, _, third, _, fifth) =&gt; {
+            println!("Some numbers: {first}, {third}, {fifth}")
+        }
+    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 18-19: Пренебрежение нескольких частей кортежа</span></p>
 <p>Этот код напечатает <code>Some numbers: 2, 8, 32</code>, а значения 4 и 16 будут пренебрежены.</p>
 <h4 id="Пренебрежение-неиспользуемой-переменной-начинающейся-с-символа-_-в-имени"><a class="header" href="#Пренебрежение-неиспользуемой-переменной-начинающейся-с-символа-_-в-имени">Пренебрежение неиспользуемой переменной, начинающейся с символа <code>_</code> в имени</a></h4>
 <p>Если вы создаёте переменную, но нигде её не используете, Rust обычно выдаёт предупреждение, потому что неиспользуемая переменная может быть ошибкой. Но иногда полезно создать переменную, которую вы пока не используете, например, когда вы создаёте протовид или только начинаете проект. В этой ситуации вы можете сказать Rust не предупреждать вас о неиспользуемой переменной, начав имя переменной с подчёркивания. В приложении 18-20 мы создаём две неиспользуемые переменные, но когда мы собираем такой код, мы должны получить предупреждение только об одной из них.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-20/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let _x = 5;
+    let y = 10;
+}</code></pre></pre>
 <p><span class="caption">Приложение 18-20: Начинаем имя переменной с подчёркивания, чтобы не получить предупреждения о неиспользованных переменных</span></p>
 <p>Здесь мы получаем предупреждение о том, что не используем переменную <code>y</code>, но мы не получаем предупреждения о неиспользовании переменной<code>_x</code>.</p>
 <p>Обратите внимание, что есть небольшая разница между использованием только <code>_</code> и использованием имени, начинающегося с подчёркивания. Синтаксис <code>_x </code> по-прежнему привязывает значение к переменной, тогда как <code>_</code> не привязывает ничего. В приложении 18-21 представлена ошибка, показывающая, в каком случае это различие имеет значение.</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-21/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s = Some(String::from("Hello!"));
+
+    if let Some(_s) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
+<span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 18-21: Неиспользуемая переменная, начинающаяся с подчёркивания, по-прежнему привязывает значение, что может привести к смене владельца значения</span></p>
 <p>Мы получим ошибку, поскольку значение <code>s</code> все равно будет перемещено в <code>_s</code>, что не позволит нам больше воспользоваться <code>s</code>. Однако использование подчёркивания само по себе никогда не приводит к привязке к значению. Приложение 18-22 ссобирается без ошибок, поскольку <code>s</code> не будет перемещён в <code>_</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-22/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s = Some(String::from("Hello!"));
+
+    if let Some(_) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 18-22. Использование подчёркивания не привязывает значение</span></p>
 <p>Этот код работает нормально, потому что мы никогда не привязываем <code>s</code> к чему либо; оно не перемещается.</p>
 <h4 id="Пренебрежение-оставшихся-частей-значения-с-помощью-"><a class="header" href="#Пренебрежение-оставшихся-частей-значения-с-помощью-">Пренебрежение оставшихся частей значения с помощью <code>..</code></a></h4>
 <p>Со значениями, которые имеют много частей, можно использовать синтаксис <code>..</code>, чтобы использовать только некоторые части и пренебрегать остальные, избегая необходимости перечислять подчёркивания для каждого пренебрегаемого значения. Шаблон <code>..</code> пренебрегает любые части значения, которые мы явно не сопоставили в остальной частью шаблона. В приложении 18-23 мы имеем структуру <code>Point</code>, которая содержит координату в трёхмерном пространстве. В выражении <code>match</code> мы хотим работать только с координатой <code>x</code> и пренебрегать значения полей <code>y</code> и <code>z</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-23/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    struct Point {
+        x: i32,
+        y: i32,
+        z: i32,
+    }
+
+    let origin = Point { x: 0, y: 0, z: 0 };
+
+    match origin {
+        Point { x, .. } =&gt; println!("x is {x}"),
+    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 18-21: Пренебрежение полей структуры <code>Point</code> кроме поля <code>x</code> с помощью <code>..</code></span></p>
 <p>Мы перечисляем значение <code>x</code> и затем просто включаем шаблон <code>..</code>. Это быстрее, чем перечислять <code>y: _</code> и <code>z: _</code>, особенно когда мы работаем со структурами, которые имеют много полей, в ситуациях, когда только одно или два поля представляют для нас влечение.</p>
 <p>Синтаксис <code>..</code> раскроется до необходимого количества значений. В приложении 18-24 показано, как использовать <code>..</code> с кортежем.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-24/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, .., last) =&gt; {
+            println!("Some numbers: {first}, {last}");
+        }
+    }
+}</code></pre></pre>
 <p><span class="caption">Приложение 18-24: Сопоставление только первого и последнего значений в кортеже и пренебрежение всех других значений</span></p>
 <p>В этом коде первое и последнее значение соответствуют <code>first</code> и <code>last</code>. Конструкция <code>..</code> будет соответствовать и пренебрегать всё, что находится между ними.</p>
 <p>Однако использование <code>..</code> должно быть однозначным. Если неясно, какие значения предназначены для сопоставления, а какие следует пренебрегать, Rust выдаст ошибку. В приложении 18-25 показан пример неоднозначного использования <code>..</code>, поэтому он не будет собираться.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-25/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (.., second, ..) =&gt; {
+            println!("Some numbers: {second}")
+        },
+    }
+}</code></pre>
 <p><span class="caption">Приложение 18-25: Попытка использовать <code>..</code> неоднозначным способом</span></p>
 <p>При сборки примера, мы получаем эту ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch18-patterns-and-matching/listing-18-25/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+error: `..` can only be used once per tuple pattern
+ --&gt; src/main.rs:5:22
+  |
+5 |         (.., second, ..) =&gt; {
+  |          --          ^^ can only be used once per tuple pattern
+  |          |
+  |          previously used here
+
+error: could not compile `patterns` (bin "patterns") due to 1 previous error
 </code></pre>
 <p>Rust не может определить, сколько значений в кортеже нужно пренебрегать, прежде чем сопоставить значение с <code>second</code>, и сколько следующих значений пропренебрегать после этого. Этот код может означать, что мы хотим пренебрегать <code>2</code>, связать <code>second</code> с <code>4</code>, а затем пренебрегать <code>8</code>, <code>16</code> и <code>32</code>; или что мы хотим пренебрегать <code>2</code> и <code>4</code>, связать <code>second</code> с <code>8</code>, а затем пренебрегать <code>16</code> и <code>32</code>; и так далее. Имя переменной <code>second</code> не означает ничего особенного для Rust, поэтому мы получаем ошибку сборщика, так как использование <code>..</code> в двух местах как здесь, является неоднозначным.</p>
 <h3 id="Дополнительные-условия-оператора-сопоставления-match-guards"><a class="header" href="#Дополнительные-условия-оператора-сопоставления-match-guards">Дополнительные условия оператора сопоставления (Match Guards)</a></h3>
 <p><em>Условие сопоставления</em> (match guard) является дополнительным условием <code>if</code>, указанным после шаблона в ветке <code>match</code>, которое также должно быть выполнено, чтобы ветка была выбрана. Условия сопоставления полезны для выражения более сложных идей, чем позволяет только шаблон.</p>
 <p>Условие может использовать переменные, созданные в шаблоне. В приложении 18-26 показан <code>match</code>, в котором первая ветка имеет шаблон <code>Some(x)</code>, а также имеет условие сопоставления, <code>if x % 2 == 0</code> (которое будет истинным, если число чётное).</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-26/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let num = Some(4);
+
+    match num {
+        Some(x) if x % 2 == 0 =&gt; println!("The number {x} is even"),
+        Some(x) =&gt; println!("The number {x} is odd"),
+        None =&gt; (),
+    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 18-26: Добавление условия сопоставления в шаблон</span></p>
 <p>В этом примере будет напечатано <code>The number 4 is even</code>. Когда <code>num</code> сравнивается с шаблоном в первой ветке, он совпадает, потому что <code>Some(4)</code> соответствует <code>Some(x)</code>. Затем условие сопоставления проверяет, равен ли 0 остаток от деления <code>x</code> на 2 и если это так, то выбирается первая ветка.</p>
@@ -360,17 +531,30 @@
 <p>Невозможно выразить условие <code>if x % 2 == 0</code> внутри шаблона, поэтому условие в сопоставлении даёт нам возможность выразить эту логику. Недостатком этой дополнительной выразительности является то, что сборщик не пытается проверять полноту, когда задействованы выражения с условием в сопоставлении.</p>
 <p>В приложении 18-11 мы упомянули, что можно использовать условия сопоставления для решения нашей проблемы затенения шаблона. Напомним, что внутри шаблона в выражении <code>match</code> была создана новая переменная, вместо использования внешней к <code>match</code> переменной. Эта новая переменная означала, что мы не могли выполнить сравнение с помощью значения внешней переменной. В приложении 18-27 показано, как мы можем использовать условие сопоставления для решения этой проблемы.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-27/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) =&gt; println!("Got 50"),
+        Some(n) if n == y =&gt; println!("Matched, n = {n}"),
+        _ =&gt; println!("Default case, x = {x:?}"),
+    }
+
+    println!("at the end: x = {x:?}, y = {y}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 18-27. Использование условия сопоставления для проверки на равенство со значением внешней переменной</span></p>
 <p>Этот код теперь напечатает <code>Default case, x = Some(5)</code>. Шаблон во второй ветке не вводит новую переменную <code>y</code>, которая будет затенять внешнюю <code>y</code>, это означает, что теперь можно использовать внешнюю переменную <code>y</code> в условии сопоставления. Вместо указания шаблона как <code>Some(y)</code>, который бы затенял бы внешнюю <code>y</code>, мы указываем <code>Some(n)</code>. Это создаёт новую переменную <code>n</code>, которая ничего не затеняет, так как переменной <code>n</code> нет вне конструкции <code>match</code>.</p>
 <p>Условие сопоставления <code>if n == y</code> не является шаблоном и следовательно, не вводит новые переменные. Переменная <code>y</code> <em>и есть</em> внешняя <code>y</code>, а не новая затенённая <code>y</code>, и теперь мы можем искать элемент, который будет иметь то же значение, что и внешняя <code>y</code>, путём сравнения <code>n</code> и <code>y</code>.</p>
 <p>Вы также можете использовать оператор <em>или</em> <code>|</code> в условии сопоставления, чтобы указать несколько шаблонов; условие сопоставления будет применяться ко всем шаблонам. В приложении 18-28 показан приоритет комбинирования условия сопоставления с шаблоном, который использует <code>|</code>. Важной частью этого примера является то, что условие сопоставления <code>if y</code> применяется к <code>4</code>, <code>5</code>, <em>и</em> к <code>6</code>, хотя это может выглядеть как будто <code>if y</code> относится только к <code>6</code>.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-28/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 4;
+    let y = false;
+
+    match x {
+        4 | 5 | 6 if y =&gt; println!("yes"),
+        _ =&gt; println!("no"),
+    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 18-28: Комбинирование нескольких шаблонов с условием сопоставления</span></p>
 <p>Условие сопоставления гласит, что ветка совпадает, только если значение <code>x</code> равно <code>4</code>, <code>5</code> или <code>6</code>, <em>и</em> если <code>y</code> равно <code>true</code>. Когда этот код выполняется, шаблон первой ветки совпадает, потому что <code>x</code> равно <code>4</code>, но условие сопоставления <code>if y</code> равно false, поэтому первая ветка не выбрана. Код переходит ко второй ветке, которая совпадает, и эта программа печатает <code>no</code>. Причина в том, что условие <code>if</code> применяется ко всему шаблону <code>4 | 5 | 6</code>, а не только к последнему значению <code>6</code>. Другими словами, приоритет условия сопоставления по отношению к шаблону ведёт себя так:</p>
@@ -382,9 +566,22 @@
 <p>После запуска кода, старшинство в поведении становится очевидным: если условие сопоставления применялось бы только к конечному значению в списке, указанном с помощью оператора <code>|</code>, то ветка бы совпала и программа напечатала бы <code>yes</code>.</p>
 <h3 id="Связывание-"><a class="header" href="#Связывание-">Связывание <code>@</code></a></h3>
 <p>Оператор <em>at</em> (<code>@</code>) позволяет создать переменную, которая содержит значение, одновременно с тем, как мы проверяем, соответствует ли это значение шаблону. В приложении 18-29 показан пример, в котором мы хотим проверить, что перечисление <code>Message::Hello</code> со значением поля <code>id</code> находится в ряде <code>3..=7</code>. Но мы также хотим привязать такое значение к переменной <code>id_variable</code>, чтобы использовать его внутри кода данной ветки. Мы могли бы назвать эту переменную <code>id</code>, так же как поле, но для этого примера мы будем использовать другое имя.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-29/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum Message {
+        Hello { id: i32 },
+    }
+
+    let msg = Message::Hello { id: 5 };
+
+    match msg {
+        Message::Hello {
+            id: id_variable @ 3..=7,
+        } =&gt; println!("Found an id in range: {id_variable}"),
+        Message::Hello { id: 10..=12 } =&gt; {
+            println!("Found an id in another range")
+        }
+        Message::Hello { id } =&gt; println!("Found some other id: {id}"),
+    }
 <span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 18-29: Использование <code>@</code> для привязывания значения в шаблоне, с одновременной его проверкой</span></p>
 <p>В этом примере будет напечатано <code>Found an id in range: 5</code>. Указывая <code>id_variable @</code> перед рядом <code>3..=7</code>, мы захватываем любое значение, попадающее в ряд, одновременно проверяя, что это значение соответствует ряду в шаблоне.</p>

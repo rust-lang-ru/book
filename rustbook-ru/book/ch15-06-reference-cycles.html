@@ -180,23 +180,87 @@
 <h3 id="Создание-ссылочного-зацикливания"><a class="header" href="#Создание-ссылочного-зацикливания">Создание ссылочного зацикливания</a></h3>
 <p>Давайте посмотрим, как может произойти ситуация ссылочного зацикливания и как её предотвратить, начиная с определения перечисления <code>List</code> и способа <code>tail</code> в приложении 15-25:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-25/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use crate::List::{Cons, Nil};
+use std::cell::RefCell;
+use std::rc::Rc;
+
+#[derive(Debug)]
+enum List {
+    Cons(i32, RefCell&lt;Rc&lt;List&gt;&gt;),
+    Nil,
+}
+
+impl List {
+    fn tail(&amp;self) -&gt; Option&lt;&amp;RefCell&lt;Rc&lt;List&gt;&gt;&gt; {
+        match self {
+            Cons(_, item) =&gt; Some(item),
+            Nil =&gt; None,
+        }
+    }
+}
+
+fn main() {}</code></pre></pre>
 <p><span class="caption">Приложение 15-25: Объявление cons list, который содержит <code>RefCell&lt;T&gt;</code>, чтобы мы могли изменять то, на что ссылается экземпляр <code>Cons</code></span></p>
 <p>Мы используем другую вариацию определения <code>List</code> из приложения 15-5. Второй элемент в  варианте <code>Cons</code> теперь <code>RefCell&lt;Rc&lt;List&gt;&gt;</code>, что означает, что вместо возможности менять значение <code>i32</code>, как мы делали в приложении 15-24, мы хотим менять значение <code>List</code>, на которое указывает вариант <code>Cons</code>. Мы также добавляем способ <code>tail</code>, чтобы нам было удобно обращаться ко второму элементу, если у нас есть вариант <code>Cons</code>.</p>
 <p>В приложении 15-26 мы добавляем <code>main</code> функцию, которая использует определения приложения 15-25. Этот код создаёт список в переменной <code>a</code> и список <code>b</code>, который указывает на список <code>a</code>. Затем он изменяет список внутри <code>a</code> так, чтобы он указывал на <code>b</code>, создавая ссылочное зацикливание. В коде есть  указания <code>println!</code>, чтобы показать значения счётчиков ссылок в различных точках этого процесса.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-26/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use crate::List::{Cons, Nil};
+</span><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::Rc;
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum List {
+</span><span class="boring">    Cons(i32, RefCell&lt;Rc&lt;List&gt;&gt;),
+</span><span class="boring">    Nil,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl List {
+</span><span class="boring">    fn tail(&amp;self) -&gt; Option&lt;&amp;RefCell&lt;Rc&lt;List&gt;&gt;&gt; {
+</span><span class="boring">        match self {
+</span><span class="boring">            Cons(_, item) =&gt; Some(item),
+</span><span class="boring">            Nil =&gt; None,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let a = Rc::new(Cons(5, RefCell::new(Rc::new(Nil))));
+
+    println!("a initial rc count = {}", Rc::strong_count(&amp;a));
+    println!("a next item = {:?}", a.tail());
+
+    let b = Rc::new(Cons(10, RefCell::new(Rc::clone(&amp;a))));
+
+    println!("a rc count after b creation = {}", Rc::strong_count(&amp;a));
+    println!("b initial rc count = {}", Rc::strong_count(&amp;b));
+    println!("b next item = {:?}", b.tail());
+
+    if let Some(link) = a.tail() {
+        *link.borrow_mut() = Rc::clone(&amp;b);
+    }
+
+    println!("b rc count after changing a = {}", Rc::strong_count(&amp;b));
+    println!("a rc count after changing a = {}", Rc::strong_count(&amp;a));
+
+    // Uncomment the next line to see that we have a cycle;
+    // it will overflow the stack
+    // println!("a next item = {:?}", a.tail());
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-26: Создание ссылочного цикла из двух значений <code>List</code>, указывающих друг на друга</span></p>
 <p>Мы создаём экземпляр <code>Rc&lt;List&gt;</code> содержащий значение <code>List</code> в переменной <code>a</code> с начальным списком <code>5, Nil</code>. Затем мы создаём экземпляр <code>Rc&lt;List&gt;</code> содержащий другое значение <code>List</code> в переменной <code>b</code>, которое содержит значение 10 и указывает на список в <code>a</code>.</p>
 <p>Мы меняем <code>a</code> так, чтобы он указывал на <code>b</code> вместо <code>Nil</code>, создавая зацикленность. Мы делаем это с помощью способа <code>tail</code>, чтобы получить ссылку на <code>RefCell&lt;Rc&lt;List&gt;&gt;</code> из переменной <code>a</code>, которую мы помещаем в переменную <code>link</code>. Затем мы используем способ <code>borrow_mut</code> из вида <code>RefCell&lt;Rc&lt;List&gt;&gt;</code>, чтобы изменить внутреннее значение вида <code>Rc&lt;List&gt;</code>, содержащего начальное значение <code>Nil</code> на значение вида <code>Rc&lt;List&gt;</code> взятое из переменной <code>b</code>.</p>
 <p>Когда мы запускаем этот код, оставив последний <code>println!</code> закомментированным в данный момент, мы получим вывод:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-26/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.53s
+     Running `target/debug/cons-list`
+a initial rc count = 1
+a next item = Some(RefCell { value: Nil })
+a rc count after b creation = 2
+b initial rc count = 1
+b next item = Some(RefCell { value: Cons(5, RefCell { value: Nil }) })
+b rc count after changing a = 2
+a rc count after changing a = 2
 </code></pre>
 <p>Количество ссылок на экземпляры <code>Rc&lt;List&gt;</code> как в <code>a</code>, так и в <code>b</code> равно 2 после того, как мы заменили список в <code>a</code> на ссылку на <code>b</code>. В конце <code>main</code> Rust уничтожает переменную <code>b</code>, что уменьшает количество ссылок на <code>Rc&lt;List&gt;</code> из <code>b</code> с 2 до 1. Память, которую <code>Rc&lt;List&gt;</code> занимает в куче, не будет освобождена в этот момент, потому что количество ссылок на неё равно 1, а не 0. Затем Rust удаляет <code>a</code>, что уменьшает количество ссылок экземпляра <code>Rc&lt;List&gt;</code> в <code>a</code> с 2 до 1. Память этого экземпляра также не может быть освобождена, поскольку другой экземпляр <code>Rc&lt;List&gt;</code> по-прежнему ссылается на него. Таким образом, память, выделенная для списка не будет освобождена никогда. Чтобы наглядно представить этот цикл ссылок, мы создали диаграмму на рисунке 15-4.</p>
 <img src="img/trpl15-04.svg" class="center" alt="Reference cycle of lists">
@@ -213,17 +277,49 @@
 <h4 id="Создание-древовидной-структуры-данных-node-с-дочерними-узлами"><a class="header" href="#Создание-древовидной-структуры-данных-node-с-дочерними-узлами">Создание древовидной структуры данных: <code>Node</code> с дочерними узлами</a></h4>
 <p>Для начала мы построим дерево с узлами, которые знают о своих дочерних узлах. Мы создадим структуру с именем <code>Node</code>, которая будет содержать собственное значение <code>i32</code>, а также ссылки на его дочерние значения <code>Node</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust">use std::cell::RefCell;
+use std::rc::Rc;
+
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let leaf = Rc::new(Node {
+</span><span class="boring">        value: 3,
+</span><span class="boring">        children: RefCell::new(vec![]),
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    let branch = Rc::new(Node {
+</span><span class="boring">        value: 5,
+</span><span class="boring">        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+</span><span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
 <p>Мы хотим, чтобы <code>Node</code> владел своими дочерними узлами и мы хотим поделиться этим владением с переменными так, чтобы мы могли напрямую обращаться к каждому <code>Node</code> в дереве. Для этого мы определяем внутренние элементы вида <code>Vec&lt;T&gt;</code> как значения вида <code>Rc&lt;Node&gt;</code>. Мы также хотим изменять те узлы, которые являются дочерними по отношению к другому узлу, поэтому у нас есть вид <code>RefCell&lt;T&gt;</code> в поле <code>children</code> оборачивающий вид <code>Vec&lt;Rc&lt;Node&gt;&gt;</code>.</p>
 <p>Далее мы будем использовать наше определение структуры и создадим один экземпляр <code>Node</code> с именем <code>leaf</code> со значением 3 и без дочерних элементов, а другой экземпляр с именем <code>branch</code> со значением 5 и <code>leaf</code> в качестве одного из его дочерних элементов, как показано в приложении 15-27:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-27/src/main.rs:there}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::Rc;
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Node {
+</span><span class="boring">    value: i32,
+</span><span class="boring">    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let leaf = Rc::new(Node {
+        value: 3,
+        children: RefCell::new(vec![]),
+    });
+
+    let branch = Rc::new(Node {
+        value: 5,
+        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+    });
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-27: Создание узла <code>leaf</code> без дочерних элементов и узла <code>branch</code> с <code>leaf</code> в качестве одного из дочерних элементов</span></p>
 <p>Мы клонируем  содержимое <code>Rc&lt;Node&gt;</code> из переменной  <code>leaf</code> и сохраняем его в переменной <code>branch</code>, что означает, что <code>Node</code> в  <code>leaf</code> теперь имеет двух владельцев: <code>leaf</code> и <code>branch</code>. Мы можем получить доступ из <code>branch</code> к <code>leaf</code> через обращение <code>branch.children</code>, но нет способа добраться из  <code>leaf</code> к <code>branch</code>. Причина в том, что <code>leaf</code> не имеет ссылки на <code>branch</code> и не знает, что они связаны. Мы хотим, чтобы <code>leaf</code> знал, что <code>branch</code> является его родителем. Мы сделаем это далее.</p>
 <h4 id="Добавление-ссылки-от-ребёнка-к-его-родителю"><a class="header" href="#Добавление-ссылки-от-ребёнка-к-его-родителю">Добавление ссылки от ребёнка к его родителю</a></h4>
@@ -231,16 +327,66 @@
 <p>Подумаем об этих отношениях по-другому, родительский узел должен владеть своими потомками: если родительский узел удаляется, его дочерние узлы также должны быть удалены. Однако дочерний элемент не должен владеть своим родителем: если мы удаляем дочерний узел то родительский элемент все равно должен существовать. Это случай для использования слабых ссылок!</p>
 <p>Поэтому вместо <code>Rc&lt;T&gt;</code> мы сделаем так, чтобы поле <code>parent</code> использовало вид <code>Weak&lt;T&gt;</code>, а именно <code>RefCell&lt;Weak&lt;Node&gt;&gt;</code>. Теперь наше определение структуры <code>Node</code> выглядит так:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust">use std::cell::RefCell;
+use std::rc::{Rc, Weak};
+
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,
+    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+<span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-28/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let leaf = Rc::new(Node {
+</span><span class="boring">        value: 3,
+</span><span class="boring">        parent: RefCell::new(Weak::new()),
+</span><span class="boring">        children: RefCell::new(vec![]),
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+</span><span class="boring">
+</span><span class="boring">    let branch = Rc::new(Node {
+</span><span class="boring">        value: 5,
+</span><span class="boring">        parent: RefCell::new(Weak::new()),
+</span><span class="boring">        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    *leaf.parent.borrow_mut() = Rc::downgrade(&amp;branch);
+</span><span class="boring">
+</span><span class="boring">    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+</span><span class="boring">}</span></code></pre></pre>
 <p>Узел сможет ссылаться на свой родительский узел, но не владеет своим родителем. В приложении 15-28 мы обновляем <code>main</code> на использование нового определения так, чтобы у узла <code>leaf</code> был бы способ ссылаться на его родительский узел <code>branch</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-28/src/main.rs:there}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::{Rc, Weak};
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Node {
+</span><span class="boring">    value: i32,
+</span><span class="boring">    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,
+</span><span class="boring">    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let leaf = Rc::new(Node {
+        value: 3,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![]),
+    });
+
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+
+    let branch = Rc::new(Node {
+        value: 5,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+    });
+
+    *leaf.parent.borrow_mut() = Rc::downgrade(&amp;branch);
+
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-28: Узел <code>leaf</code> со слабой ссылкой на его родительский узел <code>branch</code></span></p>
 <p>Создание узла <code>leaf</code> выглядит подобно примеру из Приложения 15-27, за исключением поля <code>parent</code>: <code>leaf</code> изначально не имеет родителя, поэтому мы создаём новый, пустой экземпляр ссылки <code>Weak&lt;Node&gt;</code>.</p>
 <p>На этом этапе, когда мы пытаемся получить ссылку на родительский узел у узла <code>leaf</code> с помощью способа <code>upgrade</code>, мы получаем значение <code>None</code>. Мы видим это в выводе первой указания <code>println!</code>:</p>
@@ -256,10 +402,58 @@ children: RefCell { value: [] } }] } })
 <h4 id="Визуализация-изменений-в-strong_count-и-weak_count"><a class="header" href="#Визуализация-изменений-в-strong_count-и-weak_count">Визуализация изменений в <code>strong_count</code> и <code>weak_count</code></a></h4>
 <p>Давайте посмотрим, как изменяются значения <code>strong_count</code> и <code>weak_count</code> экземпляров вида <code>Rc&lt;Node&gt;</code> с помощью создания новой внутренней области видимости и перемещая создания экземпляра <code>branch</code> в эту область. Таким образом можно увидеть, что происходит, когда <code>branch</code> создаётся и затем удаляется при выходе из области видимости. Изменения показаны в приложении 15-29:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-29/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::{Rc, Weak};
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Node {
+</span><span class="boring">    value: i32,
+</span><span class="boring">    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,
+</span><span class="boring">    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let leaf = Rc::new(Node {
+        value: 3,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![]),
+    });
+
+    println!(
+        "leaf strong = {}, weak = {}",
+        Rc::strong_count(&amp;leaf),
+        Rc::weak_count(&amp;leaf),
+    );
+
+    {
+        let branch = Rc::new(Node {
+            value: 5,
+            parent: RefCell::new(Weak::new()),
+            children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+        });
+
+        *leaf.parent.borrow_mut() = Rc::downgrade(&amp;branch);
+
+        println!(
+            "branch strong = {}, weak = {}",
+            Rc::strong_count(&amp;branch),
+            Rc::weak_count(&amp;branch),
+        );
+
+        println!(
+            "leaf strong = {}, weak = {}",
+            Rc::strong_count(&amp;leaf),
+            Rc::weak_count(&amp;leaf),
+        );
+    }
+
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+    println!(
+        "leaf strong = {}, weak = {}",
+        Rc::strong_count(&amp;leaf),
+        Rc::weak_count(&amp;leaf),
+    );
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-29: Создание <code>branch</code> во внутренней области видимости и подсчёт сильных и слабых ссылок</span></p>
 <p>После того, как <code>leaf</code> создан его <code>Rc&lt;Node&gt;</code> имеет значения strong count равное 1 и weak count равное 0. Во внутренней области мы создаём <code>branch</code> и связываем её с <code>leaf</code>, после чего при печати значений счётчиков <code>Rc&lt;Node&gt;</code> в <code>branch</code> они будет иметь strong count 1 и weak count 1 (для <code>leaf.parent</code> указывающего на <code>branch</code> с <code>Weak&lt;Node&gt;</code> ). Когда мы распечатаем счётчики из <code>leaf</code>, мы увидим, что они будут иметь strong count 2, потому что <code>branch</code> теперь имеет клон <code>Rc&lt;Node&gt;</code> переменной <code>leaf</code> хранящийся в <code>branch.children</code>, но все равно будет иметь weak count 0.</p>
 <p>Когда заканчивается внутренняя область видимости,  <code>branch</code> выходит из области видимости и strong count <code>Rc&lt;Node&gt;</code> уменьшается до 0, поэтому его <code>Node</code> удаляется. Weak count 1 из <code>leaf.parent</code> не имеет никакого отношения к тому, был ли <code>Node</code> удалён, поэтому не будет никаких утечек памяти!</p>

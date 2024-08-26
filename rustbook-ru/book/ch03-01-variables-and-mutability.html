@@ -195,12 +195,19 @@ println!("The value of x is: {}", x);
 <p>Однако изменяемость может быть очень полезной и может сделать код более удобным для написания. Хотя переменные по умолчанию неизменяемы, их можно сделать изменяемыми, добавив <code>mut</code> перед именем переменной, как это было сделано в <a href="ch02-00-guessing-game-tutorial.html#storing-values-with-variables">Главе 2</a>. Добавление <code>mut</code> также передаёт будущим читателям кода намерение, обозначая, что другие части кода будут изменять значение этой переменной.</p>
 <p>Например, изменим <em>src/main.rs</em> на следующий код:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-02-adding-mut/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut x = 5;
+    println!("The value of x is: {x}");
+    x = 6;
+    println!("The value of x is: {x}");
+}</code></pre></pre>
 <p>Запустив программу, мы получим результат:</p>
-<pre><code class="language-console">{{#include ../listings/ch03-common-programming-concepts/no-listing-02-adding-mut/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target/debug/variables`
+The value of x is: 5
+The value of x is: 6
 </code></pre>
 <p>Нам разрешено изменить значение, связанное с x, с 5 на 6 при помощи mut. В конечном счёте, решение об использовании изменяемости остаётся за вами и зависит от вашего мнения о наилучшем варианте в данной именно ситуации.</p>
 <h3 id="Константы"><a class="header" href="#Константы">Константы</a></h3>
@@ -219,23 +226,50 @@ println!("The value of x is: {}", x);
 <h3 id="Затенение-переменных"><a class="header" href="#Затенение-переменных">Затенение (переменных)</a></h3>
 <p>Как было показано в уроке по игре в Угадайка в <a href="ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number">главе 2</a>, можно объявить новую переменную с тем же именем, как и у существующей переменной. Rustaceans говорят, что первая переменная <em>затеняется</em> второй, то есть вторая переменная - это то, что увидит сборщик, когда вы будете использовать имя переменной. По сути, вторая переменная затеняет первую, принимая любое использование имени переменной на себя до тех пор, пока либо она сама не станет тенью, либо не закончится область видимости. Мы можем затенять переменную, используя то же имя переменной и повторяя использование ключевого слова <code>let</code> следующим образом:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-03-shadowing/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;
+
+    let x = x + 1;
+
+    {
+        let x = x * 2;
+        println!("The value of x in the inner scope is: {x}");
+    }
+
+    println!("The value of x is: {x}");
+}</code></pre></pre>
 <p>Эта программа сначала привязывает <code>x</code> к значению <code>5</code>. Затем она создаёт новую переменную <code>x</code>, повторяя <code>let x =</code>, беря исходное значение и добавляя <code>1</code>, чтобы значение <code>x</code> стало равным <code>6</code>. Затем во внутренней области видимости, созданной с помощью фигурных скобок, третий оператор <code>let</code> также затеняет <code>x</code> и создаёт новую переменную, умножая предыдущее значение на <code>2</code>, чтобы дать <code>x</code> значение <code>12</code>. Когда эта область заканчивается, внутреннее затенение заканчивается, и <code>x</code> возвращается к значению <code>6</code>. Запустив эту программу, она выведет следующее:</p>
-<pre><code class="language-console">{{#include ../listings/ch03-common-programming-concepts/no-listing-03-shadowing/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/variables`
+The value of x in the inner scope is: 12
+The value of x is: 6
 </code></pre>
 <p>Затенение отличается от объявления переменной с помощью <code>mut</code>, так как мы получим ошибку сборки, если случайно попробуем переназначить значение без использования ключевого слова <code>let</code>. Используя <code>let</code>, можно выполнить несколько превращений над значением, при этом оставляя переменную неизменяемой, после того как все эти превращения завершены.</p>
 <p>Другой разницей между <code>mut</code> и затенением является то, что мы создаём совершенно новую переменную, когда снова используем слово <code>let</code> (ещё одну). Мы можем даже изменить вид значения, но снова использовать прежнее имя. К примеру, наша программа спрашивает пользователя, сколько пробелов он хочет разместить между некоторым текстом, запрашивая символы пробела, но мы на самом деле хотим сохранить данный ввод как число:</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-04-shadowing-can-change-types/src/main.rs:here}}
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let spaces = "   ";
+    let spaces = spaces.len();
 <span class="boring">}</span></code></pre></pre>
 <p>Первая переменная <code>spaces</code> — является строковым видом, а вторая переменная <code>spaces</code> — числовым видом. Таким образом, затенение избавляет нас от необходимости придумывать разные имена, такие как <code>spaces_str</code> и <code>spaces_num</code>. Вместо этого мы можем повторно использовать более простое имя <code>spaces</code>. Однако, если мы попытаемся использовать для этого <code>mut</code>, как показано далее, то получим ошибку времени сборки:</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-05-mut-cant-change-types/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut spaces = "   ";
+    spaces = spaces.len();
+<span class="boring">}</span></code></pre>
 <p>Ошибка говорит, что не разрешается менять вид переменной:</p>
-<pre><code class="language-console">{{#include ../listings/ch03-common-programming-concepts/no-listing-05-mut-cant-change-types/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:3:14
+  |
+2 |     let mut spaces = "   ";
+  |                      ----- expected due to this value
+3 |     spaces = spaces.len();
+  |              ^^^^^^^^^^^^ expected `&amp;str`, found `usize`
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `variables` (bin "variables") due to 1 previous error
 </code></pre>
 <p>Теперь, когда мы изучили, как работают переменные, давайте рассмотрим различные виды данных, которые они могут иметь.</p>
 

@@ -199,9 +199,26 @@
 <p>Изменение значения внутри неизменного значения является шаблоном <em>внутренней изменяемости</em> (interior mutability). Давайте посмотрим на ситуацию, в которой внутренняя изменяемость полезна и рассмотрим, как это возможно.</p>
 <h3 id="Внутренняя-изменяемость-изменяемое-заимствование-неизменяемого-значения"><a class="header" href="#Внутренняя-изменяемость-изменяемое-заимствование-неизменяемого-значения">Внутренняя изменяемость: изменяемое заимствование неизменяемого значения</a></h3>
 <p>Следствием правил заимствования является то, что когда у вас есть неизменяемое значение, вы не можете заимствовать его с изменением. Например, этот код не будет собираться:</p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch15-smart-pointers/no-listing-01-cant-borrow-immutable-as-mutable/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = 5;
+    let y = &amp;mut x;
+}</code></pre>
 <p>Если вы попытаетесь собрать этот код, вы получите следующую ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/no-listing-01-cant-borrow-immutable-as-mutable/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling borrowing v0.1.0 (file:///projects/borrowing)
+error[E0596]: cannot borrow `x` as mutable, as it is not declared as mutable
+ --&gt; src/main.rs:3:13
+  |
+3 |     let y = &amp;mut x;
+  |             ^^^^^^ cannot borrow as mutable
+  |
+help: consider changing this to be mutable
+  |
+2 |     let mut x = 5;
+  |         +++
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `borrowing` (bin "borrowing") due to 1 previous error
 </code></pre>
 <p>Однако бывают ситуации, в которых было бы полезно, чтобы объект мог изменять себя при помощи своих методов, но казался неизменным для прочего кода. Код вне методов этого объекта не должен иметь возможности изменять его содержимое. Использование <code>RefCell&lt;T&gt;</code> - один из способов получить возможность внутренней изменяемости, но при этом <code>RefCell&lt;T&gt;</code> не позволяет полностью обойти правила заимствования: средство проверки правил заимствования в сборщике позволяет эту внутреннюю изменяемость, однако правила заимствования проверяются во время выполнения. Если вы нарушите правила, то вместо ошибки сборки вы получите <code>panic!</code>.</p>
 <p>Давайте разберём практический пример, в котором мы можем использовать <code>RefCell&lt;T&gt;</code> для изменения неизменяемого значения и посмотрим, почему это полезно.</p>
@@ -211,22 +228,219 @@
 <p>Вот сценарий, который мы будем тестировать: мы создадим библиотеку, которая отслеживает значение по отношению к заранее определённому максимальному значению и отправляет сообщения в зависимости от того, насколько текущее значение находится близко к такому максимальному значению. Эта библиотека может использоваться, например, для отслеживания квоты количества вызовов API пользователя, которые ему разрешено делать.</p>
 <p>Наша библиотека будет предоставлять только функции отслеживания того, насколько близко к максимальному значению находится значение и какие сообщения должны быть внутри в этот момент. Ожидается, что приложения, использующие нашу библиотеку, предоставят механизм для отправки сообщений: приложение может поместить сообщение в приложение, отправить электронное письмо, отправить текстовое сообщение или что-то ещё. Библиотеке не нужно знать эту подробность. Все что ему нужно - это что-то, что реализует типаж, который мы предоставим с названием <code>Messenger</code>. Приложение 15-20 показывает код библиотеки:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-20/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub trait Messenger {
+    fn send(&amp;self, msg: &amp;str);
+}
+
+pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+    messenger: &amp;'a T,
+    value: usize,
+    max: usize,
+}
+
+impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+where
+    T: Messenger,
+{
+    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+        LimitTracker {
+            messenger,
+            value: 0,
+            max,
+        }
+    }
+
+    pub fn set_value(&amp;mut self, value: usize) {
+        self.value = value;
+
+        let percentage_of_max = self.value as f64 / self.max as f64;
+
+        if percentage_of_max &gt;= 1.0 {
+            self.messenger.send("Error: You are over your quota!");
+        } else if percentage_of_max &gt;= 0.9 {
+            self.messenger
+                .send("Urgent warning: You've used up over 90% of your quota!");
+        } else if percentage_of_max &gt;= 0.75 {
+            self.messenger
+                .send("Warning: You've used up over 75% of your quota!");
+        }
+    }
+}</code></pre>
 <p><span class="caption">Приложение 15-20: Библиотека для отслеживания степени приближения того или иного значения к максимально допустимой величине и предупреждения, в случае если значение достигает определённого уровня</span></p>
 <p>Одна важная часть этого кода состоит в том, что типаж <code>Messenger</code> имеет один способ <code>send</code>, принимающий переменнойми неизменяемую ссылку на <code>self</code> и текст сообщения. Он является внешней оболочкой, который должен иметь наш мок объект. Другой важной частью является то, что мы хотим проверить поведение метода <code>set_value</code> у вида <code>LimitTracker</code>. Мы можем изменить значение, которое передаём свойствоом <code>value</code>, но <code>set_value</code> ничего не возвращает и нет основания, чтобы мы могли бы проверить утверждения о выполнении метода. Мы хотим иметь возможность  сказать, что если мы создаём <code>LimitTracker</code> с чем-то, что реализует типаж <code>Messenger</code> и с определённым значением для <code>max</code>, то когда мы передаём разные числа в переменной <code>value</code> экземпляр self.messenger отправляет соответствующие сообщения.</p>
 <p>Нам нужен мок объект, который вместо отправки электронного письма или текстового сообщения будет отслеживать сообщения, которые были ему поручены для отправки через <code>send</code>. Мы можем создать новый экземпляр мок объекта, создать <code>LimitTracker</code> с использованием мок объект для него, вызвать способ <code>set_value</code> у экземпляра <code>LimitTracker</code>, а затем проверить, что мок объект имеет ожидаемое сообщение. В приложении 15-21 показана попытка реализовать мок объект, чтобы сделать именно то что хотим, но анализатор заимствований не разрешит такой код:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-21/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct MockMessenger {
+        sent_messages: Vec&lt;String&gt;,
+    }
+
+    impl MockMessenger {
+        fn new() -&gt; MockMessenger {
+            MockMessenger {
+                sent_messages: vec![],
+            }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            self.sent_messages.push(String::from(message));
+        }
+    }
+
+    #[test]
+    fn it_sends_an_over_75_percent_warning_message() {
+        let mock_messenger = MockMessenger::new();
+        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+
+        limit_tracker.set_value(80);
+
+        assert_eq!(mock_messenger.sent_messages.len(), 1);
+    }
+}</code></pre>
 <p><span class="caption">Приложение 15-21: Попытка реализовать <code>MockMessenger</code>, которая не была принята механизмом проверки заимствований</span></p>
 <p>Этот тестовый код определяет структуру <code>MockMessenger</code>, в которой есть поле <code>sent_messages</code> со значениями вида <code>Vec</code> из <code>String</code> для отслеживания сообщений, которые поручены структуре для отправки. Мы также определяем ассоциированную функцию <code>new</code>, чтобы было удобно создавать новые экземпляры <code>MockMessenger</code>, которые создаются с пустым списком сообщений. Затем мы реализуем типаж <code>Messenger</code> для вида <code>MockMessenger</code>, чтобы передать <code>MockMessenger</code> в <code>LimitTracker</code>. В сигнатуре метода <code>send</code> мы принимаем сообщение для передачи в качестве свойства и сохраняем его в <code>MockMessenger</code> внутри списка <code>sent_messages</code>.</p>
 <p>В этом тесте мы проверяем, что происходит, когда <code>LimitTracker</code> сказано установить <code>value</code> в значение, превышающее 75 процентов от значения <code>max</code>. Сначала мы создаём новый <code>MockMessenger</code>, который будет иметь пустой список сообщений. Затем мы создаём новый <code>LimitTracker</code> и передаём ему ссылку на новый <code>MockMessenger</code> и <code>max</code> значение равное 100. Мы вызываем способ <code>set_value</code> у <code>LimitTracker</code> со значением 80, что составляет более 75 процентов от 100. Затем мы с помощью утверждения проверяем, что <code>MockMessenger</code> должен содержать одно сообщение из списка внутренних сообщений.</p>
 <p>Однако с этим тестом есть одна проблема, показанная ниже:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-21/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling limit-tracker v0.1.0 (file:///projects/limit-tracker)
+error[E0596]: cannot borrow `self.sent_messages` as mutable, as it is behind a `&amp;` reference
+  --&gt; src/lib.rs:58:13
+   |
+58 |             self.sent_messages.push(String::from(message));
+   |             ^^^^^^^^^^^^^^^^^^ `self` is a `&amp;` reference, so the data it refers to cannot be borrowed as mutable
+   |
+help: consider changing this to be a mutable reference in the `impl` method and the `trait` definition
+   |
+2  ~     fn send(&amp;mut self, msg: &amp;str);
+3  | }
+ ...
+56 |     impl Messenger for MockMessenger {
+57 ~         fn send(&amp;mut self, message: &amp;str) {
+   |
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `limit-tracker` (lib test) due to 1 previous error
 </code></pre>
 <p>Мы не можем изменять <code>MockMessenger</code> для отслеживания сообщений, потому что способ <code>send</code> принимает неизменяемую ссылку на <code>self</code>. Мы также не можем принять предложение из текста ошибки, чтобы использовать <code>&amp;mut self</code>, потому что тогда сигнатура <code>send</code> не будет соответствовать сигнатуре в определении типажа <code>Messenger</code> (не стесняйтесь попробовать и посмотреть, какое сообщение об ошибке получите вы).</p>
 <p>Это ситуация, в которой внутренняя изменяемость может помочь! Мы сохраним <code>sent_messages</code> внутри вида <code>RefCell&lt;T&gt;</code>, а затем в методе <code>send</code> сообщение сможет изменить список <code>sent_messages</code> для хранения сообщений, которые мы видели. Приложение 15-22 показывает, как это выглядит:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-22/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::cell::RefCell;
+
+    struct MockMessenger {
+        sent_messages: RefCell&lt;Vec&lt;String&gt;&gt;,
+    }
+
+    impl MockMessenger {
+        fn new() -&gt; MockMessenger {
+            MockMessenger {
+                sent_messages: RefCell::new(vec![]),
+            }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            self.sent_messages.borrow_mut().push(String::from(message));
+        }
+    }
+
+    #[test]
+    fn it_sends_an_over_75_percent_warning_message() {
+        // --snip--
+<span class="boring">        let mock_messenger = MockMessenger::new();
+</span><span class="boring">        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+</span><span class="boring">
+</span><span class="boring">        limit_tracker.set_value(80);
+</span>
+        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
+    }
+}</code></pre>
 <p><span class="caption">Приложение 15-22: Использование <code>RefCell&lt;T&gt;</code> для изменения внутреннего значения, в то время как внешнее значение считается неизменяемым</span></p>
 <p>Поле <code>sent_messages</code> теперь имеет вид <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> вместо <code>Vec&lt;String&gt;</code>. В функции <code>new</code> мы создаём новый экземпляр <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> для пустого вектора.</p>
 <p>Для реализации метода <code>send</code> первый свойство по-прежнему является неизменяемым для заимствования <code>self</code>, которое соответствует определению типажа. Мы вызываем <code>borrow_mut</code> для <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> в <code>self.sent_messages</code>, чтобы получить изменяемую ссылку на значение внутри <code>RefCell&lt;Vec&lt;String&gt;&gt;</code>, которое является вектором. Затем мы можем вызвать <code>push</code> у изменяемой ссылки на вектор, чтобы отслеживать сообщения, отправленные во время теста.</p>
@@ -237,10 +451,106 @@
 <p>Вид <code>RefCell&lt;T&gt;</code> отслеживает сколько умных указателей <code>Ref&lt;T&gt;</code> и <code>RefMut&lt;T&gt;</code> активны в данное время. Каждый раз, когда мы вызываем <code>borrow</code>, вид <code>RefCell&lt;T&gt;</code> увеличивает количество активных заимствований. Когда значение <code>Ref&lt;T&gt;</code> выходит из области видимости, то количество неизменяемых заимствований уменьшается на единицу. Как и с правилами заимствования во время сборки, <code>RefCell&lt;T&gt;</code> позволяет иметь много неизменяемых заимствований или одно изменяемое заимствование в любой момент времени.</p>
 <p>Если попытаться нарушить эти правила, то вместо получения ошибки сборщика, как это было бы со ссылками, реализация <code>RefCell&lt;T&gt;</code> будет вызывать панику во время выполнения. В приложении 15-23 показана модификация реализации <code>send</code> из приложения 15-22. Мы намеренно пытаемся создать два изменяемых заимствования активных для одной и той же области видимости, чтобы показать как <code>RefCell&lt;T&gt;</code> не позволяет нам делать так во время выполнения.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore panics">{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-23/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore panics"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">    use std::cell::RefCell;
+</span><span class="boring">
+</span><span class="boring">    struct MockMessenger {
+</span><span class="boring">        sent_messages: RefCell&lt;Vec&lt;String&gt;&gt;,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    impl MockMessenger {
+</span><span class="boring">        fn new() -&gt; MockMessenger {
+</span><span class="boring">            MockMessenger {
+</span><span class="boring">                sent_messages: RefCell::new(vec![]),
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            let mut one_borrow = self.sent_messages.borrow_mut();
+            let mut two_borrow = self.sent_messages.borrow_mut();
+
+            one_borrow.push(String::from(message));
+            two_borrow.push(String::from(message));
+        }
+    }
+<span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn it_sends_an_over_75_percent_warning_message() {
+</span><span class="boring">        let mock_messenger = MockMessenger::new();
+</span><span class="boring">        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+</span><span class="boring">
+</span><span class="boring">        limit_tracker.set_value(80);
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 15-23: Создание двух изменяемых ссылок в одной области видимости, чтобы убедиться, что <code>RefCell&lt;T&gt;</code> вызовет панику</span></p>
 <p>Мы создаём переменную <code>one_borrow</code> для умного указателя <code>RefMut&lt;T&gt;</code> возвращаемого из метода <code>borrow_mut</code>. Затем мы создаём другое изменяемое заимствование таким же образом в переменной <code>two_borrow</code>. Это создаёт две изменяемые ссылки в одной области видимости, что недопустимо. Когда мы запускаем тесты для нашей библиотеки, код в приложении 15-23 собирается без ошибок, но тест завершится неудачно:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-23/output.txt}}
+<pre><code class="language-console">$ cargo test
+   Compiling limit-tracker v0.1.0 (file:///projects/limit-tracker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running unittests src/lib.rs (target/debug/deps/limit_tracker-e599811fa246dbde)
+
+running 1 test
+test tests::it_sends_an_over_75_percent_warning_message ... FAILED
+
+failures:
+
+---- tests::it_sends_an_over_75_percent_warning_message stdout ----
+thread 'tests::it_sends_an_over_75_percent_warning_message' panicked at src/lib.rs:60:53:
+already borrowed: BorrowMutError
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::it_sends_an_over_75_percent_warning_message
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
 </code></pre>
 <p>Обратите внимание, что код вызвал панику с сообщением <code>already borrowed: BorrowMutError</code>. Вот так вид <code>RefCell&lt;T&gt;</code> обрабатывает нарушения правил заимствования во время выполнения.</p>
 <p>Решение отлавливать ошибки заимствования во время выполнения, а не во время сборки, как мы сделали здесь, означает, что вы потенциально будете находить ошибки в своём коде на более поздних этапах разработки: возможно, не раньше, чем ваш код будет развернут в рабочем окружении. Кроме того, ваш код будет иметь небольшие потери производительности в процессе работы, поскольку заимствования будут отслеживаться во время выполнения, а не во время сборки. Однако использование <code>RefCell&lt;T&gt;</code> позволяет написать объект-имитатор, который способен изменять себя, чтобы сохранять сведения о тех значениях, которые он получал, пока вы использовали его в среде, где разрешены только неизменяемые значения. Вы можете использовать <code>RefCell&lt;T&gt;</code>, несмотря на его недостатки, чтобы получить больше функциональности, чем дают обычные ссылки.</p>
@@ -248,16 +558,42 @@
 <p>Обычный способ использования <code>RefCell&lt;T&gt;</code> заключается в его сочетании с видом <code>Rc&lt;T&gt;</code>. Напомним, что вид <code>Rc&lt;T&gt;</code> позволяет иметь нескольких владельцев некоторых данных, но даёт только неизменяемый доступ к этим данным. Если у вас есть <code>Rc&lt;T&gt;</code>, который внутри содержит вид <code>RefCell&lt;T&gt;</code>, вы можете получить значение, которое может иметь несколько владельцев <em>и</em> которое можно изменять!</p>
 <p>Например, вспомните пример cons списка приложения 15-18, где мы использовали <code>Rc&lt;T&gt;</code>, чтобы несколько списков могли совместно владеть другим списком. Поскольку <code>Rc&lt;T&gt;</code> содержит только неизменяемые значения, мы не можем изменить ни одно из значений в списке после того, как мы их создали. Давайте добавим вид <code>RefCell&lt;T&gt;</code>, чтобы получить возможность изменять значения в списках. В приложении 15-24 показано использование <code>RefCell&lt;T&gt;</code> в определении <code>Cons</code> так, что мы можем изменить значение хранящееся во всех списках:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-24/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+enum List {
+    Cons(Rc&lt;RefCell&lt;i32&gt;&gt;, Rc&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::cell::RefCell;
+use std::rc::Rc;
+
+fn main() {
+    let value = Rc::new(RefCell::new(5));
+
+    let a = Rc::new(Cons(Rc::clone(&amp;value), Rc::new(Nil)));
+
+    let b = Cons(Rc::new(RefCell::new(3)), Rc::clone(&amp;a));
+    let c = Cons(Rc::new(RefCell::new(4)), Rc::clone(&amp;a));
+
+    *value.borrow_mut() += 10;
+
+    println!("a after = {a:?}");
+    println!("b after = {b:?}");
+    println!("c after = {c:?}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 15-24: Использование <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> для создания <code>List</code>, который мы можем изменять</span></p>
 <p>Мы создаём значение, которое является экземпляром <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> и сохраняем его в переменной с именем <code>value</code>, чтобы получить к ней прямой доступ позже. Затем мы создаём <code>List</code> в переменной <code>a</code> с вариантом <code>Cons</code>, который содержит <code>value</code>. Нам нужно вызвать клонирование <code>value</code>, так как обе переменные <code>a</code> и <code>value</code> владеют внутренним значением <code>5</code>, а не передают владение из <code>value</code> в переменную <code>a</code> или не выполняют заимствование с помощью <code>a</code> переменной <code>value</code>.</p>
 <p>Мы оборачиваем список у переменной <code>a</code> в вид <code>Rc&lt;T&gt;</code>, поэтому при создании списков в переменные <code>b</code> и <code>c</code> они оба могут ссылаться на <code>a</code>, что мы и сделали в приложении 15-18.</p>
 <p>После создания списков <code>a</code>, <code>b</code> и <code>c</code> мы хотим добавить 10 к значению в <code>value</code>. Для этого вызовем <code>borrow_mut</code> у <code>value</code>, который использует функцию самостоятельного разыменования, о которой мы говорили в главе 5 (см. раздел <a href="ch05-03-method-syntax.html#wheres-the---operator">"Где находится оператор <code>-&gt;</code>?"</a><!-- ignore -->) во внутреннее значение <code>RefCell&lt;T&gt;</code>. Способ <code>borrow_mut</code> возвращает умный указатель <code>RefMut&lt;T&gt;</code>, и мы используя оператор разыменования, изменяем внутреннее значение.</p>
 <p>Когда мы печатаем <code>a</code>, <code>b</code> и <code>c</code> то видим, что все они имеют изменённое значение равное 15, а не 5:</p>
-<pre><code class="language-console">{{#include ../listings/ch15-smart-pointers/listing-15-24/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running `target/debug/cons-list`
+a after = Cons(RefCell { value: 15 }, Nil)
+b after = Cons(RefCell { value: 3 }, Cons(RefCell { value: 15 }, Nil))
+c after = Cons(RefCell { value: 4 }, Cons(RefCell { value: 15 }, Nil))
 </code></pre>
 <p>Эта техника довольно изящна! Используя <code>RefCell&lt;T&gt;</code>, мы получаем внешне неизменяемое значение <code>List</code>. Но мы можем использовать методы <code>RefCell&lt;T&gt;</code>, которые предоставляют доступ к его внутренностям, чтобы мы могли изменять наши данные, когда это необходимо. Проверка правил заимствования во время выполнения защищает нас от гонок данных, и иногда стоит немного пожертвовать производительностью ради такой гибкости наших структур данных. Обратите внимание, что <code>RefCell&lt;T&gt;</code> не работает для многопоточного кода! <code>Mutex&lt;T&gt;</code> - это thread-safe исполнение <code>RefCell&lt;T&gt;</code>, а <code>Mutex&lt;T&gt;</code> мы обсудим в главе 16.</p>
 

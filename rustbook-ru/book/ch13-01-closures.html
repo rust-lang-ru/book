@@ -187,13 +187,69 @@
 <p>Сначала мы рассмотрим, как с помощью замыканий можно использовать объекты из области, в которой они вместе были определены, для их последующего использования. Вот сценарий: Время от времени наша компания по производству футболок в качестве акции дарит эксклюзивные футболки, выпущенные ограниченным тиражом, каким-нибудь пользователям из нашего списка рассылки. Люди из списка рассылки при желании могут выбрать любимый цвет в своём профиле. Если человек, выбранный для получения бесплатной футболки, указал свой любимый цвет, он получает футболку этого цвета. Если человек не указал свой любимый цвет, он получит рубашку того цвета, которых у компании на данный момент больше всего.</p>
 <p>Существует множество способов реализовать это. В данном примере мы будем использовать перечисление <code>ShirtColor</code>, которое может быть двух вариантов <code>Red</code> и <code>Blue</code> (для простоты ограничим количество доступных цветов этими двумя). Запасы компании мы представим структурой <code>Inventory</code>, которая состоит из поля <code>shirts</code>, содержащего <code>Vec&lt;ShirtColor&gt;</code>, в котором перечислены рубашки тех цветов, которые есть в наличии. Способ <code>giveaway</code>, определённый в <code>Inventory</code>, принимает необязательный свойство - цвет, предпочитаемый пользователем, выбранным для получения бесплатной рубашки, и возвращает тот цвет рубашки, который он получит фактически. Эта схема показана в приложении 13-1:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch13-functional-features/listing-13-01/src/main.rs}}</code></pre>
+<pre><code class="language-rust noplayground">#[derive(Debug, PartialEq, Copy, Clone)]
+enum ShirtColor {
+    Red,
+    Blue,
+}
+
+struct Inventory {
+    shirts: Vec&lt;ShirtColor&gt;,
+}
+
+impl Inventory {
+    fn giveaway(&amp;self, user_preference: Option&lt;ShirtColor&gt;) -&gt; ShirtColor {
+        user_preference.unwrap_or_else(|| self.most_stocked())
+    }
+
+    fn most_stocked(&amp;self) -&gt; ShirtColor {
+        let mut num_red = 0;
+        let mut num_blue = 0;
+
+        for color in &amp;self.shirts {
+            match color {
+                ShirtColor::Red =&gt; num_red += 1,
+                ShirtColor::Blue =&gt; num_blue += 1,
+            }
+        }
+        if num_red &gt; num_blue {
+            ShirtColor::Red
+        } else {
+            ShirtColor::Blue
+        }
+    }
+}
+
+fn main() {
+    let store = Inventory {
+        shirts: vec![ShirtColor::Blue, ShirtColor::Red, ShirtColor::Blue],
+    };
+
+    let user_pref1 = Some(ShirtColor::Red);
+    let giveaway1 = store.giveaway(user_pref1);
+    println!(
+        "The user with preference {:?} gets {:?}",
+        user_pref1, giveaway1
+    );
+
+    let user_pref2 = None;
+    let giveaway2 = store.giveaway(user_pref2);
+    println!(
+        "The user with preference {:?} gets {:?}",
+        user_pref2, giveaway2
+    );
+}</code></pre>
 <p><span class="caption">Приложение 13-1: Ситуация с раздачей рубашек компанией</span></p>
 <p>В магазине <code>store</code>, определённом в <code>main</code>, осталось две синие и одна красная рубашки для этой ограниченной акции. Мы вызываем способ <code>giveaway</code> для пользователя предпочитающего красную рубашку и для пользователя без каких-либо предпочтений.</p>
 <p>Опять же, этот код мог быть реализован множеством способов, но в данном случае, чтобы сосредоточиться на замыканиях, мы придерживались изученных ранее концепций, за исключением тела способа <code>giveaway</code>, в котором используется замыкание. В способе <code>giveaway</code> мы получаем пользовательское предпочтение цвета как свойство вида <code>Option&lt;ShirtColor&gt;</code> и вызываем способ <code>unwrap_or_else</code> на <code>user_preference</code>. Способ <a data-md-type="raw_html" href="../std/option/enum.Option.html#method.unwrap_or_else"><code>unwrap_or_else</code> перечисления <code>Option&lt;T&gt;</code></a><!-- ignore --> определён встроенной библиотекой. Он принимает один переменная: замыкание без переменных, которое возвращает значение <code>T</code> (преобразуется в вид значения, которое окажется в варианте <code>Some</code> перечисления <code>Option&lt;T&gt;</code>, в нашем случае <code>ShirtColor</code>). Если <code>Option&lt;T&gt;</code> окажется вариантом <code>Some</code>, <code>unwrap_or_else</code> вернёт значение из <code>Some</code>. А если <code>Option&lt;T&gt;</code> будет является вариантом <code>None</code>, <code>unwrap_or_else</code> вызовет замыкание и вернёт значение, возвращённое замыканием.</p>
 <p>В качестве переменной <code>unwrap_or_else</code> мы передаём замыкание <code>|| self.most_stocked()</code>. Это замыкание, которое не принимает никаких свойств (если бы у замыкания были свойства, они были бы перечислены между двумя вертикальными полосами). В теле замыкания вызывается <code>self.most_stocked()</code>. Здесь мы определили замыкание, а реализация <code>unwrap_or_else</code> такова, что выполнится оно позднее, когда потребуется получить результат.</p>
 <p>Выполнение этого кода выводит:</p>
-<pre><code class="language-console">{{#include ../listings/ch13-functional-features/listing-13-01/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling shirt-company v0.1.0 (file:///projects/shirt-company)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running `target/debug/shirt-company`
+The user with preference Some(Red) gets Red
+The user with preference None gets Blue
 </code></pre>
 <p>Важной особенностью здесь является то, что мы передали замыкание, которое вызывает <code>self.most_stocked()</code> текущего экземпляра <code>Inventory</code>. Стандартной библиотеке не нужно знать ничего о видах <code>Inventory</code> или <code>ShirtColor</code>, которые мы определили, или о логике, которую мы хотим использовать в этом сценарии. Замыкание фиксирует неизменяемую ссылку на <code>self</code> <code>Inventory</code> и передаёт её с указанным нами кодом в способ <code>unwrap_or_else</code>. А вот функции не могут фиксировать своё окружение таким образом.</p>
 <h3 id="Выведение-и-изложение-видов-замыкания"><a class="header" href="#Выведение-и-изложение-видов-замыкания">Выведение и изложение видов замыкания</a></h3>
@@ -201,10 +257,37 @@
 <p>Замыкания, как правило, небольшие и уместны в каком-то узконаправленном среде, а не в произвольных случаях. В этих ограниченных средах сборщик может вывести виды свойств и возвращаемого вида, подобно тому, как он может вывести виды большинства переменных (есть редкие случаи, когда сборщику также нужны изложении видов замыканий).</p>
 <p>Как и в случае с переменными, мы можем добавить изложении видов, если хотим повысить ясность и чёткость описания ценой увеличения многословности, большей чем это необходимо. Аннотирование видов для замыкания будет выглядеть как определение, показанное в приложении 13-2. В этом примере мы определяем замыкание и храним его в переменной, а не определяем замыкание в том месте, куда мы передаём его в качестве переменной, как это было в приложении 13-1.</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::thread;
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn generate_workout(intensity: u32, random_number: u32) {
+</span>    let expensive_closure = |num: u32| -&gt; u32 {
+        println!("calculating slowly...");
+        thread::sleep(Duration::from_secs(2));
+        num
+    };
+<span class="boring">
+</span><span class="boring">    if intensity &lt; 25 {
+</span><span class="boring">        println!("Today, do {} pushups!", expensive_closure(intensity));
+</span><span class="boring">        println!("Next, do {} situps!", expensive_closure(intensity));
+</span><span class="boring">    } else {
+</span><span class="boring">        if random_number == 3 {
+</span><span class="boring">            println!("Take a break today! Remember to stay hydrated!");
+</span><span class="boring">        } else {
+</span><span class="boring">            println!(
+</span><span class="boring">                "Today, run for {} minutes!",
+</span><span class="boring">                expensive_closure(intensity)
+</span><span class="boring">            );
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
 </span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch13-functional-features/listing-13-02/src/main.rs:here}}
-<span class="boring">}</span></code></pre></pre>
+</span><span class="boring">    let simulated_user_specified_value = 10;
+</span><span class="boring">    let simulated_random_number = 7;
+</span><span class="boring">
+</span><span class="boring">    generate_workout(simulated_user_specified_value, simulated_random_number);
+</span><span class="boring">}</span></code></pre></pre>
 <p><span class="caption">Приложение 13-2: Добавление необязательных аннотаций видов свойств и возвращаемых значений в замыкании</span></p>
 <p>С добавлением аннотаций видов синтаксис замыканий выглядит более похожим на синтаксис функций. Здесь мы, для сравнения, определяем функцию, которая добавляет 1 к своему свойству, и замыкание, которое имеет такое же поведение. Мы добавили несколько пробелов, чтобы выровнять соответствующие части. Это показывает, что синтаксис замыкания похож на синтаксис функции, за исключением использования труб (вертикальная черта) и количества необязательного синтаксиса:</p>
 <pre><code class="language-rust ignore">fn  add_one_v1   (x: u32) -&gt; u32 { x + 1 }
@@ -214,43 +297,106 @@ let add_one_v4 = |x|               x + 1  ;</code></pre>
 <p>В первой строке показано определение функции, а во второй - полностью аннотированное определение замыкания. В третьей строке мы удаляем изложении видов из определения замыкания. В четвёртой строке мы убираем скобки, которые являются необязательными, поскольку тело замыкания содержит только одну действие. Это всё правильные определения, которые будут иметь одинаковое поведение при вызове. Строки <code>add_one_v3</code> и <code>add_one_v4</code> требуют, чтобы замыкания были вычислены до сборки, поскольку виды будут выведены из их использования. Это похоже на <code>let v = Vec::new();</code>, когда в <code>Vec</code> необходимо вставить либо изложении видов, либо значения некоторого вида, чтобы Rust смог вывести вид.</p>
 <p>Для определений замыкания сборщик выводит определенные виды для каждого из свойств и возвращаемого значения. Например, в приложении 13-3 показано определение короткого замыкания, которое просто возвращает значение, полученное в качестве свойства. Это замыкание не очень полезно, кроме как для целей данного примера. Обратите внимание, что мы не добавили в определение никаких аннотаций видов. Поскольку аннотаций видов нет, мы можем вызвать замыкание для любого вида, что мы и сделали в первый раз с <code>String</code>. Если затем мы попытаемся вызвать <code>example_closure</code> для целого числа, мы получим ошибку.</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch13-functional-features/listing-13-03/src/main.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let example_closure = |x| x;
+
+    let s = example_closure(String::from("hello"));
+    let n = example_closure(5);
+<span class="boring">}</span></code></pre>
 <p><span class="caption">Приложение 13-3: Попытка вызова замыкания, виды которого выводятся из двух разных видов</span></p>
 <p>Сборщик вернёт нам вот такую ошибку:</p>
-<pre><code class="language-console">{{#include ../listings/ch13-functional-features/listing-13-03/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:5:29
+  |
+5 |     let n = example_closure(5);
+  |             --------------- ^- help: try using a conversion method: `.to_string()`
+  |             |               |
+  |             |               expected `String`, found integer
+  |             arguments to this function are incorrect
+  |
+note: expected because the closure was earlier called with an argument of type `String`
+ --&gt; src/main.rs:4:29
+  |
+4 |     let s = example_closure(String::from("hello"));
+  |             --------------- ^^^^^^^^^^^^^^^^^^^^^ expected because this argument is of type `String`
+  |             |
+  |             in this closure call
+note: closure parameter defined here
+ --&gt; src/main.rs:2:28
+  |
+2 |     let example_closure = |x| x;
+  |                            ^
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `closure-example` (bin "closure-example") due to 1 previous error
 </code></pre>
 <p>При первом вызове <code>example_closure</code> со значением <code>String</code> сборщик определяет вид <code>x</code> и возвращаемый вид замыкания как <code>String</code>. Эти виды затем фиксируются в замыкании в <code>example_closure</code>, и мы получаем ошибку вида при следующей попытке использовать другой вид с тем же замыканием.</p>
 <h3 id="Захват-ссылок-или-передача-владения"><a class="header" href="#Захват-ссылок-или-передача-владения">Захват ссылок или передача владения</a></h3>
 <p>Замыкания могут захватывать значения из своего окружения тремя способами, которые соответствуют тем же трём способам, которыми функция может принимать свойства: заимствование неизменяемых, заимствование изменяемых и получение владения. Замыкание самостоятельно определяет, какой из этих способов использовать, исходя из того, что тело функции делает с полученными значениями.</p>
 <p>В приложении 13-4 мы определяем замыкание, которое захватывает неизменяемую ссылку на вектор с именем <code>list</code>, поскольку неизменяемой ссылки достаточно для печати значения:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch13-functional-features/listing-13-04/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    let only_borrows = || println!("From closure: {list:?}");
+
+    println!("Before calling closure: {list:?}");
+    only_borrows();
+    println!("After calling closure: {list:?}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 13-4: Определение и вызов замыкания, которое захватывает неизменяемую ссылку</span></p>
 <p>Этот пример также отображает, то что переменная может быть привязана к определению замыкания, и в дальнейшем мы можем вызвать замыкание, используя имя переменной и круглые скобки, как если бы имя переменной было именем функции.</p>
 <p>Поскольку мы можем иметь несколько неизменяемых ссылок на <code>list</code> одновременно, <code>list</code> остаётся доступным из кода до определения замыкания, после определения замыкания, а также до вызова замыкания и после. Этот код собирается, выполняется и печатает:</p>
-<pre><code class="language-console">{{#include ../listings/ch13-functional-features/listing-13-04/output.txt}}
+<pre><code class="language-console">$ cargo run
+     Locking 1 package to latest compatible version
+      Adding closure-example v0.1.0 (/Users/carolnichols/rust/book/tmp/listings/ch13-functional-features/listing-13-04)
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/closure-example`
+Before defining closure: [1, 2, 3]
+Before calling closure: [1, 2, 3]
+From closure: [1, 2, 3]
+After calling closure: [1, 2, 3]
 </code></pre>
 <p>В следующем приложении 13-5 мы изменили тело замыкания так, чтобы оно добавляло элемент в вектор <code>list</code>. Теперь замыкание захватывает изменяемую ссылку:</p>
 <p><span class="filename">Имя файла: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch13-functional-features/listing-13-05/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    let mut borrows_mutably = || list.push(7);
+
+    borrows_mutably();
+    println!("After calling closure: {list:?}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 13-5. Определение и вызов замыкания, захватывающего изменяемую ссылку</span></p>
 <p>Этот код собирается, запускается и печатает:</p>
-<pre><code class="language-console">{{#include ../listings/ch13-functional-features/listing-13-05/output.txt}}
+<pre><code class="language-console">$ cargo run
+     Locking 1 package to latest compatible version
+      Adding closure-example v0.1.0 (/Users/carolnichols/rust/book/tmp/listings/ch13-functional-features/listing-13-05)
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/closure-example`
+Before defining closure: [1, 2, 3]
+After calling closure: [1, 2, 3, 7]
 </code></pre>
 <p>Обратите внимание, что между определением и вызовом замыкания <code>borrows_mutably</code> больше нет <code>println!</code>: когда определяется <code>borrows_mutably</code>, оно захватывает изменяемую ссылку на <code>list</code>. После вызова замыкания мы больше не используем его, поэтому изменяемое заимствование заканчивается. Между определением замыкания и вызовом замыкания неизменяемое заимствование для печати недоступно, потому что при наличии изменяемого заимствования никакие другие заимствования недопустимы. Попробуйте добавить туда <code>println!</code> и посмотрите, какое сообщение об ошибке вы получите!</p>
 <p>Если вы хотите заставить замыкание принять владение значениями, которые оно использует в окружении, даже если в теле замыкания нет кода, требующего владения, вы можете использовать ключевое слово <code>move</code> перед списком свойств.</p>
 <p>Эта техника в основном полезна при передаче замыкания новому потоку, чтобы переместить данные так, чтобы они принадлежали новому потоку. Мы подробно обсудим потоки и то, зачем их использовать, в главе 16, когда будем говорить о параллелизме, а пока давайте вкратце рассмотрим порождение нового потока с помощью замыкания, в котором используется ключевое слово <code>move</code>. В приложении 13-6 показан код из приложения 13-4, модифицированный для печати вектора в новом потоке, а не в основном потоке:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch13-functional-features/listing-13-06/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+
+fn main() {
+    let list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    thread::spawn(move || println!("From thread: {list:?}"))
+        .join()
+        .unwrap();
+}</code></pre></pre>
 <p><span class="caption">Приложение 13-6: Использование <code>move</code> для принуждения замыкания потока принять на себя владение <code>list</code></span></p>
 <p>Мы порождаем новый поток, передавая ему в качестве переменной замыкание для выполнения. Тело замыкания распечатывает список. В приложении 13-4 замыкание захватило <code>list</code> только с помощью неизменяемой ссылки, потому что это минимально необходимый доступ к <code>list</code> для его печати. В этом примере, несмотря на то, что тело замыкания по-прежнему требует только неизменяемой ссылки, нам нужно указать, что <code>list</code> должен быть перемещён в замыкание, поместив ключевое слово <code>move</code> в начало определения замыкания. Новый поток может завершиться раньше, чем завершится основной поток, или основной поток может завершиться первым. Если основной поток сохранил владение <code>list</code>, но завершился раньше нового потока и удалил <code>list</code>, то неизменяемая ссылка в потоке будет недействительной. Поэтому сборщик требует, чтобы <code>list</code> был перемещён в замыкание, переданное новому потоку, чтобы ссылка была действительной. Попробуйте убрать ключевое слово <code>move</code> или использовать <code>list</code> в основном потоке после определения замыкания и посмотрите, какие ошибки сборщика вы получите!</p>
 <!-- Old headings. Do not remove or links may break. -->
@@ -285,28 +431,113 @@ let add_one_v4 = |x|               x + 1  ;</code></pre>
 </blockquote>
 <p>Теперь рассмотрим способ встроенной библиотеки <code>sort_by_key</code>, определённый у срезов, чтобы увидеть, чем он отличается от <code>unwrap_or_else</code> и почему <code>sort_by_key</code> использует <code>FnMut</code> вместо <code>FnOnce</code> для ограничения трейта. Замыкание принимает единственный переменная в виде ссылки на текущий элемент в рассматриваемом срезе и возвращает значение вида <code>K</code>, к которому применима сортировка. Эта функция полезна, когда вы хотите отсортировать срез по определённому атрибуту каждого элемента. В приложении 13-7 у нас есть список экземпляров <code>Rectangle</code>, и мы используем <code>sort_by_key</code>, чтобы упорядочить их по атрибуту <code>width</code> от меньшего к большему:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch13-functional-features/listing-13-07/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    list.sort_by_key(|r| r.width);
+    println!("{list:#?}");
+}</code></pre></pre>
 <p><span class="caption">Приложение 13-7: Использование <code>sort_by_key</code> для сортировки прямоугольников по ширине</span></p>
 <p>Этот код печатает:</p>
-<pre><code class="language-console">{{#include ../listings/ch13-functional-features/listing-13-07/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
+     Running `target/debug/rectangles`
+[
+    Rectangle {
+        width: 3,
+        height: 5,
+    },
+    Rectangle {
+        width: 7,
+        height: 12,
+    },
+    Rectangle {
+        width: 10,
+        height: 1,
+    },
+]
 </code></pre>
 <p>Причина, по которой <code>sort_by_key</code> определена как принимающая замыкание <code>FnMut</code>, заключается в том, что она вызывает замыкание несколько раз: по одному разу для каждого элемента в срезе. Замыкание <code>|r| r.width</code> не захватывает, не изменяет и не перемещает ничего из своего окружения, поэтому оно удовлетворяет требованиям связанности признаков.</p>
 <p>И наоборот, в приложении 13-8 показан пример замыкания, которое реализует только признак <code>FnOnce</code>, потому что оно перемещает значение из среды. Сборщик не позволит нам использовать это замыкание с <code>sort_by_key</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch13-functional-features/listing-13-08/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    let mut sort_operations = vec![];
+    let value = String::from("closure called");
+
+    list.sort_by_key(|r| {
+        sort_operations.push(value);
+        r.width
+    });
+    println!("{list:#?}");
+}</code></pre>
 <p><span class="caption">Приложение 13-8: Попытка использовать замыкание <code>FnOnce</code> с <code>sort_by_key</code></span></p>
 <p>Это надуманный, замысловатый способ (который не работает) подсчёта количества вызовов <code>sort_by_key</code> при сортировке <code>list</code>. Этот код пытается выполнить подсчёт, перемещая <code>value</code> - <code>String</code> из окружения замыкания - в вектор <code>sort_operations</code>. Замыкание захватывает <code>value</code>, затем перемещает <code>value</code> из замыкания, передавая владение на <code>value</code> вектору <code>sort_operations</code>. Это замыкание можно вызвать один раз; попытка вызвать его второй раз не сработает, потому что <code>value</code> уже не будет находиться в той среде, из которой его можно будет снова поместить в <code>sort_operations</code>! Поэтому это замыкание реализует только <code>FnOnce</code>. Когда мы попытаемся собрать этот код, мы получим ошибку сообщающую о том что <code>value</code> не может быть перемещено из замыкания, потому что замыкание должно реализовывать <code>FnMut</code>:</p>
-<pre><code class="language-console">{{#include ../listings/ch13-functional-features/listing-13-08/output.txt}}
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+error[E0507]: cannot move out of `value`, a captured variable in an `FnMut` closure
+  --&gt; src/main.rs:18:30
+   |
+15 |     let value = String::from("closure called");
+   |         ----- captured outer variable
+16 |
+17 |     list.sort_by_key(|r| {
+   |                      --- captured by this `FnMut` closure
+18 |         sort_operations.push(value);
+   |                              ^^^^^ move occurs because `value` has type `String`, which does not implement the `Copy` trait
+   |
+help: consider cloning the value if the performance cost is acceptable
+   |
+18 |         sort_operations.push(value.clone());
+   |                                   ++++++++
+
+For more information about this error, try `rustc --explain E0507`.
+error: could not compile `rectangles` (bin "rectangles") due to 1 previous error
 </code></pre>
 <p>Ошибка указывает на строку в теле замыкания, которая перемещает <code>value</code> из окружения. Чтобы исправить это, нужно изменить тело замыкания так, чтобы оно не перемещало значения из окружения. Для подсчёта количества вызовов <code>sort_by_key</code> более простым способом является хранение счётчика в окружении и увеличение его значения в теле замыкания. Замыкание в приложении 13-9 работает с <code>sort_by_key</code>, поскольку оно фиксирует только изменяемую ссылку на счётчик <code>num_sort_operations</code> и поэтому может быть вызвано более одного раза:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch13-functional-features/listing-13-09/src/main.rs}}
-<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    let mut num_sort_operations = 0;
+    list.sort_by_key(|r| {
+        num_sort_operations += 1;
+        r.width
+    });
+    println!("{list:#?}, sorted in {num_sort_operations} operations");
+}</code></pre></pre>
 <p><span class="caption">Приложение 13-9: Использование замыкания <code>FnMut</code> с <code>sort_by_key</code> разрешено</span></p>
 <p>Трейты <code>Fn</code> важны при определении или использовании функций или видов, использующих замыкания. В следующем разделе мы обсудим повторители. Многие способы повторителей принимают переменные в виде замыканий, поэтому не забывайте об этих подробностях, пока мы продвигаемся дальше!</p>
 
