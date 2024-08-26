@@ -15,7 +15,7 @@
 - [Общие концепции программирования](ch03-00-common-programming-concepts.md)
 
     - [Переменные и изменяемость](ch03-01-variables-and-mutability.md)
-    - [Типы Данных](ch03-02-data-types.md)
+    - [Виды Данных](ch03-02-data-types.md)
     - [Функции](ch03-03-how-functions-work.md)
     - [Комментарии](ch03-04-comments.md)
     - [Управляющие конструкции](ch03-05-control-flow.md)
@@ -24,13 +24,13 @@
 
     - [Что такое "владение"?](ch04-01-what-is-ownership.md)
     - [Ссылки и заимствование](ch04-02-references-and-borrowing.md)
-    - [Тип среза](ch04-03-slices.md)
+    - [Вид среза](ch04-03-slices.md)
 
 - [Использование структур для объединения связанных данных](ch05-00-structs.md)
 
     - [Определение и создание экземпляров структур](ch05-01-defining-structs.md)
     - [Пример программы, использующей структуры](ch05-02-example-structs.md)
-    - [Синтаксис метода](ch05-03-method-syntax.md)
+    - [Синтаксис способа](ch05-03-method-syntax.md)
 
 - [Перечисления и сопоставление с образцом](ch06-00-enums.md)
 
@@ -48,7 +48,7 @@
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
     - [Separating Modules into Different Files](ch07-05-separating-modules-into-different-files.md)
 
-- [Общие коллекции](ch08-00-common-collections.md)
+- [Общие собрания](ch08-00-common-collections.md)
 
     - [Хранение списков значений с векторами](ch08-01-vectors.md)
     - [Хранение закодированного текста UTF-8 со строками](ch08-02-strings.md)
@@ -60,21 +60,21 @@
     - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-result.md)
     - [`panic!` или Не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
 
-- [Общие типы, трейты (характеристики) и время жизни](ch10-00-generics.md)
+- [Общие виды, трейты (характеристики) и время жизни](ch10-00-generics.md)
 
-    - [Обобщённые типы данных](ch10-01-syntax.md)
+    - [Обобщённые виды данных](ch10-01-syntax.md)
     - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
     - [Валидация ссылок посредством сроков жизни](ch10-03-lifetime-syntax.md)
 
-- [Написание автоматических тестов](ch11-00-testing.md)
+- [Написание самостоятельно х тестов](ch11-00-testing.md)
 
     - [Как писать тесты](ch11-01-writing-tests.md)
     - [Управление выполнением тестов](ch11-02-running-tests.md)
     - [Организация тестов](ch11-03-test-organization.md)
 
-- [Проект с вводом-выводом: создание программы командной строки](ch12-00-an-io-project.md)
+- [Проект с вводом-выводом: создание программы приказной строки](ch12-00-an-io-project.md)
 
-    - [Получение аргументов командной строки](ch12-01-accepting-command-line-arguments.md)
+    - [Получение переменных приказной строки](ch12-01-accepting-command-line-arguments.md)
     - [Чтение файла](ch12-02-reading-a-file.md)
     - [Рефакторинг для обеспечения модульности и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
     - [Разработка функциональности библиотеки с помощью разработки через тестирование](ch12-04-testing-the-librarys-functionality.md)
@@ -83,20 +83,20 @@
 
 ## Думать на Rust
 
-- [Функциональные возможности языка: итераторы и замыкания](ch13-00-functional-features.md)
+- [Функциональные возможности языка: повторители и замыкания](ch13-00-functional-features.md)
 
     - [Замыкания: анонимные функции, которые захватывают своё окружение](ch13-01-closures.md)
-    - [Обработка последовательности элементов с помощью итераторов](ch13-02-iterators.md)
+    - [Обработка последовательности элементов с помощью повторителей](ch13-02-iterators.md)
     - [Улучшение нашего проекта с вводом/выводом](ch13-03-improving-our-io-project.md)
-    - [Сравнение производительности: циклы и итераторы](ch13-04-performance.md)
+    - [Сравнение производительности: циклы и повторители](ch13-04-performance.md)
 
 - [Подробнее о Cargo и Crates.io](ch14-00-more-about-cargo.md)
 
     - [Настройка билдов с помощью профилей выпуска](ch14-01-release-profiles.md)
     - [Публикация крейта на Crates.io](ch14-02-publishing-to-crates-io.md)
     - [Рабочие области Cargo](ch14-03-cargo-workspaces.md)
-    - [Установка бинарных файлов с Crates.io с помощью `cargo install`](ch14-04-installing-binaries.md)
-    - [Расширение возможностей Cargo путём добавления пользовательских команд](ch14-05-extending-cargo.md)
+    - [Установка двоичных файлов с Crates.io с помощью `cargo install`](ch14-04-installing-binaries.md)
+    - [Расширение возможностей Cargo путём добавления пользовательских приказов](ch14-05-extending-cargo.md)
 
 - [Умные указатели](ch15-00-smart-pointers.md)
 
@@ -117,7 +117,7 @@
 - [Возможности объектно-ориентированного программирования Rust](ch17-00-oop.md)
 
     - [Характеристики объектно-ориентированных языков](ch17-01-what-is-oo.md)
-    - [Использование трейт-объектов, допускающих значения разных типов](ch17-02-trait-objects.md)
+    - [Использование трейт-объектов, допускающих значения разных видов](ch17-02-trait-objects.md)
     - [Реализация шаблона объектно-ориентированного проектирования](ch17-03-oo-design-patterns.md)
 
 ## Продвинутые темы
@@ -132,7 +132,7 @@
 
     - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
     - [Продвинутые типажи](ch19-03-advanced-traits.md)
-    - [Продвинутые типы](ch19-04-advanced-types.md)
+    - [Продвинутые виды](ch19-04-advanced-types.md)
     - [Продвинутые функции и замыкания](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
 
@@ -147,7 +147,7 @@
     - [А — Ключевые слова](appendix-01-keywords.md)
     - [B — Операторы и символы](appendix-02-operators.md)
     - [C — Выводимые трейты](appendix-03-derivable-traits.md)
-    - [D — Полезные инструменты разработки](appendix-04-useful-development-tools.md)
-    - [E — Редакции](appendix-05-editions.md)
+    - [D — Полезные средства разработки](appendix-04-useful-development-tools.md)
+    - [E — Издания](appendix-05-editions.md)
     - [F — Переводы книги](appendix-06-translation.md)
     - [G — Как создаётся Rust и «Nightly Rust»](appendix-07-nightly-rust.md)

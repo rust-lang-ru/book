@@ -1,0 +1,352 @@
+<!DOCTYPE HTML>
+<html lang="ru-RU" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Обобщённые виды данных - Язык программирования Rust</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">Язык программирования Rust</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Предисловие</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Введение</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> С чего начать</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Установка</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Привет, Мир!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-cargo.html"><strong aria-hidden="true">1.3.</strong> Hello, Cargo!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-guessing-game-tutorial.html"><strong aria-hidden="true">2.</strong> Программирование игры в загадки</a></li><li class="chapter-item expanded "><a href="ch03-00-common-programming-concepts.html"><strong aria-hidden="true">3.</strong> Общие концепции программирования</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-variables-and-mutability.html"><strong aria-hidden="true">3.1.</strong> Переменные и изменяемость</a></li><li class="chapter-item expanded "><a href="ch03-02-data-types.html"><strong aria-hidden="true">3.2.</strong> Виды Данных</a></li><li class="chapter-item expanded "><a href="ch03-03-how-functions-work.html"><strong aria-hidden="true">3.3.</strong> Функции</a></li><li class="chapter-item expanded "><a href="ch03-04-comments.html"><strong aria-hidden="true">3.4.</strong> Комментарии</a></li><li class="chapter-item expanded "><a href="ch03-05-control-flow.html"><strong aria-hidden="true">3.5.</strong> Управляющие конструкции</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-understanding-ownership.html"><strong aria-hidden="true">4.</strong> Понимание владения</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-what-is-ownership.html"><strong aria-hidden="true">4.1.</strong> Что такое "владение"?</a></li><li class="chapter-item expanded "><a href="ch04-02-references-and-borrowing.html"><strong aria-hidden="true">4.2.</strong> Ссылки и заимствование</a></li><li class="chapter-item expanded "><a href="ch04-03-slices.html"><strong aria-hidden="true">4.3.</strong> Вид среза</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-structs.html"><strong aria-hidden="true">5.</strong> Использование структур для объединения связанных данных</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-defining-structs.html"><strong aria-hidden="true">5.1.</strong> Определение и создание экземпляров структур</a></li><li class="chapter-item expanded "><a href="ch05-02-example-structs.html"><strong aria-hidden="true">5.2.</strong> Пример программы, использующей структуры</a></li><li class="chapter-item expanded "><a href="ch05-03-method-syntax.html"><strong aria-hidden="true">5.3.</strong> Синтаксис способа</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-enums.html"><strong aria-hidden="true">6.</strong> Перечисления и сопоставление с образцом</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-defining-an-enum.html"><strong aria-hidden="true">6.1.</strong> Определение Enum</a></li><li class="chapter-item expanded "><a href="ch06-02-match.html"><strong aria-hidden="true">6.2.</strong> Конструкция потока управления match</a></li><li class="chapter-item expanded "><a href="ch06-03-if-let.html"><strong aria-hidden="true">6.3.</strong> Лаконичный поток управления с if let</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-managing-growing-projects-with-packages-crates-and-modules.html"><strong aria-hidden="true">7.</strong> Управление растущими проектами с помощью пакетов, крейтов и модулей</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-packages-and-crates.html"><strong aria-hidden="true">7.1.</strong> Пакеты и крейты</a></li><li class="chapter-item expanded "><a href="ch07-02-defining-modules-to-control-scope-and-privacy.html"><strong aria-hidden="true">7.2.</strong> Определение модулей для управления областью действия и конфиденциальностью</a></li><li class="chapter-item expanded "><a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html"><strong aria-hidden="true">7.3.</strong> Пути для ссылки на элемент в дереве модулей</a></li><li class="chapter-item expanded "><a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html"><strong aria-hidden="true">7.4.</strong> Введение путей в область видимости с помощью ключевого слова use</a></li><li class="chapter-item expanded "><a href="ch07-05-separating-modules-into-different-files.html"><strong aria-hidden="true">7.5.</strong> Separating Modules into Different Files</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-common-collections.html"><strong aria-hidden="true">8.</strong> Общие собрания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-vectors.html"><strong aria-hidden="true">8.1.</strong> Хранение списков значений с векторами</a></li><li class="chapter-item expanded "><a href="ch08-02-strings.html"><strong aria-hidden="true">8.2.</strong> Хранение закодированного текста UTF-8 со строками</a></li><li class="chapter-item expanded "><a href="ch08-03-hash-maps.html"><strong aria-hidden="true">8.3.</strong> Хранение ключей со связанными значениями в HashMap</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-error-handling.html"><strong aria-hidden="true">9.</strong> Обработка ошибок</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-unrecoverable-errors-with-panic.html"><strong aria-hidden="true">9.1.</strong> Неустранимые ошибки с panic!</a></li><li class="chapter-item expanded "><a href="ch09-02-recoverable-errors-with-result.html"><strong aria-hidden="true">9.2.</strong> Устранимые ошибки с Result</a></li><li class="chapter-item expanded "><a href="ch09-03-to-panic-or-not-to-panic.html"><strong aria-hidden="true">9.3.</strong> panic! или Не panic!</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-generics.html"><strong aria-hidden="true">10.</strong> Общие виды, трейты (характеристики) и время жизни</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch10-01-syntax.html" class="active"><strong aria-hidden="true">10.1.</strong> Обобщённые виды данных</a></li><li class="chapter-item expanded "><a href="ch10-02-traits.html"><strong aria-hidden="true">10.2.</strong> Трейты (характеристики): определение разделяемого поведения</a></li><li class="chapter-item expanded "><a href="ch10-03-lifetime-syntax.html"><strong aria-hidden="true">10.3.</strong> Валидация ссылок посредством сроков жизни</a></li></ol></li><li class="chapter-item expanded "><a href="ch11-00-testing.html"><strong aria-hidden="true">11.</strong> Написание самостоятельно х тестов</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch11-01-writing-tests.html"><strong aria-hidden="true">11.1.</strong> Как писать тесты</a></li><li class="chapter-item expanded "><a href="ch11-02-running-tests.html"><strong aria-hidden="true">11.2.</strong> Управление выполнением тестов</a></li><li class="chapter-item expanded "><a href="ch11-03-test-organization.html"><strong aria-hidden="true">11.3.</strong> Организация тестов</a></li></ol></li><li class="chapter-item expanded "><a href="ch12-00-an-io-project.html"><strong aria-hidden="true">12.</strong> Проект с вводом-выводом: создание программы приказной строки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch12-01-accepting-command-line-arguments.html"><strong aria-hidden="true">12.1.</strong> Получение переменных приказной строки</a></li><li class="chapter-item expanded "><a href="ch12-02-reading-a-file.html"><strong aria-hidden="true">12.2.</strong> Чтение файла</a></li><li class="chapter-item expanded "><a href="ch12-03-improving-error-handling-and-modularity.html"><strong aria-hidden="true">12.3.</strong> Рефакторинг для обеспечения модульности и улучшения обработки ошибок</a></li><li class="chapter-item expanded "><a href="ch12-04-testing-the-librarys-functionality.html"><strong aria-hidden="true">12.4.</strong> Разработка функциональности библиотеки с помощью разработки через тестирование</a></li><li class="chapter-item expanded "><a href="ch12-05-working-with-environment-variables.html"><strong aria-hidden="true">12.5.</strong> Работа с переменными среды</a></li><li class="chapter-item expanded "><a href="ch12-06-writing-to-stderr-instead-of-stdout.html"><strong aria-hidden="true">12.6.</strong> Запись сообщений об ошибках в stderr вместо stdout</a></li></ol></li><li class="chapter-item expanded "><a href="ch13-00-functional-features.html"><strong aria-hidden="true">13.</strong> Функциональные возможности языка: повторители и замыкания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch13-01-closures.html"><strong aria-hidden="true">13.1.</strong> Замыкания: анонимные функции, которые захватывают своё окружение</a></li><li class="chapter-item expanded "><a href="ch13-02-iterators.html"><strong aria-hidden="true">13.2.</strong> Обработка последовательности элементов с помощью повторителей</a></li><li class="chapter-item expanded "><a href="ch13-03-improving-our-io-project.html"><strong aria-hidden="true">13.3.</strong> Улучшение нашего проекта с вводом/выводом</a></li><li class="chapter-item expanded "><a href="ch13-04-performance.html"><strong aria-hidden="true">13.4.</strong> Сравнение производительности: циклы и повторители</a></li></ol></li><li class="chapter-item expanded "><a href="ch14-00-more-about-cargo.html"><strong aria-hidden="true">14.</strong> Подробнее о Cargo и Crates.io</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch14-01-release-profiles.html"><strong aria-hidden="true">14.1.</strong> Настройка билдов с помощью профилей выпуска</a></li><li class="chapter-item expanded "><a href="ch14-02-publishing-to-crates-io.html"><strong aria-hidden="true">14.2.</strong> Публикация крейта на Crates.io</a></li><li class="chapter-item expanded "><a href="ch14-03-cargo-workspaces.html"><strong aria-hidden="true">14.3.</strong> Рабочие области Cargo</a></li><li class="chapter-item expanded "><a href="ch14-04-installing-binaries.html"><strong aria-hidden="true">14.4.</strong> Установка двоичных файлов с Crates.io с помощью cargo install</a></li><li class="chapter-item expanded "><a href="ch14-05-extending-cargo.html"><strong aria-hidden="true">14.5.</strong> Расширение возможностей Cargo путём добавления пользовательских приказов</a></li></ol></li><li class="chapter-item expanded "><a href="ch15-00-smart-pointers.html"><strong aria-hidden="true">15.</strong> Умные указатели</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch15-01-box.html"><strong aria-hidden="true">15.1.</strong> Использование Box&lt;T&gt; для указания на данные в куче</a></li><li class="chapter-item expanded "><a href="ch15-02-deref.html"><strong aria-hidden="true">15.2.</strong> Работа с умными указателями как с обычными ссылками с помощью трейта Deref</a></li><li class="chapter-item expanded "><a href="ch15-03-drop.html"><strong aria-hidden="true">15.3.</strong> Выполнение кода при очистке с помощью трейта Drop</a></li><li class="chapter-item expanded "><a href="ch15-04-rc.html"><strong aria-hidden="true">15.4.</strong> Rc&lt;T&gt;, умный указатель с подсчётом ссылок</a></li><li class="chapter-item expanded "><a href="ch15-05-interior-mutability.html"><strong aria-hidden="true">15.5.</strong> RefCell&lt;T&gt; и внутренняя изменяемость</a></li><li class="chapter-item expanded "><a href="ch15-06-reference-cycles.html"><strong aria-hidden="true">15.6.</strong> Ссылочные циклы могут привести к утечке памяти</a></li></ol></li><li class="chapter-item expanded "><a href="ch16-00-concurrency.html"><strong aria-hidden="true">16.</strong> Безбоязненный параллелизм</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch16-01-threads.html"><strong aria-hidden="true">16.1.</strong> Использование потоков для параллельного выполнения кода</a></li><li class="chapter-item expanded "><a href="ch16-02-message-passing.html"><strong aria-hidden="true">16.2.</strong> Пересылка сообщений для передачи данных между потоками</a></li><li class="chapter-item expanded "><a href="ch16-03-shared-state.html"><strong aria-hidden="true">16.3.</strong> Параллелизм с общим состоянием</a></li><li class="chapter-item expanded "><a href="ch16-04-extensible-concurrency-sync-and-send.html"><strong aria-hidden="true">16.4.</strong> Расширяемый параллелизм с помощью трейтов Sync и Send</a></li></ol></li><li class="chapter-item expanded "><a href="ch17-00-oop.html"><strong aria-hidden="true">17.</strong> Возможности объектно-ориентированного программирования Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch17-01-what-is-oo.html"><strong aria-hidden="true">17.1.</strong> Характеристики объектно-ориентированных языков</a></li><li class="chapter-item expanded "><a href="ch17-02-trait-objects.html"><strong aria-hidden="true">17.2.</strong> Использование трейт-объектов, допускающих значения разных видов</a></li><li class="chapter-item expanded "><a href="ch17-03-oo-design-patterns.html"><strong aria-hidden="true">17.3.</strong> Реализация шаблона объектно-ориентированного проектирования</a></li></ol></li><li class="chapter-item expanded "><a href="ch18-00-patterns.html"><strong aria-hidden="true">18.</strong> Шаблоны и сопоставление</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch18-01-all-the-places-for-patterns.html"><strong aria-hidden="true">18.1.</strong> Все места, где могут использоваться шаблоны</a></li><li class="chapter-item expanded "><a href="ch18-02-refutability.html"><strong aria-hidden="true">18.2.</strong> Опровержимость: может ли шаблон не соответствовать</a></li><li class="chapter-item expanded "><a href="ch18-03-pattern-syntax.html"><strong aria-hidden="true">18.3.</strong> Синтаксис шаблона</a></li></ol></li><li class="chapter-item expanded "><a href="ch19-00-advanced-features.html"><strong aria-hidden="true">19.</strong> Расширенные возможности</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch19-01-unsafe-rust.html"><strong aria-hidden="true">19.1.</strong> Небезопасный код в Rust</a></li><li class="chapter-item expanded "><a href="ch19-03-advanced-traits.html"><strong aria-hidden="true">19.2.</strong> Продвинутые типажи</a></li><li class="chapter-item expanded "><a href="ch19-04-advanced-types.html"><strong aria-hidden="true">19.3.</strong> Продвинутые виды</a></li><li class="chapter-item expanded "><a href="ch19-05-advanced-functions-and-closures.html"><strong aria-hidden="true">19.4.</strong> Продвинутые функции и замыкания</a></li><li class="chapter-item expanded "><a href="ch19-06-macros.html"><strong aria-hidden="true">19.5.</strong> Макросы</a></li></ol></li><li class="chapter-item expanded "><a href="ch20-00-final-project-a-web-server.html"><strong aria-hidden="true">20.</strong> Финальный проект: создание многопоточного веб-сервера</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch20-01-single-threaded.html"><strong aria-hidden="true">20.1.</strong> Создание однопоточного веб-сервера</a></li><li class="chapter-item expanded "><a href="ch20-02-multithreaded.html"><strong aria-hidden="true">20.2.</strong> Превращение нашего однопоточного сервера в многопоточный сервер</a></li><li class="chapter-item expanded "><a href="ch20-03-graceful-shutdown-and-cleanup.html"><strong aria-hidden="true">20.3.</strong> 	Мягкое завершение работы и очистка</a></li></ol></li><li class="chapter-item expanded "><a href="appendix-00.html"><strong aria-hidden="true">21.</strong> Приложения</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix-01-keywords.html"><strong aria-hidden="true">21.1.</strong> А — Ключевые слова</a></li><li class="chapter-item expanded "><a href="appendix-02-operators.html"><strong aria-hidden="true">21.2.</strong> B — Операторы и символы</a></li><li class="chapter-item expanded "><a href="appendix-03-derivable-traits.html"><strong aria-hidden="true">21.3.</strong> C — Выводимые трейты</a></li><li class="chapter-item expanded "><a href="appendix-04-useful-development-tools.html"><strong aria-hidden="true">21.4.</strong> D — Полезные средства разработки</a></li><li class="chapter-item expanded "><a href="appendix-05-editions.html"><strong aria-hidden="true">21.5.</strong> E — Издания</a></li><li class="chapter-item expanded "><a href="appendix-06-translation.html"><strong aria-hidden="true">21.6.</strong> F — Переводы книги</a></li><li class="chapter-item expanded "><a href="appendix-07-nightly-rust.html"><strong aria-hidden="true">21.7.</strong> G — Как создаётся Rust и «Nightly Rust»</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Язык программирования Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="Обобщённые-виды-данных"><a class="header" href="#Обобщённые-виды-данных">Обобщённые виды данных</a></h2>
+<p>Мы используем обобщённые виды данных для объявления функций или структур, которые затем можно использовать с различными определенными видами данных. Давайте сначала посмотрим, как объявлять функции, структуры, перечисления и способы, используя обобщённые виды данных. Затем мы обсудим, как обобщённые виды данных влияют на производительность кода.</p>
+<h3 id="В-объявлении-функций"><a class="header" href="#В-объявлении-функций">В объявлении функций</a></h3>
+<p>Когда мы объявляем функцию с обобщёнными видами, мы размещаем обобщённые виды в сигнатуре функции, где мы обычно указываем виды данных переменных и возвращаемого значения. Используя обобщённые виды, мы делаем код более гибким и предоставляем большую функциональность при вызове нашей функции, предотвращая повторение кода.</p>
+<p>Рассмотрим пример с функцией <code>largest</code>. Приложение 10-4 показывает две функции, каждая из которых находит самое большое значение в срезе своего вида. Позже мы объединим их в одну функцию, использующую обобщённые виды данных.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-04/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 10-4: две функции, отличающиеся только именем и видом обрабатываемых данных</span></p>
+<p>Функция <code>largest_i32</code> уже встречалась нам: мы извлекли её в приложении 10-3, когда боролись с повторением кода — она находит наибольшее значение вида <code>i32</code> в срезе. Функция <code>largest_char</code> находит самое большое значение вида <code>char</code> в срезе. Тело у этих функций одинаковое, поэтому давайте избавимся от повторяемлшл кода, используя свойство обобщённого вида в одной функции.</p>
+<p>Для свойствоизации видов данных в новой объявляемой функции нам нужно дать имя обобщённому виду — так же, как мы это делаем для переменных функций. Можно использовать любой определитель для имени свойства вида, но мы будем использовать <code>T</code>, потому что по соглашению имена свойств в Rust должны быть короткими (обычно длиной в один символ), а именование видов в Rust делается в нотации UpperCamelCase. Сокращение слова «type» до одной буквы <code>T</code> является стандартным выбором большинства программистов, использующих язык Rust.</p>
+<p>Когда мы используем свойство в теле функции, мы должны объявить имя свойства в сигнатуре, чтобы сборщик знал, что означает это имя. Подобно когда мы используем имя вида свойства в сигнатуре функции, мы должны объявить это имя раньше, чем мы его используем. Чтобы определить обобщённую функцию <code>largest</code>, поместим объявление имён свойств в треугольные скобки <code>&lt;&gt;</code> между именем функции и списком свойств, как здесь:</p>
+<pre><code class="language-rust ignore">fn largest&lt;T&gt;(list: &amp;[T]) -&gt; &amp;T {</code></pre>
+<p>Объявление читается так: функция <code>largest</code> является обобщённой по виду <code>T</code>. Эта функция имеет один свойство с именем <code>list</code>, который является срезом значений с видом данных <code>T</code>. Функция <code>largest</code> возвращает значение этого же вида <code>T</code>.</p>
+<p>Приложение 10-5 показывает определение функции <code>largest</code> с использованием обобщённых видов данных в её сигнатуре. Приложение также показывает, как мы можем вызвать функцию со срезом данных вида <code>i32</code> или <code>char</code>. Данный код пока не будет собираться, но мы исправим это к концу раздела.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-05/src/main.rs}}</code></pre>
+<p><span class="caption">Приложение 10-5: функция <code>largest</code>, использующая свойства обобщённого типа; пока ещё не собирается</span></p>
+<p>Если мы соберем программу сейчас, мы получим следующую ошибку:</p>
+<pre><code class="language-console">{{#include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-05/output.txt}}
+</code></pre>
+<p>В подсказке упоминается <code>std::cmp::PartialOrd</code>, который является <em>типажом</em>. Мы поговорим про типажи в следующем разделе. Сейчас ошибка в функции <code>largest</code> указывает, что функция не будет работать для всех возможных видов <code>T</code>. Так как мы хотим сравнивать значения вида <code>T</code> в теле функции, мы можем использовать только те виды, данные которых можно упорядочить: можем упорядочить — значит, можем и сравнить. Чтобы можно было задействовать сравнения, стандартная библиотека имеет типаж <code>std::cmp::PartialOrd</code>, который вы можете реализовать для видов (смотрите дополнение С для большей сведений про данный типаж). Следуя совету в сообщении сборщика, ограничим вид <code>T</code> теми вариантами, которые поддерживают типаж <code>PartialOrd</code>, и тогда пример успешно  ссобирается, так как стандартная библиотека реализует <code>PartialOrd</code> как для вида <code>i32</code>, так и для вида <code>char</code>.</p>
+<h3 id="В-определении-структур"><a class="header" href="#В-определении-структур">В определении структур</a></h3>
+<p>Мы также можем определить структуры, использующие обобщённые виды в одном или нескольких своих полях, с помощью синтаксиса <code>&lt;&gt;</code>. Приложение 10-6 показывает, как определить структуру <code>Point&lt;T&gt;</code>, чтобы хранить поля координат <code>x</code> и <code>y</code> любого вида данных.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-06/src/main.rs}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 10-6: структура <code>Point</code>, содержащая поля <code>x</code> и <code>y</code> вида <code>T</code></span></p>
+<p>Синтаксис использования обобщённых видов в определении структуры очень похож на синтаксис в определении функции. Сначала мы объявляем имена видов свойств внутри треугольных скобок сразу после названия структуры. Затем мы можем использовать обобщённые виды в определении структуры в тех местах, где ранее мы указывали бы определенные виды.</p>
+<p>Так как мы используем только один обобщённый вид данных для определения структуры <code>Point&lt;T&gt;</code>, это определение означает, что структура <code>Point&lt;T&gt;</code> является обобщённой с видом <code>T</code>, и <em>оба</em> поля <code>x</code> и <code>y</code> имеют одинаковый вид, каким бы он не являлся. Если мы создадим экземпляр структуры <code>Point&lt;T&gt;</code> со значениями разных видов, как показано в приложении 10-7, наш код не ссобирается.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-07/src/main.rs}}</code></pre>
+<p><span class="caption">Приложение 10-7: поля <code>x</code> и <code>y</code> должны быть одного вида, так как они имеют один и тот же обобщённый вид <code>T</code></span></p>
+<p>В этом примере, когда мы присваиваем целочисленное значение 5 переменной <code>x</code> , мы сообщаем сборщику, что обобщённый вид <code>T</code> будет целым числом для этого экземпляра <code>Point&lt;T&gt;</code>. Затем, когда мы указываем значение 4.0 (имеющее вид, отличный от целого числа) для <code>y</code>, который по нашему определению должен иметь тот же вид, что и <code>x</code>, мы получим ошибку несоответствия видов:</p>
+<pre><code class="language-console">{{#include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-07/output.txt}}
+</code></pre>
+<p>Чтобы определить структуру <code>Point</code>, где оба значения <code>x</code> и <code>y</code> являются обобщёнными, но различными видами, можно использовать несколько свойств обобщённого вида. Например, в приложении 10-8 мы изменим определение <code>Point</code> таким образом, чтобы оно использовало обобщённые виды <code>T</code> и <code>U</code>, где <code>x</code> имеет вид <code>T</code> а <code>y</code> имеет вид <code>U</code>.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-08/src/main.rs}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 10-8: структура <code>Point&lt;T, U&gt;</code> обобщена для двух видов, так что <code>x</code> и <code>y</code> могут быть значениями разных видов</span></p>
+<p>Теперь разрешены все показанные экземпляры вида <code>Point</code>! В объявлении можно использовать сколь угодно много свойств обобщённого вида, но если делать это в большом количестве, код будет тяжело читать. Если в вашем коде требуется много обобщённых видов, возможно, стоит разбить его на более мелкие части.</p>
+<h3 id="В-определениях-перечислений"><a class="header" href="#В-определениях-перечислений">В определениях перечислений</a></h3>
+<p>Как и структуры, перечисления также могут хранить обобщённые виды в своих вариантах. Давайте ещё раз посмотрим на перечисление <code>Option&lt;T&gt;</code>, предоставленное встроенной библиотекой, которое мы использовали в главе 6:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Option&lt;T&gt; {
+    Some(T),
+    None,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Это определение теперь должно быть вам более понятно. Как видите,  перечисление <code>Option&lt;T&gt;</code> является обобщённым по виду <code>T</code> и имеет два варианта: вариант <code>Some</code>, который содержит одно значение вида <code>T</code>, и вариант <code>None</code>, который не содержит никакого значения. Используя перечисление <code>Option&lt;T&gt;</code>, можно выразить абстрактную концепцию необязательного значения — и так как <code>Option&lt;T&gt;</code> является обобщённым, можно использовать эту абстракцию независимо от того, каким будет вид необязательного значения.</p>
+<p>Перечисления также могут использовать несколько обобщённых видов. Определение перечисления <code>Result</code>, которое мы упоминали в главе 9, является примером такого использования:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Перечисление <code>Result</code> имеет два обобщённых вида: <code>T</code> и <code>E</code> — и два варианта:  <code>Ok</code>, который содержит вид <code>T</code>, и <code>Err</code>, содержащий вид <code>E</code>. С таким определением удобно использовать перечисление <code>Result</code> везде, где действия могут быть выполнены успешно (возвращая значение вида <code>T</code>) или неуспешно (возвращая ошибку вида <code>E</code>). Это то, что мы делали при открытии файла в приложении 9-3, где <code>T</code> заполнялось видом <code>std::fs::File</code>, если файл был открыт успешно, либо <code>E</code> заполнялось видом  <code>std::io::Error</code>, если при открытии файла возникали какие-либо проблемы.</p>
+<p>Если вы встречаете в коде ситуации, когда несколько определений структур или перечислений отличаются только видами содержащихся в них значений, вы можете устранить повторение, используя обобщённые виды.</p>
+<h3 id="В-определении-способов"><a class="header" href="#В-определении-способов">В определении способов</a></h3>
+<p>Мы можем реализовать способы для структур и перечислений (как мы делали в главе 5) и в определениях этих способов также использовать обобщённые виды. В приложении 10-9 показана структура <code>Point&lt;T&gt;</code>, которую мы определили в приложении 10-6, с добавленным для неё способом <code>x</code>.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-09/src/main.rs}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 10-9: Реализация способа с именем <code>x</code> у структуры <code>Point&lt;T&gt;</code>, которая будет возвращать ссылку на поле <code>x</code> вида <code>T</code></span></p>
+<p>Здесь мы определили способ с именем <code>x</code> у структуры <code>Point&lt;T&gt;</code>, который возвращает ссылку на данные в поле <code>x</code>.</p>
+<p>Обратите внимание, что мы должны объявить <code>T</code> сразу после <code>impl</code> .  В этом случае мы можем использовать <code>T</code> для указания на то, что реализуем способ для вида <code>Point&lt;T&gt;</code>. Объявив <code>T</code> универсальным видом сразу после <code>impl</code> , Rust может определить, что вид в угловых скобках в <code>Point</code> является универсальным, а не определенным видом. Мы могли бы выбрать другое имя для этого обобщённого свойства, отличное от имени, использованного в определении структуры, но обычно используют одно и то же имя. Способы, написанные внутри раздела <code>impl</code> , который использует обобщённый вид, будут определены для любого экземпляра вида, независимо от того, какой определенный вид в конечном итоге будет подставлен вместо этого обобщённого.</p>
+<p>Мы можем также указать ограничения, какие обобщённые виды разрешено использовать при определении способов. Например, мы могли бы реализовать способы только для экземпляров вида <code>Point&lt;f32&gt;</code>, а не для экземпляров <code>Point&lt;T&gt;</code>, в которых используется произвольный обобщённый вид. В приложении 10-10 мы используем определенный вид <code>f32</code>, что означает, что мы не определяем никакие виды после <code>impl</code>.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-10/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 10-10: раздел<code>impl</code>, который применяется только к структуре, имеющей определенный вид для свойства обобщённого вида <code>T</code></span></p>
+<p>Этот код означает, что вид <code>Point&lt;f32&gt;</code> будет иметь способ с именем <code>distance_from_origin</code>, а другие экземпляры <code>Point&lt;T&gt;</code>, где <code>T</code> имеет вид, отличный от <code>f32</code>, не будут иметь этого способа. Способ вычисляет, насколько далеко наша точка находится от точки с координатами (0.0, 0.0), и использует математические действия, доступные только для видов с плавающей точкой.</p>
+<p>Свойства обобщённого вида, которые мы используем в определении структуры, не всегда совпадают с подобиями, использующимися в сигнатурах способов этой структуры. Чтобы пример был более очевидным, в приложении 10-11 используются обобщённые виды <code>X1</code> и <code>Y1</code> для определения структуры <code>Point</code> и виды <code>X2</code> <code>Y2</code> для сигнатуры способа <code>mixup</code>. Способ создаёт новый экземпляр структуры <code>Point</code>, где значение <code>x</code> берётся из <code>self</code> <code>Point</code> (имеющей вид <code>X1</code>), а значение <code>y</code> - из переданной структуры <code>Point</code> (где эта переменная имеет вид <code>Y2</code>).</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-11/src/main.rs}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 10-11: способ, использующий обобщённые виды, отличающиеся от видов, используемых в определении структуры</span></p>
+<p>В функции <code>main</code> мы определили вид <code>Point</code>, который имеет вид <code>i32</code> для <code>x</code> (со значением <code>5</code> ) и вид <code>f64</code> для <code>y</code> (со значением <code>10.4</code>). Переменная <code>p2</code> является структурой <code>Point</code>, которая имеет строковый срез для <code>x</code> (со значением <code>«Hello»</code>) и <code>char</code> для <code>y</code> (со значением <code>c</code>). Вызов <code>mixup</code> на <code>p1</code> с переменнаяом <code>p2</code> создаст для нас экземпляр структуры <code>p3</code>, который будет иметь вид <code>i32</code> для <code>x</code> (потому что <code>x</code> взят из <code>p1</code>). Переменная <code>p3</code> будет иметь вид <code>char</code>  для  <code>y</code> (потому что <code>y</code> взят из <code>p2</code>). Вызов макроса <code>println! </code> выведет <code>p3.x = 5, p3.y = c</code>.</p>
+<p>Цель этого примера — отобразить ситуацию, в которой некоторые обобщённые свойства объявлены с помощью <code>impl</code>, а некоторые объявлены в определении способа. Здесь обобщённые свойства <code>X1</code> и <code>Y1</code> объявляются после <code>impl</code>, потому что они относятся к определению структуры. Обобщённые свойства <code>X2</code> и <code>Y2</code> объявляются после <code>fn mixup</code>, так как они относятся только к способу.</p>
+<h3 id="Производительность-кода-использующего-обобщённые-виды"><a class="header" href="#Производительность-кода-использующего-обобщённые-виды">Производительность кода, использующего обобщённые виды</a></h3>
+<p>Вы могли бы задаться вопросом, возникают ли какие-нибудь дополнительные издержки при использовании свойств обобщённого вида. Хорошая новость в том, что при использовании обобщённых видов ваша программа работает ничуть ни медленнее, чем если бы она работала с использованием определенных видов.</p>
+<p>В Rust это достигается во время сборки при помощи мономорфизации кода, использующего обобщённые виды. <em>Мономорфизация</em> — это процесс превращения обобщённого кода в определенный код путём подстановки определенных видов, использующихся при сборки. В этом процессе сборщик выполняет шаги, противоположные тем, которые мы использовали для создания обобщённой функции в приложении 10-5: он просматривает все места, где вызывается обобщённый код, и генерирует код для определенных видов, использовавшихся для вызова в обобщённом.</p>
+<p>Давайте посмотрим, как это работает при использовании перечисления <code>Option&lt;T&gt;</code> из встроенной библиотеки:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let integer = Some(5);
+let float = Some(5.0);
+<span class="boring">}</span></code></pre></pre>
+<p>Когда Rust собирает этот код, он выполняет мономорфизацию. Во время этого процесса сборщик считывает значения, которые были использованы в экземплярах <code>Option&lt;T&gt;</code>, и определяет два вида <code>Option&lt;T&gt;</code>: один для вида <code>i32</code>, а другой — для <code>f64</code>. Таким образом, он разворачивает обобщённое определение <code>Option&lt;T&gt;</code> в два определения, именно для <code>i32</code> и <code>f64</code>, тем самым заменяя обобщённое определение определенными.</p>
+<p>Мономорфизированная исполнение кода выглядит примерно так (сборщик использует имена, отличные от тех, которые мы используем здесь для отображения):</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">enum Option_i32 {
+    Some(i32),
+    None,
+}
+
+enum Option_f64 {
+    Some(f64),
+    None,
+}
+
+fn main() {
+    let integer = Option_i32::Some(5);
+    let float = Option_f64::Some(5.0);
+}</code></pre></pre>
+<p>Обобщённое <code>Option&lt;T&gt;</code> заменяется определенными определениями, созданными сборщиком. Поскольку Rust собирает обобщённый код в код, определяющий вид в каждом экземпляре, мы не платим за использование обобщённых видов во время выполнения. Когда код запускается, он работает точно так же, как если бы мы сделали повторение каждое определение вручную. Процесс мономорфизации делает обобщённые виды Rust чрезвычайно эффективными во время выполнения.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch10-00-generics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch10-02-traits.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch10-00-generics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch10-02-traits.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+    </div>
+    </body>
+</html>

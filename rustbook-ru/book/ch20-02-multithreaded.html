@@ -1,0 +1,456 @@
+<!DOCTYPE HTML>
+<html lang="ru-RU" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Превращение нашего однопоточного сервера в многопоточный сервер - Язык программирования Rust</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">Язык программирования Rust</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Предисловие</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Введение</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> С чего начать</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Установка</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Привет, Мир!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-cargo.html"><strong aria-hidden="true">1.3.</strong> Hello, Cargo!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-guessing-game-tutorial.html"><strong aria-hidden="true">2.</strong> Программирование игры в загадки</a></li><li class="chapter-item expanded "><a href="ch03-00-common-programming-concepts.html"><strong aria-hidden="true">3.</strong> Общие концепции программирования</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-variables-and-mutability.html"><strong aria-hidden="true">3.1.</strong> Переменные и изменяемость</a></li><li class="chapter-item expanded "><a href="ch03-02-data-types.html"><strong aria-hidden="true">3.2.</strong> Виды Данных</a></li><li class="chapter-item expanded "><a href="ch03-03-how-functions-work.html"><strong aria-hidden="true">3.3.</strong> Функции</a></li><li class="chapter-item expanded "><a href="ch03-04-comments.html"><strong aria-hidden="true">3.4.</strong> Комментарии</a></li><li class="chapter-item expanded "><a href="ch03-05-control-flow.html"><strong aria-hidden="true">3.5.</strong> Управляющие конструкции</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-understanding-ownership.html"><strong aria-hidden="true">4.</strong> Понимание владения</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-what-is-ownership.html"><strong aria-hidden="true">4.1.</strong> Что такое "владение"?</a></li><li class="chapter-item expanded "><a href="ch04-02-references-and-borrowing.html"><strong aria-hidden="true">4.2.</strong> Ссылки и заимствование</a></li><li class="chapter-item expanded "><a href="ch04-03-slices.html"><strong aria-hidden="true">4.3.</strong> Вид среза</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-structs.html"><strong aria-hidden="true">5.</strong> Использование структур для объединения связанных данных</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-defining-structs.html"><strong aria-hidden="true">5.1.</strong> Определение и создание экземпляров структур</a></li><li class="chapter-item expanded "><a href="ch05-02-example-structs.html"><strong aria-hidden="true">5.2.</strong> Пример программы, использующей структуры</a></li><li class="chapter-item expanded "><a href="ch05-03-method-syntax.html"><strong aria-hidden="true">5.3.</strong> Синтаксис способа</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-enums.html"><strong aria-hidden="true">6.</strong> Перечисления и сопоставление с образцом</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-defining-an-enum.html"><strong aria-hidden="true">6.1.</strong> Определение Enum</a></li><li class="chapter-item expanded "><a href="ch06-02-match.html"><strong aria-hidden="true">6.2.</strong> Конструкция потока управления match</a></li><li class="chapter-item expanded "><a href="ch06-03-if-let.html"><strong aria-hidden="true">6.3.</strong> Лаконичный поток управления с if let</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-managing-growing-projects-with-packages-crates-and-modules.html"><strong aria-hidden="true">7.</strong> Управление растущими проектами с помощью пакетов, крейтов и модулей</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-packages-and-crates.html"><strong aria-hidden="true">7.1.</strong> Пакеты и крейты</a></li><li class="chapter-item expanded "><a href="ch07-02-defining-modules-to-control-scope-and-privacy.html"><strong aria-hidden="true">7.2.</strong> Определение модулей для управления областью действия и конфиденциальностью</a></li><li class="chapter-item expanded "><a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html"><strong aria-hidden="true">7.3.</strong> Пути для ссылки на элемент в дереве модулей</a></li><li class="chapter-item expanded "><a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html"><strong aria-hidden="true">7.4.</strong> Введение путей в область видимости с помощью ключевого слова use</a></li><li class="chapter-item expanded "><a href="ch07-05-separating-modules-into-different-files.html"><strong aria-hidden="true">7.5.</strong> Separating Modules into Different Files</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-common-collections.html"><strong aria-hidden="true">8.</strong> Общие собрания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-vectors.html"><strong aria-hidden="true">8.1.</strong> Хранение списков значений с векторами</a></li><li class="chapter-item expanded "><a href="ch08-02-strings.html"><strong aria-hidden="true">8.2.</strong> Хранение закодированного текста UTF-8 со строками</a></li><li class="chapter-item expanded "><a href="ch08-03-hash-maps.html"><strong aria-hidden="true">8.3.</strong> Хранение ключей со связанными значениями в HashMap</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-error-handling.html"><strong aria-hidden="true">9.</strong> Обработка ошибок</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-unrecoverable-errors-with-panic.html"><strong aria-hidden="true">9.1.</strong> Неустранимые ошибки с panic!</a></li><li class="chapter-item expanded "><a href="ch09-02-recoverable-errors-with-result.html"><strong aria-hidden="true">9.2.</strong> Устранимые ошибки с Result</a></li><li class="chapter-item expanded "><a href="ch09-03-to-panic-or-not-to-panic.html"><strong aria-hidden="true">9.3.</strong> panic! или Не panic!</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-generics.html"><strong aria-hidden="true">10.</strong> Общие виды, трейты (характеристики) и время жизни</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch10-01-syntax.html"><strong aria-hidden="true">10.1.</strong> Обобщённые виды данных</a></li><li class="chapter-item expanded "><a href="ch10-02-traits.html"><strong aria-hidden="true">10.2.</strong> Трейты (характеристики): определение разделяемого поведения</a></li><li class="chapter-item expanded "><a href="ch10-03-lifetime-syntax.html"><strong aria-hidden="true">10.3.</strong> Валидация ссылок посредством сроков жизни</a></li></ol></li><li class="chapter-item expanded "><a href="ch11-00-testing.html"><strong aria-hidden="true">11.</strong> Написание самостоятельно х тестов</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch11-01-writing-tests.html"><strong aria-hidden="true">11.1.</strong> Как писать тесты</a></li><li class="chapter-item expanded "><a href="ch11-02-running-tests.html"><strong aria-hidden="true">11.2.</strong> Управление выполнением тестов</a></li><li class="chapter-item expanded "><a href="ch11-03-test-organization.html"><strong aria-hidden="true">11.3.</strong> Организация тестов</a></li></ol></li><li class="chapter-item expanded "><a href="ch12-00-an-io-project.html"><strong aria-hidden="true">12.</strong> Проект с вводом-выводом: создание программы приказной строки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch12-01-accepting-command-line-arguments.html"><strong aria-hidden="true">12.1.</strong> Получение переменных приказной строки</a></li><li class="chapter-item expanded "><a href="ch12-02-reading-a-file.html"><strong aria-hidden="true">12.2.</strong> Чтение файла</a></li><li class="chapter-item expanded "><a href="ch12-03-improving-error-handling-and-modularity.html"><strong aria-hidden="true">12.3.</strong> Рефакторинг для обеспечения модульности и улучшения обработки ошибок</a></li><li class="chapter-item expanded "><a href="ch12-04-testing-the-librarys-functionality.html"><strong aria-hidden="true">12.4.</strong> Разработка функциональности библиотеки с помощью разработки через тестирование</a></li><li class="chapter-item expanded "><a href="ch12-05-working-with-environment-variables.html"><strong aria-hidden="true">12.5.</strong> Работа с переменными среды</a></li><li class="chapter-item expanded "><a href="ch12-06-writing-to-stderr-instead-of-stdout.html"><strong aria-hidden="true">12.6.</strong> Запись сообщений об ошибках в stderr вместо stdout</a></li></ol></li><li class="chapter-item expanded "><a href="ch13-00-functional-features.html"><strong aria-hidden="true">13.</strong> Функциональные возможности языка: повторители и замыкания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch13-01-closures.html"><strong aria-hidden="true">13.1.</strong> Замыкания: анонимные функции, которые захватывают своё окружение</a></li><li class="chapter-item expanded "><a href="ch13-02-iterators.html"><strong aria-hidden="true">13.2.</strong> Обработка последовательности элементов с помощью повторителей</a></li><li class="chapter-item expanded "><a href="ch13-03-improving-our-io-project.html"><strong aria-hidden="true">13.3.</strong> Улучшение нашего проекта с вводом/выводом</a></li><li class="chapter-item expanded "><a href="ch13-04-performance.html"><strong aria-hidden="true">13.4.</strong> Сравнение производительности: циклы и повторители</a></li></ol></li><li class="chapter-item expanded "><a href="ch14-00-more-about-cargo.html"><strong aria-hidden="true">14.</strong> Подробнее о Cargo и Crates.io</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch14-01-release-profiles.html"><strong aria-hidden="true">14.1.</strong> Настройка билдов с помощью профилей выпуска</a></li><li class="chapter-item expanded "><a href="ch14-02-publishing-to-crates-io.html"><strong aria-hidden="true">14.2.</strong> Публикация крейта на Crates.io</a></li><li class="chapter-item expanded "><a href="ch14-03-cargo-workspaces.html"><strong aria-hidden="true">14.3.</strong> Рабочие области Cargo</a></li><li class="chapter-item expanded "><a href="ch14-04-installing-binaries.html"><strong aria-hidden="true">14.4.</strong> Установка двоичных файлов с Crates.io с помощью cargo install</a></li><li class="chapter-item expanded "><a href="ch14-05-extending-cargo.html"><strong aria-hidden="true">14.5.</strong> Расширение возможностей Cargo путём добавления пользовательских приказов</a></li></ol></li><li class="chapter-item expanded "><a href="ch15-00-smart-pointers.html"><strong aria-hidden="true">15.</strong> Умные указатели</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch15-01-box.html"><strong aria-hidden="true">15.1.</strong> Использование Box&lt;T&gt; для указания на данные в куче</a></li><li class="chapter-item expanded "><a href="ch15-02-deref.html"><strong aria-hidden="true">15.2.</strong> Работа с умными указателями как с обычными ссылками с помощью трейта Deref</a></li><li class="chapter-item expanded "><a href="ch15-03-drop.html"><strong aria-hidden="true">15.3.</strong> Выполнение кода при очистке с помощью трейта Drop</a></li><li class="chapter-item expanded "><a href="ch15-04-rc.html"><strong aria-hidden="true">15.4.</strong> Rc&lt;T&gt;, умный указатель с подсчётом ссылок</a></li><li class="chapter-item expanded "><a href="ch15-05-interior-mutability.html"><strong aria-hidden="true">15.5.</strong> RefCell&lt;T&gt; и внутренняя изменяемость</a></li><li class="chapter-item expanded "><a href="ch15-06-reference-cycles.html"><strong aria-hidden="true">15.6.</strong> Ссылочные циклы могут привести к утечке памяти</a></li></ol></li><li class="chapter-item expanded "><a href="ch16-00-concurrency.html"><strong aria-hidden="true">16.</strong> Безбоязненный параллелизм</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch16-01-threads.html"><strong aria-hidden="true">16.1.</strong> Использование потоков для параллельного выполнения кода</a></li><li class="chapter-item expanded "><a href="ch16-02-message-passing.html"><strong aria-hidden="true">16.2.</strong> Пересылка сообщений для передачи данных между потоками</a></li><li class="chapter-item expanded "><a href="ch16-03-shared-state.html"><strong aria-hidden="true">16.3.</strong> Параллелизм с общим состоянием</a></li><li class="chapter-item expanded "><a href="ch16-04-extensible-concurrency-sync-and-send.html"><strong aria-hidden="true">16.4.</strong> Расширяемый параллелизм с помощью трейтов Sync и Send</a></li></ol></li><li class="chapter-item expanded "><a href="ch17-00-oop.html"><strong aria-hidden="true">17.</strong> Возможности объектно-ориентированного программирования Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch17-01-what-is-oo.html"><strong aria-hidden="true">17.1.</strong> Характеристики объектно-ориентированных языков</a></li><li class="chapter-item expanded "><a href="ch17-02-trait-objects.html"><strong aria-hidden="true">17.2.</strong> Использование трейт-объектов, допускающих значения разных видов</a></li><li class="chapter-item expanded "><a href="ch17-03-oo-design-patterns.html"><strong aria-hidden="true">17.3.</strong> Реализация шаблона объектно-ориентированного проектирования</a></li></ol></li><li class="chapter-item expanded "><a href="ch18-00-patterns.html"><strong aria-hidden="true">18.</strong> Шаблоны и сопоставление</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch18-01-all-the-places-for-patterns.html"><strong aria-hidden="true">18.1.</strong> Все места, где могут использоваться шаблоны</a></li><li class="chapter-item expanded "><a href="ch18-02-refutability.html"><strong aria-hidden="true">18.2.</strong> Опровержимость: может ли шаблон не соответствовать</a></li><li class="chapter-item expanded "><a href="ch18-03-pattern-syntax.html"><strong aria-hidden="true">18.3.</strong> Синтаксис шаблона</a></li></ol></li><li class="chapter-item expanded "><a href="ch19-00-advanced-features.html"><strong aria-hidden="true">19.</strong> Расширенные возможности</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch19-01-unsafe-rust.html"><strong aria-hidden="true">19.1.</strong> Небезопасный код в Rust</a></li><li class="chapter-item expanded "><a href="ch19-03-advanced-traits.html"><strong aria-hidden="true">19.2.</strong> Продвинутые типажи</a></li><li class="chapter-item expanded "><a href="ch19-04-advanced-types.html"><strong aria-hidden="true">19.3.</strong> Продвинутые виды</a></li><li class="chapter-item expanded "><a href="ch19-05-advanced-functions-and-closures.html"><strong aria-hidden="true">19.4.</strong> Продвинутые функции и замыкания</a></li><li class="chapter-item expanded "><a href="ch19-06-macros.html"><strong aria-hidden="true">19.5.</strong> Макросы</a></li></ol></li><li class="chapter-item expanded "><a href="ch20-00-final-project-a-web-server.html"><strong aria-hidden="true">20.</strong> Финальный проект: создание многопоточного веб-сервера</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch20-01-single-threaded.html"><strong aria-hidden="true">20.1.</strong> Создание однопоточного веб-сервера</a></li><li class="chapter-item expanded "><a href="ch20-02-multithreaded.html" class="active"><strong aria-hidden="true">20.2.</strong> Превращение нашего однопоточного сервера в многопоточный сервер</a></li><li class="chapter-item expanded "><a href="ch20-03-graceful-shutdown-and-cleanup.html"><strong aria-hidden="true">20.3.</strong> 	Мягкое завершение работы и очистка</a></li></ol></li><li class="chapter-item expanded "><a href="appendix-00.html"><strong aria-hidden="true">21.</strong> Приложения</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix-01-keywords.html"><strong aria-hidden="true">21.1.</strong> А — Ключевые слова</a></li><li class="chapter-item expanded "><a href="appendix-02-operators.html"><strong aria-hidden="true">21.2.</strong> B — Операторы и символы</a></li><li class="chapter-item expanded "><a href="appendix-03-derivable-traits.html"><strong aria-hidden="true">21.3.</strong> C — Выводимые трейты</a></li><li class="chapter-item expanded "><a href="appendix-04-useful-development-tools.html"><strong aria-hidden="true">21.4.</strong> D — Полезные средства разработки</a></li><li class="chapter-item expanded "><a href="appendix-05-editions.html"><strong aria-hidden="true">21.5.</strong> E — Издания</a></li><li class="chapter-item expanded "><a href="appendix-06-translation.html"><strong aria-hidden="true">21.6.</strong> F — Переводы книги</a></li><li class="chapter-item expanded "><a href="appendix-07-nightly-rust.html"><strong aria-hidden="true">21.7.</strong> G — Как создаётся Rust и «Nightly Rust»</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Язык программирования Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="Превращение-однопоточного-сервера-в-многопоточный-сервер"><a class="header" href="#Превращение-однопоточного-сервера-в-многопоточный-сервер">Превращение однопоточного сервера в многопоточный сервер</a></h2>
+<p>В текущей реализации сервер обрабатывает каждый запрос по очереди, то есть, он не начнёт обрабатывать второе соединение, пока не завершит обработку первого. При росте числа запросов к серверу, такое последовательное выполнение было бы все менее и менее оптимальным. Если сервер получает какой-то запрос, обработка которого занимает достаточно много времени, последующим запросам придётся ждать завершения обработки длительного запроса, даже если эти новые запросы сами по себе могут быть обработаны быстро. Нам нужно это исправить, но сначала рассмотрим проблему в действии.</p>
+<h3 id="Подражание-медленного-запроса-в-текущей-реализации-сервера"><a class="header" href="#Подражание-медленного-запроса-в-текущей-реализации-сервера">Подражание медленного запроса в текущей реализации сервера</a></h3>
+<p>Мы посмотрим, как запрос с медленной обработкой может повлиять на другие запросы, сделанные к серверу в текущей реализации. В приложении 20-10 реализована обработка запроса к ресурсу <em>/sleep</em> с эмуляцией медленного ответа, при которой сервер будет ждать 5 секунд перед тем, как ответить.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-10/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 20-10: Подражание медленного запроса с помощью 5-секундной задержки</span></p>
+<p>Мы переключились с <code>if</code> на <code>match</code>, так как теперь у нас есть три случая. Нам придётся явно сопоставить срез от <code>request_line</code> для проверки совпадения шаблона со строковыми литералами; <code>match</code> не делает самостоятельно е ссылки и разыменования, как это делает способ равенства.</p>
+<p>Первая ветка совпадает с разделом <code>if</code> из приложения 20-9. Вторая ветка соответствует запросу <em>/sleep</em> . Когда этот запрос получен, сервер заснёт на 5 секунд, прежде чем отдать успешную HTML-страницу. Третья ветка совпадает с разделом <code>else</code> из приложения 20-9.</p>
+<p>Можно увидеть, насколько примитивен наш сервер: в существующих библиотеках распознавание разных запросов осуществлялось бы гораздо менее многословно!</p>
+<p>Запустите сервер приказом <code>cargo run</code>. Затем откройте два окна браузера: одно с адресом <em>http://127.0.0.1:7878/</em>, другое с <em>http://127.0.0.1:7878/sleep</em>. Если вы несколько раз обратитесь к URI <em>/</em>, то как и раньше увидите, что сервер быстро ответит. Но если вы введёте URI <em>/sleep</em>, а затем загрузите URI <em>/</em>, то увидите что <em>/</em> ждёт, пока <code>/sleep</code> не отработает полные 5 секунд перед загрузкой страницы.</p>
+<p>Есть несколько способов, которые можно использовать, чтобы избавиться от подтормаживания запросов после одного медленного запроса; способ, который мы реализуем, называется пулом потоков.</p>
+<h3 id="Улучшение-пропускной-способности-с-помощью-пула-потоков"><a class="header" href="#Улучшение-пропускной-способности-с-помощью-пула-потоков">Улучшение пропускной способности с помощью пула потоков</a></h3>
+<p><em>Пул потоков</em> является группой заранее порождённых потоков, ожидающих в пуле и готовых выполнить задачу. Когда программа получает новую задачу, она назначает эту задачу одному из потоков в пуле, и тогда задача будет обработана этим потоком. Остальные потоки в пуле доступны для обработки любых других задач, поступающих в то время, пока первый поток занят. Когда первый поток завершает обработку своей задачи, он возвращается в пул свободных потоков, готовых приступить к новой задаче. Пул потоков позволяет обрабатывать соединения параллельно, увеличивая пропускную способность вашего сервера.</p>
+<p>Мы ограничим число потоков в пуле небольшим числом, чтобы защитить нас от атак вида «отказ в обслуживании» (DoS - Denial of Service); если бы наша программа создавала новый поток в момент поступления каждого запроса, то кто-то сделавший 10 миллионов запросов к серверу, мог бы создать хаос, использовать все ресурсы нашего сервера и остановить обработку запросов.</p>
+<p>Вместо порождения неограниченного количества потоков, у нас будет фиксированное количество потоков, ожидающих в пуле. Поступающие запросы будут отправляться в пул для обработки. Пул будет иметь очередь входящих запросов. Каждый из потоков в пуле будет извлекать запрос из этой очереди, обрабатывать запрос и затем запрашивать в очереди следующий запрос. При таком дизайне мы можем обрабатывать <code>N</code> запросов одновременно, где <code>N</code> - количество потоков. Если каждый поток отвечает на длительный запрос, последующие запросы могут по-прежнему задержаться в очереди, но теперь мы увеличили количество "длинных" запросов, которые мы можем обработать, перед тем, как эта ситуация снова возникнет.</p>
+<p>Этот подход - лишь один из многих способов улучшить пропускную способность веб-сервера. Другими вариантами, на которые возможно стоило бы обратить внимание, являются: <em>модель fork/join</em>, <em>модель однопоточного не согласованного ввода-вывода</em> или <em>модель многопоточного не согласованного ввода-вывода</em>. Если вам важна эта тема, вы можете почитать больше сведений о других решениях и попробовать реализовать их самостоятельно. С таким низкоуровневым языком как Rust, любой из этих вариантов осуществим.</p>
+<p>Прежде чем приступить к реализации пула потоков, давайте поговорим о том, как должно выглядеть использование пула. Когда вы пытаетесь проектировать код, сначала необходимо написать клиентский внешнюю оболочку. Напишите API кода, чтобы он был структурирован так, как вы хотите его вызывать, затем реализуйте функциональность данной структуры, вместо подхода реализовывать функционал, а затем разрабатывать общедоступный API.</p>
+<p>Подобно тому, как мы использовали разработку через тестирование (test-driven) в проекте главы 12, мы будем использовать здесь разработку, управляемую сборщиком (compiler-driven). Мы напишем код, вызывающий нужные нам функции, а затем посмотрим на ошибки сборщика, чтобы определить, что мы должны изменить дальше, чтобы заставить код работать. Однако перед этим, в качестве отправной точки, мы рассмотрим технику, которую мы не будем применять в дальнейшем.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="code-structure-if-we-could-spawn-a-thread-for-each-request"></a></p>
+<h4 id="Порождение-потока-для-каждого-запроса"><a class="header" href="#Порождение-потока-для-каждого-запроса">Порождение потока для каждого запроса</a></h4>
+<p>Сначала давайте рассмотрим, как мог бы выглядеть код, если бы он создавал бы новый поток для каждого соединения. Как упоминалось ранее, мы не планируем использовать этот способ в окончательной реализации, из-за возможных проблем при потенциально неограниченном числе порождённых потоков. Это лишь отправная точка, с которой начнёт работу наш многопоточный сервер. Затем мы улучшим код, добавив пул потоков, и тогда разницу между этими двумя решениями будет легче заметить. В приложении 20-11 показаны изменения, которые нужно внести в код <code>main</code>, чтобы порождать новый поток для обработки каждого входящего соединения внутри цикла <code>for</code>.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust no_run"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch20-web-server/listing-20-11/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 20-11: Порождение нового потока для каждого соединения</span></p>
+<p>Как вы изучили в главе 16, функция <code>thread::spawn</code> создаст новый поток и затем запустит код замыкания в этом новом потоке. Если вы запустите этот код и загрузите <em>/sleep</em> в своём браузере, а затем загрузите <em>/</em> в двух других вкладках браузера, вы действительно увидите, что запросам к <em>/</em> не приходится ждать завершения <em>/sleep</em>. Но, как мы уже упоминали, это в какой-то момент приведёт к сильному снижению производительности системы, так как вы будете создавать новые потоки без каких-либо ограничений.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="creating-a-similar-interface-for-a-finite-number-of-threads"></a></p>
+<h4 id="Создание-конечного-числа-потоков"><a class="header" href="#Создание-конечного-числа-потоков">Создание конечного числа потоков</a></h4>
+<p>Мы хотим, чтобы наш пул потоков работал подобным, знакомым образом, чтобы переключение с потоков на пул потоков не требовало больших изменений в коде использующем наш API. В приложении 20-12 показан гипотетический внешняя оболочка для структуры <code>ThreadPool</code>, который мы хотим использовать вместо <code>thread::spawn</code>.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch20-web-server/listing-20-12/src/main.rs:here}}</code></pre>
+<p><span class="caption">Приложение 20-12: Наш наилучший внешняя оболочка <code>ThreadPool</code></span></p>
+<p>Мы используем <code>ThreadPool::new</code>, чтобы создать новый пул потоков с конфигурируемым числом потоков, в данном случае четырьмя. Затем в цикле <code>for</code> функция <code>pool.execute</code> имеет внешнюю оболочку, похожий на <code>thread::spawn</code>, в том смысле, что он так же принимает замыкание, код которого пул должен выполнить для каждого соединения. Нам нужно реализовать <code>pool.execute</code>, чтобы он принимал замыкание и передавал его потоку из пула для выполнения. Этот код пока не ссобирается, но мы постараемся, чтобы сборщик помог нам это исправить.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="building-the-threadpool-struct-using-compiler-driven-development"></a></p>
+<h4 id="Создание-threadpool-с-помощью-разработки-управляемой-сборщиком"><a class="header" href="#Создание-threadpool-с-помощью-разработки-управляемой-сборщиком">Создание <code>ThreadPool</code> с помощью разработки, управляемой сборщиком</a></h4>
+<p>Внесите изменения приложения 20-12 в файл <em>src/main.rs</em>, а затем давайте воспользуемся ошибками сборщика из приказы <code>cargo check</code> для управления нашей разработкой. Вот первая ошибка, которую мы получаем:</p>
+<pre><code class="language-console">{{#include ../listings/ch20-web-server/listing-20-12/output.txt}}
+</code></pre>
+<p>Замечательно! Ошибка говорит о том, что нам нужен вид или модуль <code>ThreadPool</code>, поэтому мы сейчас его создадим. Наша реализация <code>ThreadPool</code> не будет зависеть от того, что делает наш веб-сервер. Итак, давайте переделаем крейт <code>hello</code> из двоичного в библиотечный, чтобы хранить там нашу реализацию <code>ThreadPool</code>. После того, как мы переключимся в библиотечный крейт, мы также сможем использовать отдельную библиотеку пула потоков для любой подходящей работы, а не только для обслуживания веб-запросов.</p>
+<p>Создайте файл <em>src/lib.rs</em>, который содержит следующий код, который является простейшим определением структуры <code>ThreadPool</code>, которое мы можем иметь на данный момент:</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/lib.rs}}</code></pre>
+<p>Затем изменените файл <em>main.rs</em>, чтобы внести <code>ThreadPool</code>  из библиотечного крейта в текущую область видимости, добавив следующий код в начало <em>src/main.rs</em>:</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/main.rs:here}}</code></pre>
+<p>Этот код по-прежнему не будет работать, но давайте проверим его ещё раз, чтобы получить следующую ошибку, которую нам нужно устранить:</p>
+<pre><code class="language-console">{{#include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/output.txt}}
+</code></pre>
+<p>Эта ошибка указывает, что далее нам нужно создать ассоциированную функцию с именем <code>new</code> для <code>ThreadPool</code>. Мы также знаем, что <code>new</code> должна иметь один свойство, который может принимать <code>4</code> в качестве переменной и должен возвращать экземпляр <code>ThreadPool</code>. Давайте реализуем простейшую функцию <code>new</code>, которая будет иметь эти характеристики:</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/src/lib.rs}}</code></pre>
+<p>Мы выбираем <code>usize</code> в качестве вида свойства <code>size</code>, потому что мы знаем, что отрицательное число потоков не имеет никакого смысла. Мы также знаем, что мы будем использовать число 4 в качестве количества элементов в собрания потоков, для чего предназначен вид <code>usize</code>, как обсуждалось в разделе <a href="ch03-02-data-types.html#integer-types">"Целочисленные виды"</a><!--  --> главы 3.</p>
+<p>Давайте проверим код ещё раз:</p>
+<pre><code class="language-console">{{#include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/output.txt}}
+</code></pre>
+<p>Теперь мы ошибка возникает из-за того, что у нас нет способа <code>execute</code> в структуре <code>ThreadPool</code>. Вспомните раздел <a href="#creating-a-finite-number-of-threads">"Создание конечного числа потоков"</a><!-- ignore -->, в котором мы решили, что наш пул потоков должен иметь внешнюю оболочку, похожий на <code>thread::spawn</code>. Кроме того, мы реализуем функцию <code>execute</code>, чтобы она принимала замыкание и передавала его свободному потоку из пула для запуска.</p>
+<p>Мы определим способ <code>execute</code> у <code>ThreadPool</code>, принимающий замыкание в качестве свойства. Вспомните из раздела <a href="ch13-01-closures.html#moving-captured-values-out-of-the-closure-and-the-fn-traits">"Перемещение захваченных значений из замыканий и трейты <code>Fn</code>"</a> <!-- ignore --> главы 13 сведения о том, что мы можем принимать замыкания в качестве свойств тремя различными типажами: <code>Fn</code> , <code>FnMut</code> и <code>FnOnce</code>. Нам нужно решить, какой вид замыкания использовать здесь. Мы знаем, что в конечном счёте мы сделаем что-то похожее на реализацию встроенной библиотеки <code>thread::spawn</code>, поэтому мы можем посмотреть, какие ограничения накладывает на свой свойство сигнатура функции <code>thread::spawn</code>. Документация показывает следующее:</p>
+<pre><code class="language-rust ignore">pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
+    where
+        F: FnOnce() -&gt; T,
+        F: Send + 'static,
+        T: Send + 'static,</code></pre>
+<p>Свойство вида <code>F</code> - это как раз то, что нас важно; свойство вида <code>T</code> относится к возвращаемому значению и нам он не важен. Можно увидеть, что <code>spawn</code> использует <code>FnOnce</code> в качестве ограничения типажа у <code>F</code>. Возможно это как раз то, чего мы хотим, так как в конечном итоге мы передадим полученный в <code>execute</code> переменная в функцию <code>spawn</code>. Дополнительную уверенность в том, что <code>FnOnce</code> - это именно тот типаж, который мы хотим использовать, нам даёт факт, что поток для выполнения запроса будет выполнять замыкание этого запроса только один раз, что соответствует части  <code>Once</code> ("единожды") в названии типажа <code>FnOnce</code>.</p>
+<p>Свойство вида <code>F</code> также имеет ограничение типажа <code>Send</code> и ограничение времени жизни <code>'static</code>, которые полезны в нашей ситуации: нам нужен <code>Send</code> для передачи замыкания из одного потока в другой и <code>'static</code>, потому что мы не знаем, сколько времени поток будет выполняться. Давайте создадим способ <code>execute</code> для <code>ThreadPool</code>, который будет принимать обобщённый свойство вида <code>F</code> со следующими ограничениями:</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/no-listing-03-define-execute/src/lib.rs:here}}</code></pre>
+<p>Мы по-прежнему используем <code>()</code> после <code>FnOnce</code> потому что типаж <code>FnOnce</code> представляет замыкание, которое не принимает свойств и возвращает единичный вид <code>()</code>. Также как и при определении функций, вид возвращаемого значения в сигнатуре может быть опущен, но даже если у нас нет свойств, нам все равно нужны скобки.</p>
+<p>Опять же, это самая простая реализация способа <code>execute</code>: она ничего не делает, мы просто пытаемся сделать код собираемым. Давайте проверим снова:</p>
+<pre><code class="language-console">{{#include ../listings/ch20-web-server/no-listing-03-define-execute/output.txt}}
+</code></pre>
+<p>Сейчас мы получаем только предупреждения, что означает, что код собирается! Но обратите внимание, если вы попробуете <code>cargo run</code> и сделаете запрос в браузере, вы увидите ошибки в браузере, которые мы видели в начале главы. Наша библиотека на самом деле ещё не вызывает замыкание, переданное в <code>execute</code>!</p>
+<blockquote>
+<p>Примечание: вы возможно слышали высказывание о языках со строгими сборщиками, таких как Haskell и Rust, которое звучит так: «Если код собирается, то он работает». Но это высказывание не всегда верно. Наш проект собирается, но абсолютно ничего не делает! Если бы мы создавали существующий, законченный проект, это был бы хороший момент начать писать модульные тесты, чтобы проверять, что код собирается <em>и</em> имеет желаемое поведение.</p>
+</blockquote>
+<h4 id="Проверка-количества-потоков-в-new"><a class="header" href="#Проверка-количества-потоков-в-new">Проверка количества потоков в <code>new</code></a></h4>
+<p>Мы ничего не делаем с свойствами <code>new</code> и <code>execute</code>. Давайте реализуем тела этих функций с нужным нам поведением. Для начала давайте подумаем о <code>new</code>. Ранее мы выбрали беззнаковый вид для свойства <code>size</code>, потому что пул с отрицательным числом потоков не имеет смысла. Пул с нулём потоков также не имеет смысла, однако ноль - это вполне допустимое значение <code>usize</code>. Мы добавим код для проверки того, что <code>size</code> больше нуля, прежде чем вернуть экземпляр <code>ThreadPool</code>, и заставим программу паниковать, если она получит ноль, используя макрос <code>assert!</code>, как показано в приложении 20-13.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-13/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 20-13: Реализация <code>ThreadPool::new</code> с аварийным завершениям работы, если <code>size</code> равен нулю</span></p>
+<p>Мы добавили немного документации для нашей структуры <code>ThreadPool</code> с помощью комментариев. Обратите внимание, что мы следовали хорошим практикам документирования, добавив раздел, в котором указывается ситуация, при которой функция может аварийно завершаться, как это обсуждалось в главе 14. Попробуйте запустить <code>cargo doc --open</code> и кликнуть на структуру <code>ThreadPool</code>, чтобы увидеть как выглядит сгенерированная документация для <code>new</code>!</p>
+<p>Вместо добавления макроса <code>assert!</code>, как мы здесь сделали, мы могли бы преобразовать функцию <code>new</code> в функцию <code>build</code> таким образом, чтобы она возвращала <code>Result</code> , подобно тому, как мы делали в функции <code>Config::new</code> проекта ввода/вывода в приложении 12-9. Но в данном случае мы решили, что попытка создания пула потоков без указания хотя бы одного потока должна быть непоправимой ошибкой. Если вы чувствуете такое стремление, попробуйте написать функцию <code>build</code>  с сигнатурой ниже, для сравнения с функцией <code>new</code>:</p>
+<pre><code class="language-rust ignore">pub fn build(size: usize) -&gt; Result&lt;ThreadPool, PoolCreationError&gt; {</code></pre>
+<h4 id="Создание-места-для-хранения-потоков"><a class="header" href="#Создание-места-для-хранения-потоков">Создание места для хранения потоков</a></h4>
+<p>Теперь, имея возможность удостовериться, что количество потоков для хранения в пуле соответствует требованиям, мы можем создавать эти потоки и сохранять их в структуре <code>ThreadPool</code> перед тем как возвратить её. Но как мы "сохраним" поток? Давайте ещё раз посмотрим на сигнатуру <code>thread::spawn</code>:</p>
+<pre><code class="language-rust ignore">pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
+    where
+        F: FnOnce() -&gt; T,
+        F: Send + 'static,
+        T: Send + 'static,</code></pre>
+<p>Функция <code>spawn</code> возвращает вид <code>JoinHandle&lt;T&gt;</code>, где <code>T</code> является видом, который возвращает замыкание. Давайте попробуем использовать <code>JoinHandle</code> и посмотрим, что произойдёт. В нашем случае замыкания, которые мы передаём пулу потоков, будут обрабатывать соединение и не будут возвращать ничего, поэтому <code>T</code> будет единичным (unit) видом <code>()</code>.</p>
+<p>Код в приложении 20-14 ссобирается, но пока не создаст ни одного потока. Мы изменили определение <code>ThreadPool</code> так, чтобы он содержал вектор экземпляров <code>thread::JoinHandle&lt;()&gt;</code>, инициализировали вектор ёмкостью <code>size</code>, установили цикл <code>for</code>, который будет выполнять некоторый код для создания потоков, и вернули экземпляр <code>ThreadPool</code>, содержащий их.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust ignore not_desired_behavior">{{#rustdoc_include ../listings/ch20-web-server/listing-20-14/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 20-14: Создание вектора в <code>ThreadPool</code> для хранения потоков</span></p>
+<p>Мы включили <code>std::thread</code> в область видимости библиотечного крейта, потому что мы используем <code>thread::JoinHandle</code> в качестве вида элементов вектора в <code>ThreadPool</code>.</p>
+<p>После получения корректного значения size, наш <code>ThreadPool</code> создаёт новый вектор, который может содержать <code>size</code> элементов. Функция <code>with_capacity</code> выполняет ту же задачу, что и <code>Vec::new</code>, но с важным отличием: она заранее выделяет необходимый объём памяти в векторе. Поскольку мы знаем, что нам нужно хранить <code>size</code> элементов в векторе, предварительное выделение памяти для этих элементов будет немного более эффективным, чем использование <code>Vec::new</code>, при котором размер вектора будет увеличиваться по мере вставки элементов.</p>
+<p>Если вы снова запустите приказ <code>cargo check</code>, она должна завершиться успешно.</p>
+<h4 id="Структура-worker-ответственная-за-отправку-кода-из-threadpool-в-поток"><a class="header" href="#Структура-worker-ответственная-за-отправку-кода-из-threadpool-в-поток">Структура <code>Worker</code>, ответственная за отправку кода из <code>ThreadPool</code> в поток</a></h4>
+<p>Мы целенаправленно оставили комментарий в цикле <code>for</code> в Приложении 20-14 по поводу создания потоков. Сейчас мы разберёмся, как на самом деле создаются потоки. Стандартная библиотека предоставляет <code>thread::spawn</code> для создания потоков, причём <code>thread::spawn</code> ожидает получить некоторый код, который поток должен выполнить, как только он будет создан. Однако в нашем случае мы хотим создавать потоки и заставлять их <em>ожидать</em> код, который мы будем передавать им позже. Реализация потоков в встроенной библиотеке не предоставляет никакого способа сделать это, мы должны реализовать это вручную.</p>
+<p>Мы будем реализовывать это поведение, добавив новую структуру данных между <code>ThreadPool</code> и потоками, которая будет управлять этим новым поведением. Мы назовём эту структуру <code>Worker</code> ("работник"), это общепринятое имя в реализации пулов. Работник берёт код, который нужно выполнить, и запускает этот код внутри рабочего потока. Представьте людей, работающих на кухне ресторана: работники ожидают, пока не поступят заказы от клиентов, а затем они несут ответственность за принятие этих заказов и их выполнение.</p>
+<p>Вместо того чтобы хранить вектор экземпляров <code>JoinHandle&lt;()&gt;</code> в пуле потоков, мы будем хранить экземпляры структуры <code>Worker</code>. Каждый <code>Worker</code> будет хранить один экземпляр <code>JoinHandle&lt;()&gt;</code>. Затем мы реализуем способ у <code>Worker</code>, который будет принимать замыкание и отправлять его в существующий поток для выполнения. Для того чтобы мы могли различать работники в пуле при логировании или отладке, мы также присвоим каждому работнику <code>id</code>.</p>
+<p>Вот как выглядит новая последовательность действий, которые будут происходить при создании <code>ThreadPool</code>. Мы реализуем код, который будет отправлять замыкание в поток, после того, как у нас будет <code>Worker</code> , заданный следующим образом:</p>
+<ol>
+<li>Определим структуру <code>Worker</code>, которая содержит <code>id</code> и <code>JoinHandle&lt;()&gt;</code>.</li>
+<li>Изменим <code>ThreadPool</code>, чтобы он содержал вектор экземпляров <code>Worker</code>.</li>
+<li>Определим функцию <code>Worker::new</code>, которая принимает номер <code>id</code> и возвращает экземпляр <code>Worker</code>, который содержит <code>id</code> и поток, порождённый с пустым замыканием.</li>
+<li>В <code>ThreadPool::new</code> используем счётчик цикла <code>for</code> для генерации <code>id</code>, создаём новый <code>Worker</code> с этим <code>id</code> и сохраняем экземпляр "работника" в вектор.</li>
+</ol>
+<p>Если вы готовы принять вызов, попробуйте реализовать эти изменения самостоятельно, не глядя на код в приложении 20-15.</p>
+<p>Готовы? Вот приложение 20-15 с одним из способов сделать указанные ранее изменения.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-15/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 20-15: Изменение <code>ThreadPool</code> для хранения экземпляров <code>Worker</code> вместо непосредственного хранения потоков</span></p>
+<p>Мы изменили название поля в <code>ThreadPool</code> с <code>threads</code> на <code>workers</code>, поскольку теперь оно содержит экземпляры <code>Worker</code> вместо экземпляров <code>JoinHandle&lt;()&gt;</code>. Мы используем счётчик в цикле <code>for</code> для передачи цифрового определителя в качестве переменной <code>Worker::new</code>, и сохраняем каждый новый <code>Worker</code> в векторе с именем <code>workers</code>.</p>
+<p>Внешний код (вроде нашего сервера в <em>src/bin/main.rs</em>) не обязательно должен знать подробности реализации, касающиеся использования структуры <code>Worker</code> внутри <code>ThreadPool</code>, поэтому мы делаем структуру <code>Worker</code> и её функцию <code>new</code> приватными. Функция <code>Worker::new</code> использует заданный нами <code>id</code> и сохраняет экземпляр <code>JoinHandle&lt;()&gt;</code>, который создаётся при порождении нового потока с пустым замыканием.</p>
+<blockquote>
+<p>Примечание: Если операционная система не может создать поток из-за нехватки системных ресурсов, <code>thread::spawn</code> аварийно завершится. Это приведёт к аварийному завершению нашего сервера целиком, даже если некоторые потоки были созданы успешно. Для простоты будем считать, что нас устраивает такое поведение, но в существующей реализации пула потоков вы, вероятно, захотите использовать <a href="../std/thread/struct.Builder.html"><code>std::thread::Builder</code></a><!-- ignore --> и его способ <a href="../std/thread/struct.Builder.html#method.spawn"><code>spawn</code></a><!-- ignore -->, который вместо этого возвращает <code>Result</code> .</p>
+</blockquote>
+<p>Этот код ссобирается и будет хранить количество экземпляров <code>Worker</code>, которое мы указали в качестве переменной функции <code>ThreadPool::new</code>. Но мы всё <em>ещё</em> не обрабатываем замыкание, которое мы получаем в способе <code>execute</code>. Давайте посмотрим, как это сделать далее.</p>
+<h4 id="Отправка-запросов-в-потоки-через-потоки"><a class="header" href="#Отправка-запросов-в-потоки-через-потоки">Отправка запросов в потоки через потоки</a></h4>
+<p>Следующая проблема, с которой мы будем бороться, заключается в том, что замыкания, переданные в <code>thread::spawn</code> абсолютно ничего не делают. Сейчас мы получаем замыкание, которое хотим выполнить, в способе <code>execute</code>. Но мы должны передать какое-то замыкание в способ <code>thread::spawn</code>, при создании каждого <code>Worker</code>  во время создания <code>ThreadPool</code>.</p>
+<p>Мы хотим, чтобы вновь созданные структуры <code>Worker</code> извлекали код для запуска из очереди, хранящейся в <code>ThreadPool</code> и отправляли этот код в свой поток для выполнения.</p>
+<p>потоки (channels), простой способ коммуникации между двумя потоками, с которыми мы познакомились в главе 16, кажется наилучше подойдут для этого сценария. Мы будем использовать поток в качестве очереди заданий, а приказ <code>execute</code> отправит задание из <code>ThreadPool</code> экземплярам <code>Worker</code>, которые будут отправлять задание в свой поток. План таков:</p>
+<ol>
+<li><code>ThreadPool</code> создаст поток и будет хранить отправитель.</li>
+<li>Каждый <code>Worker</code> будет хранить приёмник.</li>
+<li>Мы создадим новую структуру <code>Job</code>, которая будет хранить замыкания, которые мы хотим отправить в поток.</li>
+<li>Способ <code>execute</code> отправит задание, которое он хочет выполнить, в отправляющую сторону потока.</li>
+<li>В своём потоке <code>Worker</code> будет циклически опрашивать принимающую сторону потока и выполнять замыкание любого задания, которое он получит.</li>
+</ol>
+<p>Давайте начнём с создания потока в <code>ThreadPool::new</code> и удержания отправляющей стороны в экземпляре <code>ThreadPool</code>, как показано в приложении 20-16. В структуре <code>Job</code> сейчас ничего не содержится, но это будет вид элемента, который мы отправляем в поток.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-16/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 20-16: Модификация <code>ThreadPool</code> для хранения отправляющей части потока, который отправляет экземпляры <code>Job</code></span></p>
+<p>В <code>ThreadPool::new</code> мы создаём наш новый поток и сохраняем в пуле его отправляющую сторону. Код успешно ссобирается.</p>
+<p>Давайте попробуем передавать принимающую сторону потока каждому "работнику" (структуре Worker), когда пул потоков создаёт поток. Мы знаем, что хотим использовать получающую часть потока в потоке, порождаемым "работником", поэтому мы будем ссылаться на свойство <code>receiver</code> в замыкании. Код 20-17 пока не собирается.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch20-web-server/listing-20-17/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 20-17: Передача принимающей части потока "работникам"</span></p>
+<p>Мы внесли несколько небольших и простых изменений: мы передаём принимающую часть потока в <code>Worker::new</code>, а затем используем его внутри замыкания.</p>
+<p>При попытке проверить код, мы получаем ошибку:</p>
+<pre><code class="language-console">{{#include ../listings/ch20-web-server/listing-20-17/output.txt}}
+</code></pre>
+<p>Код пытается передать <code>receiver</code> нескольким экземплярам <code>Worker</code>. Это не сработает, поскольку, как вы можете помнить из главы 16: реализация потока, которую предоставляет Rust - несколько <em>производителей</em>, один <em>потребитель</em>. Это означает, что мы не можем просто клонировать принимающую сторону потока, чтобы исправить этот код. Кроме этого, мы не хотим отправлять одно и то же сообщение нескольким потребителям, поэтому нам нужен единый список сообщений для множества обработчиков, чтобы каждое сообщение обрабатывалось лишь один раз.</p>
+<p>Кроме того, удаление задачи из очереди потока включает изменение <code>receiver</code>, поэтому потокам необходим безопасный способ делиться и изменять <code>receiver</code>, в противном случае мы можем получить условия гонки (как описано в главе 16).</p>
+<p>Вспомните умные указатели, которые обсуждались в главе 16: чтобы делиться владением между несколькими потоками и разрешать потокам изменять значение, нам нужно использовать вид <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>. Вид <code>Arc</code> позволит нескольким "работникам" владеть получателем (receiver), а <code>Mutex</code> заверяет что только один "работник" сможет получить задание (job) от получателя за раз. Приложение 20-18 показывает изменения, которые мы должны сделать.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-18/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 20-18. Совместное использование приёмника в "работниках" с применением <code>Arc</code> и <code>Mutex</code></span></p>
+<p>В <code>ThreadPool::new</code> мы помещаем принимающую сторону потока внутрь <code>Arc</code> и <code>Mutex</code>. Для каждого нового "работника" мы клонируем <code>Arc</code>, чтобы увеличить счётчик ссылок так, что "работники" могут разделять владение принимающей стороной потока.</p>
+<p>С этими изменениями код собирается! Мы подбираемся к цели!</p>
+<h4 id="Реализация-способа-execute"><a class="header" href="#Реализация-способа-execute">Реализация способа <code>execute</code></a></h4>
+<p>Давайте реализуем наконец способ <code>execute</code> у структуры <code>ThreadPool</code>. Мы также изменим вид <code>Job</code> со структуры на псевдоним вида для типаж-объекта, который будет содержать вид замыкания, принимаемый способом <code>execute</code>. Как описано в разделе <a href="ch19-04-advanced-types.html#creating-type-synonyms-with-type-aliases">"Создание синонимов вида с помощью псевдонимов типа"</a><!-- ignore --> главы 19, псевдонимы видов позволяют делать длинные виды короче, облегчая их использование. Посмотрите на приложение 20-19.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-19/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 20-19: Создание псевдонима вида <code>Job</code> для указателя <code>Box</code>, содержащего каждое замыкание и затем отправляющее задание (job) в поток</span></p>
+<p>После создания нового экземпляра <code>Job</code> с замыканием, полученным в <code>execute</code>, мы посылаем его через отправляющий конец потока. На тот случай, если отправка не удастся, вызываем <code>unwrap</code> у <code>send</code>. Это может произойти, например, если мы остановим выполнение всех наших потоков, что означает, что принимающая сторона прекратила получать новые сообщения. На данный момент мы не можем остановить выполнение наших потоков: наши потоки будут функционировать до тех пор, пока существует пул. Причина, по которой мы используем <code>unwrap</code>, заключается в том, что, хотя мы знаем, что сбой не произойдёт, сборщик этого не знает.</p>
+<p>Но мы ещё не закончили! В "работнике" (worker) наше замыкание, переданное в <code>thread::spawn</code> все ещё <em>ссылается</em> только на принимающую сторону потока. Вместо этого нам нужно, чтобы замыкание работало в бесконечном цикле, запрашивая задание у принимающей части потока и выполняя задание, когда оно принято. Давайте внесём изменения, показанные в приложении 20-20 внутри <code>Worker::new</code>.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-web-server/listing-20-20/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 20-20: Получение и выполнение заданий в потоке "работника"</span></p>
+<p>Здесь мы сначала вызываем <code>lock</code> у <code>receiver</code>, чтобы получить мьютекс, а затем вызываем <code>unwrap</code>, чтобы аварийно завершить работу при любых ошибках. Захват блокировки может завершиться неудачей, если мьютекс находится в <em>отравленном</em> состоянии (poisoned state), что может произойти, если какой-то другой поток завершился аварийно, удерживая блокировку, вместо снятия блокировки. В этой ситуации вызвать <code>unwrap</code> для аварийного завершения потока вполне оправдано. Не стесняйтесь заменить <code>unwrap</code> на <code>expect</code> с сообщением об ошибке, которое имеет для вас значение.</p>
+<p>Если мы получили блокировку мьютекса, мы вызываем <code>recv</code>, чтобы получить <code>Job</code> из потока. Последний вызов <code>unwrap</code> позволяет миновать любые ошибки, которые могут возникнуть, если поток, управляющий отправитель, прекратил функционировать, подобно тому, как способ <code>send</code> возвращает <code>Err</code>, если получатель не принимает сообщение.</p>
+<p>Вызов <code>recv</code> - блокирующий, поэтому пока задач нет, текущий поток будет ждать, пока задача не появится. <code>Mutex&lt;T&gt;</code> заверяет, что только один поток <code>Worker</code> за раз попытается запросить задачу.</p>
+<p>Наш пул потоков теперь находится в рабочем состоянии! Выполните <code>cargo run</code> и сделайте несколько запросов:</p>
+<!-- manual-regeneration
+cd listings/ch20-web-server/listing-20-20
+cargo run
+make some requests to 127.0.0.1:7878
+Can't automate because the output depends on making requests
+-->
+<pre><code class="language-console">$ cargo run
+   Compiling hello v0.1.0 (file:///projects/hello)
+warning: field is never read: `workers`
+ --&gt; src/lib.rs:7:5
+  |
+7 |     workers: Vec&lt;Worker&gt;,
+  |     ^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` on by default
+
+warning: field is never read: `id`
+  --&gt; src/lib.rs:48:5
+   |
+48 |     id: usize,
+   |     ^^^^^^^^^
+
+warning: field is never read: `thread`
+  --&gt; src/lib.rs:49:5
+   |
+49 |     thread: thread::JoinHandle&lt;()&gt;,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `hello` (lib) generated 3 warnings
+    Finished dev [unoptimized + debuginfo] target(s) in 1.40s
+     Running `target/debug/hello`
+Worker 0 got a job; executing.
+Worker 2 got a job; executing.
+Worker 1 got a job; executing.
+Worker 3 got a job; executing.
+Worker 0 got a job; executing.
+Worker 2 got a job; executing.
+Worker 1 got a job; executing.
+Worker 3 got a job; executing.
+Worker 0 got a job; executing.
+Worker 2 got a job; executing.
+</code></pre>
+<p>Успех! Теперь у нас есть пул потоков, который обрабатывает соединения не согласованно. Никогда не создаётся более четырёх потоков, поэтому наша система не будет перегружена, если сервер получит много запросов. Если мы отправим запрос ресурса <em>/sleep</em>, сервер сможет обслуживать другие запросы, обрабатывая их в другом потоке.</p>
+<blockquote>
+<p>Примечание: если вы запросите <em>/sleep</em> в нескольких окнах браузера одновременно, они могут загружаться по одному, с интервалами в 5 секунд. Некоторые веб-браузеры выполняют несколько экземпляров одного и того же запроса последовательно из-за кэширования. Такое ограничение не связано с работой нашего веб-сервера.</p>
+</blockquote>
+<p>После изучения цикла <code>while let</code> в главе 18 вы можете удивиться, почему мы не написали код рабочего потока (worker thread), как показано в приложении 20-22.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust ignore not_desired_behavior">{{#rustdoc_include ../listings/ch20-web-server/listing-20-21/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 20-22: Иная реализация <code>Worker::new</code> с использованием <code>while let</code></span></p>
+<p>Этот код собирается и запускается, но не даёт желаемого поведения: медленный запрос всё равно приведёт к тому, что другие запросы будут ждать обработки. Причина здесь несколько тоньше: структура <code>Mutex</code> не имеет публичного способа <code>unlock</code>, так как владение блокировкой основано на времени жизни <code>MutexGuard&lt;T&gt;</code> внутри <code>LockResult&lt;MutexGuard&lt;T&gt;&gt;</code>, которое возвращает способ <code>lock</code>. Во время сборки анализатор заимствований может проследить за выполнением правила, согласно которому к ресурсу, охраняемому <code>Mutex</code>, нельзя получить доступ пока мы удерживаем блокировку. Однако в этой реализация мы также можем получить ситуацию, когда блокировка будет удерживаться дольше, чем предполагалось, если мы не будем внимательно учитывать время жизни <code>MutexGuard&lt;T&gt;</code>.</p>
+<p>Код в приложении 20-20, использующий <code>let job = receiver.lock().unwrap().recv().unwrap();</code> работает, потому что при использовании <code>let</code> любые промежуточные значения, используемые в выражении справа от знака равенства, немедленно уничтожаются после завершения указания <code>let</code>. Однако <code>while let</code> (и <code>if let</code> и <code>match</code>) не удаляет временные значения до конца связанного раздела. Таким образом, в приложении 20-21 блокировка не снимается в течение всего времени вызова <code>job()</code>, что означает, что другие работники не могут получать задания.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch20-01-single-threaded.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch20-03-graceful-shutdown-and-cleanup.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch20-01-single-threaded.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch20-03-graceful-shutdown-and-cleanup.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE HTML>
+<html lang="ru-RU" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Что такое &quot;владение&quot;? - Язык программирования Rust</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">Язык программирования Rust</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Предисловие</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Введение</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> С чего начать</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Установка</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Привет, Мир!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-cargo.html"><strong aria-hidden="true">1.3.</strong> Hello, Cargo!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-guessing-game-tutorial.html"><strong aria-hidden="true">2.</strong> Программирование игры в загадки</a></li><li class="chapter-item expanded "><a href="ch03-00-common-programming-concepts.html"><strong aria-hidden="true">3.</strong> Общие концепции программирования</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-variables-and-mutability.html"><strong aria-hidden="true">3.1.</strong> Переменные и изменяемость</a></li><li class="chapter-item expanded "><a href="ch03-02-data-types.html"><strong aria-hidden="true">3.2.</strong> Виды Данных</a></li><li class="chapter-item expanded "><a href="ch03-03-how-functions-work.html"><strong aria-hidden="true">3.3.</strong> Функции</a></li><li class="chapter-item expanded "><a href="ch03-04-comments.html"><strong aria-hidden="true">3.4.</strong> Комментарии</a></li><li class="chapter-item expanded "><a href="ch03-05-control-flow.html"><strong aria-hidden="true">3.5.</strong> Управляющие конструкции</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-understanding-ownership.html"><strong aria-hidden="true">4.</strong> Понимание владения</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-what-is-ownership.html" class="active"><strong aria-hidden="true">4.1.</strong> Что такое "владение"?</a></li><li class="chapter-item expanded "><a href="ch04-02-references-and-borrowing.html"><strong aria-hidden="true">4.2.</strong> Ссылки и заимствование</a></li><li class="chapter-item expanded "><a href="ch04-03-slices.html"><strong aria-hidden="true">4.3.</strong> Вид среза</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-structs.html"><strong aria-hidden="true">5.</strong> Использование структур для объединения связанных данных</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-defining-structs.html"><strong aria-hidden="true">5.1.</strong> Определение и создание экземпляров структур</a></li><li class="chapter-item expanded "><a href="ch05-02-example-structs.html"><strong aria-hidden="true">5.2.</strong> Пример программы, использующей структуры</a></li><li class="chapter-item expanded "><a href="ch05-03-method-syntax.html"><strong aria-hidden="true">5.3.</strong> Синтаксис способа</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-enums.html"><strong aria-hidden="true">6.</strong> Перечисления и сопоставление с образцом</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-defining-an-enum.html"><strong aria-hidden="true">6.1.</strong> Определение Enum</a></li><li class="chapter-item expanded "><a href="ch06-02-match.html"><strong aria-hidden="true">6.2.</strong> Конструкция потока управления match</a></li><li class="chapter-item expanded "><a href="ch06-03-if-let.html"><strong aria-hidden="true">6.3.</strong> Лаконичный поток управления с if let</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-managing-growing-projects-with-packages-crates-and-modules.html"><strong aria-hidden="true">7.</strong> Управление растущими проектами с помощью пакетов, крейтов и модулей</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-packages-and-crates.html"><strong aria-hidden="true">7.1.</strong> Пакеты и крейты</a></li><li class="chapter-item expanded "><a href="ch07-02-defining-modules-to-control-scope-and-privacy.html"><strong aria-hidden="true">7.2.</strong> Определение модулей для управления областью действия и конфиденциальностью</a></li><li class="chapter-item expanded "><a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html"><strong aria-hidden="true">7.3.</strong> Пути для ссылки на элемент в дереве модулей</a></li><li class="chapter-item expanded "><a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html"><strong aria-hidden="true">7.4.</strong> Введение путей в область видимости с помощью ключевого слова use</a></li><li class="chapter-item expanded "><a href="ch07-05-separating-modules-into-different-files.html"><strong aria-hidden="true">7.5.</strong> Separating Modules into Different Files</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-common-collections.html"><strong aria-hidden="true">8.</strong> Общие собрания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-vectors.html"><strong aria-hidden="true">8.1.</strong> Хранение списков значений с векторами</a></li><li class="chapter-item expanded "><a href="ch08-02-strings.html"><strong aria-hidden="true">8.2.</strong> Хранение закодированного текста UTF-8 со строками</a></li><li class="chapter-item expanded "><a href="ch08-03-hash-maps.html"><strong aria-hidden="true">8.3.</strong> Хранение ключей со связанными значениями в HashMap</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-error-handling.html"><strong aria-hidden="true">9.</strong> Обработка ошибок</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-unrecoverable-errors-with-panic.html"><strong aria-hidden="true">9.1.</strong> Неустранимые ошибки с panic!</a></li><li class="chapter-item expanded "><a href="ch09-02-recoverable-errors-with-result.html"><strong aria-hidden="true">9.2.</strong> Устранимые ошибки с Result</a></li><li class="chapter-item expanded "><a href="ch09-03-to-panic-or-not-to-panic.html"><strong aria-hidden="true">9.3.</strong> panic! или Не panic!</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-generics.html"><strong aria-hidden="true">10.</strong> Общие виды, трейты (характеристики) и время жизни</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch10-01-syntax.html"><strong aria-hidden="true">10.1.</strong> Обобщённые виды данных</a></li><li class="chapter-item expanded "><a href="ch10-02-traits.html"><strong aria-hidden="true">10.2.</strong> Трейты (характеристики): определение разделяемого поведения</a></li><li class="chapter-item expanded "><a href="ch10-03-lifetime-syntax.html"><strong aria-hidden="true">10.3.</strong> Валидация ссылок посредством сроков жизни</a></li></ol></li><li class="chapter-item expanded "><a href="ch11-00-testing.html"><strong aria-hidden="true">11.</strong> Написание самостоятельно х тестов</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch11-01-writing-tests.html"><strong aria-hidden="true">11.1.</strong> Как писать тесты</a></li><li class="chapter-item expanded "><a href="ch11-02-running-tests.html"><strong aria-hidden="true">11.2.</strong> Управление выполнением тестов</a></li><li class="chapter-item expanded "><a href="ch11-03-test-organization.html"><strong aria-hidden="true">11.3.</strong> Организация тестов</a></li></ol></li><li class="chapter-item expanded "><a href="ch12-00-an-io-project.html"><strong aria-hidden="true">12.</strong> Проект с вводом-выводом: создание программы приказной строки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch12-01-accepting-command-line-arguments.html"><strong aria-hidden="true">12.1.</strong> Получение переменных приказной строки</a></li><li class="chapter-item expanded "><a href="ch12-02-reading-a-file.html"><strong aria-hidden="true">12.2.</strong> Чтение файла</a></li><li class="chapter-item expanded "><a href="ch12-03-improving-error-handling-and-modularity.html"><strong aria-hidden="true">12.3.</strong> Рефакторинг для обеспечения модульности и улучшения обработки ошибок</a></li><li class="chapter-item expanded "><a href="ch12-04-testing-the-librarys-functionality.html"><strong aria-hidden="true">12.4.</strong> Разработка функциональности библиотеки с помощью разработки через тестирование</a></li><li class="chapter-item expanded "><a href="ch12-05-working-with-environment-variables.html"><strong aria-hidden="true">12.5.</strong> Работа с переменными среды</a></li><li class="chapter-item expanded "><a href="ch12-06-writing-to-stderr-instead-of-stdout.html"><strong aria-hidden="true">12.6.</strong> Запись сообщений об ошибках в stderr вместо stdout</a></li></ol></li><li class="chapter-item expanded "><a href="ch13-00-functional-features.html"><strong aria-hidden="true">13.</strong> Функциональные возможности языка: повторители и замыкания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch13-01-closures.html"><strong aria-hidden="true">13.1.</strong> Замыкания: анонимные функции, которые захватывают своё окружение</a></li><li class="chapter-item expanded "><a href="ch13-02-iterators.html"><strong aria-hidden="true">13.2.</strong> Обработка последовательности элементов с помощью повторителей</a></li><li class="chapter-item expanded "><a href="ch13-03-improving-our-io-project.html"><strong aria-hidden="true">13.3.</strong> Улучшение нашего проекта с вводом/выводом</a></li><li class="chapter-item expanded "><a href="ch13-04-performance.html"><strong aria-hidden="true">13.4.</strong> Сравнение производительности: циклы и повторители</a></li></ol></li><li class="chapter-item expanded "><a href="ch14-00-more-about-cargo.html"><strong aria-hidden="true">14.</strong> Подробнее о Cargo и Crates.io</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch14-01-release-profiles.html"><strong aria-hidden="true">14.1.</strong> Настройка билдов с помощью профилей выпуска</a></li><li class="chapter-item expanded "><a href="ch14-02-publishing-to-crates-io.html"><strong aria-hidden="true">14.2.</strong> Публикация крейта на Crates.io</a></li><li class="chapter-item expanded "><a href="ch14-03-cargo-workspaces.html"><strong aria-hidden="true">14.3.</strong> Рабочие области Cargo</a></li><li class="chapter-item expanded "><a href="ch14-04-installing-binaries.html"><strong aria-hidden="true">14.4.</strong> Установка двоичных файлов с Crates.io с помощью cargo install</a></li><li class="chapter-item expanded "><a href="ch14-05-extending-cargo.html"><strong aria-hidden="true">14.5.</strong> Расширение возможностей Cargo путём добавления пользовательских приказов</a></li></ol></li><li class="chapter-item expanded "><a href="ch15-00-smart-pointers.html"><strong aria-hidden="true">15.</strong> Умные указатели</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch15-01-box.html"><strong aria-hidden="true">15.1.</strong> Использование Box&lt;T&gt; для указания на данные в куче</a></li><li class="chapter-item expanded "><a href="ch15-02-deref.html"><strong aria-hidden="true">15.2.</strong> Работа с умными указателями как с обычными ссылками с помощью трейта Deref</a></li><li class="chapter-item expanded "><a href="ch15-03-drop.html"><strong aria-hidden="true">15.3.</strong> Выполнение кода при очистке с помощью трейта Drop</a></li><li class="chapter-item expanded "><a href="ch15-04-rc.html"><strong aria-hidden="true">15.4.</strong> Rc&lt;T&gt;, умный указатель с подсчётом ссылок</a></li><li class="chapter-item expanded "><a href="ch15-05-interior-mutability.html"><strong aria-hidden="true">15.5.</strong> RefCell&lt;T&gt; и внутренняя изменяемость</a></li><li class="chapter-item expanded "><a href="ch15-06-reference-cycles.html"><strong aria-hidden="true">15.6.</strong> Ссылочные циклы могут привести к утечке памяти</a></li></ol></li><li class="chapter-item expanded "><a href="ch16-00-concurrency.html"><strong aria-hidden="true">16.</strong> Безбоязненный параллелизм</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch16-01-threads.html"><strong aria-hidden="true">16.1.</strong> Использование потоков для параллельного выполнения кода</a></li><li class="chapter-item expanded "><a href="ch16-02-message-passing.html"><strong aria-hidden="true">16.2.</strong> Пересылка сообщений для передачи данных между потоками</a></li><li class="chapter-item expanded "><a href="ch16-03-shared-state.html"><strong aria-hidden="true">16.3.</strong> Параллелизм с общим состоянием</a></li><li class="chapter-item expanded "><a href="ch16-04-extensible-concurrency-sync-and-send.html"><strong aria-hidden="true">16.4.</strong> Расширяемый параллелизм с помощью трейтов Sync и Send</a></li></ol></li><li class="chapter-item expanded "><a href="ch17-00-oop.html"><strong aria-hidden="true">17.</strong> Возможности объектно-ориентированного программирования Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch17-01-what-is-oo.html"><strong aria-hidden="true">17.1.</strong> Характеристики объектно-ориентированных языков</a></li><li class="chapter-item expanded "><a href="ch17-02-trait-objects.html"><strong aria-hidden="true">17.2.</strong> Использование трейт-объектов, допускающих значения разных видов</a></li><li class="chapter-item expanded "><a href="ch17-03-oo-design-patterns.html"><strong aria-hidden="true">17.3.</strong> Реализация шаблона объектно-ориентированного проектирования</a></li></ol></li><li class="chapter-item expanded "><a href="ch18-00-patterns.html"><strong aria-hidden="true">18.</strong> Шаблоны и сопоставление</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch18-01-all-the-places-for-patterns.html"><strong aria-hidden="true">18.1.</strong> Все места, где могут использоваться шаблоны</a></li><li class="chapter-item expanded "><a href="ch18-02-refutability.html"><strong aria-hidden="true">18.2.</strong> Опровержимость: может ли шаблон не соответствовать</a></li><li class="chapter-item expanded "><a href="ch18-03-pattern-syntax.html"><strong aria-hidden="true">18.3.</strong> Синтаксис шаблона</a></li></ol></li><li class="chapter-item expanded "><a href="ch19-00-advanced-features.html"><strong aria-hidden="true">19.</strong> Расширенные возможности</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch19-01-unsafe-rust.html"><strong aria-hidden="true">19.1.</strong> Небезопасный код в Rust</a></li><li class="chapter-item expanded "><a href="ch19-03-advanced-traits.html"><strong aria-hidden="true">19.2.</strong> Продвинутые типажи</a></li><li class="chapter-item expanded "><a href="ch19-04-advanced-types.html"><strong aria-hidden="true">19.3.</strong> Продвинутые виды</a></li><li class="chapter-item expanded "><a href="ch19-05-advanced-functions-and-closures.html"><strong aria-hidden="true">19.4.</strong> Продвинутые функции и замыкания</a></li><li class="chapter-item expanded "><a href="ch19-06-macros.html"><strong aria-hidden="true">19.5.</strong> Макросы</a></li></ol></li><li class="chapter-item expanded "><a href="ch20-00-final-project-a-web-server.html"><strong aria-hidden="true">20.</strong> Финальный проект: создание многопоточного веб-сервера</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch20-01-single-threaded.html"><strong aria-hidden="true">20.1.</strong> Создание однопоточного веб-сервера</a></li><li class="chapter-item expanded "><a href="ch20-02-multithreaded.html"><strong aria-hidden="true">20.2.</strong> Превращение нашего однопоточного сервера в многопоточный сервер</a></li><li class="chapter-item expanded "><a href="ch20-03-graceful-shutdown-and-cleanup.html"><strong aria-hidden="true">20.3.</strong> 	Мягкое завершение работы и очистка</a></li></ol></li><li class="chapter-item expanded "><a href="appendix-00.html"><strong aria-hidden="true">21.</strong> Приложения</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix-01-keywords.html"><strong aria-hidden="true">21.1.</strong> А — Ключевые слова</a></li><li class="chapter-item expanded "><a href="appendix-02-operators.html"><strong aria-hidden="true">21.2.</strong> B — Операторы и символы</a></li><li class="chapter-item expanded "><a href="appendix-03-derivable-traits.html"><strong aria-hidden="true">21.3.</strong> C — Выводимые трейты</a></li><li class="chapter-item expanded "><a href="appendix-04-useful-development-tools.html"><strong aria-hidden="true">21.4.</strong> D — Полезные средства разработки</a></li><li class="chapter-item expanded "><a href="appendix-05-editions.html"><strong aria-hidden="true">21.5.</strong> E — Издания</a></li><li class="chapter-item expanded "><a href="appendix-06-translation.html"><strong aria-hidden="true">21.6.</strong> F — Переводы книги</a></li><li class="chapter-item expanded "><a href="appendix-07-nightly-rust.html"><strong aria-hidden="true">21.7.</strong> G — Как создаётся Rust и «Nightly Rust»</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Язык программирования Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="Что-такое-владение"><a class="header" href="#Что-такое-владение">Что такое владение?</a></h2>
+<p><em>Владение</em> — это набор правил, определяющих, как программа на языке Rust управляет памятью. Все программы так или иначе должны управлять тем, как они используют память компьютера во время работы. Некоторые языки имеют сборщик мусора, регулярно отслеживающий неиспользуемую память во время работы программы; в других языках программист должен явно выделять и освобождать память. В Rust используется третий подход: память управляется через систему владения с набором правил, которые проверяются сборщиком. При нарушении любого из правил программа не будет собрана. Ни одна из особенностей системы владения не замедлит работу вашей программы.</p>
+<p>Поскольку владение является новой концепцией для многих программистов, требуется некоторое время, чтобы привыкнуть к ней. Хорошая новость заключается в том, что чем больше у вас будет опыта с Rust и с правилами системы владения, тем легче вам будет естественным образом разрабатывать безопасный и эффективный код. Держитесь! Не сдавайтесь!</p>
+<p>Понимание концепции владения даст вам основу для понимания всех остальных особенностей, делающих Rust уникальным. В этой главе вы изучите владение на примерах, которые сфокусированы на наиболее часто используемой структуре данных: строках.</p>
+<blockquote>
+<h3 id="Стек-и-куча"><a class="header" href="#Стек-и-куча">Стек и куча</a></h3>
+<p>Многие языки программирования не требуют, чтобы вы слишком часто думали о стеке и куче. Но в языках системного программирования, одним из которых является Rust, то, какое значение находится в стеке или в куче, влияет на поведение языка и на принятие вами определённых решений. Владение будет описано через призму стека и кучи позже в этой главе, а пока — краткое пояснение.</p>
+<p>И стек, и куча — это части памяти, доступные вашему коду для использования во время выполнения. Однако они структурированы по-разному. Стек хранит значения в порядке их получения, а удаляет — в обратном. Это называется <em>«последним пришёл — первым ушёл»</em>. Подумайте о стопке тарелок: когда вы добавляете тарелки, вы кладёте их сверху стопки — когда вам нужна тарелка, вы берёте одну так же сверху. Добавление или удаление тарелок посередине или снизу не сработает! Добавление данных называется <em>помещением в стек</em>, а удаление — извлечением <em>из стека</em>. Все данные, хранящиеся в стеке, должны иметь известный фиксированный размер. Данные, размер которых во время сборки неизвестен или может измениться, должны храниться в куче.</p>
+<p>Куча устроена менее организованно: когда вы кладёте данные в кучу, вы запрашиваете определённый объём пространства. Операционная система находит в куче свободный участок памяти достаточного размера, помечает его как используемый и возвращает <em>указатель</em>, являющийся адресом этого участка памяти. Этот процесс называется <em>выделением памяти в куче</em> и иногда сокращается до <em>выделения памяти</em> (помещение значений в стек не считается выделением). Поскольку указатель на участок памяти в куче имеет определённый фиксированный размер, его можно расположить в стеке, однако когда вам понадобятся актуальные данные, вам придётся проследовать по указателю. Представьте, что вы сидите в ресторане. Когда вы входите, вы называете количество человек в вашей группе, и персонал находит свободный стол, которого хватит на всех, и ведёт вас туда. Если кто-то из вашей группы опоздает, он может спросить, куда вас посадили, чтобы найти вас.</p>
+<p>Помещение в стек происходит более быстро, чем выделение памяти в куче, потому что операционная система не должна искать место для размещения сведений — это место всегда на верхушке стека. Для сравнения, выделение памяти в куче требует больше работы, потому что операционная система сначала должна найти участок памяти достаточного размера, а затем произвести некоторые действия для подготовки к следующему выделению памяти.</p>
+<p>Доступ к данным в куче медленнее, чем доступ к данным в стеке, потому что вам нужно следовать по адресу указателя, чтобы добраться туда. Современные процессоры работают быстрее, если они меньше прыгают по памяти. Продолжая подобие, рассмотрим официанта в ресторане, принимающего заказы со многих столов. Наиболее эффективно будет получить все заказы за одним столом, прежде чем переходить к следующему столу. Получение заказа со стола А, затем со стола В, затем снова одного с А, а затем снова одного с В было бы гораздо более медленным делом. Точно так же процессор может выполнять свою работу лучше, если он работает с данными, которые находятся близко к другим данным (как в стеке), а не далеко (как это может быть в куче).</p>
+<p>Когда ваш код вызывает функцию, значения, переданные в неё (потенциально включающие указатели на данные в куче), и местные переменные помещаются в стек. Когда функция завершается, эти значения извлекаются из стека.</p>
+<p>Отслеживание того, какие части кода используют какие данные, минимизация количества повторяющихся данных и очистка неиспользуемых данных в куче, чтобы не исчерпать пространство, — все эти проблемы решает владение. Как только вы поймёте, что такое владение, вам не нужно будет слишком часто думать о стеке и куче. Однако знание того, что основная цель владения — управление данными кучи, может помочь объяснить, почему оно работает именно так.</p>
+</blockquote>
+<h3 id="Правила-владения"><a class="header" href="#Правила-владения">Правила владения</a></h3>
+<p>Во-первых, давайте взглянем на правила владения. Помните об этих правилах, пока мы работаем с примерами, которые их отображают:</p>
+<ul>
+<li>У каждого значения в Rust есть <em>владелец</em>,</li>
+<li>У значения может быть только один владелец в один момент времени,</li>
+<li>Когда владелец покидает область видимости, значение удаляется.</li>
+</ul>
+<h3 id="Область-видимости-переменной"><a class="header" href="#Область-видимости-переменной">Область видимости переменной</a></h3>
+<p>Теперь, когда мы прошли основной синтаксис Rust, мы не будем включать весь код <code>fn main() {</code> в примеры. Поэтому, если вы будете следовать этому курсу, убедитесь, что следующие примеры помещены в функцию <code>main</code> вручную. В результате наши примеры будут более лаконичными, что позволит нам сосредоточиться на существующих подробностях, а не на шаблонном коде.</p>
+<p>В качестве первого примера владения мы рассмотрим <em>область видимости</em> некоторых переменных. Область видимости — это рядвнутри программы, для которого допустим элемент. Возьмём следующую переменную:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = "hello";
+<span class="boring">}</span></code></pre></pre>
+<p>Переменная <code>s</code> относится к строковому литералу, где значение строки жёстко прописано в тексте нашей программы. Переменная действительна с момента её объявления до конца текущей <em>области видимости</em>. В приложении 4-1 показана программа с комментариями, указывающими, где допустима переменная <code>s</code> .</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-01/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 4-1: переменная и область действия, в которой она допустима</span></p>
+<p>Другими словами, здесь есть два важных момента:</p>
+<ul>
+<li>Когда переменная <code>s</code> <em>появляется</em> в области видимости, она считается действительной,</li>
+<li>Она остаётся действительной до момента <em>выхода</em> за границы этой области.</li>
+</ul>
+<p>На этом этапе объяснения взаимосвязь между областями видимости и допустимостью переменных подобна той, что существует в других языках программирования. Теперь мы будем опираться на это понимание, введя вид <code>String</code>.</p>
+<h3 id="Вид-данных-string"><a class="header" href="#Вид-данных-string">Вид данных <code>String</code></a></h3>
+<p>Для отображения правил владения нам требуется более сложный вид данных чем те, что мы обсуждали в части <a href="ch03-02-data-types.html#data-types">"Виды данных"</a> Главы 3. Виды, рассмотренные ранее, имеют определённый размер, а значит могут быть размещены на стеке и извлечены из него, когда их область видимости закончится, и могут быть быстро и тривиально скопированы для создания новой, независимой копии, если другой части кода нужно использовать то же самое значение в другой области видимости. Но мы хотим посмотреть на данные, хранящиеся в куче, и выяснить, как Rust узнаёт, когда нужно очистить эти данные, поэтому вид <code>String</code> — отличный пример.</p>
+<p>Мы сконцентрируемся на тех частях <code>String</code>, которые связаны с владением. Эти особенности также применимы к другим сложным видам данных, независимо от того, предоставлены они встроенной библиотекой или созданы вами. Более подробно мы обсудим <code>String</code> в <a href="ch08-02-strings.html">главе 8</a><!-- ignore -->.</p>
+<p>Мы уже видели строковые литералы, где строковое значение жёстко прописано в нашей программе. Строковые литералы удобны, но они подходят не для каждой ситуации, где мы можем хотеть использовать текст. Одна из причин заключается в том, что они неизменны. Кроме того, не каждое строковое значение может быть известно во время написания кода: что, если мы захотим принять и сохранить пользовательский ввод? Для таких ситуаций в Rust есть ещё один строковый вид — <code>String</code>. Этот вид управляет данными, выделенными в куче, и поэтому может хранить объём текста, который во время сборки неизвестен. Также вы можете создать <code>String</code> из строкового литерала, используя функцию <code>from</code>, например:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+<span class="boring">}</span></code></pre></pre>
+<p>Оператор "Двойное двоеточие" <code>::</code> позволяет использовать пространство имён данной именно функции <code>from</code> с видом <code>String</code>, а не какое-то иное имя, такое как <code>string_from</code>. Мы обсудим этот синтаксис более подробно в разделе <a href="ch05-03-method-syntax.html#method-syntax">«Синтаксис способа»</a>. раздел <!-- ignore --> Главы 5, и в ходе обсуждения пространств имён с модулями в <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html"> «Пути для обращения к элементу в дереве модулей»</a><!-- ignore --> в главе 7.</p>
+<p>Строка такого вида <em>может</em> быть изменяема:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-01-can-mutate-string/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p>В чем же тут разница? Почему строку <code>String</code> можно изменить, а литералы — нельзя? Разница заключается в том, как эти два вида работают с памятью.</p>
+<h3 id="Память-и-способы-её-выделения"><a class="header" href="#Память-и-способы-её-выделения">Память и способы её выделения</a></h3>
+<p>В случае строкового литерала мы знаем его содержимое во время сборки, и оно жёстко прописано в итоговом исполняемом файле. Причина того, что строковые литералы более быстрые и эффективные, в их неизменяемости. К сожалению, нельзя поместить неопределённый кусок памяти в выполняемый файл для текста, размер которого неизвестен при сборки и может меняться во время выполнения программы.</p>
+<p>Чтобы поддерживать изменяемый, увеличивающийся текст вида <code>String</code>, необходимо выделять память в куче для всего содержимого, объем которого неизвестен во время сборки. Это означает, что:</p>
+<ul>
+<li>Память должна запрашиваться у операционной системы во время выполнения программы,</li>
+<li>Необходим способ возврата этой памяти операционной системе, когда мы закончили в программе работу со <code>String</code>.</li>
+</ul>
+<p>Первая часть выполняется нами: когда мы вызываем <code>String::from</code>, его реализация запрашивает необходимую память. Это работает довольно похоже во всех языках программирования.</p>
+<p>Однако вторая часть отличается. В языках со <em>сборщиком мусора (GC)</em>, память, которая больше не используется, отслеживается и очищается с его помощью — нам не нужно об этом думать. В большинстве языков без сборщика мусора мы обязаны сами определять, когда память больше не используется, и вызывать код для явного её освобождения, точно так же, как мы делали это для её запроса. Правильное выполнение этого процесса исторически было сложной проблемой программирования. Если мы забудем освободить память, она будет потеряна. Если мы сделаем это слишком рано, у нас будет недопустимая переменная. Сделать это дважды — тоже будет ошибкой. Нам нужно соединить ровно один <code>allocate</code> ровно с одним <code>free</code>.</p>
+<p>Rust выбирает другой путь: память самостоятельно возвращается, как только владеющая памятью переменная выходит из области видимости. Вот исполнение примера с областью видимости из приложения 4-1, в котором используется вид <code>String</code> вместо строкового литерала:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-02-string-scope/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p>Существует естественный момент, когда мы можем вернуть память, необходимую нашему <code>String</code>, обратно распределителю — когда <code>s</code> выходит за пределы области видимости. Когда переменная выходит за пределы области видимости, Rust вызывает для нас особую функцию. Эта функция называется <a href="../std/ops/trait.Drop.html#tymethod.drop"><code>drop</code></a><!-- ignore -->, и именно здесь автор <code>String</code> может поместить код для возврата памяти. Rust самостоятельно вызывает <code>drop</code> после закрывающей фигурной скобки.</p>
+<blockquote>
+<p>Примечание: в C++ этот паттерн освобождения ресурсов в конце времени жизни элемента иногда называется <em>«Получение ресурса есть объявление» (англ. Resource Acquisition Is Initialization (RAII))</em>. Функция <code>drop</code> в Rust покажется вам знакомой, если вы использовали шаблоны RAII.</p>
+</blockquote>
+<p>Этот шаблон оказывает глубокое влияние на способ написания кода в Rust. Сейчас это может казаться простым, но в более сложных ситуациях поведение кода может быть неожиданным, например когда хочется иметь несколько переменных, использующих данные, выделенные в куче. Изучим несколько таких ситуаций.</p>
+<!-- Old heading. Do not remove or links may break. -->
+<p><a id="ways-variables-and-data-interact-move"></a></p>
+<h4 id="Взаимодействие-переменных-и-данных-с-помощью-перемещения"><a class="header" href="#Взаимодействие-переменных-и-данных-с-помощью-перемещения">Взаимодействие переменных и данных с помощью перемещения</a></h4>
+<p>Несколько переменных могут по-разному взаимодействовать с одними и теми же данными в Rust. Давайте рассмотрим пример использования целого числа в приложении 4-2.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-02/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 4-2. Присвоение целочисленного значения переменной <code>x</code> переменной <code>y</code></span></p>
+<p>Мы можем догадаться, что делает этот код: «привязать значение <code>5</code> к <code>x</code>; затем сделать копию значения в <code>x</code> и привязать его к <code>y</code>». Теперь у нас есть две переменные: <code>x</code> и <code>y</code>, и обе равны <code>5</code>. Это то, что происходит на самом деле, потому что целые числа — это простые значения с известным фиксированным размером, и эти два значения <code>5</code> помещаются в стек.</p>
+<p>Теперь рассмотрим исполнение с видом <code>String</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-03-string-move/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p>Это выглядит очень похоже, поэтому мы можем предположить, что происходит то же самое: вторая строка сделает копию значения в <code>s1</code> и привяжет его к <code>s2</code>. Но это не совсем так.</p>
+<p>Взгляните на рисунок 4-1, чтобы увидеть, что происходит со <code>String</code> под капотом. <code>String</code> состоит из трёх частей, показанных слева: указатель на память, в которой хранится содержимое строки, длина и ёмкость. Эта группа данных хранится в стеке. Справа — память в куче, которая содержит содержимое.</p>
+<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl04-01.svg?raw=true" class="">
+<p><span class="caption">Рисунок 4-1: представление в памяти <code>String</code>, содержащей значение <code>"hello"</code>, привязанное к <code>s1</code></span></p>
+<p>Длина — это объём памяти в байтах, который в настоящее время использует содержимое <code>String</code>. Ёмкость — это общий объём памяти в байтах, который <code>String</code> получил от распределителя. Разница между длиной и ёмкостью имеет значение, но не в этом среде, поэтому на данный момент можно пренебрегать ёмкость.</p>
+<p>Когда мы присваиваем <code>s1</code> значению <code>s2</code>, данные <code>String</code> копируются, то есть мы копируем указатель, длину и ёмкость, которые находятся в стеке. Мы не копируем данные в куче, на которые указывает указатель. Другими словами, представление данных в памяти выглядит так, как показано на рис. 4-2.</p>
+<img alt="Three tables: tables s1 and s2 representing those strings on the&lt;br&gt;stack, respectively, and both pointing to the same string data on the heap." src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl04-02.svg?raw=true" class="">
+<p><span class="caption">Рисунок 4-2: представление в памяти переменной <code>s2</code>, имеющей копию указателя, длины и ёмкости <code>s1</code></span></p>
+<p>Представление <em>не</em> похоже на рисунок 4-3, как выглядела бы память, если бы вместо этого Rust также скопировал данные кучи. Если бы Rust сделал это, действие <code>s2 = s1</code> могла бы быть очень дорогой с точки зрения производительности во время выполнения, если бы данные в куче были большими.</p>
+<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl04-01.svg?raw=true" class="">
+<p><span class="caption">Рисунок 4-3: другой вариант того, что может сделать <code>s2 = s1</code>, если Rust также скопирует данные кучи</span></p>
+<p>Ранее мы сказали, что когда переменная выходит за пределы области видимости, Rust самостоятельно вызывает функцию <code>drop</code> и очищает память в куче для данной переменной. Но на рис. 4.2 оба указателя данных указывают на одно и то же место. Это проблема: когда переменные <code>s2</code> и <code>s1</code> выходят из области видимости, они обе будут пытаться освободить одну и ту же память в куче. Это известно как <em>ошибка двойного освобождения (double free)</em> и является одной из ошибок безопасности памяти, упоминаемых ранее. Освобождение памяти дважды может привести к повреждению памяти, что потенциально может привести к уязвимостям безопасности.</p>
+<p>Чтобы обеспечить безопасность памяти, после строки <code>let s2 = s1;</code> , Rust считает <code>s1</code> более недействительным. Следовательно, Rust не нужно ничего освобождать, когда <code>s1</code> выходит за пределы области видимости. Посмотрите, что происходит, когда вы пытаетесь использовать <code>s1</code> после создания <code>s2</code> ; это не сработает:</p>
+<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-04-cant-use-after-move/src/main.rs:here}}</code></pre>
+<p>Вы получите похожую ошибку, потому что Rust не позволяет вам использовать недействительную ссылку:</p>
+<pre><code class="language-console">{{#include ../listings/ch04-understanding-ownership/no-listing-04-cant-use-after-move/output.txt}}
+</code></pre>
+<p>Если вы слышали термины <em>поверхностное копирование</em> и <em>глубокое копирование</em> при работе с другими языками, концепция копирования указателя, длины и ёмкости без копирования данных, вероятно, звучит как создание поверхностной копии. Но поскольку Rust также аннулирует первую переменную, вместо того, чтобы называть это поверхностным копированием, это называется <em>перемещением</em>. В этом примере мы бы сказали, что <code>s1</code> был <em>перемещён</em> в <code>s2</code>. Итак, что на самом деле происходит, показано на рисунке 4-4.</p>
+<img alt="Три таблицы: таблицы s1 и s2, представляющие эти строки в стеке соответственно, и обе указывающие на одни и те же строковые данные в куче. Таблица s1 выделена серым цветом, потому что s1 больше недействительна; только s2 можно использовать для доступа к данным кучи." src="img/trpl04-04.svg" class="center" style="width: 50%;">
+<p><span class="caption">Рисунок 4-4: представление в памяти после того, как <code>s1</code> был признан недействительным</span></p>
+<p>Это решает нашу проблему! Действительной остаётся только переменная <code>s2</code>. Когда она выходит из области видимости, то она одна будет освобождать память в куче.</p>
+<p>Такой выбор дизайна языка даёт дополнительное преимущество: Rust никогда не будет самостоятельно создавать «глубокие» копии ваших данных. Следовательно любое такое <em>самостоятельное</em> копирование можно считать недорогим с точки зрения производительности во время выполнения.</p>
+<!-- Old heading. Do not remove or links may break. -->
+<p><a id="ways-variables-and-data-interact-clone"></a></p>
+<h4 id="Взаимодействие-переменных-и-данных-с-помощью-клонирования"><a class="header" href="#Взаимодействие-переменных-и-данных-с-помощью-клонирования">Взаимодействие переменных и данных с помощью клонирования</a></h4>
+<p>Если мы <em>хотим</em> глубоко скопировать данные кучи <code>String</code>, а не только данные стека, мы можем использовать общий способ, называемый <code>clone</code>. Мы обсудим синтаксис способов в главе 5, но поскольку способы являются общей чертой многих языков программирования, вы, вероятно, уже встречались с ними.</p>
+<p>Вот пример работы способа <code>clone</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-05-clone/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p>Это отлично работает и очевидно приводит к поведению, представленному на рисунке 4-3, где данные кучи <em>были</em> скопированы.</p>
+<p>Когда вы видите вызов <code>clone</code>, вы знаете о выполнении некоторого кода, который может быть дорогим. В то же время использование <code>clone</code> является визуальным индикатором того, что тут происходит что-то нестандартное.</p>
+<h4 id="Стековые-данные-копирование"><a class="header" href="#Стековые-данные-копирование">Стековые данные: копирование</a></h4>
+<p>Это ещё одна особенность о которой мы ранее не говорили. Этот код, часть которого была показа ранее в приложении 4-2, использует целые числа. Он работает без ошибок:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-06-copy/src/main.rs:here}}
+<span class="boring">}</span></code></pre></pre>
+<p>Но этот код, кажется, противоречит тому, что мы только что узнали: у нас нет вызова <code>clone</code>, но <code>x</code> всё ещё действителен и не был перемещён в <code>y</code>.</p>
+<p>Причина в том, что такие виды, как целые числа, размер которых известен во время сборки, полностью хранятся в стеке, поэтому копии фактических значений создаются быстро. Это означает, что нет причин, по которым мы хотели бы предотвратить доступность <code>x</code> после того, как создадим переменную <code>y</code>. Другими словами, здесь нет разницы между глубоким и поверхностным копированием, поэтому вызов <code>clone</code> ничем не отличается от обычного поверхностного копирования, и мы можем его опустить.</p>
+<p>В Rust есть особая изложение, называемая типажом <code>Copy</code>, которую мы можем размещать на видах, хранящихся в стеке, как и целые числа (подробнее о видах мы поговорим в <a href="ch10-02-traits.html">главе 10</a><!-- ignore -->). Если вид реализует типаж <code>Copy</code>, переменные, которые его используют, не перемещаются, а тривиально копируются, что делает их действительными после присвоения другой переменной.</p>
+<p>Rust не позволит нам аннотировать вид с помощью <code>Copy</code>, если вид или любая из его частей реализует <code>Drop</code>. Если для вида нужно, чтобы произошло что-то особенное, когда значение выходит за пределы области видимости, и мы добавляем изложение <code>Copy</code> к этому виду, мы получим ошибку времени сборки. Чтобы узнать, как добавить изложение <code>Copy</code> к вашему виду для реализации типажа, смотрите <a href="appendix-03-derivable-traits.html">раздел «Производные типажи»</a><!-- ignore --> в приложении С.</p>
+<p>Но какие же виды реализуют трейт <code>Copy</code>? Можно проверить документацию любого вида для уверенности, но как правило любая группа простых скалярных значений может быть реализовывать <code>Copy</code>, и никакие виды, которые требуют выделения памяти в куче или являются некоторой формой ресурсов, не реализуют трейта <code>Copy</code>. Вот некоторые виды, которые реализуют <code>Copy</code>:</p>
+<ul>
+<li>Все целочисленные виды, такие как <code>u32</code>,</li>
+<li>Логический вид данных <code>bool</code>, возможные значения которого <code>true</code> и <code>false</code>,</li>
+<li>Все виды с плавающей запятой, такие как <code>f64</code>.</li>
+<li>Символьный вид <code>char</code>,</li>
+<li>Кортежи, но только если они содержат виды, которые также реализуют <code>Copy</code>. Например, <code>(i32, i32)</code> будет с <code>Copy</code>, но кортеж <code>(i32, String)</code> уже нет.</li>
+</ul>
+<h3 id="Владение-и-функции"><a class="header" href="#Владение-и-функции">Владение и функции</a></h3>
+<p>Механика передачи значения функции подобна тому, что происходит при присвоении значения переменной. Передача переменной в функцию приведёт к перемещению или копированию, как и присваивание. В приложении 4-3 есть пример с некоторыми изложениями, показывающими, где переменные входят в область видимости и выходят из неё.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-03/src/main.rs}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 4-3. Функции с аннотированными владельцами и областью действия</span></p>
+<p>Если попытаться использовать <code>s</code> после вызова <code>takes_ownership</code>, Rust выдаст ошибку времени сборки. Такие статические проверки защищают от ошибок. Попробуйте добавить код в <code>main</code>, который использует переменную <code>s</code> и <code>x</code>, чтобы увидеть где их можно использовать и где правила владения предотвращают их использование.</p>
+<h3 id="Возвращение-значений-и-область-видимости"><a class="header" href="#Возвращение-значений-и-область-видимости">Возвращение значений и область видимости</a></h3>
+<p>Возвращаемые значения также могут передавать право владения. В приложении 4-4 показан пример функции, возвращающей некоторое значение, с такими же изложениями, как в приложении 4-3.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-04/src/main.rs}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 4-4: передача права владения на возвращаемые значения</span></p>
+<p>Владение переменной каждый раз следует одному и тому же шаблону: присваивание значения другой переменной перемещает его. Когда переменная, содержащая данные в куче, выходит из области видимости, содержимое в куче будет очищено функцией <code>drop</code>, если только данные не были перемещены во владение другой переменной.</p>
+<p>Хотя это работает, получение права владения, а затем возвращение владения каждой функцией немного утомительно. Что, если мы хотим, чтобы функция использовала значение, но не становилась владельцем? Очень раздражает, что всё, что мы передаём, также должно быть передано обратно, если мы хотим использовать это снова, в дополнение к любым данным, полученным из тела функции, которые мы также можем захотеть вернуть.</p>
+<p>Rust позволяет нам возвращать несколько значений с помощью кортежа, как показано в приложении 4-5.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-05/src/main.rs}}
+<span class="boring">}</span></code></pre></pre>
+<p><span class="caption">Приложение 4-5: возврат права владения на свойства</span></p>
+<p>Но это слишком высокопарно и многословно для концепции, которая должна быть общей. К счастью для нас, в Rust есть возможность использовать значение без передачи права владения, называемая <em>ссылками</em>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch04-00-understanding-ownership.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch04-02-references-and-borrowing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch04-00-understanding-ownership.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch04-02-references-and-borrowing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+    </div>
+    </body>
+</html>

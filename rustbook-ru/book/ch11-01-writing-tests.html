@@ -1,0 +1,383 @@
+<!DOCTYPE HTML>
+<html lang="ru-RU" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Как писать тесты - Язык программирования Rust</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">Язык программирования Rust</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Предисловие</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Введение</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> С чего начать</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Установка</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Привет, Мир!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-cargo.html"><strong aria-hidden="true">1.3.</strong> Hello, Cargo!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-guessing-game-tutorial.html"><strong aria-hidden="true">2.</strong> Программирование игры в загадки</a></li><li class="chapter-item expanded "><a href="ch03-00-common-programming-concepts.html"><strong aria-hidden="true">3.</strong> Общие концепции программирования</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-variables-and-mutability.html"><strong aria-hidden="true">3.1.</strong> Переменные и изменяемость</a></li><li class="chapter-item expanded "><a href="ch03-02-data-types.html"><strong aria-hidden="true">3.2.</strong> Виды Данных</a></li><li class="chapter-item expanded "><a href="ch03-03-how-functions-work.html"><strong aria-hidden="true">3.3.</strong> Функции</a></li><li class="chapter-item expanded "><a href="ch03-04-comments.html"><strong aria-hidden="true">3.4.</strong> Комментарии</a></li><li class="chapter-item expanded "><a href="ch03-05-control-flow.html"><strong aria-hidden="true">3.5.</strong> Управляющие конструкции</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-understanding-ownership.html"><strong aria-hidden="true">4.</strong> Понимание владения</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-what-is-ownership.html"><strong aria-hidden="true">4.1.</strong> Что такое "владение"?</a></li><li class="chapter-item expanded "><a href="ch04-02-references-and-borrowing.html"><strong aria-hidden="true">4.2.</strong> Ссылки и заимствование</a></li><li class="chapter-item expanded "><a href="ch04-03-slices.html"><strong aria-hidden="true">4.3.</strong> Вид среза</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-structs.html"><strong aria-hidden="true">5.</strong> Использование структур для объединения связанных данных</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-defining-structs.html"><strong aria-hidden="true">5.1.</strong> Определение и создание экземпляров структур</a></li><li class="chapter-item expanded "><a href="ch05-02-example-structs.html"><strong aria-hidden="true">5.2.</strong> Пример программы, использующей структуры</a></li><li class="chapter-item expanded "><a href="ch05-03-method-syntax.html"><strong aria-hidden="true">5.3.</strong> Синтаксис способа</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-enums.html"><strong aria-hidden="true">6.</strong> Перечисления и сопоставление с образцом</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-defining-an-enum.html"><strong aria-hidden="true">6.1.</strong> Определение Enum</a></li><li class="chapter-item expanded "><a href="ch06-02-match.html"><strong aria-hidden="true">6.2.</strong> Конструкция потока управления match</a></li><li class="chapter-item expanded "><a href="ch06-03-if-let.html"><strong aria-hidden="true">6.3.</strong> Лаконичный поток управления с if let</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-managing-growing-projects-with-packages-crates-and-modules.html"><strong aria-hidden="true">7.</strong> Управление растущими проектами с помощью пакетов, крейтов и модулей</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-packages-and-crates.html"><strong aria-hidden="true">7.1.</strong> Пакеты и крейты</a></li><li class="chapter-item expanded "><a href="ch07-02-defining-modules-to-control-scope-and-privacy.html"><strong aria-hidden="true">7.2.</strong> Определение модулей для управления областью действия и конфиденциальностью</a></li><li class="chapter-item expanded "><a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html"><strong aria-hidden="true">7.3.</strong> Пути для ссылки на элемент в дереве модулей</a></li><li class="chapter-item expanded "><a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html"><strong aria-hidden="true">7.4.</strong> Введение путей в область видимости с помощью ключевого слова use</a></li><li class="chapter-item expanded "><a href="ch07-05-separating-modules-into-different-files.html"><strong aria-hidden="true">7.5.</strong> Separating Modules into Different Files</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-common-collections.html"><strong aria-hidden="true">8.</strong> Общие собрания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-vectors.html"><strong aria-hidden="true">8.1.</strong> Хранение списков значений с векторами</a></li><li class="chapter-item expanded "><a href="ch08-02-strings.html"><strong aria-hidden="true">8.2.</strong> Хранение закодированного текста UTF-8 со строками</a></li><li class="chapter-item expanded "><a href="ch08-03-hash-maps.html"><strong aria-hidden="true">8.3.</strong> Хранение ключей со связанными значениями в HashMap</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-error-handling.html"><strong aria-hidden="true">9.</strong> Обработка ошибок</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-unrecoverable-errors-with-panic.html"><strong aria-hidden="true">9.1.</strong> Неустранимые ошибки с panic!</a></li><li class="chapter-item expanded "><a href="ch09-02-recoverable-errors-with-result.html"><strong aria-hidden="true">9.2.</strong> Устранимые ошибки с Result</a></li><li class="chapter-item expanded "><a href="ch09-03-to-panic-or-not-to-panic.html"><strong aria-hidden="true">9.3.</strong> panic! или Не panic!</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-generics.html"><strong aria-hidden="true">10.</strong> Общие виды, трейты (характеристики) и время жизни</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch10-01-syntax.html"><strong aria-hidden="true">10.1.</strong> Обобщённые виды данных</a></li><li class="chapter-item expanded "><a href="ch10-02-traits.html"><strong aria-hidden="true">10.2.</strong> Трейты (характеристики): определение разделяемого поведения</a></li><li class="chapter-item expanded "><a href="ch10-03-lifetime-syntax.html"><strong aria-hidden="true">10.3.</strong> Валидация ссылок посредством сроков жизни</a></li></ol></li><li class="chapter-item expanded "><a href="ch11-00-testing.html"><strong aria-hidden="true">11.</strong> Написание самостоятельно х тестов</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch11-01-writing-tests.html" class="active"><strong aria-hidden="true">11.1.</strong> Как писать тесты</a></li><li class="chapter-item expanded "><a href="ch11-02-running-tests.html"><strong aria-hidden="true">11.2.</strong> Управление выполнением тестов</a></li><li class="chapter-item expanded "><a href="ch11-03-test-organization.html"><strong aria-hidden="true">11.3.</strong> Организация тестов</a></li></ol></li><li class="chapter-item expanded "><a href="ch12-00-an-io-project.html"><strong aria-hidden="true">12.</strong> Проект с вводом-выводом: создание программы приказной строки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch12-01-accepting-command-line-arguments.html"><strong aria-hidden="true">12.1.</strong> Получение переменных приказной строки</a></li><li class="chapter-item expanded "><a href="ch12-02-reading-a-file.html"><strong aria-hidden="true">12.2.</strong> Чтение файла</a></li><li class="chapter-item expanded "><a href="ch12-03-improving-error-handling-and-modularity.html"><strong aria-hidden="true">12.3.</strong> Рефакторинг для обеспечения модульности и улучшения обработки ошибок</a></li><li class="chapter-item expanded "><a href="ch12-04-testing-the-librarys-functionality.html"><strong aria-hidden="true">12.4.</strong> Разработка функциональности библиотеки с помощью разработки через тестирование</a></li><li class="chapter-item expanded "><a href="ch12-05-working-with-environment-variables.html"><strong aria-hidden="true">12.5.</strong> Работа с переменными среды</a></li><li class="chapter-item expanded "><a href="ch12-06-writing-to-stderr-instead-of-stdout.html"><strong aria-hidden="true">12.6.</strong> Запись сообщений об ошибках в stderr вместо stdout</a></li></ol></li><li class="chapter-item expanded "><a href="ch13-00-functional-features.html"><strong aria-hidden="true">13.</strong> Функциональные возможности языка: повторители и замыкания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch13-01-closures.html"><strong aria-hidden="true">13.1.</strong> Замыкания: анонимные функции, которые захватывают своё окружение</a></li><li class="chapter-item expanded "><a href="ch13-02-iterators.html"><strong aria-hidden="true">13.2.</strong> Обработка последовательности элементов с помощью повторителей</a></li><li class="chapter-item expanded "><a href="ch13-03-improving-our-io-project.html"><strong aria-hidden="true">13.3.</strong> Улучшение нашего проекта с вводом/выводом</a></li><li class="chapter-item expanded "><a href="ch13-04-performance.html"><strong aria-hidden="true">13.4.</strong> Сравнение производительности: циклы и повторители</a></li></ol></li><li class="chapter-item expanded "><a href="ch14-00-more-about-cargo.html"><strong aria-hidden="true">14.</strong> Подробнее о Cargo и Crates.io</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch14-01-release-profiles.html"><strong aria-hidden="true">14.1.</strong> Настройка билдов с помощью профилей выпуска</a></li><li class="chapter-item expanded "><a href="ch14-02-publishing-to-crates-io.html"><strong aria-hidden="true">14.2.</strong> Публикация крейта на Crates.io</a></li><li class="chapter-item expanded "><a href="ch14-03-cargo-workspaces.html"><strong aria-hidden="true">14.3.</strong> Рабочие области Cargo</a></li><li class="chapter-item expanded "><a href="ch14-04-installing-binaries.html"><strong aria-hidden="true">14.4.</strong> Установка двоичных файлов с Crates.io с помощью cargo install</a></li><li class="chapter-item expanded "><a href="ch14-05-extending-cargo.html"><strong aria-hidden="true">14.5.</strong> Расширение возможностей Cargo путём добавления пользовательских приказов</a></li></ol></li><li class="chapter-item expanded "><a href="ch15-00-smart-pointers.html"><strong aria-hidden="true">15.</strong> Умные указатели</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch15-01-box.html"><strong aria-hidden="true">15.1.</strong> Использование Box&lt;T&gt; для указания на данные в куче</a></li><li class="chapter-item expanded "><a href="ch15-02-deref.html"><strong aria-hidden="true">15.2.</strong> Работа с умными указателями как с обычными ссылками с помощью трейта Deref</a></li><li class="chapter-item expanded "><a href="ch15-03-drop.html"><strong aria-hidden="true">15.3.</strong> Выполнение кода при очистке с помощью трейта Drop</a></li><li class="chapter-item expanded "><a href="ch15-04-rc.html"><strong aria-hidden="true">15.4.</strong> Rc&lt;T&gt;, умный указатель с подсчётом ссылок</a></li><li class="chapter-item expanded "><a href="ch15-05-interior-mutability.html"><strong aria-hidden="true">15.5.</strong> RefCell&lt;T&gt; и внутренняя изменяемость</a></li><li class="chapter-item expanded "><a href="ch15-06-reference-cycles.html"><strong aria-hidden="true">15.6.</strong> Ссылочные циклы могут привести к утечке памяти</a></li></ol></li><li class="chapter-item expanded "><a href="ch16-00-concurrency.html"><strong aria-hidden="true">16.</strong> Безбоязненный параллелизм</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch16-01-threads.html"><strong aria-hidden="true">16.1.</strong> Использование потоков для параллельного выполнения кода</a></li><li class="chapter-item expanded "><a href="ch16-02-message-passing.html"><strong aria-hidden="true">16.2.</strong> Пересылка сообщений для передачи данных между потоками</a></li><li class="chapter-item expanded "><a href="ch16-03-shared-state.html"><strong aria-hidden="true">16.3.</strong> Параллелизм с общим состоянием</a></li><li class="chapter-item expanded "><a href="ch16-04-extensible-concurrency-sync-and-send.html"><strong aria-hidden="true">16.4.</strong> Расширяемый параллелизм с помощью трейтов Sync и Send</a></li></ol></li><li class="chapter-item expanded "><a href="ch17-00-oop.html"><strong aria-hidden="true">17.</strong> Возможности объектно-ориентированного программирования Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch17-01-what-is-oo.html"><strong aria-hidden="true">17.1.</strong> Характеристики объектно-ориентированных языков</a></li><li class="chapter-item expanded "><a href="ch17-02-trait-objects.html"><strong aria-hidden="true">17.2.</strong> Использование трейт-объектов, допускающих значения разных видов</a></li><li class="chapter-item expanded "><a href="ch17-03-oo-design-patterns.html"><strong aria-hidden="true">17.3.</strong> Реализация шаблона объектно-ориентированного проектирования</a></li></ol></li><li class="chapter-item expanded "><a href="ch18-00-patterns.html"><strong aria-hidden="true">18.</strong> Шаблоны и сопоставление</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch18-01-all-the-places-for-patterns.html"><strong aria-hidden="true">18.1.</strong> Все места, где могут использоваться шаблоны</a></li><li class="chapter-item expanded "><a href="ch18-02-refutability.html"><strong aria-hidden="true">18.2.</strong> Опровержимость: может ли шаблон не соответствовать</a></li><li class="chapter-item expanded "><a href="ch18-03-pattern-syntax.html"><strong aria-hidden="true">18.3.</strong> Синтаксис шаблона</a></li></ol></li><li class="chapter-item expanded "><a href="ch19-00-advanced-features.html"><strong aria-hidden="true">19.</strong> Расширенные возможности</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch19-01-unsafe-rust.html"><strong aria-hidden="true">19.1.</strong> Небезопасный код в Rust</a></li><li class="chapter-item expanded "><a href="ch19-03-advanced-traits.html"><strong aria-hidden="true">19.2.</strong> Продвинутые типажи</a></li><li class="chapter-item expanded "><a href="ch19-04-advanced-types.html"><strong aria-hidden="true">19.3.</strong> Продвинутые виды</a></li><li class="chapter-item expanded "><a href="ch19-05-advanced-functions-and-closures.html"><strong aria-hidden="true">19.4.</strong> Продвинутые функции и замыкания</a></li><li class="chapter-item expanded "><a href="ch19-06-macros.html"><strong aria-hidden="true">19.5.</strong> Макросы</a></li></ol></li><li class="chapter-item expanded "><a href="ch20-00-final-project-a-web-server.html"><strong aria-hidden="true">20.</strong> Финальный проект: создание многопоточного веб-сервера</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch20-01-single-threaded.html"><strong aria-hidden="true">20.1.</strong> Создание однопоточного веб-сервера</a></li><li class="chapter-item expanded "><a href="ch20-02-multithreaded.html"><strong aria-hidden="true">20.2.</strong> Превращение нашего однопоточного сервера в многопоточный сервер</a></li><li class="chapter-item expanded "><a href="ch20-03-graceful-shutdown-and-cleanup.html"><strong aria-hidden="true">20.3.</strong> 	Мягкое завершение работы и очистка</a></li></ol></li><li class="chapter-item expanded "><a href="appendix-00.html"><strong aria-hidden="true">21.</strong> Приложения</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix-01-keywords.html"><strong aria-hidden="true">21.1.</strong> А — Ключевые слова</a></li><li class="chapter-item expanded "><a href="appendix-02-operators.html"><strong aria-hidden="true">21.2.</strong> B — Операторы и символы</a></li><li class="chapter-item expanded "><a href="appendix-03-derivable-traits.html"><strong aria-hidden="true">21.3.</strong> C — Выводимые трейты</a></li><li class="chapter-item expanded "><a href="appendix-04-useful-development-tools.html"><strong aria-hidden="true">21.4.</strong> D — Полезные средства разработки</a></li><li class="chapter-item expanded "><a href="appendix-05-editions.html"><strong aria-hidden="true">21.5.</strong> E — Издания</a></li><li class="chapter-item expanded "><a href="appendix-06-translation.html"><strong aria-hidden="true">21.6.</strong> F — Переводы книги</a></li><li class="chapter-item expanded "><a href="appendix-07-nightly-rust.html"><strong aria-hidden="true">21.7.</strong> G — Как создаётся Rust и «Nightly Rust»</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Язык программирования Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="Как-писать-тесты"><a class="header" href="#Как-писать-тесты">Как писать тесты</a></h2>
+<p>Тесты - это функции Rust, которые проверяют, что не тестовый код работает ожидаемым образом. Содержимое тестовых функций обычно выполняет следующие три действия:</p>
+<ol>
+<li>Установка любых необходимых данных или состояния.</li>
+<li>Запуск кода, который вы хотите проверить.</li>
+<li>Утверждение, что результаты являются теми, которые вы ожидаете.</li>
+</ol>
+<p>Давайте рассмотрим функции предоставляемые в Rust целенаправленно для написания тестов, которые выполнят все эти действия, включая атрибут <code>test</code>, несколько макросов и атрибут <code>should_panic</code>.</p>
+<h3 id="Структура-тестирующей-функции"><a class="header" href="#Структура-тестирующей-функции">Структура тестирующей функции<a id="the-anatomy-of-a-test-function"></a></a></h3>
+<p>В простейшем случае в Rust тест - это функция, аннотированная атрибутом <code>test</code>. Атрибуты представляют собой метаданные о фрагментах кода Rust; один из примеров атрибут <code>derive</code>, который мы использовали со структурами в главе 5. Чтобы превратить функцию в тестирующую функцию добавьте <code>#[test]</code>  в строку перед <code>fn</code>.  Когда вы запускаете тесты приказом <code>cargo test</code>, Rust создаёт двоичный модуль выполняющий функции аннотированные атрибутом test и сообщающий о том, успешно или нет прошла каждая тестирующая функция.</p>
+<p>Когда мы создаём новый проект библиотеки с помощью Cargo, то в нём самостоятельно генерируется тестовый модуль с тест-функцией для нас. Этот модуль даст вам шаблон для написания ваших тестов, так что вам не нужно искать точную структуру и синтаксис тестовых функций каждый раз, когда вы начинаете новый проект. Вы можете добавить столько дополнительных тестовых функций и столько тестовых модулей, сколько захотите!</p>
+<p>Мы исследуем некоторые особенности работы тестов, экспериментируя с шаблонным тестом сгенерированным для нас, без реального тестирования любого кода. Затем мы напишем некоторые существующие тесты, которые вызывают некоторый написанный код и убедимся в его правильном поведении. Мы рассмотрим некоторые особенности работы тестов, поэкспериментируем с шаблонным тестом, прежде чем приступать к фактическому тестированию любого кода. Затем мы напишем несколько существующих тестов, которые вызывают некоторый написанный нами код и проверяют, что его поведение правильное.</p>
+<p>Давайте создадим новый библиотечный проект под названием <code>adder</code>, который складывает два числа:</p>
+<pre><code class="language-console">$ cargo new adder --lib
+     Created library `adder` project
+$ cd adder
+</code></pre>
+<p>Содержимое файла <em>src/lib.rs</em> вашей библиотеки <code>adder</code> должно выглядеть как в приложении 11-1.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<!-- manual-regeneration
+cd listings/ch11-writing-automated-tests
+rm -rf listing-11-01
+cargo new listing-11-01 --lib --name adder
+cd listing-11-01
+cargo test
+git co output.txt
+cd ../../..
+-->
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs}}</code></pre>
+<p><span class="caption">Приложение 11-1: Тестовый модуль и функция, сгенерированные самостоятельно с помощью <code>cargo new</code></span></p>
+<p>Сейчас давайте пропренебрегаем первые две строчки кода и сосредоточимся на функции. Обратите внимание на синтаксис изложении <code>#[test]</code>: этот атрибут указывает, что это тестовая функция, поэтому запускающий тестирование знает, что эту функцию следует рассматривать как тестовую. У нас также могут быть не тестируемые функции в модуле <code>tests</code>, которые помогут настроить общие сценарии или выполнить общие действия, поэтому нам всегда нужно указывать, какие функции являются тестами.</p>
+<p>В теле функции теста используется макрос <code>assert_eq!</code>, чтобы утверждать, что <code>result</code>, который содержит результат сложения 2 и 2, равен 4. Это утверждение служит примером формата для типичного теста. Давайте запустим его, чтобы убедиться, что этот тест пройден.</p>
+<p>Приказ <code>cargo test</code> выполнит все тесты в выбранном проекте и сообщит о результатах как в приложении 11-2:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-01/output.txt}}
+</code></pre>
+<p><span class="caption">Приложение 11-2: Вывод сведений о работе самостоятельно сгенерированных тестов</span></p>
+<p>Cargo собрал и выполнил тест. Мы видим строку <code>running 1 test</code>. Следующая строка показывает имя сгенерированной тестовой функции, называемой  <code>it_works</code>, и результат запуска этого теста равный <code>ok</code>. Текст <code>test result: ok.</code> означает, что все тесты пройдены успешно и часть вывода <code>1 passed; 0 failed</code> сообщает общее количество тестов, которые прошли или были ошибочными.</p>
+<p>Можно пометить тест как пренебрегаемый, чтобы он не выполнялся в определенном случае; мы рассмотрим это в разделе <a href="ch11-02-running-tests.html#ignoring-some-tests-unless-specifically-requested">“Пренебрежение некоторых тестов, если их целенаправленно не запрашивать”</a><!-- ignore --> позже в этой главе. Поскольку в данный момент мы этого не сделали, в сводке показано, что <code>0 ignored</code>. Мы также можем передать переменная приказу <code>cargo test</code> для запуска только тех тестов, имя которых соответствует строке; это называется <em>фильтрацией</em>, и мы рассмотрим это в разделе <a href="ch11-02-running-tests.html#running-a-subset-of-tests-by-name">“Запуск подмножества тестов по имени”</a><!-- ignore -->. Мы также не фильтровали выполняемые тесты, поэтому в конце сводки показано, что <code>0 filtered out</code>.</p>
+<p>Статистика <code>0 measured</code> предназначена для тестов производительности. На момент написания этой статьи такие тесты доступны только в ночной сборке Rust. Посмотрите <a href="https://doc.rust-lang.org/unstable-book/library-features/test.html">документацию о тестах производительности</a>, чтобы узнать больше.</p>
+<p>Следующая часть вывода тестов начинается с <code>Doc-tests adder</code> - это сведения о тестах в документации. У нас пока нет тестов документации, но Rust может собирать любые примеры кода, которые находятся в API документации. Такая возможность помогает поддерживать документацию и код в синхронизированном состоянии. Мы поговорим о написании тестов документации в секции <a href="ch14-02-publishing-to-crates-io.html#documentation-comments-as-tests">"Комментарии документации как тесты"</a><!-- ignore --> Главы 14. Пока просто пропренебрегаем часть <code>Doc-tests</code> вывода.</p>
+<p>Давайте начнём настраивать тест в соответствии с нашими собственными потребностями. Сначала поменяем название нашего теста <code>it_works</code> на <code>exploration</code>, вот так:</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/src/lib.rs}}</code></pre>
+<p>Снова выполним приказ <code>cargo test</code>. Вывод показывает наименование нашей тест-функции - <code>exploration</code> вместо <code>it_works</code>:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-01-changing-test-name/output.txt}}
+</code></pre>
+<p>Добавим ещё один тест, но в этот раз целенаправленно сделаем так, чтобы этот новый тест не отработал! Тест терпит неудачу, когда что-то паникует в тестируемой функции. Каждый тест запускается в новом потоке и когда главный поток видит, что тестовый поток упал, то помечает тест как завершившийся аварийно. Мы говорили о простейшем способе вызвать панику в главе 9, используя для этого известный макрос <code>panic!</code>. Введём код тест-функции <code>another</code>, как в файле <em>src/lib.rs</em> из приложения 11-3.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust panics noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-03/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 11-3: Добавление второго теста, который завершится ошибкой, потому что мы вызываем <code>panic!</code> макрос</span></p>
+<p>Запустим приказ <code>cargo test</code>. Вывод результатов показан в приложении 11-4, который сообщает, что тест <code>exploration</code> пройден, а <code>another</code> нет:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-03/output.txt}}
+</code></pre>
+<p><span class="caption">Приложение 11-4. Результаты теста, когда один тест пройден, а другой нет</span></p>
+<p>Вместо <code>ok</code>, строка <code>test tests::another</code> сообщает <code>FAILED</code>. Две новые секции появились между отдельными результатами и сводкой: в первом отображается подробная причина каждого сбоя теста. В данном случае тест <code>another</code> не сработал, потому что <code>panicked at 'Make this test fail'</code>, произошло в строке 10 файла <em>src/lib.rs</em>. В следующем разделе перечисляют имена всех не пройденных тестов, что удобно, когда есть много тестов и много подробных результатов неудачных тестов. Мы можем использовать имя не пройденного теста для его дальнейшей отладки; мы больше поговорим о способах запуска тестов в разделе <a href="ch11-02-running-tests.html#controlling-how-tests-are-run">"Управление хода выполнения тестов"</a><!-- ignore -->.</p>
+<p>Итоговая строка отображается в конце: общий результат нашего тестирования <code>FAILED</code>. У нас один тест пройден и один тест завершён аварийно.</p>
+<p>Теперь, когда вы увидели, как выглядят результаты теста при разных сценариях, давайте рассмотрим другие макросы полезные в тестах, кроме <code>panic!</code>.</p>
+<h3 id="Проверка-результатов-с-помощью-макроса-assert"><a class="header" href="#Проверка-результатов-с-помощью-макроса-assert">Проверка результатов с помощью макроса <code>assert!</code></a></h3>
+<p>Макрос <code>assert!</code> доступен из встроенной библиотеки и является удобным, когда вы хотите проверить что некоторое условие в тесте вычисляется в значение <code>true</code>. Мы передаём в макрос <code>assert!</code> переменная, который вычисляется в логическое значение. Если оно <code>true</code>, то ничего не происходит и тест считается пройденным. Если же значение вычисляется в <code>false</code>, то макрос <code>assert!</code> вызывает макрос <code>panic!</code>, чтобы вызвать сбой теста. Использование макроса <code>assert!</code> помогает проверить, что код функционирует как ожидалось.</p>
+<p>В главе 5, приложении 5-15, мы использовали структуру <code>Rectangle</code> и способ <code>can_hold</code>, который повторён в приложении 11-5. Давайте поместим этот код в файл <em>src/lib.rs</em> и напишем несколько тестов для него используя макрос <code>assert!</code>.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-05/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 11-5: Использование структуры <code>Rectangle</code> и её способа can_hold из главы 5</span></p>
+<p>Способ <code>can_hold</code> возвращает логическое значение, что означает, что он является наилучшим вариантом использования в макросе <code>assert!</code>. В приложении 11-6 мы пишем тест, который выполняет способ <code>can_hold</code> путём создания экземпляра <code>Rectangle</code> шириной 8 и высотой 7 и убеждаемся, что он может содержать другой экземпляр <code>Rectangle</code> имеющий ширину 5 и высоту 1.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-06/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 11-6: Тест для способа <code>can_hold</code>, который проверяет что больший прямоугольник действительно может содержать меньший</span></p>
+<p>Также, в модуле <code>tests</code> обратите внимание на новую добавленную строку <code>use super::*;</code>. Модуль <code>tests</code> является обычным и подчиняется тем же правилам видимости, которые мы обсуждали в главе 7 <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">"Пути для ссылки на элементы внутри дерева модуля"</a><!--  -->. Так как этот модуль <code>tests</code> является внутренним, нужно подключить тестируемый код из внешнего модуля в область видимости внутреннего модуля с тестами. Для этого используется вездесущеее подключение, так что все что определено во внешнем модуле становится доступным внутри <code>tests</code> модуля.</p>
+<p>Мы назвали наш тест <code>larger_can_hold_smaller</code> и создали два нужных экземпляра <code>Rectangle</code>. Затем вызвали макрос <code>assert!</code> и передали результат вызова <code>larger.can_hold(&amp;smaller)</code> в него. Это выражение должно возвращать <code>true</code>, поэтому наш тест должен пройти. Давайте выясним!</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-06/output.txt}}
+</code></pre>
+<p>Тест проходит. Теперь добавим другой тест, в этот раз мы попытаемся убедиться, что меньший прямоугольник не может содержать больший прямоугольник:</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-02-adding-another-rectangle-test/src/lib.rs:here}}</code></pre>
+<p>Поскольку правильный результат функции <code>can_hold</code> в этом случае <code>false</code>, то мы должны инвертировать этот результат, прежде чем передадим его в <code>assert!</code> макро. Как результат, наш тест пройдёт, если <code>can_hold</code> вернёт <code>false</code>:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-02-adding-another-rectangle-test/output.txt}}
+</code></pre>
+<p>Два теста работают. Теперь проверим, как отреагируют тесты, если мы добавим ошибку в код. Давайте изменим реализацию способа <code>can_hold</code> заменив одно из логических выражений знак сравнения с "больше чем" на противоположный "меньше чем" при сравнении ширины:</p>
+<pre><code class="language-rust not_desired_behavior noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/src/lib.rs:here}}</code></pre>
+<p>Запуск тестов теперь производит следующее:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-03-introducing-a-bug/output.txt}}
+</code></pre>
+<p>Наши тесты нашли ошибку! Так как в тесте <code>larger.width</code> равно 8 и <code>smaller.width</code> равно 5 сравнение ширины в способе <code>can_hold</code> возвращает результат <code>false</code>, поскольку число 8 не меньше чем 5.</p>
+<h3 id="Проверка-на-равенство-с-помощью-макросов-assert_eq-и-assert_ne"><a class="header" href="#Проверка-на-равенство-с-помощью-макросов-assert_eq-и-assert_ne">Проверка на равенство с помощью макросов <code>assert_eq!</code> и <code>assert_ne!</code></a></h3>
+<p>Общим способом проверки функциональности является использование сравнения результата тестируемого кода и ожидаемого значения, чтобы убедиться в их равенстве. Для этого можно использовать макрос <code>assert!</code>, передавая ему выражение с использованием оператора <code>==</code>. Важно также знать, что кроме этого стандартная библиотека предлагает пару макросов <code>assert_eq!</code> и <code>assert_ne!</code>, чтобы сделать тестирование более удобным. Эти макросы сравнивают два переменной на равенство или неравенство соответственно. Макросы также печатают два значения входных свойств, если тест завершился ошибкой, что позволяет легче увидеть <em>почему</em> тест ошибочен. Противоположно этому, макрос <code>assert!</code> может только отобразить, что он вычислил значение <code>false</code> для выражения <code>==</code>, но не значения, которые привели к результату <code>false</code>.</p>
+<p>В приложении 11-7, мы напишем функцию <code>add_two</code>, которая прибавляет к входному свойству <code>2</code> и возвращает значение. Затем, протестируем эту функцию с помощью макроса <code>assert_eq!</code>:</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-07/src/lib.rs}}</code></pre>
+<p><span class="caption">Приложение 11-7: Тестирование функции <code>add_two</code> с помощью макроса <code>assert_eq!</code></span></p>
+<p>Проверим, что тесты проходят!</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-07/output.txt}}
+</code></pre>
+<p>Первый переменная, который мы передаём в макрос <code>assert_eq!</code> число <code>4</code> чей результат вызова равен <code>add_two(2)</code> . Строка для этого теста - <code>test tests::it_adds_two ... ok</code> , а текст <code>ok</code> означает, что наш тест пройден!</p>
+<p>Давайте введём ошибку в код, чтобы увидеть, как она выглядит, когда тест, который использует <code>assert_eq!</code> завершается ошибкой. Измените реализацию функции <code>add_two</code>, чтобы добавлять <code>3</code>:</p>
+<pre><code class="language-rust not_desired_behavior noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-04-bug-in-add-two/src/lib.rs:here}}</code></pre>
+<p>Попробуем выполнить данный тест ещё раз:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-04-bug-in-add-two/output.txt}}
+</code></pre>
+<p>Наш тест нашёл ошибку! Тест <code>it_adds_two</code> не выполнился, отображается сообщение <code>assertion failed: </code>(left == right)`` и показывает, что <code>left</code> было <code>4</code>, а <code>right</code> было <code>5</code>. Это сообщение полезно и помогает начать отладку: это означает <code>left</code> переменная <code>assert_eq!</code> имел значение <code>4</code>, но <code>right</code> переменная для вызова <code>add_two(2)</code> был со значением <code>5</code>.</p>
+<p>Обратите внимание, что в некоторых языках (таких как Java) в библиотеках кода для тестирования принято именовать входные свойства проверочных функций как "ожидаемое" (<code>expected</code>) и "фактическое" (<code>actual</code>). В Rust приняты следующие обозначения <code>left</code> и <code>right</code> соответственно, а порядок в котором определяются ожидаемое значение и производимое тестируемым кодом значение не имеют значения. Мы могли бы написать выражение в тесте как <code>assert_eq!(add_two(2), 4)</code>, что приведёт к отображаемому сообщению об ошибке <code>assertion failed: </code>(left == right)``, слева <code>left</code> было бы <code>5</code>, а справа <code>right</code> было бы <code>4</code>.</p>
+<p>Макрос <code>assert_ne!</code> сработает успешно, если входные свойства не равны друг другу и завершится с ошибкой, если значения равны. Этот макрос наиболее полезен в тех случаях, когда мы не знаем заранее, каким значение <em>будет</em>, но знаем точно, каким оно <em>не может</em> быть. К примеру, если тестируется функция, которая обязательно изменяет входные данные определённым образом, но способ изменения входного свойства зависит от дня недели, в который запускаются тесты, что лучший способ проверить правильность работы такой функции - это сравнить и убедиться, что выходное значение функции не должно быть равным входному значению.</p>
+<p>В своей работе макросы <code>assert_eq!</code> и <code>assert_ne!</code> неявным образом используют операторы <code>==</code> и <code>!=</code> соответственно. Когда проверка не срабатывает, макросы печатают значения переменных с помощью отладочного форматирования и это означает, что значения сравниваемых переменных должны реализовать типажи <code>PartialEq</code> и <code>Debug</code>. Все примитивные и большая часть видов встроенной библиотеки Rust реализуют эти типажи. Для структур и перечислений, которые вы реализуете сами будет необходимо реализовать типаж <code>PartialEq</code> для сравнения значений на равенство или неравенство. Для печати отладочной сведений в виде сообщений в строку вывода окне вывода необходимо реализовать типаж <code>Debug</code>. Так как оба типажа являются выводимыми типажами, как упоминалось в приложении 5-12 главы 5, то эти типажи можно реализовать добавив изложение <code>#[derive(PartialEq, Debug)]</code> к определению структуры или перечисления. Смотрите больше подробностей в Appendix C <a href="appendix-03-derivable-traits.html">"Выводимые типажи"</a><!-- ignore --> про эти и другие выводимые типажи.</p>
+<h3 id="Создание-сообщений-об-ошибках"><a class="header" href="#Создание-сообщений-об-ошибках">Создание сообщений об ошибках</a></h3>
+<p>Также можно добавить пользовательское сообщение как дополнительный переменная макросов для печати в сообщении об ошибке теста <code>assert!</code>, <code>assert_eq!</code>, и <code>assert_ne!</code>. Любые переменные, указанные после обязательных переменных, далее передаются в макрос <code>format!</code> (он обсуждается в разделе <a href="ch08-02-strings.html#concatenation-with-the--operator-or-the-format-macro">"Конкатенация с помощью оператора <code>+</code> или макроса format!"</a><!-- ignore -->), так что вы можете передать форматированную строку, которая содержит  <code>{}</code> для заполнителей и значения, заменяющие эти заполнители. Пользовательские сообщения полезны для пояснения того, что означает утверждение (assertion); когда тест завершается неудачей, у вас будет лучшее представление о том, в чем проблема с кодом.</p>
+<p>Например, есть функция, которая приветствует человека по имени и мы хотим протестировать эту функцию. Мы хотим чтобы передаваемое ей имя выводилось в окно вывода:</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-05-greeter/src/lib.rs}}</code></pre>
+<p>Требования к этой программе ещё не были согласованы и мы вполне уверены, что текст <code>Hello</code> в начале приветствия ещё изменится. Мы решили, что не хотим обновлять тест при изменении требований, поэтому вместо проверки на точное равенство со значением возвращённым из <code>greeting</code>, мы просто будем проверять, что вывод содержит текст из входного свойства.</p>
+<p>Давайте внесём ошибку в этот код, изменив <code>greeting</code> так, чтобы оно не включало <code>name</code> и увидим, как выглядит сбой этого теста:</p>
+<pre><code class="language-rust not_desired_behavior noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-06-greeter-with-bug/src/lib.rs:here}}</code></pre>
+<p>Запуск этого теста выводит следующее:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-06-greeter-with-bug/output.txt}}
+</code></pre>
+<p>Сообщение содержит лишь сведения о том что сравнение не было успешным и в какой строке это произошло. В данном случае, более полезный текст сообщения был бы, если бы также выводилось значение из функции <code>greeting</code>. Изменим тестирующую функцию так, чтобы выводились пользовательское сообщение форматированное строкой с заменителем и фактическими данными из кода <code>greeting</code>:</p>
+<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-07-custom-failure-message/src/lib.rs:here}}</code></pre>
+<p>После того, как выполним тест ещё раз мы получим подробное сообщение об ошибке:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-07-custom-failure-message/output.txt}}
+</code></pre>
+<p>Мы можем увидеть значение, которое мы на самом деле получили в тестовом выводе, что поможет нам отлаживать произошедшее, а не то, что мы ожидали.</p>
+<h3 id="Проверка-с-помощью-макроса-should_panic"><a class="header" href="#Проверка-с-помощью-макроса-should_panic">Проверка с помощью макроса <code>should_panic</code></a></h3>
+<p>В дополнение к проверке того, что наш код возвращает правильные, ожидаемые значения, важным также является проверить, что наш код обрабатывает ошибки, которые мы ожидаем. Например, рассмотрим вид <code>Guess</code> который мы создали в главе 9, приложения 9-10. Другой код, который использует <code>Guess</code> зависит от заверения того, что <code>Guess</code> экземпляры будут содержать значения только от 1 до 100. Мы можем написать тест, который заверяет, что попытка создать экземпляр <code>Guess</code> со значением вне этого ряда вызывает панику.</p>
+<p>Реализуем это с помощью другого атрибута тест-функции <code>#[should_panic]</code>. Этот атрибут сообщает системе тестирования, что тест проходит, когда способ генерирует ошибку. Если ошибка не генерируется - тест считается не пройденным.</p>
+<p>Приложение 11-8 показывает тест, который проверяет, что условия ошибки <code>Guess::new</code> произойдут, когда мы их ожидаем их.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-08/src/lib.rs}}</code></pre>
+<p><span class="caption">Приложение 11-8: Проверка того, что условие вызовет макрос <code>panic!</code></span></p>
+<p>Атрибут <code>#[should_panic]</code> следует после <code>#[test]</code> и до объявления тестовой функции. Посмотрим на вывод результата, когда тест проходит:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/listing-11-08/output.txt}}
+</code></pre>
+<p>Выглядит хорошо! Теперь давайте внесём ошибку в наш код, убрав условие о том, что функция <code>new</code> будет паниковать если значение больше 100:</p>
+<pre><code class="language-rust not_desired_behavior noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-08-guess-with-bug/src/lib.rs:here}}</code></pre>
+<p>Когда мы запустим тест в приложении 11-8, он потерпит неудачу:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-08-guess-with-bug/output.txt}}
+</code></pre>
+<p>Мы получаем не очень полезное сообщение в этом случае, но когда мы смотрим на тестирующую функцию, мы видим, что она <code>#[should_panic]</code>. Аварийное выполнение, которое мы получили означает, что код в тестирующей функции не вызвал паники.</p>
+<p>Тесты, которые используют <code>should_panic</code> могут быть неточными, потому что они только указывают, что код вызвал панику. Тест с атрибутом <code>should_panic</code> пройдёт, даже если тест паникует по причине, отличной от той, которую мы ожидали. Чтобы сделать тесты с <code>should_panic</code> более точными, мы можем добавить необязательный свойство <code>expected</code>  для атрибута <code>should_panic</code>. Такая подробностизация теста позволит удостовериться, что сообщение об ошибке содержит предоставленный текст. Например, рассмотрим модифицированный код для <code>Guess</code> в приложении 11-9, где <code>new</code> функция паникует с различными сообщениями в зависимости от того, является ли значение слишком маленьким или слишком большим.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-09/src/lib.rs:here}}</code></pre>
+<p><span class="caption">Приложение 11-9: Проверка <code>panic!</code> на наличие в его сообщении указанной подстроки</span></p>
+<p>Этот тест пройдёт, потому что значение, которое мы поместили для <code>should_panic</code> в свойство атрибута <code>expected</code> является подстрокой сообщения, с которым функция <code>Guess::new</code> вызывает панику. Мы могли бы указать полное, ожидаемое сообщение для паники, в этом случае это будет <code>Guess value must be less than or equal to 100, got 200</code>. То что вы выберите для указания как ожидаемого свойства у <code>should_panic</code> зависит от того, какая часть сообщения о панике уникальна или динамична, насколько вы хотите, чтобы ваш тест был точным. В этом случае достаточно подстроки из сообщения паники, чтобы обеспечить выполнение кода в тестовой функции <code>else if value &gt; 100</code> .</p>
+<p>Чтобы увидеть, что происходит, когда тест <code>should_panic</code> неуспешно завершается с сообщением <code>expected</code>, давайте снова внесём ошибку в наш код, поменяв местами <code>if value &lt; 1</code> и <code>else if value &gt; 100</code> блоки:</p>
+<pre><code class="language-rust ignore not_desired_behavior">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-09-guess-with-panic-msg-bug/src/lib.rs:here}}</code></pre>
+<p>На этот раз, когда мы выполним <code>should_panic</code> тест, он потерпит неудачу:</p>
+<pre><code class="language-console">{{#include ../listings/ch11-writing-automated-tests/no-listing-09-guess-with-panic-msg-bug/output.txt}}
+</code></pre>
+<p>Сообщение об ошибке указывает, что этот тест действительно вызвал панику, как мы и ожидали, но сообщение о панике не включено ожидаемую строку <code>'Guess value must be less than or equal to 100'</code>. Сообщение о панике, которое мы получили в этом случае, было <code>Guess value must be greater than or equal to 1, got 200.</code> Теперь мы можем начать выяснение, где ошибка!</p>
+<h3 id="Использование-resultt-e-в-тестах"><a class="header" href="#Использование-resultt-e-в-тестах">Использование <code>Result&lt;T, E&gt;</code> в тестах</a></h3>
+<p>Пока что мы написали тесты, которые паникуют, когда терпят неудачу. Мы также можем написать тесты которые используют <code>Result&lt;T, E&gt;</code>! Вот тест из приложения 11-1, переписанный с использованием <code>Result&lt;T, E&gt;</code> и возвращающий <code>Err</code> вместо паники:</p>
+<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-10-result-in-tests/src/lib.rs}}</code></pre>
+<p>Функция <code>it_works</code> теперь имеет возвращаемый вид <code>Result&lt;(), String&gt;</code>. В теле функции, вместо вызова макроса <code>assert_eq!</code>, мы возвращаем <code>Ok(())</code> когда тест успешно выполнен и <code>Err</code> со <code>String</code> внутри, когда тест не проходит.</p>
+<p>Написание тестов так, чтобы они возвращали <code>Result&lt;T, E&gt;</code> позволяет использовать оператор "вопросительный знак"  в теле тестов, который может быть удобным способом писать тесты, которые должны выполниться не успешно, если какая-либо действие внутри них возвращает вариант ошибки <code>Err</code>.</p>
+<p>Вы не можете использовать изложение <code>#[should_panic]</code> в тестах, использующих <code>Result&lt;T, E&gt;</code>. Чтобы утверждать, что действие возвращает вариант <code>Err</code>, <em>не</em> используйте оператор вопросительного знака для значения <code>Result&lt;T, E&gt;</code>. Вместо этого используйте <code>assert!(value.is_err())</code>.</p>
+<p>Теперь, когда вы знаете несколько способов написания тестов, давайте взглянем на то, что происходит при запуске тестов и исследуем разные опции используемые с приказом <code>cargo test</code>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch11-00-testing.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch11-02-running-tests.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch11-00-testing.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch11-02-running-tests.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+    </div>
+    </body>
+</html>
