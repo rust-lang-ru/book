@@ -12,7 +12,7 @@
 
 - [Программирование игры в загадки](ch02-00-guessing-game-tutorial.md)
 
-- [Общие концепции программирования](ch03-00-common-programming-concepts.md)
+- [Общие подходы программирования](ch03-00-common-programming-concepts.md)
 
     - [Переменные и изменяемость](ch03-01-variables-and-mutability.md)
     - [Виды Данных](ch03-02-data-types.md)
@@ -28,9 +28,9 @@
 
 - [Использование структур для объединения связанных данных](ch05-00-structs.md)
 
-    - [Определение и создание экземпляров структур](ch05-01-defining-structs.md)
+    - [Определение и создание образцов структур](ch05-01-defining-structs.md)
     - [Пример программы, использующей структуры](ch05-02-example-structs.md)
-    - [Синтаксис способа](ch05-03-method-syntax.md)
+    - [правила написания способа](ch05-03-method-syntax.md)
 
 - [Перечисления и сопоставление с образцом](ch06-00-enums.md)
 
@@ -43,7 +43,7 @@
 - [Управление растущими проектами с помощью пакетов, крейтов и модулей](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
 
     - [Пакеты и крейты](ch07-01-packages-and-crates.md)
-    - [Определение модулей для управления областью действия и конфиденциальностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
+    - [Определение модулей для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
     - [Пути для ссылки на элемент в дереве модулей](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
     - [Separating Modules into Different Files](ch07-05-separating-modules-into-different-files.md)
@@ -66,18 +66,18 @@
     - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
     - [Валидация ссылок посредством сроков жизни](ch10-03-lifetime-syntax.md)
 
-- [Написание самостоятельно х тестов](ch11-00-testing.md)
+- [Написание самостоятельно х проверок](ch11-00-testing.md)
 
-    - [Как писать тесты](ch11-01-writing-tests.md)
-    - [Управление выполнением тестов](ch11-02-running-tests.md)
-    - [Организация тестов](ch11-03-test-organization.md)
+    - [Как писать проверки](ch11-01-writing-tests.md)
+    - [Управление выполнением проверок](ch11-02-running-tests.md)
+    - [Организация проверок](ch11-03-test-organization.md)
 
 - [Проект с вводом-выводом: создание программы приказной строки](ch12-00-an-io-project.md)
 
     - [Получение переменных приказной строки](ch12-01-accepting-command-line-arguments.md)
     - [Чтение файла](ch12-02-reading-a-file.md)
-    - [Рефакторинг для обеспечения модульности и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
-    - [Разработка функциональности библиотеки с помощью разработки через тестирование](ch12-04-testing-the-librarys-functionality.md)
+    - [Переработка кода для обеспечения модульности и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
+    - [Разработка функциональности библиотеки с помощью разработки через проверка](ch12-04-testing-the-librarys-functionality.md)
     - [Работа с переменными среды](ch12-05-working-with-environment-variables.md)
     - [Запись сообщений об ошибках в stderr вместо stdout](ch12-06-writing-to-stderr-instead-of-stdout.md)
 
@@ -107,18 +107,18 @@
     - [`RefCell<T>` и внутренняя изменяемость](ch15-05-interior-mutability.md)
     - [Ссылочные циклы могут привести к утечке памяти](ch15-06-reference-cycles.md)
 
-- [Безбоязненный параллелизм](ch16-00-concurrency.md)
+- [Безбоязненный одновременность](ch16-00-concurrency.md)
 
-    - [Использование потоков для параллельного выполнения кода](ch16-01-threads.md)
+    - [Использование потоков для одновременного выполнения кода](ch16-01-threads.md)
     - [Пересылка сообщений для передачи данных между потоками](ch16-02-message-passing.md)
-    - [Параллелизм с общим состоянием](ch16-03-shared-state.md)
-    - [Расширяемый параллелизм с помощью трейтов `Sync` и `Send`](ch16-04-extensible-concurrency-sync-and-send.md)
+    - [Одновременность с общим состоянием](ch16-03-shared-state.md)
+    - [Расширяемый одновременность с помощью трейтов `Sync` и `Send`](ch16-04-extensible-concurrency-sync-and-send.md)
 
-- [Возможности объектно-ориентированного программирования Rust](ch17-00-oop.md)
+- [Возможности предметно-направленного программирования Rust](ch17-00-oop.md)
 
-    - [Характеристики объектно-ориентированных языков](ch17-01-what-is-oo.md)
-    - [Использование трейт-объектов, допускающих значения разных видов](ch17-02-trait-objects.md)
-    - [Реализация шаблона объектно-ориентированного проектирования](ch17-03-oo-design-patterns.md)
+    - [Характеристики предметно-направленных языков](ch17-01-what-is-oo.md)
+    - [Использование трейт-предметов, допускающих значения разных видов](ch17-02-trait-objects.md)
+    - [Реализация шаблона предметно-направленного проектирования](ch17-03-oo-design-patterns.md)
 
 ## Продвинутые темы
 
@@ -126,7 +126,7 @@
 
     - [Все места, где могут использоваться шаблоны](ch18-01-all-the-places-for-patterns.md)
     - [Опровержимость: может ли шаблон не соответствовать](ch18-02-refutability.md)
-    - [Синтаксис шаблона](ch18-03-pattern-syntax.md)
+    - [правила написания шаблона](ch18-03-pattern-syntax.md)
 
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
@@ -136,7 +136,7 @@
     - [Продвинутые функции и замыкания](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
 
-- [Финальный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
+- [Конечный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
 
     - [Создание однопоточного веб-сервера](ch20-01-single-threaded.md)
     - [Превращение нашего однопоточного сервера в многопоточный сервер](ch20-02-multithreaded.md)
