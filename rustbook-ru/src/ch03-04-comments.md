@@ -32,7 +32,7 @@
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-25-comments-above-line/src/main.rs}}
 ```
 
-В Ржавчина есть ещё один вид примечаниев - документационные примечания, которые мы обсудим в разделе ["Публикация дополнения на Crates.io"] главы 14.
+В Ржавчина есть ещё один вид примечаниев - документационные примечания, которые мы обсудим в разделе ["Обнародование дополнения на Crates.io"] главы 14.
 
 
-["Публикация дополнения на Crates.io"]: ch14-02-publishing-to-crates-io.html
+["Обнародование дополнения на Crates.io"]: ch14-02-publishing-to-crates-io.html

@@ -26,10 +26,10 @@
     - [Ссылки и заимствование](ch04-02-references-and-borrowing.md)
     - [Вид среза](ch04-03-slices.md)
 
-- [Использование структур для объединения связанных данных](ch05-00-structs.md)
+- [Использование устройств для объединения связанных данных](ch05-00-structs.md)
 
-    - [Определение и создание образцов структур](ch05-01-defining-structs.md)
-    - [Пример программы, использующей структуры](ch05-02-example-structs.md)
+    - [Определение и создание образцов устройств](ch05-01-defining-structs.md)
+    - [Пример программы, использующей устройства](ch05-02-example-structs.md)
     - [правила написания способа](ch05-03-method-syntax.md)
 
 - [Перечисления и сопоставление с образцом](ch06-00-enums.md)
@@ -40,11 +40,11 @@
 
 ## Основы Rust
 
-- [Управление растущими проектами с помощью дополнений, ящиков и модулей](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
+- [Управление растущими делами с помощью дополнений, ящиков и звеньев](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
 
     - [Дополнения и ящики](ch07-01-packages-and-crates.md)
-    - [Определение модулей для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
-    - [Пути для ссылки на элемент в дереве модулей](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
+    - [Определение звеньев для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
+    - [Пути для ссылки на элемент в дереве звеньев](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
     - [Separating Modules into Different Files](ch07-05-separating-modules-into-different-files.md)
 
@@ -72,28 +72,28 @@
     - [Управление выполнением проверок](ch11-02-running-tests.md)
     - [Создание проверок](ch11-03-test-organization.md)
 
-- [Проект с вводом-выводом: создание программы приказной строки](ch12-00-an-io-project.md)
+- [Дело с вводом-выводом: создание программы приказной строки](ch12-00-an-io-project.md)
 
     - [Получение переменных приказной строки](ch12-01-accepting-command-line-arguments.md)
     - [Чтение файла](ch12-02-reading-a-file.md)
-    - [Переработка кода для обеспечения модульности и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
-    - [Разработка функциональности библиотеки с помощью разработки через проверка](ch12-04-testing-the-librarys-functionality.md)
+    - [Переработка кода для обеспечения выделения на звенья и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
+    - [Разработка возможности библиотеки с помощью разработки через проверка](ch12-04-testing-the-librarys-functionality.md)
     - [Работа с переменными среды](ch12-05-working-with-environment-variables.md)
     - [Запись сообщений об ошибках в stderr вместо stdout](ch12-06-writing-to-stderr-instead-of-stdout.md)
 
 ## Думать на Rust
 
-- [Функциональные возможности языка: повторители и замыкания](ch13-00-functional-features.md)
+- [Полезные  возможности языка: повторители и замыкания](ch13-00-functional-features.md)
 
     - [Замыкания: анонимные функции, которые захватывают своё окружение](ch13-01-closures.md)
     - [Обработка последовательности элементов с помощью повторителей](ch13-02-iterators.md)
-    - [Улучшение нашего проекта с вводом/выводом](ch13-03-improving-our-io-project.md)
+    - [Улучшение нашего дела с вводом/выводом](ch13-03-improving-our-io-project.md)
     - [Сравнение производительности: циклы и повторители](ch13-04-performance.md)
 
 - [Подробнее о Cargo и Crates.io](ch14-00-more-about-cargo.md)
 
     - [Настройка билдов с помощью профилей выпуска](ch14-01-release-profiles.md)
-    - [Публикация ящика на Crates.io](ch14-02-publishing-to-crates-io.md)
+    - [Обнародование ящика на Crates.io](ch14-02-publishing-to-crates-io.md)
     - [Рабочие области Cargo](ch14-03-cargo-workspaces.md)
     - [Установка двоичных файлов с Crates.io с помощью `cargo install`](ch14-04-installing-binaries.md)
     - [Расширение возможностей Cargo путём добавления пользовательских приказов](ch14-05-extending-cargo.md)
@@ -118,25 +118,25 @@
 
     - [Свойства предметно-направленных языков](ch17-01-what-is-oo.md)
     - [Использование особенность-предметов, допускающих значения разных видов](ch17-02-trait-objects.md)
-    - [Реализация шаблона предметно-направленного проектирования](ch17-03-oo-design-patterns.md)
+    - [Выполнение образца предметно-направленного разработки](ch17-03-oo-design-patterns.md)
 
 ## Продвинутые темы
 
-- [Шаблоны и сопоставление](ch18-00-patterns.md)
+- [Образцы и сопоставление](ch18-00-patterns.md)
 
-    - [Все места, где могут использоваться шаблоны](ch18-01-all-the-places-for-patterns.md)
-    - [Опровержимость: может ли шаблон не соответствовать](ch18-02-refutability.md)
-    - [правила написания шаблона](ch18-03-pattern-syntax.md)
+    - [Все места, где могут использоваться образцы](ch18-01-all-the-places-for-patterns.md)
+    - [Опровержимость: может ли образец не соответствовать](ch18-02-refutability.md)
+    - [правила написания образца](ch18-03-pattern-syntax.md)
 
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
     - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
-    - [Продвинутые типажи](ch19-03-advanced-traits.md)
+    - [Продвинутые особенности](ch19-03-advanced-traits.md)
     - [Продвинутые виды](ch19-04-advanced-types.md)
     - [Продвинутые функции и замыкания](ch19-05-advanced-functions-and-closures.md)
     - [Макросы](ch19-06-macros.md)
 
-- [Конечный проект: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
+- [Конечный дело: создание многопоточного веб-сервера](ch20-00-final-project-a-web-server.md)
 
     - [Создание однопоточного веб-сервера](ch20-01-single-threaded.md)
     - [Превращение нашего однопоточного сервера в многопоточный сервер](ch20-02-multithreaded.md)
