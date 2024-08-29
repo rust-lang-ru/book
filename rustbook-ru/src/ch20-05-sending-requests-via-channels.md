@@ -135,7 +135,7 @@ impl Worker {
 
 Это простые и очевидные изменения/
 
-Тестируем. Получаем ошибку сборки:
+Проверяем. Получаем ошибку сборки:
 
 ```text
 $ cargo check
@@ -152,7 +152,7 @@ error[E0382]: use of moved value: `receiver`
 ```
 
 Т.к. мы пытаемся отправить `receiver` в несколько образцов `Worker`. Вспомнив
-материал главы 16, где реализация потока предоставляла множество отправителей
+источник главы 16, где реализация потока предоставляла множество отправителей
 и одного получателя, мы не можем просто клонировать получающую часть потока для
 решения сбоев.
 
@@ -298,7 +298,7 @@ impl Worker {
 какая-то другая нить запаниковала удерживая замок и не освобождает его.
 
 К сожалению, мы получим ошибку при сборки этого кода
-Theoretically, this code should compile. Unfortunately, the Rust compiler isn’t
+Theoretically, this code should compile. Unfortunately, the Ржавчина compiler isn’t
 perfect yet, and we get this error:
 
 ```text
@@ -317,7 +317,7 @@ This error is fairly cryptic, and that’s because the problem is fairly cryptic
 In order to call a `FnOnce` closure that is stored in a `Box<T>` (which is what
 our `Job` type alias is), the closure needs to be able to move itself out of
 the `Box<T>` since when we call the closure, it takes ownership of `self`. In
-general, moving a value out of a `Box<T>` isn’t allowed since Rust doesn’t know
+general, moving a value out of a `Box<T>` isn’t allowed since Ржавчина doesn’t know
 how big the value inside the `Box<T>` is going to be; recall in Chapter 15 that
 we used `Box<T>` precisely because we had something of an unknown size that we
 wanted to store in a `Box<T>` to get a value of a known size.
@@ -325,18 +325,18 @@ wanted to store in a `Box<T>` to get a value of a known size.
 We saw in Chapter 17, Listing 17-15 that we can write methods that use the
 syntax `self: Box<Self>` so that the method takes ownership of a `Self` value
 that is stored in a `Box<T>`. That’s what we want to do here, but unfortunately
-the part of Rust that implements what happens when we call a closure isn’t
-implemented using `self: Box<Self>`. So Rust doesn’t yet understand that it
+the part of Ржавчина that implements what happens when we call a closure isn’t
+implemented using `self: Box<Self>`. So Ржавчина doesn’t yet understand that it
 could use `self: Box<Self>` in this situation in order to take ownership of the
 closure and move the closure out of the `Box<T>`.
 
-In the future, the code in Listing 20-20 should work just fine. Rust is still a
+In the future, the code in Listing 20-20 should work just fine. Ржавчина is still a
 work in progress with places that the compiler could be improved. There are
 people just like you working to fix this and other issues! Once you’ve finished
 the book, we would love for you to join in.
 
 But for now, let’s work around this problem. Luckily, there’s a trick that
-involves telling Rust explicitly that we’re in a case where we can take
+involves telling Ржавчина explicitly that we’re in a case where we can take
 ownership of the value inside the `Box<T>` using `self: Box<Self>`, and once we
 have ownership of the closure, we can call it. This involves defining a new
 trait that has a method `call_box` that uses `self: Box<Self>` in its
@@ -401,7 +401,7 @@ anything that implements our new trait `FnBox`. This will allow us to use
 about the actual values we’re sending down the channel.
 
 Finally, in the closure run in the thread in `Worker::new`, we use `call_box`
-instead of invoking the closure directly. Now Rust is able to understand that
+instead of invoking the closure directly. Now Ржавчина is able to understand that
 what we want to do is fine.
 
 This is a very sneaky, complicated trick. Don’t worry too much if it doesn’t

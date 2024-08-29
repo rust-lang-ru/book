@@ -1,4 +1,4 @@
-# The Rust Programming Language
+# The Ржавчина Programming Language
 
 [Язык программирования Rust](title-page.md) [Предисловие](foreword.md) [Введение](ch00-00-introduction.md)
 
@@ -17,8 +17,8 @@
     - [Переменные и изменяемость](ch03-01-variables-and-mutability.md)
     - [Виды Данных](ch03-02-data-types.md)
     - [Функции](ch03-03-how-functions-work.md)
-    - [Комментарии](ch03-04-comments.md)
-    - [Управляющие конструкции](ch03-05-control-flow.md)
+    - [Примечания](ch03-04-comments.md)
+    - [Управляющие устройства](ch03-05-control-flow.md)
 
 - [Понимание владения](ch04-00-understanding-ownership.md)
 
@@ -35,14 +35,14 @@
 - [Перечисления и сопоставление с образцом](ch06-00-enums.md)
 
     - [Определение Enum](ch06-01-defining-an-enum.md)
-    - [Конструкция потока управления `match`](ch06-02-match.md)
-    - [Лаконичный поток управления с `if let`](ch06-03-if-let.md)
+    - [Устройство потока управления `match`](ch06-02-match.md)
+    - [Краткий поток управления с `if let`](ch06-03-if-let.md)
 
 ## Основы Rust
 
-- [Управление растущими проектами с помощью пакетов, крейтов и модулей](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
+- [Управление растущими проектами с помощью дополнений, ящиков и модулей](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
 
-    - [Пакеты и крейты](ch07-01-packages-and-crates.md)
+    - [Дополнения и ящики](ch07-01-packages-and-crates.md)
     - [Определение модулей для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
     - [Пути для ссылки на элемент в дереве модулей](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
@@ -60,17 +60,17 @@
     - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-result.md)
     - [`panic!` или Не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
 
-- [Общие виды, трейты (характеристики) и время жизни](ch10-00-generics.md)
+- [Общие виды, особенности (свойства) и время жизни](ch10-00-generics.md)
 
     - [Обобщённые виды данных](ch10-01-syntax.md)
-    - [Трейты (характеристики): определение разделяемого поведения](ch10-02-traits.md)
+    - [Особенности (свойства): определение разделяемого поведения](ch10-02-traits.md)
     - [Валидация ссылок посредством сроков жизни](ch10-03-lifetime-syntax.md)
 
 - [Написание самостоятельно х проверок](ch11-00-testing.md)
 
     - [Как писать проверки](ch11-01-writing-tests.md)
     - [Управление выполнением проверок](ch11-02-running-tests.md)
-    - [Организация проверок](ch11-03-test-organization.md)
+    - [Создание проверок](ch11-03-test-organization.md)
 
 - [Проект с вводом-выводом: создание программы приказной строки](ch12-00-an-io-project.md)
 
@@ -93,7 +93,7 @@
 - [Подробнее о Cargo и Crates.io](ch14-00-more-about-cargo.md)
 
     - [Настройка билдов с помощью профилей выпуска](ch14-01-release-profiles.md)
-    - [Публикация крейта на Crates.io](ch14-02-publishing-to-crates-io.md)
+    - [Публикация ящика на Crates.io](ch14-02-publishing-to-crates-io.md)
     - [Рабочие области Cargo](ch14-03-cargo-workspaces.md)
     - [Установка двоичных файлов с Crates.io с помощью `cargo install`](ch14-04-installing-binaries.md)
     - [Расширение возможностей Cargo путём добавления пользовательских приказов](ch14-05-extending-cargo.md)
@@ -101,8 +101,8 @@
 - [Умные указатели](ch15-00-smart-pointers.md)
 
     - [Использование `Box<T>` для указания на данные в куче](ch15-01-box.md)
-    - [Работа с умными указателями как с обычными ссылками с помощью трейта `Deref`](ch15-02-deref.md)
-    - [Выполнение кода при очистке с помощью трейта `Drop`](ch15-03-drop.md)
+    - [Работа с умными указателями как с обычными ссылками с помощью особенности `Deref`](ch15-02-deref.md)
+    - [Выполнение кода при очистке с помощью особенности `Drop`](ch15-03-drop.md)
     - [`Rc<T>`, умный указатель с подсчётом ссылок](ch15-04-rc.md)
     - [`RefCell<T>` и внутренняя изменяемость](ch15-05-interior-mutability.md)
     - [Ссылочные циклы могут привести к утечке памяти](ch15-06-reference-cycles.md)
@@ -112,12 +112,12 @@
     - [Использование потоков для одновременного выполнения кода](ch16-01-threads.md)
     - [Пересылка сообщений для передачи данных между потоками](ch16-02-message-passing.md)
     - [Одновременность с общим состоянием](ch16-03-shared-state.md)
-    - [Расширяемый одновременность с помощью трейтов `Sync` и `Send`](ch16-04-extensible-concurrency-sync-and-send.md)
+    - [Расширяемый одновременность с помощью особенностей `Sync` и `Send`](ch16-04-extensible-concurrency-sync-and-send.md)
 
 - [Возможности предметно-направленного программирования Rust](ch17-00-oop.md)
 
-    - [Характеристики предметно-направленных языков](ch17-01-what-is-oo.md)
-    - [Использование трейт-предметов, допускающих значения разных видов](ch17-02-trait-objects.md)
+    - [Свойства предметно-направленных языков](ch17-01-what-is-oo.md)
+    - [Использование особенность-предметов, допускающих значения разных видов](ch17-02-trait-objects.md)
     - [Реализация шаблона предметно-направленного проектирования](ch17-03-oo-design-patterns.md)
 
 ## Продвинутые темы
@@ -146,8 +146,8 @@
 
     - [А — Ключевые слова](appendix-01-keywords.md)
     - [B — Операторы и символы](appendix-02-operators.md)
-    - [C — Выводимые трейты](appendix-03-derivable-traits.md)
+    - [C — Выводимые особенности](appendix-03-derivable-traits.md)
     - [D — Полезные средства разработки](appendix-04-useful-development-tools.md)
     - [E — Издания](appendix-05-editions.md)
     - [F — Переводы книги](appendix-06-translation.md)
-    - [G — Как создаётся Rust и «Nightly Rust»](appendix-07-nightly-rust.md)
+    - [G — Как создаётся Ржавчина и «Nightly Rust»](appendix-07-nightly-rust.md)
