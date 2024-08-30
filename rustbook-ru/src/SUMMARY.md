@@ -1,6 +1,6 @@
 # The Ржавчина Programming Language
 
-[Язык программирования Rust](title-page.md) [Предисловие](foreword.md) [Введение](ch00-00-introduction.md)
+[Язык программирования Ржавчина](title-page.md) [Предисловие](foreword.md) [Введение](ch00-00-introduction.md)
 
 ## С чего начать
 
@@ -38,7 +38,7 @@
     - [Устройство потока управления `match`](ch06-02-match.md)
     - [Краткий поток управления с `if let`](ch06-03-if-let.md)
 
-## Основы Rust
+## Основы Ржавчины
 
 - [Управление растущими делами с помощью дополнений, ящиков и звеньев](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
 
@@ -81,14 +81,14 @@
     - [Работа с переменными среды](ch12-05-working-with-environment-variables.md)
     - [Запись сообщений об ошибках в stderr вместо stdout](ch12-06-writing-to-stderr-instead-of-stdout.md)
 
-## Думать на Rust
+## Думать на Ржавчины
 
 - [Полезные  возможности языка: повторители и замыкания](ch13-00-functional-features.md)
 
     - [Замыкания: анонимные функции, которые захватывают своё окружение](ch13-01-closures.md)
     - [Обработка последовательности элементов с помощью повторителей](ch13-02-iterators.md)
     - [Улучшение нашего дела с вводом/выводом](ch13-03-improving-our-io-project.md)
-    - [Сравнение производительности: циклы и повторители](ch13-04-performance.md)
+    - [Сравнение производительности: круговороты и повторители](ch13-04-performance.md)
 
 - [Подробнее о Cargo и Crates.io](ch14-00-more-about-cargo.md)
 
@@ -105,7 +105,7 @@
     - [Выполнение кода при очистке с помощью особенности `Drop`](ch15-03-drop.md)
     - [`Rc<T>`, умный указатель с подсчётом ссылок](ch15-04-rc.md)
     - [`RefCell<T>` и внутренняя изменяемость](ch15-05-interior-mutability.md)
-    - [Ссылочные циклы могут привести к утечке памяти](ch15-06-reference-cycles.md)
+    - [Ссылочные круговороты могут привести к утечке памяти](ch15-06-reference-cycles.md)
 
 - [Безбоязненный одновременность](ch16-00-concurrency.md)
 
@@ -114,7 +114,7 @@
     - [Одновременность с общим состоянием](ch16-03-shared-state.md)
     - [Расширяемый одновременность с помощью особенностей `Sync` и `Send`](ch16-04-extensible-concurrency-sync-and-send.md)
 
-- [Возможности предметно-направленного программирования Rust](ch17-00-oop.md)
+- [Возможности предметно-направленного программирования Ржавчина](ch17-00-oop.md)
 
     - [Свойства предметно-направленных языков](ch17-01-what-is-oo.md)
     - [Использование особенность-предметов, допускающих значения разных видов](ch17-02-trait-objects.md)
@@ -130,7 +130,7 @@
 
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
-    - [Небезопасный код в Rust](ch19-01-unsafe-rust.md)
+    - [Небезопасный код в Ржавчине](ch19-01-unsafe-rust.md)
     - [Продвинутые особенности](ch19-03-advanced-traits.md)
     - [Продвинутые виды](ch19-04-advanced-types.md)
     - [Продвинутые функции и замыкания](ch19-05-advanced-functions-and-closures.md)
@@ -150,4 +150,4 @@
     - [D — Полезные средства разработки](appendix-04-useful-development-tools.md)
     - [E — Издания](appendix-05-editions.md)
     - [F — Переводы книги](appendix-06-translation.md)
-    - [G — Как создаётся Ржавчина и «Nightly Rust»](appendix-07-nightly-rust.md)
+    - [G — Как создаётся Ржавчина и «Ночное издание Ржавчины»](appendix-07-nightly-rust.md)

@@ -96,7 +96,7 @@
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-11-muts-in-separate-scopes/src/main.rs:here}}
 ```
 
-Rust применяет подобное правило для соединения изменяемых и неизменяемых ссылок. Этот код приводит к ошибке:
+Ржавчина применяет подобное правило для соединения изменяемых и неизменяемых ссылок. Этот код приводит к ошибке:
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-12-immutable-and-mutable-not-allowed/src/main.rs:here}}
