@@ -94,7 +94,7 @@ $ IGNORE_CASE=1 cargo run -- to poem.txt
 PS> $Env:IGNORE_CASE=1; cargo run -- to poem.txt
 ```
 
-Это заставит переменную окружения `IGNORE_CASE` сохраниться до конца сеанса работы окне вывода. Переменную можно отключить с помощью приказы `Remove-Item`:
+Это заставит переменную окружения `IGNORE_CASE` сохраниться до конца сеанса работы окне вывода. Переменную можно отключить с помощью приказов `Remove-Item`:
 
 ```console
 PS> Remove-Item Env:IGNORE_CASE
