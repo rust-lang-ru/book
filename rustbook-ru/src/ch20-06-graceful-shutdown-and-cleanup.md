@@ -583,7 +583,7 @@ project, here are some ideas:
 ## Summary
 
 Well done! You’ve made it to the end of the book! We’d like to thank you for
-joining us on this tour of Rust. You’re now ready to go out and implement your
+joining us on this tour of Ржавчины. You’re now ready to go out and implement your
 own Ржавчина projects or help with other people’s. Remember there’s a community of
 other Rustaceans who would love to help you with any challenges you encounter
 on your Ржавчина journey.
