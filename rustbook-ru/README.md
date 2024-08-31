@@ -80,7 +80,7 @@ $ mdbook test
 [Правила перевода](https://github.com/ruRust/rust_book_ru/wiki/Правила).
 
 ## Источники
-* первое издание rustbook расположено [здесь][original]
+* первое издание пособия по Ржавчине расположено [здесь][original]
 * перевод первого издания расположен [здесь][rustbook]
 
 [rustbook]: http://ruRust.github.io/rust_book_ru
