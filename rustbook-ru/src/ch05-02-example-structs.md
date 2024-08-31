@@ -74,7 +74,7 @@
 
 <span class="caption">Приложение 5-11: Попытка вывести значения образца <code>Rectangle</code></span>
 
-При сборки этого рукописи мы получаем ошибку с сообщением:
+При сборки этой рукописи мы получаем ошибку с сообщением:
 
 ```text
 {{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/output.txt:3}}
