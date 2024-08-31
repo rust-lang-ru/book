@@ -108,7 +108,7 @@ pub fn some_name(input: TokenStream) -> TokenStream {
 
 <span class="caption">Приложение 19-30: Рукопись, который сможет писать пользователь нашего ящика при использовании нашего процедурного макроса</span>
 
-Эту рукопись напечатает `Hello, Macro! My name is Pancakes!`, когда мы закончим. Первый шаг - создать новый, библиотечный ящик так:
+Эта рукопись напечатает `Hello, Macro! My name is Pancakes!`, когда мы закончим. Первый шаг - создать новый, библиотечный ящик так:
 
 ```console
 $ cargo new hello_macro --lib

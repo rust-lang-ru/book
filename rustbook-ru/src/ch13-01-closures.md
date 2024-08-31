@@ -117,7 +117,7 @@ let add_one_v4 = |x|               x + 1  ;
 
 <span class="caption">Приложение 13-5. Определение и вызов замыкания, захватывающего изменяемую ссылку</span>
 
-Эту рукопись собирается, запускается и печатает:
+Эта рукопись собирается, запускается и печатает:
 
 ```console
 {{#include ../listings/ch13-functional-features/listing-13-05/output.txt}}
@@ -189,7 +189,7 @@ impl<T> Option<T> {
 
 <span class="caption">Приложение 13-7: Использование <code>sort_by_key</code> для упорядочивания прямоугольников по ширине</span>
 
-Эту рукопись печатает:
+Эта рукопись печатает:
 
 ```console
 {{#include ../listings/ch13-functional-features/listing-13-07/output.txt}}

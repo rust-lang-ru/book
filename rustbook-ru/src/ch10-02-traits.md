@@ -74,7 +74,7 @@
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-02-calling-default-impl/src/main.rs:here}}
 ```
 
-Эту рукопись печатает `New article available! (Read more...)` .
+Эта рукопись печатает `New article available! (Read more...)` .
 
 Создание выполнения по умолчанию не требует от нас изменений чего-либо в выполнения `Summary` для `Tweet` в приложении 10-13. Причина заключается в том, что правила написания для переопределения выполнения по умолчанию является таким же, как правила написания для выполнения способа особенности, который не имеет выполнения по умолчанию.
 
@@ -96,7 +96,7 @@
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-03-default-impl-calls-other-methods/src/main.rs:here}}
 ```
 
-Эту рукопись печатает `1 new tweet: (Read more from @horse_ebooks...)` .
+Эта рукопись печатает `1 new tweet: (Read more from @horse_ebooks...)` .
 
 Обратите внимание, что невозможно вызвать выполнение по умолчанию из переопределённой выполнения того же способа.
 
