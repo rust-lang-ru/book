@@ -247,7 +247,7 @@ mod client;
 mod network;
 ```
 
-Далее, создадим файл *src/network.rs* и введём в него следующий рукопись:
+Далее, создадим файл *src/network.rs* и введём в него следующая рукопись:
 
 <span class="filename">Filename: src/network.rs</span>
 
