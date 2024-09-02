@@ -266,7 +266,7 @@
 
 <span class="caption">Приложение 18-25: Попытка использовать <code>..</code> неоднозначным способом</span>
 
-При сборки примера, мы получаем эту ошибку:
+При сборке примера, мы получаем эту ошибку:
 
 ```console
 {{#include ../listings/ch18-patterns-and-matching/listing-18-25/output.txt}}
