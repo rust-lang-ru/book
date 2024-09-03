@@ -148,7 +148,7 @@ let x = 5;
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-22-function-parameter-and-return/src/main.rs}}
 ```
 
-Запуск рукописи напечатает `The value of x is: 6`. Но если поставить точку с запятой в конце строки, содержащей `x + 1`, превратив её из выражения в указание, мы получим ошибку:
+Запуск рукописи выведет `The value of x is: 6`. Но если поставить точку с запятой в конце строки, содержащей `x + 1`, превратив её из выражения в указание, мы получим ошибку:
 
 <span class="filename">Имя файла: src/main.rs</span>
 

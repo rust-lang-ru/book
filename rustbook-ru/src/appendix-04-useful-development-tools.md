@@ -63,7 +63,7 @@ $ cargo fix
     Finished dev [unoptimized + debuginfo] target(s) in 0.59s
 ```
 
-Когда посмотрим в *src/main.rs* снова, мы увидим что `cargo fix` изменил наш рукопись:
+Когда посмотрим в *src/main.rs* снова, мы увидим что `cargo fix` изменил нашу рукопись:
 
 <span class="filename">Файл: src/main.rs</span>
 

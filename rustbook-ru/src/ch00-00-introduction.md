@@ -74,9 +74,9 @@
 
 Ferris | Пояснения
 --- | ---
-<img src="img/ferris/does_not_compile.svg" class="ferris-explain" alt="Ferris with a question mark"> | Эту рукопись не собирается!
-<img src="img/ferris/panics.svg" class="ferris-explain" alt="Феррис вскидывает руки"> | Эту рукопись вызывает сбой!
-<img src="img/ferris/not_desired_behavior.svg" class="ferris-explain" alt="Феррис с одним когтем вверх, пожимая плечами"> | Эту рукопись не приводит к желаемому поведению.
+<img src="img/ferris/does_not_compile.svg" class="ferris-explain" alt="Ferris with a question mark"> | Эта рукопись не собирается!
+<img src="img/ferris/panics.svg" class="ferris-explain" alt="Феррис вскидывает руки"> | Эта рукопись вызывает сбой!
+<img src="img/ferris/not_desired_behavior.svg" class="ferris-explain" alt="Феррис с одним когтем вверх, пожимая плечами"> | Эта рукопись не приводит к желаемому поведению.
 
 В большинстве случаев мы приведём вас к правильному исполнению любой рукописи, который не собирается.
 

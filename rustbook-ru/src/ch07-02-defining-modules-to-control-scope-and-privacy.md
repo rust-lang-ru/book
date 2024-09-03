@@ -50,7 +50,7 @@ backyard
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/quick-reference-example/src/garden.rs}}
 ```
 
-А здесь `pub mod vegetables;` указывает на подключаемый рукопись в *src/garden/vegetables.rs*. Эту рукопись:
+А здесь `pub mod vegetables;` указывает на подключаемый рукопись в *src/garden/vegetables.rs*. Содержимое данной рукописи:
 
 ```rust,noplayground,ignore
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/quick-reference-example/src/garden/vegetables.rs}}
