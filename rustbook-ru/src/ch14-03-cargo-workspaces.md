@@ -224,9 +224,7 @@ error[E0432]: unresolved import `rand`
 {{#rustdoc_include ../listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add/add_one/src/lib.rs}}
 ```
 
-Теперь запустите `cargo test` в папке верхнего уровня *add*. Запуск `cargo test` в рабочем пространстве, внутренне выстроеном
-
- подобно этому, запустит проверки для всех ящиков в рабочем пространстве:
+Теперь запустите `cargo test` в папке верхнего уровня *add*. Запуск `cargo test` в рабочем пространстве, внутренне упорядоченном подобно этому примеру, запустит проверки для всех ящиков в рабочем пространстве:
 
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
