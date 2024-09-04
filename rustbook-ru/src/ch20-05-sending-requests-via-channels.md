@@ -381,7 +381,7 @@ impl Worker {
 }
 ```
 
-<span class="caption">рукопись 20-21: добавление особенности `FnBox` для устранения ограничений
+<span class="caption">рукопись 20-21: добавление сущности `FnBox` для устранения ограничений
 `Box<FnOnce()>`</span>
 
 First, we create a new trait named `FnBox`. This trait has one method,

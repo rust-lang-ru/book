@@ -1,4 +1,4 @@
-% The Ржавчина Programming Language
+% The Ржавчина язык программирования
 
 There are two editions of "The Ржавчина Programming Language":
 
