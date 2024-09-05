@@ -73,7 +73,7 @@ $ cargo new add_one --lib
      Created library `add_one` package
 ```
 
-Ваш папка *add* должен теперь иметь следующие папки и файлы:
+Ваш папка *add* должна теперь иметь следующие папки и файлы:
 
 ```text
 ├── Cargo.lock
