@@ -28,7 +28,7 @@
 
 - [Использование стопок для объединения связанных данных](ch05-00-structs.md)
 
-    - [Определение и создание образцов устройств](ch05-01-defining-structs.md)
+    - [Определение и создание образцов стопок](ch05-01-defining-structs.md)
     - [Пример программы, использующей устройства](ch05-02-example-structs.md)
     - [Правила написания способа](ch05-03-method-syntax.md)
 
@@ -92,7 +92,7 @@
 
 - [Подробнее о Cargo и Crates.io](ch14-00-more-about-cargo.md)
 
-    - [Настройка билдов с помощью профилей выпуска](ch14-01-release-profiles.md)
+    - [Настройка сборок с помощью профилей выпуска](ch14-01-release-profiles.md)
     - [Обнародование ящика на Crates.io](ch14-02-publishing-to-crates-io.md)
     - [Рабочие области Cargo](ch14-03-cargo-workspaces.md)
     - [Установка двоичных файлов с Crates.io с помощью `cargo install`](ch14-04-installing-binaries.md)
