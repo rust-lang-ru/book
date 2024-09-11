@@ -130,7 +130,7 @@
 
 - [Расширенные возможности](ch19-00-advanced-features.md)
 
-    - [Небезопасную рукопись в Ржавчине](ch19-01-unsafe-rust.md)
+    - [Небезопасная рукопись в Ржавчине](ch19-01-unsafe-rust.md)
     - [Продвинутые сущности](ch19-03-advanced-traits.md)
     - [Продвинутые виды](ch19-04-advanced-types.md)
     - [Продвинутые функции и замыкания](ch19-05-advanced-functions-and-closures.md)
