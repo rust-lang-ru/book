@@ -1,0 +1,1 @@
+{"rustc_fingerprint":8894157253988407288,"outputs":{"4614504638168534921":{"success":true,"status":"","code":0,"stdout":"rustc 1.81.0 (eeb90cda1 2024-09-04)\nbinary: rustc\ncommit-hash: eeb90cda1969383f56a2637cbd3037bdf598841c\ncommit-date: 2024-09-04\nhost: x86_64-pc-windows-msvc\nrelease: 1.81.0\nLLVM version: 18.1.7\n","stderr":""}},"successes":{}}

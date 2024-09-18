@@ -1,0 +1,1 @@
+E:\Rust\книги\book\rustbook-ru\packages\mdbook-trpl-note\target\release\mdbook-trpl-note.exe: E:\Rust\книги\book\rustbook-ru\packages\mdbook-trpl-note\src\lib.rs E:\Rust\книги\book\rustbook-ru\packages\mdbook-trpl-note\src\main.rs

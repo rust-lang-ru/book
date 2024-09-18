@@ -14,12 +14,21 @@
 
 ## Требования
 
-Для сборки книги требуется [mdBook] >= v0.0.13. Для установки выполните приказ:
+Сборка книги требует библиотеку [mdBook], лучше всего - когда это будет то же исполнение, которое
+rust-lang/rust использует [этом файле][rust-mdbook]. Чтобы получить её:
 
-[mdBook]: https://github.com/rust-lang-nursery/mdBook/
+[mdBook]: https://github.com/rust-lang/mdBook
+[rust-mdbook]: https://github.com/rust-lang/rust/blob/master/src/tools/rustbook/Cargo.toml
 
 ```bash
-$ cargo install mdbook
+$ cargo install mdbook --locked --version <version_num>
+```
+
+Книга также использует два расширения mdbook, которые являются частью этого репозитория. Если вы их не установите, вы увидите предупреждения при сборке, и вывод будет выглядеть неправильно и искаженно, но вы *все равно* сможете собрать книгу. Чтобы использовать расширения,вы должны запустить:
+
+```bash
+$ cargo install --locked --path packages/mdbook-trpl-listing
+$ cargo install --locked --path packages/mdbook-trpl-note
 ```
 
 ## Сборка
