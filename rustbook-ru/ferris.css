@@ -1,4 +1,4 @@
-Я кстbody.light .does_not_compile,
+body.light .does_not_compile,
 body.light .panics,
 body.light .not_desired_behavior,
 body.rust .does_not_compile,
@@ -19,13 +19,25 @@ body.ayu .not_desired_behavior {
   background: #501f21;
 }
 
-.ferris {
+.ferris-container {
   position: absolute;
   z-index: 99;
   right: 5px;
   top: 30px;
-	width: 10%;
-	height: auto;
+}
+
+.ferris {
+  vertical-align: top;
+  margin-left: 0.2em;
+  height: auto;
+}
+
+.ferris-large {
+  width: 4.5em;
+}
+
+.ferris-small {
+  width: 2.3em;
 }
 
 .ferris-explain {
