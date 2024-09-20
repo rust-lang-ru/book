@@ -46,7 +46,7 @@
     - [Определение звеньев для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
     - [Пути для ссылки на элемент в дереве звеньев](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
-    - [Separating Modules into Different Files](ch07-05-separating-modules-into-different-files.md)
+    - [Разделение звеньев на разные файлы](ch07-05-separating-modules-into-different-files.md)
 
 - [Общие собрания](ch08-00-common-collections.md)
 
