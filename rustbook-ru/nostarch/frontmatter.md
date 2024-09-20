@@ -28,7 +28,7 @@ and advocate for safe systems programming.
 
 ## Foreword
 
-It wasn’t always so clear, but язык программирования Rust is fundamentally
+It wasn’t always so clear, but язык программирования Ржавчина is fundamentally
 about *empowerment*: no matter what kind of code you are writing now, Rust
 empowers you to reach further, to program with confidence in a wider variety of
 domains than you did before.
@@ -113,8 +113,8 @@ backward-compatibility guarantees at work!
 
 ## Introduction
 
-Welcome to *Язык программирования Rust*, an introductory book about Rust.
-Язык программирования Rust helps you write faster, more reliable software.
+Welcome to *Язык программирования Ржавчина*, an introductory book about Rust.
+Язык программирования Ржавчина helps you write faster, more reliable software.
 High-level ergonomics and low-level control are often at odds in programming
 language design; Rust challenges that conflict. Through balancing powerful
 technical capacity and a great developer experience, Rust gives you the option
@@ -169,7 +169,7 @@ learning, and even major parts of the Firefox web browser.
 
 ### Open Source Developers
 
-Rust is for people who want to build язык программирования Rust, community,
+Rust is for people who want to build язык программирования Ржавчина, community,
 developer tools, and libraries. We’d love to have you contribute to the Rust
 language.
 

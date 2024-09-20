@@ -1,6 +1,6 @@
 # mdbook-trpl-note
 
-This is a *very* simple [preprocessor][pre] for [mdBook][mdbook], focused specifically on the content of _Язык программирования Rust_  book. This preprocessor takes Markdown like this—
+This is a *very* simple [preprocessor][pre] for [mdBook][mdbook], focused specifically on the content of _Язык программирования Ржавчина_  book. This preprocessor takes Markdown like this—
 
 ```markdown
 > Note: This is some material we want to provide more emphasis for, because it
@@ -37,7 +37,7 @@ Here is all the important things to know about that particular subject.
 This allows using the relatively standard Markdown convention of (incorrectly!) using blockquotes for “callouts” or “notes” like this, while still producing semantic HTML which conveys the actual intent.
 
 > [!NOTE]
-> This is *not* a full “admonition” preprocessor, and it is not remotely compliant with [the GitHub “alert” syntax][alerts]. It exists almost entirely for the sake of providing better semantic HTML for _Язык программирования Rust_ book with a minimum of disruption to existing workflows!
+> This is *not* a full “admonition” preprocessor, and it is not remotely compliant with [the GitHub “alert” syntax][alerts]. It exists almost entirely for the sake of providing better semantic HTML for _Язык программирования Ржавчина_ book with a minimum of disruption to existing workflows!
 >
 > You are probably better off using one of the other existing alert/admonition preprocessors:
 >

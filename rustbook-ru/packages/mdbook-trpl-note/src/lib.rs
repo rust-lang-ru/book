@@ -11,7 +11,7 @@ use pulldown_cmark::{
 };
 use pulldown_cmark_to_cmark::cmark;
 
-/// A simple preprocessor for semantic notes in _Язык программирования Rust_.
+/// A simple preprocessor for semantic notes in _Язык программирования Ржавчина_.
 ///
 /// Takes in Markdown like this:
 ///

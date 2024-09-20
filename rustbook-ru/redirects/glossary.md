@@ -6,7 +6,7 @@ This section does not exist in [the second edition][2].
 However, the second edition defines the terms it uses inline, rather than using a glossary.
 It is recommended to start there.
 
-* **[The second edition of Язык программирования Rust][2]**
+* **[The second edition of Язык программирования Ржавчина][2]**
 * <small>[In the first edition: Glossary][1]</small>
 
 

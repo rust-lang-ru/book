@@ -22,7 +22,7 @@ fn main() -> Result<(), String> {
     serde_json::to_writer(io::stdout(), &processed).map_err(|e| format!("{e}"))
 }
 
-/// A simple preprocessor for semantic notes in _Язык программирования Rust_.
+/// A simple preprocessor for semantic notes in _Язык программирования Ржавчина_.
 #[derive(Parser, Debug)]
 struct Cli {
     #[command(subcommand)]
