@@ -8,8 +8,8 @@ directory, so all fixes need to be made in `/src/`.
 
 # Introduction
 
-Welcome to *The Rust Programming Language,* an introductory book about Rust.
-The Rust programming language helps you write faster, more reliable software.
+Welcome to *Язык программирования Rust,* an introductory book about Rust.
+Язык программирования Rust helps you write faster, more reliable software.
 High-level ergonomics and low-level control are often at odds in programming
 language design; Rust challenges that conflict. Through balancing powerful
 technical capacity and a great developer experience, Rust gives you the option
@@ -64,7 +64,7 @@ learning, and even major parts of the Firefox web browser.
 
 ### Open Source Developers
 
-Rust is for people who want to build the Rust programming language, community,
+Rust is for people who want to build язык программирования Rust, community,
 developer tools, and libraries. We’d love to have you contribute to the Rust
 language.
 

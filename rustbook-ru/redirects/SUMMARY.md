@@ -1,6 +1,6 @@
-% The Rust Programming Language
+% Язык программирования Rust
 
-There are two editions of "The Rust Programming Language":
+There are two editions of "Язык программирования Rust":
 
 * [First edition](first-edition/index.html)
 * [Second edition](second-edition/index.html)
