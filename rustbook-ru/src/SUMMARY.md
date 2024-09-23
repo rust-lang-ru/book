@@ -40,13 +40,13 @@
 
 ## Основы Ржавчины
 
-- [Управление растущими делами с помощью дополнений, ящиков и звеньев](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
+- [Управление растущими делами с помощью дополнений, ящиков и разделов](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
 
     - [Дополнения и ящики](ch07-01-packages-and-crates.md)
-    - [Определение звеньев для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
-    - [Пути для ссылки на элемент в дереве звеньев](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
+    - [Определение разделов для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
+    - [Пути для ссылки на элемент в дереве разделов](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
-    - [Разделение звеньев на разные файлы](ch07-05-separating-modules-into-different-files.md)
+    - [Разделение разделов на разные файлы](ch07-05-separating-modules-into-different-files.md)
 
 - [Общие собрания](ch08-00-common-collections.md)
 
@@ -76,7 +76,7 @@
 
     - [Получение переменных приказной строки](ch12-01-accepting-command-line-arguments.md)
     - [Чтение файла](ch12-02-reading-a-file.md)
-    - [Переработка рукописи для обеспечения выделения на звенья и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
+    - [Переработка рукописи для обеспечения выделения на разделы и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
     - [Разработка возможности библиотеки с помощью разработки через проверка](ch12-04-testing-the-librarys-functionality.md)
     - [Работа с переменными среды](ch12-05-working-with-environment-variables.md)
     - [Запись сообщений об ошибках в stderr вместо stdout](ch12-06-writing-to-stderr-instead-of-stdout.md)
