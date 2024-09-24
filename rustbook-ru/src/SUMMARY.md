@@ -77,7 +77,7 @@
     - [Получение переменных приказной строки](ch12-01-accepting-command-line-arguments.md)
     - [Чтение файла](ch12-02-reading-a-file.md)
     - [Переработка рукописи для обеспечения выделения на разделы и улучшения обработки ошибок](ch12-03-improving-error-handling-and-modularity.md)
-    - [Разработка возможности библиотеки с помощью разработки через проверка](ch12-04-testing-the-librarys-functionality.md)
+    - [Разработка возможности библиотеки с помощью разработки через проверку](ch12-04-testing-the-librarys-functionality.md)
     - [Работа с переменными среды](ch12-05-working-with-environment-variables.md)
     - [Запись сообщений об ошибках в stderr вместо stdout](ch12-06-writing-to-stderr-instead-of-stdout.md)
 
