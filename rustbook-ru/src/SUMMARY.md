@@ -48,7 +48,7 @@
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
     - [Разделение разделов на разные файлы](ch07-05-separating-modules-into-different-files.md)
 
-- [Общие собрания](ch08-00-common-collections.md)
+- [Общее: Собрания](ch08-00-common-collections.md)
 
     - [Хранение списков значений с векторами](ch08-01-vectors.md)
     - [Хранение закодированного писания UTF-8 со строками](ch08-02-strings.md)
