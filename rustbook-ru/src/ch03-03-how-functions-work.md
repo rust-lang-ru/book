@@ -77,7 +77,7 @@
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/listing-03-01/src/main.rs}}
 ```
 
-<span class="caption">Приложение 3-1: Объявление функции <code>main</code>, содержащей одну указанию</span>
+<span class="caption">Приложение 3-1: Объявление функции <code>main</code>, содержащей одно указание</span>
 
 Определения функций также являются указанием. Весь предыдущий пример сам по себе является указанием.
 
