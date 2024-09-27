@@ -44,7 +44,7 @@
 
     - [Дополнения и ящики](ch07-01-packages-and-crates.md)
     - [Определение разделов для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
-    - [Пути для ссылки на элемент в дереве разделов](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
+    - [Пути для ссылки на переменную в дереве разделов](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
     - [Разделение разделов на разные файлы](ch07-05-separating-modules-into-different-files.md)
 
@@ -86,7 +86,7 @@
 - [Полезные  возможности языка: повторители и замыкания](ch13-00-functional-features.md)
 
     - [Замыкания: анонимные функции, которые захватывают своё окружение](ch13-01-closures.md)
-    - [Обработка последовательности элементов с помощью повторителей](ch13-02-iterators.md)
+    - [Обработка последовательности переменных с помощью повторителей](ch13-02-iterators.md)
     - [Улучшение нашего дела с вводом/выводом](ch13-03-improving-our-io-project.md)
     - [Сравнение производительности: круговороты и повторители](ch13-04-performance.md)
 
