@@ -60,7 +60,7 @@
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-05/src/main.rs:here}}
 ```
 
-<span class="caption">Приложение 5-5: функция <code>build_user</code> использует сокращённое объявление полей, потому что её входные свойства <code>username</code> и <code>email</code> имеют одинаковые имена полей стопки</span>
+<span class="caption">Приложение 5-5: Функция <code>build_user</code> использует сокращённое объявление полей, потому что её входные свойства <code>username</code> и <code>email</code> имеют одинаковые имена полей стопки</span>
 
 Здесь происходит создание нового образца данных стопки `User`, которая имеет поле с именем `email`. Мы хотим установить поле стопки `email` значением входного свойства `email` функции `build_user`. Так как поле `email` и входное свойство функции `email` имеют одинаковое название, можно писать просто `email` вместо рукописи `email: email`.
 

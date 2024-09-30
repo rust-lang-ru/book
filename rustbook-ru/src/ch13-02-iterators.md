@@ -124,7 +124,7 @@ pub trait Iterator {
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-16/src/lib.rs}}
 ```
 
-<span class="caption">Приложение 13-16. Использование способа <code>filter</code> с замыканием, определяющим <code>shoe_size</code></span>
+<span class="caption">Приложение 13-16: Использование способа <code>filter</code> с замыканием, определяющим <code>shoe_size</code></span>
 
 Функция `shoes_in_size` принимает в качестве свойств вектор с образцами обуви и размер обуви, а возвращает вектор, содержащий только обувь указанного размера.
 

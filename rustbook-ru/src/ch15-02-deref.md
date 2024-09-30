@@ -70,7 +70,7 @@
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-09/src/main.rs:here}}
 ```
 
-<span class="caption">Приложение 15-9. Попытка использовать <code>MyBox&lt;T&gt;</code> таким же образом, как мы использовали ссылки и <code>Box&lt;T&gt;</code></span>
+<span class="caption">Приложение 15-9: Попытка использовать <code>MyBox&lt;T&gt;</code> таким же образом, как мы использовали ссылки и <code>Box&lt;T&gt;</code></span>
 
 Вот итог ошибки сборки:
 

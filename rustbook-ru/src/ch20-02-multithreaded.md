@@ -302,7 +302,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 {{#rustdoc_include ../listings/ch20-web-server/listing-20-18/src/lib.rs:here}}
 ```
 
-<span class="caption">Приложение 20-18. Совместное использование приёмника в "работниках" с применением <code>Arc</code> и <code>Mutex</code></span>
+<span class="caption">Приложение 20-18: Совместное использование приёмника в "работниках" с применением <code>Arc</code> и <code>Mutex</code></span>
 
 В `ThreadPool::new` мы помещаем принимающую сторону потока внутрь `Arc` и `Mutex`. Для каждого нового "работника" мы удвоим `Arc`, чтобы увеличить счётчик ссылок так, что "работники" могут разделять владение принимающей стороной потока.
 

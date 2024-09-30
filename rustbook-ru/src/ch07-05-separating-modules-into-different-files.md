@@ -12,7 +12,7 @@
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-21-and-22/src/lib.rs}}
 ```
 
-<span class="caption">Приложение 7-21. Объявление раздела <code>front_of_house</code>, чьё содержимое будет в <em>src/front_of_house.rs</em></span>
+<span class="caption">Приложение 7-21: Объявление раздела <code>front_of_house</code>, чьё содержимое будет в <em>src/front_of_house.rs</em></span>
 
 Затем поместим рукопись, которая была в узорчатых скобках, в новый файл с именем *src/front_of_house.rs*, как показано в приложении 7-22. Сборщик знает, что нужно искать в этом файле, потому что он наткнулся в корневом разделе ящика на объявление раздела с именем `front_of_house`.
 

@@ -40,7 +40,7 @@
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-01/src/main.rs:here}}
 ```
 
-<span class="caption">Приложение 6-1. Сохранение данных и <code>IpAddrKind</code> IP-адреса с использованием <code>struct</code></span>
+<span class="caption">Приложение 6-1: Сохранение данных и <code>IpAddrKind</code> IP-адреса с использованием <code>struct</code></span>
 
 Здесь мы определили стопку `IpAddr`, у которой есть два поля: `kind` вида данных `IpAddrKind` (перечисление, которое мы определили ранее) и `address` вида данных `String`. У нас есть два образца данных этой стопки. Первый - `home`, который является `IpAddrKind::V4` в качестве значения `kind` с соответствующим адресом `127.0.0.1`. Второй образец  данных - `loopback`. Он в качестве значения `kind` имеет другой исход `IpAddrKind`, `V6`, и с ним сопряжен адрес `::1`. Мы использовали виды данных стопка и перечисления для объединения значений `kind` и `address` вместе, таким образом вид адреса теперь сопряжен со значением.
 
@@ -85,7 +85,7 @@ enum IpAddr {
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-02/src/main.rs:here}}
 ```
 
-<span class="caption">Приложение 6-2. Перечисление <code>Message</code>, в каждом из исходов которого хранятся разные количества и виды данных.</span>
+<span class="caption">Приложение 6-2: Перечисление <code>Message</code>, в каждом из исходов которого хранятся разные количества и виды данных.</span>
 
 Это перечисление имеет 4 составляющих:
 

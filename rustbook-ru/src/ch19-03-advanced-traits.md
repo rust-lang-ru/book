@@ -165,7 +165,7 @@ trait Add<Rhs = Self> {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-20/src/main.rs:here}}
 ```
 
-<span class="caption">Приложение 19-20. Попытка вызвать функцию <code>baby_name</code> из сущности <code>Animal</code>, но Ржавчина не знает какую выполнение использовать</span>
+<span class="caption">Приложение 19-20: Попытка вызвать функцию <code>baby_name</code> из сущности <code>Animal</code>, но Ржавчина не знает какую выполнение использовать</span>
 
 Поскольку `Animal::baby_name` не имеет свойства `self`, и могут быть другие виды, использующие сущность `Animal`, Ржавчина не может понять, какую использование `Animal::baby_name` мы хотим использовать. Мы получим эту ошибку сборщика:
 
@@ -259,7 +259,7 @@ trait Add<Rhs = Self> {
 {{#rustdoc_include ../listings/ch19-advanced-features/listing-19-23/src/main.rs}}
 ```
 
-<span class="caption">Приложение 19-23. Создание вида данных <code>Wrapper</code> <code>Vec&lt;String&gt;</code> для выполнения <code>Display</code></span>
+<span class="caption">Приложение 19-23: Создание вида данных <code>Wrapper</code> <code>Vec&lt;String&gt;</code> для выполнения <code>Display</code></span>
 
 Использование `Display` использует `self.0` для доступа к внутреннему `Vec<T>`, потому что `Wrapper` это стопка упорядоченного ряда, а `Vec<T>` это переменная с порядковым указателем 0 в упорядоченном ряде. Затем мы можем использовать полезные  возможности вида данных `Display` у `Wrapper`.
 
