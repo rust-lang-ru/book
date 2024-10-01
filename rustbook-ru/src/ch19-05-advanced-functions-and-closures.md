@@ -68,7 +68,7 @@
 {{#rustdoc_include ../listings/ch19-advanced-features/no-listing-19-returns-closure-trait-object/src/lib.rs}}
 ```
 
-Эта рукопись просто отлично собирается. Для получения дополнительных сведений об сущности-предмета обратитесь к разделу ["Использование сущность-предметов которые допускают значения разных видов данных"](ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types)<!--  --> главы 17.
+Эта рукопись просто отлично собирается. Для получения дополнительных сведений об сущности-предмета обратитесь к разделу ["Использование сущность-предметов, которые допускают значения разных видов данных"](ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types)<!--  --> главы 17.
 
 Далее давайте посмотрим на макросы!
 
