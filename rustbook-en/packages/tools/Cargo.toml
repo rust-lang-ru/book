@@ -40,7 +40,7 @@ path = "src/bin/remove_markup.rs"
 walkdir = { workspace = true }
 docopt = { workspace = true }
 serde = { workspace = true }
-regex.workspace = true
+regex = { workspace = true }
 lazy_static = { workspace = true }
 flate2 = { workspace = true }
 tar = { workspace = true }
