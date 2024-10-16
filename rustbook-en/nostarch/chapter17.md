@@ -1669,10 +1669,10 @@ The version with `yield_now` is *way* faster!
 This means that async can be useful even for compute-bound tasks, depending on
 what else your program is doing, because it provides a useful tool for
 structuring the relationships between different parts of the program. This is a
-form of *cooperative multitasking*, where each future has both the power to
-determine when it hands over control via await points. Each future therefore
-also has the responsibility to avoid blocking for too long. In some Rust-based
-embedded operating systems, this is the *only* kind of multitasking!
+form of *cooperative multitasking*, where each future has the power to determine
+when it hands over control via await points. Each future therefore also has the
+responsibility to avoid blocking for too long. In some Rust-based embedded
+operating systems, this is the *only* kind of multitasking!
 
 In real-world code, you won’t usually be alternating function calls with await
 points on every single line, of course. While yielding control in this way is
@@ -2046,7 +2046,7 @@ indicates a message arrived in time; the `Err` variant indicates that the
 timeout elapsed before any message arrived. We `match` on that result and either
 print the message when we receive it successfully, or print a notice about the
 timeout. Finally, notice that we pin the messages after applying the timeout to
-them, because the timeout helper produces a future which needs to be pinned to
+them, because the timeout helper produces a stream which needs to be pinned to
 be polled.
 
 Filename: src/main.rs
@@ -2507,7 +2507,7 @@ it is not yet ready.
 
 ### Pinning and the Pin and Unpin Traits
 
-When we introduced the idea of pinning, while working on Listing 17-17, we ran
+When we introduced the idea of pinning while working on Listing 17-17, we ran
 into a very gnarly error message. Here is the relevant part of it again:
 
 ```
@@ -2535,12 +2535,20 @@ For more information about an error, try `rustc --explain E0277`.
 
 When we read this error message carefully, it not only tells us that we need to
 pin the values, but also tells us why pinning is required. The `trpl::join_all`
-function returns a struct called `JoinAll`. That struct, in turn, is generic
-over a type `F`, which is constrained to implement the `Future` trait. Finally,
-directly awaiting a Future requires that the future in question implement the
-`Unpin` trait. That’s a lot! But we can understand it, if we dive a little
-further into how the `Future` type actually works, in particular around
-*pinning*.
+function returns a struct called `JoinAll`. That struct is generic over a type
+`F`, which is constrained to implement the `Future` trait. Directly awaiting a
+future with `await` pins the future implicitly. That’s why we don’t need to use
+`pin!` everywhere we want to await futures.
+
+However, we’re not directly awaiting a future here. Instead, we construct a new
+future, `JoinAll`, by passing a collection of futures to the `join_all`
+function. The signature for `join_all` produces requires that the type of the
+items in the collection all implement the `Future` trait, and `Box<T>` only
+implements `Future` if the `T` that it wraps is a future which implements the
+`Unpin` trait.
+
+That’s a lot! But we can understand it, if we dive a little further into how the
+`Future` type actually works, in particular around *pinning*.
 
 Let’s look again at the definition of `Future`:
 
@@ -2684,24 +2692,32 @@ that a given type does *not* need to uphold any particular guarantees about
 whether the value in question can be moved.
 
 Just as with `Send` and `Sync`, the compiler implements `Unpin` automatically
-for all types where it can prove it is safe. Implementing `Unpin` manually is
-unsafe because it requires *you* to uphold all the guarantees which make `Pin`
-and `Unpin` safe yourself for a type with internal references. In practice,
-this is a very rare thing to implement yourself!
+for all types where it can prove it is safe. The special case, again similar to
+`Send` and `Sync`, is the case where `Unpin` is *not* implemented for a type.
+The notation for this is `impl !Unpin for SomeType`, where `SomeType` is the
+name of a type which *does* need to uphold those guarantees to be safe whenever
+a pointer to that type it is used in a `Pin`.
+
+In other words, there are two things to keep in mind about the relationship
+between `Pin` and `Unpin`. First, `Unpin` is the “normal” case, and `!Unpin` is
+the special case. Second, whether a type implements `Unpin` or `!Unpin` *only*
+matters when using a pinned pointer to that type like `Pin<&mut SomeType>`.
 
 To make that concrete, think about a `String`: it has a length and the Unicode
 characters which make it up. We can wrap a `String` in `Pin`, as seen in Figure
-17-7. However
+17-8. However, `String` automatically implements `Unpin`, the same as most other
+types in Rust.
 
 <img alt="Concurrent work flow" src="img/trpl17-08.svg" />
 
 Figure 17-8: Pinning a String, with a dotted line indicating that the String
 implements the `Unpin` trait, so it is not pinned.
 
-This means that we can do things such as replace one string with another at the
-exact same location in memory as in Figure 17-9. This doesn’t violate the `Pin`
-contract because `String`—like most other types in Rust—implements `Unpin`,
-because it has no internal references that make it unsafe to move around!
+As a result, we can do things which would be illegal if `String` implemented
+`!Unpin` instead, such as replace one string with another at the exact same
+location in memory as in Figure 17-9. This doesn’t violate the `Pin` contract,
+because `String` has no internal references that make it unsafe to move around!
+That is precisely why it implements `Unpin` rather than `!Unpin`.
 
 <img alt="Concurrent work flow" src="img/trpl17-09.svg" />
 
@@ -2710,9 +2726,10 @@ Figure 17-9: Replacing the String with an entirely different String in memory.
 Now we know enough to understand the errors reported for that `join_all` call
 from back in Listing 17-17. We originally tried to move the futures produced by
 async blocks into a `Vec<Box<dyn Future<Output = ()>>>`, but as we’ve seen,
-those futures may have internal references, so they don’t implement `Unpin`.
-They need to be pinned, and then we can pass the `Pin` type into the `Vec`,
-confident that the underlying data in the futures will *not* be moved.
+those futures may have internal references, so they don’t automatically
+implement `Unpin`. Once we pin them, we can pass the resulting `Pin` type into
+the `Vec`, confident that the underlying data in the futures will *not* be
+moved.
 
 `Pin` and `Unpin` are mostly important for building lower-level libraries, or
 when you’re building a runtime itself, rather than for day to day Rust code.
@@ -2943,9 +2960,9 @@ threads *and* tasks, and therefore futures.
 
 As a default way of thinking about which to use when:
 
-* If the task is *very parallelizable*, such as processing a bunch of data where
+* If the work is *very parallelizable*, such as processing a bunch of data where
   each part can be processed separately, threads are a better choice.
-* If the task is *very concurrent*, such as handling messages from a bunch of
+* If the work is *very concurrent*, such as handling messages from a bunch of
   different sources which may come in a different intervals or different rates,
   async is a better choice.
 
