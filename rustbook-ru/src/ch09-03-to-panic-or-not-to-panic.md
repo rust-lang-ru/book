@@ -60,7 +60,7 @@ experimentation purposes, but don't want to include it for rustdoc testing
 purposes. -->
 
 ```rust
-{{#include ../listings/ch09-error-handling/listing-09-13/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch09-error-handling/listing-09-13/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 9-13. Тип <code>Guess</code>, который будет создавать экземпляры только для значений от 1 до 100</span>
