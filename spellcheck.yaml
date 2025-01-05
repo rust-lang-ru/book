@@ -1,0 +1,18 @@
+matrix:
+- name: Markdown
+  hunspell:
+    d: ru_RU,en_US
+  dictionary:
+    wordlists:
+    - common-configs/wordlist.txt
+    encoding: utf-8
+  pipeline:
+  - pyspelling.filters.html:
+      comments: false
+      ignores:
+      - code
+      - pre
+  sources:
+  - 'rustbook-ru/**/*.md'
+  - README.md
+  default_encoding: utf-8

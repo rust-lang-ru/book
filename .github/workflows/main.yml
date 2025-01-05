@@ -10,20 +10,36 @@ jobs:
     name: Spellchecking
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 200
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       with:
         repository: rust-lang-ru/common-configs
         path: common-configs
-    - run: npm install yaspeller
-    - run: git show -m --name-only -1 --format="format:" | grep --color=never -i '.md' | xargs node_modules/.bin/yaspeller -c common-configs/.yaspellerrc
+    - name: Get all changed markdown files
+      uses: tj-actions/changed-files@v45
+      id: changed_files
+      with:
+        files: |
+           rustbook-ru/**/*.md
+           README.md
+    - name: List changed files
+      if: steps.changed_files.outputs.any_changed == 'true'
+      env:
+        ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
+      run: |
+        for file in ${ALL_CHANGED_FILES}; do
+          echo "$file was changed"
+        done
+    - uses: funkill/spellcheck-github-actions@hunspell-support-action
+      if: steps.changed_files.outputs.any_changed == 'true'
+      with:
+        task_name: Markdown
+        source_files: ${{ steps.changed_files.outputs.all_changed_files }}
   gitlocalize-bug-checking:
     name: Checking Gitlocalize bugs
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 200
     - uses: rust-lang-ru/simpleinfra/gitocalize-bug-checker@master
