@@ -139,13 +139,13 @@ error[E0277]: `{async block@src/main.rs:10:23: 10:33}` cannot be unpinned
   --> src/main.rs:48:33
    |
 48 |         trpl::join_all(futures).await;
-   |                                 ^^^^^ the trait `Unpin` is not implemented for `{async block@src/main.rs:10:23: 10:33}`, which is required by `Box<{async block@src/main.rs:10:23: 10:33}>: Future`
+   |                                 ^^^^^ the trait `Unpin` is not implemented for `{async block@src/main.rs:10:23: 10:33}`
    |
    = note: consider using the `pin!` macro
            consider using `Box::pin` if you need to access the pinned value outside of the current scope
    = note: required for `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
 note: required by a bound in `futures_util::future::join_all::JoinAll`
-  --> file:///home/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-util-0.3.30/src/future/join_all.rs:29:8
+  --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
    |
 27 | pub struct JoinAll<F>
    |            ------- required by a bound in this struct
@@ -300,16 +300,15 @@ itself cannot move, because it is still pinned.
 </figure>
 
 However, most types are perfectly safe to move around, even if they happen to be
-behind a `Pin` pointer. We only need to think about pinning when items have
-internal references. Primitive values such as numbers and Booleans are safe
-since they obviously don’t have any internal references, so they’re obviously
-safe. Neither do most types you normally work with in Rust. You can move around
-a `Vec`, for example, without worrying. Given only what we have seen so far, if
-you have a `Pin<Vec<String>>`, you’d have to do everything via the safe but
-restrictive APIs provided by `Pin`, even though a `Vec<String>` is always safe
-to move if there are no other references to it. We need a way to tell the
-compiler that it’s fine to move items around in cases like this—and there’s
-where `Unpin` comes into play.
+behind a `Pin` wrapper. We only need to think about pinning when items have
+internal references. Primitive values such as numbers and Booleans obviously
+don’t have any internal references, so they’re safe. Neither do most types you
+normally work with in Rust. You can move around a `Vec`, for example, without
+worrying. Given only what we have seen so far, if you have a `Pin<Vec<String>>`,
+you’d have to do everything via the safe but restrictive APIs provided by `Pin`,
+even though a `Vec<String>` is always safe to move if there are no other
+references to it. We need a way to tell the compiler that it’s fine to move
+items around in cases like this—and there’s where `Unpin` comes into play.
 
 `Unpin` is a marker trait, similar to the `Send` and `Sync` traits we saw in
 Chapter 16, and thus has no functionality of its own. Marker traits exist only

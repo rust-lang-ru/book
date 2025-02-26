@@ -111,8 +111,8 @@ allows Rust to avoid running async code until it’s actually needed.
 > using `thread::spawn` in [Creating a New Thread with
 > spawn][thread-spawn]<!--ignore-->, where the closure we passed to another
 > thread started running immediately. It’s also different from how many other
-> languages approach async. But it’s important for Rust, and we’ll see why
-> later.
+> languages approach async. But it’s important for Rust to be able to provide
+> its performance guarantees, just as it is with iterators.
 
 Once we have `response_text`, we can parse it into an instance of the `Html`
 type using `Html::parse`. Instead of a raw string, we now have a data type we
@@ -162,7 +162,7 @@ defined like this:
 use std::future::Future;
 use trpl::Html;
 
-fn page_title(url: &str) -> impl Future<Output = Option<String>> + '_ {
+fn page_title(url: &str) -> impl Future<Output = Option<String>> {
     async move {
         let text = trpl::get(url).await.text().await;
         Html::parse(&text)
@@ -188,13 +188,6 @@ Let’s walk through each part of the transformed version:
 - The new function body is an `async move` block because of how it uses the
   `url` parameter. (We’ll talk much more about `async` versus `async move` later
   in the chapter.)
-- The new version of the function has a kind of lifetime we haven’t seen before
-  in the output type: `'_`. Because the function returns a future that refers to
-  a reference—in this case, the reference from the `url` parameter—we need to
-  tell Rust that we want that reference to be included. We don’t have to name
-  the lifetime here, because Rust is smart enough to know there’s only one
-  reference that could be involved, but we _do_ have to be explicit that the
-  resulting future is bound by that lifetime.
 
 Now we can call `page_title` in `main`.
 
@@ -322,7 +315,7 @@ function back in Listing 17-3. If `main` were an async function, something else
 would need to manage the state machine for whatever future `main` returned, but
 `main` is the starting point for the program! Instead, we called the `trpl::run`
 function in `main` to set up a runtime and run the future returned by the
-`async` block until it returns `Ready`.
+`async` block until it is done.
 
 > Note: Some runtimes provide macros so you _can_ write an async `main`
 > function. Those macros rewrite `async fn main() { ... }` to be a normal `fn
