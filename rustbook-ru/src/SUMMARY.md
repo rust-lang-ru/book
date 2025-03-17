@@ -29,7 +29,7 @@
 - [Использование стопок для объединения связанных данных](ch05-00-structs.md)
 
     - [Определение и создание образцов стопок](ch05-01-defining-structs.md)
-    - [Пример программы, использующей устройства](ch05-02-example-structs.md)
+    - [Пример программы, использующей стопки](ch05-02-example-structs.md)
     - [Правила написания способов](ch05-03-method-syntax.md)
 
 - [Перечисления и сопоставление с образцом](ch06-00-enums.md)
@@ -40,9 +40,9 @@
 
 ## Основы Ржавчины
 
-- [Управление растущими делами с помощью дополнений, ящиков и разделов](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
+- [Управление растущими делами с помощью дополнений, дополнений и разделов](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
 
-    - [Дополнения и ящики](ch07-01-packages-and-crates.md)
+    - [Дополнения и дополнения](ch07-01-packages-and-crates.md)
     - [Определение разделов для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
     - [Пути для ссылки на переменную в дереве разделов](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
@@ -92,8 +92,8 @@
 
 - [Подробнее о Cargo и Crates.io](ch14-00-more-about-cargo.md)
 
-    - [Настройка сборок с помощью профилей выпуска](ch14-01-release-profiles.md)
-    - [Обнародование ящика на Crates.io](ch14-02-publishing-to-crates-io.md)
+    - [Настройка сборок с помощью режимов выпуска](ch14-01-release-profiles.md)
+    - [Обнародование дополнения на Crates.io](ch14-02-publishing-to-crates-io.md)
     - [Рабочие области Cargo](ch14-03-cargo-workspaces.md)
     - [Установка двоичных файлов с Crates.io с помощью `cargo install`](ch14-04-installing-binaries.md)
     - [Расширение возможностей Cargo путём добавления пользовательских приказов](ch14-05-extending-cargo.md)

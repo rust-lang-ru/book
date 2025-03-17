@@ -1,0 +1,5 @@
+E:\Rust\книги\book\rustbook-ru\target\debug\build\proc-macro2-4147675ce756bba9\build_script_build-4147675ce756bba9.exe: C:\Users\AveN\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\proc-macro2-1.0.80\build.rs
+
+E:\Rust\книги\book\rustbook-ru\target\debug\build\proc-macro2-4147675ce756bba9\build_script_build-4147675ce756bba9.d: C:\Users\AveN\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\proc-macro2-1.0.80\build.rs
+
+C:\Users\AveN\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\proc-macro2-1.0.80\build.rs:
