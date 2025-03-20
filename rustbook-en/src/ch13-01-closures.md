@@ -1,7 +1,8 @@
 <!-- Old heading. Do not remove or links may break. -->
+
 <a id="closures-anonymous-functions-that-can-capture-their-environment"></a>
 
-## Closures: Anonymous Functions that Capture Their Environment
+## Closures: Anonymous Functions That Capture Their Environment
 
 Rust’s closures are anonymous functions you can save in a variable or pass as
 arguments to other functions. You can create the closure in one place and then
@@ -11,6 +12,7 @@ We’ll demonstrate how these closure features allow for code reuse and behavior
 customization.
 
 <!-- Old headings. Do not remove or links may break. -->
+
 <a id="creating-an-abstraction-of-behavior-with-closures"></a>
 <a id="refactoring-using-functions"></a>
 <a id="refactoring-with-closures-to-store-code"></a>
@@ -48,7 +50,7 @@ to distribute for this limited-edition promotion. We call the `giveaway` method
 for a user with a preference for a red shirt and a user without any preference.
 
 Again, this code could be implemented in many ways, and here, to focus on
-closures, we’ve stuck to concepts you’ve already learned except for the body of
+closures, we’ve stuck to concepts you’ve already learned, except for the body of
 the `giveaway` method that uses a closure. In the `giveaway` method, we get the
 user preference as a parameter of type `Option<ShirtColor>` and call the
 `unwrap_or_else` method on `user_preference`. The [`unwrap_or_else` method on
@@ -258,6 +260,7 @@ in the main thread after the closure is defined to see what compiler errors you
 get!
 
 <!-- Old headings. Do not remove or links may break. -->
+
 <a id="storing-closures-using-generic-parameters-and-the-fn-traits"></a>
 <a id="limitations-of-the-cacher-implementation"></a>
 <a id="moving-captured-values-out-of-the-closure-and-the-fn-traits"></a>
@@ -266,9 +269,9 @@ get!
 
 Once a closure has captured a reference or captured ownership of a value from
 the environment where the closure is defined (thus affecting what, if anything,
-is moved *into* the closure), the code in the body of the closure defines what
+is moved _into_ the closure), the code in the body of the closure defines what
 happens to the references or values when the closure is evaluated later (thus
-affecting what, if anything, is moved *out of* the closure). A closure body can
+affecting what, if anything, is moved _out of_ the closure). A closure body can
 do any of the following: move a captured value out of the closure, mutate the
 captured value, neither move nor mutate the value, or capture nothing from the
 environment to begin with.
@@ -280,9 +283,9 @@ implement one, two, or all three of these `Fn` traits, in an additive fashion,
 depending on how the closure’s body handles the values:
 
 1. `FnOnce` applies to closures that can be called once. All closures implement
-   at least this trait, because all closures can be called. A closure that
-   moves captured values out of its body will only implement `FnOnce` and none
-   of the other `Fn` traits, because it can only be called once.
+   at least this trait because all closures can be called. A closure that moves
+   captured values out of its body will only implement `FnOnce` and none of the
+   other `Fn` traits, because it can only be called once.
 2. `FnMut` applies to closures that don’t move captured values out of their
    body, but that might mutate the captured values. These closures can be
    called more than once.
@@ -327,12 +330,12 @@ called. If the `Option` is `None`, `f` will be called once. Because all
 closures implement `FnOnce`, `unwrap_or_else` accepts all three kinds of
 closures and is as flexible as it can be.
 
-> Note: Functions can implement all three of the `Fn` traits too. If what we
-> want to do doesn’t require capturing a value from the environment, we can use
-> the name of a function rather than a closure where we need something that
-> implements one of the `Fn` traits. For example, on an `Option<Vec<T>>` value,
-> we could call `unwrap_or_else(Vec::new)` to get a new, empty vector if the
-> value is `None`.
+> Note: If what we want to do doesn’t require capturing a value from the
+> environment, we can use the name of a function rather than a closure. For
+> example, we could call `unwrap_or_else(Vec::new)` on a `Option<Vec<T>>` value
+> to get a new, empty vector if the value is `None`. The compiler automatically
+> implements whichever of the `Fn` traits is applicable for a function
+> definition.
 
 Now let’s look at the standard library method `sort_by_key` defined on slices,
 to see how that differs from `unwrap_or_else` and why `sort_by_key` uses
@@ -377,7 +380,7 @@ compiler won’t let us use this closure with `sort_by_key`:
 This is a contrived, convoluted way (that doesn’t work) to try and count the
 number of times `sort_by_key` calls the closure when sorting `list`. This code
 attempts to do this counting by pushing `value`—a `String` from the closure’s
-environment—into the `sort_operations` vector. The closure captures `value`
+environment—into the `sort_operations` vector. The closure captures `value` and
 then moves `value` out of the closure by transferring ownership of `value` to
 the `sort_operations` vector. This closure can be called once; trying to call
 it a second time wouldn’t work because `value` would no longer be in the
@@ -392,12 +395,11 @@ implement `FnMut`:
 
 The error points to the line in the closure body that moves `value` out of the
 environment. To fix this, we need to change the closure body so that it doesn’t
-move values out of the environment. To count the number of times the closure
-is called, keeping a counter in the environment and incrementing its value in
-the closure body is a more straightforward way to calculate that. The closure
-in Listing 13-9 works with `sort_by_key` because it is only capturing a mutable
-reference to the `num_sort_operations` counter and can therefore be called more
-than once:
+move values out of the environment. Keeping a counter in the environment and
+incrementing its value in the closure body is a more straightforward way to
+count the number of times the closure is called. The closure in Listing 13-9
+works with `sort_by_key` because it is only capturing a mutable reference to the
+`num_sort_operations` counter and can therefore be called more than once:
 
 <Listing number="13-9" file-name="src/main.rs" caption="Using an `FnMut` closure with `sort_by_key` is allowed">
 

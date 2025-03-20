@@ -18,9 +18,9 @@ complicated by the differences between how people and computers interpret
 
 ### What Is a String?
 
-We’ll first define what we mean by the term *string*. Rust has only one string
+We’ll first define what we mean by the term _string_. Rust has only one string
 type in the core language, which is the string slice `str` that is usually seen
-in its borrowed form `&str`. In Chapter 4, we talked about *string slices*,
+in its borrowed form `&str`. In Chapter 4, we talked about _string slices_,
 which are references to some UTF-8 encoded string data stored elsewhere. String
 literals, for example, are stored in the program’s binary and are therefore
 string slices.
@@ -41,11 +41,13 @@ of bytes with some extra guarantees, restrictions, and capabilities. An example
 of a function that works the same way with `Vec<T>` and `String` is the `new`
 function to create an instance, shown in Listing 8-11.
 
+<Listing number="8-11" caption="Creating a new, empty `String`">
+
 ```rust
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-11/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 8-11: Creating a new, empty `String`</span>
+</Listing>
 
 This line creates a new, empty string called `s`, into which we can then load
 data. Often, we’ll have some initial data with which we want to start the
@@ -53,12 +55,13 @@ string. For that, we use the `to_string` method, which is available on any type
 that implements the `Display` trait, as string literals do. Listing 8-12 shows
 two examples.
 
+<Listing number="8-12" caption="Using the `to_string` method to create a `String` from a string literal">
+
 ```rust
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-12/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 8-12: Using the `to_string` method to create a
-`String` from a string literal</span>
+</Listing>
 
 This code creates a string containing `initial contents`.
 
@@ -66,12 +69,13 @@ We can also use the function `String::from` to create a `String` from a string
 literal. The code in Listing 8-13 is equivalent to the code in Listing 8-12
 that uses `to_string`.
 
+<Listing number="8-13" caption="Using the `String::from` function to create a `String` from a string literal">
+
 ```rust
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-13/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 8-13: Using the `String::from` function to create
-a `String` from a string literal</span>
+</Listing>
 
 Because strings are used for so many things, we can use many different generic
 APIs for strings, providing us with a lot of options. Some of them can seem
@@ -82,12 +86,13 @@ readability.
 Remember that strings are UTF-8 encoded, so we can include any properly encoded
 data in them, as shown in Listing 8-14.
 
+<Listing number="8-14" caption="Storing greetings in different languages in strings">
+
 ```rust
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-14/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 8-14: Storing greetings in different languages in
-strings</span>
+</Listing>
 
 All of these are valid `String` values.
 
@@ -102,38 +107,41 @@ use the `+` operator or the `format!` macro to concatenate `String` values.
 We can grow a `String` by using the `push_str` method to append a string slice,
 as shown in Listing 8-15.
 
+<Listing number="8-15" caption="Appending a string slice to a `String` using the `push_str` method">
+
 ```rust
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-15/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 8-15: Appending a string slice to a `String`
-using the `push_str` method</span>
+</Listing>
 
 After these two lines, `s` will contain `foobar`. The `push_str` method takes a
 string slice because we don’t necessarily want to take ownership of the
 parameter. For example, in the code in Listing 8-16, we want to be able to use
 `s2` after appending its contents to `s1`.
 
+<Listing number="8-16" caption="Using a string slice after appending its contents to a `String`">
+
 ```rust
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-16/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 8-16: Using a string slice after appending its
-contents to a `String`</span>
+</Listing>
 
 If the `push_str` method took ownership of `s2`, we wouldn’t be able to print
 its value on the last line. However, this code works as we’d expect!
 
 The `push` method takes a single character as a parameter and adds it to the
-`String`. Listing 8-17 adds the letter *l* to a `String` using the `push`
+`String`. Listing 8-17 adds the letter _l_ to a `String` using the `push`
 method.
+
+<Listing number="8-17" caption="Adding one character to a `String` value using `push`">
 
 ```rust
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-17/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 8-17: Adding one character to a `String` value
-using `push`</span>
+</Listing>
 
 As a result, `s` will contain `lol`.
 
@@ -142,12 +150,13 @@ As a result, `s` will contain `lol`.
 Often, you’ll want to combine two existing strings. One way to do so is to use
 the `+` operator, as shown in Listing 8-18.
 
+<Listing number="8-18" caption="Using the `+` operator to combine two `String` values into a new `String` value">
+
 ```rust
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-18/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 8-18: Using the `+` operator to combine two
-`String` values into a new `String` value</span>
+</Listing>
 
 The string `s3` will contain `Hello, world!`. The reason `s1` is no longer
 valid after the addition, and the reason we used a reference to `s2`, has to do
@@ -165,21 +174,21 @@ call this method with `String` values. We’ll discuss generics in Chapter 10.
 This signature gives us the clues we need in order to understand the tricky
 bits of the `+` operator.
 
-First, `s2` has an `&`, meaning that we’re adding a *reference* of the second
+First, `s2` has an `&`, meaning that we’re adding a _reference_ of the second
 string to the first string. This is because of the `s` parameter in the `add`
 function: we can only add a `&str` to a `String`; we can’t add two `String`
 values together. But wait—the type of `&s2` is `&String`, not `&str`, as
 specified in the second parameter to `add`. So why does Listing 8-18 compile?
 
 The reason we’re able to use `&s2` in the call to `add` is that the compiler
-can *coerce* the `&String` argument into a `&str`. When we call the `add`
-method, Rust uses a *deref coercion*, which here turns `&s2` into `&s2[..]`.
+can _coerce_ the `&String` argument into a `&str`. When we call the `add`
+method, Rust uses a _deref coercion_, which here turns `&s2` into `&s2[..]`.
 We’ll discuss deref coercion in more depth in Chapter 15. Because `add` does
 not take ownership of the `s` parameter, `s2` will still be a valid `String`
 after this operation.
 
 Second, we can see in the signature that `add` takes ownership of `self`
-because `self` does *not* have an `&`. This means `s1` in Listing 8-18 will be
+because `self` does _not_ have an `&`. This means `s1` in Listing 8-18 will be
 moved into the `add` call and will no longer be valid after that. So, although
 `let s3 = s1 + &s2;` looks like it will copy both strings and create a new one,
 this statement actually takes ownership of `s1`, appends a copy of the contents
@@ -215,12 +224,13 @@ string by referencing them by index is a valid and common operation. However,
 if you try to access parts of a `String` using indexing syntax in Rust, you’ll
 get an error. Consider the invalid code in Listing 8-19.
 
+<Listing number="8-19" caption="Attempting to use indexing syntax with a String">
+
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-19/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 8-19: Attempting to use indexing syntax with a
-String</span>
+</Listing>
 
 This code will result in the following error:
 
@@ -244,7 +254,7 @@ encoded UTF-8 example strings from Listing 8-14. First, this one:
 In this case, `len` will be `4`, which means the vector storing the string
 `"Hola"` is 4 bytes long. Each of these letters takes one byte when encoded in
 UTF-8. The following line, however, may surprise you (note that this string
-begins with the capital Cyrillic letter *Ze*, not the number 3):
+begins with the capital Cyrillic letter _Ze_, not the number 3):
 
 ```rust
 {{#rustdoc_include ../listings/ch08-common-collections/listing-08-14/src/main.rs:russian}}
@@ -268,8 +278,8 @@ seem that `answer` should in fact be `208`, but `208` is not a valid character
 on its own. Returning `208` is likely not what a user would want if they asked
 for the first letter of this string; however, that’s the only data that Rust
 has at byte index 0. Users generally don’t want the byte value returned, even
-if the string contains only Latin letters: if `&"hello"[0]` were valid code
-that returned the byte value, it would return `104`, not `h`.
+if the string contains only Latin letters: if `&"hi"[0]` were valid code that
+returned the byte value, it would return `104`, not `h`.
 
 The answer, then, is that to avoid returning an unexpected value and causing
 bugs that might not be discovered immediately, Rust doesn’t compile this code
@@ -279,7 +289,7 @@ at all and prevents misunderstandings early in the development process.
 
 Another point about UTF-8 is that there are actually three relevant ways to
 look at strings from Rust’s perspective: as bytes, scalar values, and grapheme
-clusters (the closest thing to what we would call *letters*).
+clusters (the closest thing to what we would call _letters_).
 
 If we look at the Hindi word “नमस्ते” written in the Devanagari script, it is
 stored as a vector of `u8` values that looks like this:

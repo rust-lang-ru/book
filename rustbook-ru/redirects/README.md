@@ -1,6 +1,6 @@
-% Язык программирования Ржавчина
+% The Rust Programming Language
 
-There are two editions of "Язык программирования Ржавчина":
+There are two editions of "The Rust Programming Language":
 
 * [First edition](first-edition/index.html)
 * [Second edition](second-edition/index.html)

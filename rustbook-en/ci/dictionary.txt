@@ -61,6 +61,7 @@ BTreeSet
 BufRead
 BufReader
 BuildHasher
+byteorder
 Cacher
 cacher
 Cagain
@@ -104,6 +105,7 @@ CustomSmartPointer
 CustomSmartPointers
 data's
 DataStruct
+dbea
 deallocate
 deallocated
 deallocating
@@ -149,6 +151,7 @@ durations
 ebook
 ebooks
 Edsger
+efdcd
 egular
 ElementRef
 else's
@@ -162,6 +165,7 @@ Enums
 eprintln
 Erlang
 ErrorKind
+Español
 eval
 executables
 ExitCode
@@ -202,6 +206,7 @@ grapheme
 Grapheme
 growable
 gzip
+handcoded
 handoff
 hardcode
 hardcoded
@@ -250,6 +255,7 @@ interoperate
 IntoFuture
 IntoIterator
 intra
+intratask
 InvalidDigit
 invariants
 ioerror
@@ -309,6 +315,8 @@ microcontroller
 microcontrollers
 millis
 minigrep
+Miri
+miri
 mixup
 mkdir
 MockMessenger
@@ -355,6 +363,7 @@ nondeterministic
 nonequality
 nongeneric
 noplayground
+NoStarch
 NotFound
 nsprust
 null's
@@ -388,6 +397,7 @@ PendingReviewPost
 PlaceholderType
 polymorphism
 PoolCreationError
+por
 portia
 postfix
 powershell
@@ -432,6 +442,7 @@ reformats
 refutability
 reimplement
 RemAssign
+repost
 repr
 representable
 request's
@@ -454,6 +465,7 @@ RUSTFLAGS
 Rustonomicon
 rustfix
 rustfmt
+RustLangES
 rustup
 sampleproject
 screenshot
@@ -476,6 +488,7 @@ sizeof
 SliceIndex
 Smalltalk
 snuck
+SocialPost
 someproject
 SomeType
 someusername
@@ -516,6 +529,7 @@ suboptimal
 subpath
 subslices
 substring
+subtasks
 subteams
 subtree
 subtyping
@@ -566,6 +580,7 @@ Uncomment
 uncommenting
 unevaluated
 unhandled
+unicode
 Uninstalling
 uninstall
 unittests
@@ -598,6 +613,7 @@ Vlissides
 vscode
 vtable
 waitlist
+wasi
 wasn
 weakt
 WeatherForecast
@@ -616,4 +632,5 @@ WriteMessage
 xcode
 xpression
 yyyy
+zerocopy
 ZipImpl

@@ -6,10 +6,10 @@ know its path.
 
 A path can take two forms:
 
-* An *absolute path* is the full path starting from a crate root; for code
+- An _absolute path_ is the full path starting from a crate root; for code
   from an external crate, the absolute path begins with the crate name, and for
   code from the current crate, it starts with the literal `crate`.
-* A *relative path* starts from the current module and uses `self`, `super`, or
+- A _relative path_ starts from the current module and uses `self`, `super`, or
   an identifier in the current module.
 
 Both absolute and relative paths are followed by one or more identifiers
@@ -29,14 +29,13 @@ The `eat_at_restaurant` function is part of our library crate’s public API, so
 we mark it with the `pub` keyword. In the [“Exposing Paths with the `pub`
 Keyword”][pub]<!-- ignore --> section, we’ll go into more detail about `pub`.
 
-<span class="filename">Filename: src/lib.rs</span>
+<Listing number="7-3" file-name="src/lib.rs" caption="Calling the `add_to_waitlist` function using absolute and relative paths">
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-03/src/lib.rs}}
 ```
 
-<span class="caption">Listing 7-3: Calling the `add_to_waitlist` function using
-absolute and relative paths</span>
+</Listing>
 
 The first time we call the `add_to_waitlist` function in `eat_at_restaurant`,
 we use an absolute path. The `add_to_waitlist` function is defined in the same
@@ -70,12 +69,13 @@ each other.
 Let’s try to compile Listing 7-3 and find out why it won’t compile yet! The
 errors we get are shown in Listing 7-4.
 
+<Listing number="7-4" caption="Compiler errors from building the code in Listing 7-3">
+
 ```console
 {{#include ../listings/ch07-managing-growing-projects/listing-07-03/output.txt}}
 ```
 
-<span class="caption">Listing 7-4: Compiler errors from building the code in
-Listing 7-3</span>
+</Listing>
 
 The error messages say that module `hosting` is private. In other words, we
 have the correct paths for the `hosting` module and the `add_to_waitlist`
@@ -105,28 +105,28 @@ private. We want the `eat_at_restaurant` function in the parent module to have
 access to the `add_to_waitlist` function in the child module, so we mark the
 `hosting` module with the `pub` keyword, as shown in Listing 7-5.
 
-<span class="filename">Filename: src/lib.rs</span>
+<Listing number="7-5" file-name="src/lib.rs" caption="Declaring the `hosting` module as `pub` to use it from `eat_at_restaurant`">
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-05/src/lib.rs}}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-05/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 7-5: Declaring the `hosting` module as `pub` to
-use it from `eat_at_restaurant`</span>
+</Listing>
 
 Unfortunately, the code in Listing 7-5 still results in compiler errors, as
 shown in Listing 7-6.
+
+<Listing number="7-6" caption="Compiler errors from building the code in Listing 7-5">
 
 ```console
 {{#include ../listings/ch07-managing-growing-projects/listing-07-05/output.txt}}
 ```
 
-<span class="caption">Listing 7-6: Compiler errors from building the code in
-Listing 7-5</span>
+</Listing>
 
 What happened? Adding the `pub` keyword in front of `mod hosting` makes the
 module public. With this change, if we can access `front_of_house`, we can
-access `hosting`. But the *contents* of `hosting` are still private; making the
+access `hosting`. But the _contents_ of `hosting` are still private; making the
 module public doesn’t make its contents public. The `pub` keyword on a module
 only lets code in its ancestor modules refer to it, not access its inner code.
 Because modules are containers, there’s not much we can do by only making the
@@ -140,15 +140,13 @@ modules.
 Let’s also make the `add_to_waitlist` function public by adding the `pub`
 keyword before its definition, as in Listing 7-7.
 
-<span class="filename">Filename: src/lib.rs</span>
+<Listing number="7-7" file-name="src/lib.rs" caption="Adding the `pub` keyword to `mod hosting` and `fn add_to_waitlist` lets us call the function from `eat_at_restaurant`">
 
 ```rust,noplayground,test_harness
-{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-07/src/lib.rs}}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-07/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 7-7: Adding the `pub` keyword to `mod hosting`
-and `fn add_to_waitlist` lets us call the function from
-`eat_at_restaurant`</span>
+</Listing>
 
 Now the code will compile! To see why adding the `pub` keyword lets us use
 these paths in `eat_at_restaurant` with respect to the privacy rules, let’s look
@@ -176,20 +174,20 @@ If you plan on sharing your library crate so other projects can use your code,
 your public API is your contract with users of your crate that determines how
 they can interact with your code. There are many considerations around managing
 changes to your public API to make it easier for people to depend on your
-crate. These considerations are out of the scope of this book; if you’re
+crate. These considerations are beyond the scope of this book; if you’re
 interested in this topic, see [The Rust API Guidelines][api-guidelines].
 
 > #### Best Practices for Packages with a Binary and a Library
 >
-> We mentioned that a package can contain both a *src/main.rs* binary crate
-> root as well as a *src/lib.rs* library crate root, and both crates will have
+> We mentioned that a package can contain both a _src/main.rs_ binary crate
+> root as well as a _src/lib.rs_ library crate root, and both crates will have
 > the package name by default. Typically, packages with this pattern of
 > containing both a library and a binary crate will have just enough code in the
 > binary crate to start an executable that calls code within the library crate.
 > This lets other projects benefit from most of the functionality that the
 > package provides because the library crate’s code can be shared.
 >
-> The module tree should be defined in *src/lib.rs*. Then, any public items can
+> The module tree should be defined in _src/lib.rs_. Then, any public items can
 > be used in the binary crate by starting paths with the name of the package.
 > The binary crate becomes a user of the library crate just like a completely
 > external crate would use the library crate: it can only use the public API.
@@ -197,7 +195,7 @@ interested in this topic, see [The Rust API Guidelines][api-guidelines].
 > client!
 >
 > In [Chapter 12][ch12]<!-- ignore -->, we’ll demonstrate this organizational
-> practice with a command-line program that will contain both a binary crate
+> practice with a command line program that will contain both a binary crate
 > and a library crate.
 
 ### Starting Relative Paths with `super`
@@ -216,14 +214,13 @@ function `fix_incorrect_order` defined in the `back_of_house` module calls the
 function `deliver_order` defined in the parent module by specifying the path to
 `deliver_order`, starting with `super`.
 
-<span class="filename">Filename: src/lib.rs</span>
+<Listing number="7-8" file-name="src/lib.rs" caption="Calling a function using a relative path starting with `super`">
 
 ```rust,noplayground,test_harness
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-08/src/lib.rs}}
 ```
 
-<span class="caption">Listing 7-8: Calling a function using a relative path
-starting with `super`</span>
+</Listing>
 
 The `fix_incorrect_order` function is in the `back_of_house` module, so we can
 use `super` to go to the parent module of `back_of_house`, which in this case
@@ -247,14 +244,13 @@ comes with a meal, but the chef decides which fruit accompanies the meal based
 on what’s in season and in stock. The available fruit changes quickly, so
 customers can’t choose the fruit or even see which fruit they’ll get.
 
-<span class="filename">Filename: src/lib.rs</span>
+<Listing number="7-9" file-name="src/lib.rs" caption="A struct with some public fields and some private fields">
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-09/src/lib.rs}}
 ```
 
-<span class="caption">Listing 7-9: A struct with some public fields and some
-private fields</span>
+</Listing>
 
 Because the `toast` field in the `back_of_house::Breakfast` struct is public,
 in `eat_at_restaurant` we can write and read to the `toast` field using dot
@@ -272,14 +268,13 @@ have such a function, we couldn’t create an instance of `Breakfast` in
 In contrast, if we make an enum public, all of its variants are then public. We
 only need the `pub` before the `enum` keyword, as shown in Listing 7-10.
 
-<span class="filename">Filename: src/lib.rs</span>
+<Listing number="7-10" file-name="src/lib.rs" caption="Designating an enum as public makes all its variants public.">
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch07-managing-growing-projects/listing-07-10/src/lib.rs}}
 ```
 
-<span class="caption">Listing 7-10: Designating an enum as public makes all its
-variants public</span>
+</Listing>
 
 Because we made the `Appetizer` enum public, we can use the `Soup` and `Salad`
 variants in `eat_at_restaurant`.
