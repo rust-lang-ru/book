@@ -114,14 +114,14 @@ fn main() {
     let user_pref1 = Some(ShirtColor::Red);
     let giveaway1 = store.giveaway(user_pref1);
     println!(
-        "The user with preference {:?} gets {:?}",
+        "Пользователь выбрал {:?} gets {:?}",
         user_pref1, giveaway1
     );
 
     let user_pref2 = None;
     let giveaway2 = store.giveaway(user_pref2);
     println!(
-        "The user with preference {:?} gets {:?}",
+        "Пользователь выбрал {:?} gets {:?}",
         user_pref2, giveaway2
     );
 }
@@ -160,8 +160,8 @@ $ cargo run
    Compiling shirt-company v0.1.0 (file:///projects/shirt-company)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
      Running `target/debug/shirt-company`
-The user with preference Some(Red) gets Red
-The user with preference None gets Blue
+Пользователь выбрал Some(Red) gets Red
+Пользователь выбрал None gets Blue
 ```
 
 One interesting aspect here is that we’ve passed a closure that calls
@@ -305,13 +305,13 @@ src/main.rs
 ```
 fn main() {
     let list = vec![1, 2, 3];
-    println!("Before defining closure: {list:?}");
+    println!("До определения замыкания: {list:?}");
 
-    let only_borrows = || println!("From closure: {list:?}");
+    let only_borrows = || println!("Вызов замыкания: {list:?}");
 
-    println!("Before calling closure: {list:?}");
+    println!("До вызова замыкания: {list:?}");
     only_borrows();
-    println!("After calling closure: {list:?}");
+    println!("После вызова замыкания: {list:?}");
 }
 ```
 
@@ -333,10 +333,10 @@ $ cargo run
    Compiling closure-example v0.1.0 (file:///projects/closure-example)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
      Running `target/debug/closure-example`
-Before defining closure: [1, 2, 3]
-Before calling closure: [1, 2, 3]
-From closure: [1, 2, 3]
-After calling closure: [1, 2, 3]
+До определения замыкания: [1, 2, 3]
+До вызова замыкания: [1, 2, 3]
+Вызов замыкания: [1, 2, 3]
+После вызова замыкания: [1, 2, 3]
 ```
 
 Next, in Listing 13-5, we change the closure body so that it adds an element to
@@ -347,12 +347,12 @@ src/main.rs
 ```
 fn main() {
     let mut list = vec![1, 2, 3];
-    println!("Before defining closure: {list:?}");
+    println!("До определения замыкания: {list:?}");
 
     let mut borrows_mutably = || list.push(7);
 
     borrows_mutably();
-    println!("After calling closure: {list:?}");
+    println!("После вызова замыкания: {list:?}");
 }
 ```
 
@@ -367,8 +367,8 @@ $ cargo run
    Compiling closure-example v0.1.0 (file:///projects/closure-example)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
      Running `target/debug/closure-example`
-Before defining closure: [1, 2, 3]
-After calling closure: [1, 2, 3, 7]
+До определения замыкания: [1, 2, 3]
+После вызова замыкания: [1, 2, 3, 7]
 ```
 
 Note that there’s no longer a `println!` between the definition and the call of
@@ -397,9 +397,9 @@ use std::thread;
 
 fn main() {
     let list = vec![1, 2, 3];
-    println!("Before defining closure: {list:?}");
+    println!("До определения замыкания: {list:?}");
 
-    thread::spawn(move || println!("From thread: {list:?}"))
+    thread::spawn(move || println!("Из основного потока: {list:?}"))
         .join()
         .unwrap();
 }
