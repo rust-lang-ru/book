@@ -4,13 +4,13 @@ use std::time::Duration;
 fn main() {
     thread::spawn(|| {
         for i in 1..10 {
-            println!("hi number {i} from the spawned thread!");
+            println!("Число {i} вызвано из порожденного потока!");
             thread::sleep(Duration::from_millis(1));
         }
     });
 
     for i in 1..5 {
-        println!("hi number {i} from the main thread!");
+        println!("Число {i} вызвано из главного потока!");
         thread::sleep(Duration::from_millis(1));
     }
 }

@@ -107,13 +107,13 @@ use std::time::Duration;
 fn main() {
     thread::spawn(|| {
         for i in 1..10 {
-            println!("hi number {i} from the spawned thread!");
+            println!("Число {i} вызвано из порожденного потока!");
             thread::sleep(Duration::from_millis(1));
         }
     });
 
     for i in 1..5 {
-        println!("hi number {i} from the main thread!");
+        println!("Число {i} вызвано из основного потока!");
         thread::sleep(Duration::from_millis(1));
     }
 }
@@ -131,26 +131,26 @@ the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 
 ```
-hi number 1 from the main thread!
-hi number 1 from the spawned thread!
-hi number 2 from the main thread!
-hi number 2 from the spawned thread!
-hi number 3 from the main thread!
-hi number 3 from the spawned thread!
-hi number 4 from the main thread!
-hi number 4 from the spawned thread!
-hi number 5 from the spawned thread!
+Число 1 вызвано из основного потока!
+Число 1 вызвано из порожденного потока!
+Число 2 вызвано из основного потока!
+Число 2 вызвано из порожденного потока!
+Число 3 вызвано из основного потока!
+Число 3 вызвано из порожденного потока!
+Число 4 вызвано из основного потока!
+Число 4 вызвано из порожденного потока!
+Число 5 вызвано из порожденного потока!
 ```
 
 The calls to `thread::sleep` force a thread to stop its execution for a short
 duration, allowing a different thread to run. The threads will probably take
 turns, but that isn’t guaranteed: it depends on how your operating system
 schedules the threads. In this run, the main thread printed first, even though
-the print statement from the spawned thread appears first in the code. And even
+the print statement вызвано из порожденного потока appears first in the code. And even
 though we told the spawned thread to print until `i` is `9`, it only got to `5`
 before the main thread shut down.
 
-If you run this code and only see output from the main thread, or don’t see any
+If you run this code and only see output вызвано из основного потока, or don’t see any
 overlap, try increasing the numbers in the ranges to create more opportunities
 for the operating system to switch between the threads.
 
@@ -177,13 +177,13 @@ use std::time::Duration;
 fn main() {
     let handle = thread::spawn(|| {
         for i in 1..10 {
-            println!("hi number {i} from the spawned thread!");
+            println!("Число {i} вызвано из порожденного потока!");
             thread::sleep(Duration::from_millis(1));
         }
     });
 
     for i in 1..5 {
-        println!("hi number {i} from the main thread!");
+        println!("Число {i} вызвано из основного потока!");
         thread::sleep(Duration::from_millis(1));
     }
 
@@ -204,19 +204,19 @@ the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 
 ```
-hi number 1 from the main thread!
-hi number 2 from the main thread!
-hi number 1 from the spawned thread!
-hi number 3 from the main thread!
-hi number 2 from the spawned thread!
-hi number 4 from the main thread!
-hi number 3 from the spawned thread!
-hi number 4 from the spawned thread!
-hi number 5 from the spawned thread!
-hi number 6 from the spawned thread!
-hi number 7 from the spawned thread!
-hi number 8 from the spawned thread!
-hi number 9 from the spawned thread!
+Число 1 вызвано из основного потока!
+Число 2 вызвано из основного потока!
+Число 1 вызвано из порожденного потока!
+Число 3 вызвано из основного потока!
+Число 2 вызвано из порожденного потока!
+Число 4 вызвано из основного потока!
+Число 3 вызвано из порожденного потока!
+Число 4 вызвано из порожденного потока!
+Число 5 вызвано из порожденного потока!
+Число 6 вызвано из порожденного потока!
+Число 7 вызвано из порожденного потока!
+Число 8 вызвано из порожденного потока!
+Число 9 вызвано из порожденного потока!
 ```
 
 The two threads continue alternating, but the main thread waits because of the
@@ -234,7 +234,7 @@ use std::time::Duration;
 fn main() {
     let handle = thread::spawn(|| {
         for i in 1..10 {
-            println!("hi number {i} from the spawned thread!");
+            println!("Число {i} вызвано из порожденного потока!");
             thread::sleep(Duration::from_millis(1));
         }
     });
@@ -242,7 +242,7 @@ fn main() {
     handle.join().unwrap();
 
     for i in 1..5 {
-        println!("hi number {i} from the main thread!");
+        println!("Число {i} вызвано из основного потока!");
         thread::sleep(Duration::from_millis(1));
     }
 }
@@ -258,19 +258,19 @@ the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 
 ```
-hi number 1 from the spawned thread!
-hi number 2 from the spawned thread!
-hi number 3 from the spawned thread!
-hi number 4 from the spawned thread!
-hi number 5 from the spawned thread!
-hi number 6 from the spawned thread!
-hi number 7 from the spawned thread!
-hi number 8 from the spawned thread!
-hi number 9 from the spawned thread!
-hi number 1 from the main thread!
-hi number 2 from the main thread!
-hi number 3 from the main thread!
-hi number 4 from the main thread!
+Число 1 вызвано из порожденного потока!
+Число 2 вызвано из порожденного потока!
+Число 3 вызвано из порожденного потока!
+Число 4 вызвано из порожденного потока!
+Число 5 вызвано из порожденного потока!
+Число 6 вызвано из порожденного потока!
+Число 7 вызвано из порожденного потока!
+Число 8 вызвано из порожденного потока!
+Число 9 вызвано из порожденного потока!
+Число 1 вызвано из основного потока!
+Число 2 вызвано из основного потока!
+Число 3 вызвано из основного потока!
+Число 4 вызвано из основного потока!
 ```
 
 Small details, such as where `join` is called, can affect whether or not your
@@ -286,8 +286,8 @@ in Chapter 13, we discussed `move` in the context of closures. Now, we’ll
 concentrate more on the interaction between `move` and `thread::spawn`.
 
 Notice in Listing 16-1 that the closure we pass to `thread::spawn` takes no
-arguments: we’re not using any data from the main thread in the spawned
-thread’s code. To use data from the main thread in the spawned thread, the
+arguments: we’re not using any data вызвано из основного потока in the spawned
+thread’s code. To use data вызвано из основного потока in the spawned thread, the
 spawned thread’s closure must capture the values it needs. Listing 16-3 shows
 an attempt to create a vector in the main thread and use it in the spawned
 thread. However, this won’t yet work, as you’ll see in a moment.

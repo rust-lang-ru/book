@@ -645,13 +645,13 @@ fn main() {
     trpl::run(async {
         trpl::spawn_task(async {
             for i in 1..10 {
-                println!("hi number {i} from the first task!");
+                println!("Число {i} вызвано как главная задача!");
                 trpl::sleep(Duration::from_millis(500)).await;
             }
         });
 
         for i in 1..5 {
-            println!("hi number {i} from the second task!");
+            println!("Число {i} вызвано как второстепенная задача!");
             trpl::sleep(Duration::from_millis(500)).await;
         }
     });
@@ -681,15 +681,15 @@ the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 
 ```
-hi number 1 from the second task!
-hi number 1 from the first task!
-hi number 2 from the first task!
-hi number 2 from the second task!
-hi number 3 from the first task!
-hi number 3 from the second task!
-hi number 4 from the first task!
-hi number 4 from the second task!
-hi number 5 from the first task!
+Число 1 вызвано как второстепенная задача!
+Число 1 вызвано как главная задача!
+Число 2 вызвано как главная задача!
+Число 2 вызвано как второстепенная задача!
+Число 3 вызвано как главная задача!
+Число 3 вызвано как второстепенная задача!
+Число 4 Число 4 Число 4 вызвано как главная задача!
+Число 4 вызвано как второстепенная задача!
+Число 5 вызвано как главная задача!
 ```
 
 This version stops as soon as the `for` loop in the body of the main async block
@@ -706,13 +706,13 @@ src/main.rs
 ```
         let handle = trpl::spawn_task(async {
             for i in 1..10 {
-                println!("hi number {i} from the first task!");
+                println!("Число {i} вызвано как главная задача!");
                 trpl::sleep(Duration::from_millis(500)).await;
             }
         });
 
         for i in 1..5 {
-            println!("hi number {i} from the second task!");
+            println!("Число {i} вызвано как второстепенная задача!");
             trpl::sleep(Duration::from_millis(500)).await;
         }
 
@@ -728,19 +728,19 @@ the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 
 ```
-hi number 1 from the second task!
-hi number 1 from the first task!
-hi number 2 from the first task!
-hi number 2 from the second task!
-hi number 3 from the first task!
-hi number 3 from the second task!
-hi number 4 from the first task!
-hi number 4 from the second task!
-hi number 5 from the first task!
-hi number 6 from the first task!
-hi number 7 from the first task!
-hi number 8 from the first task!
-hi number 9 from the first task!
+Число 1 вызвано как второстепенная задача!
+Число 1 вызвано как главная задача!
+Число 2 вызвано как главная задача!
+Число 2 вызвано как второстепенная задача!
+Число 3 вызвано как главная задача!
+Число 3 вызвано как второстепенная задача!
+Число 4 вызвано как главная задача!
+Число 4 вызвано как второстепенная задача!
+Число 5 вызвано как главная задача!
+Число 6 вызвано как главная задача!
+Число 7 вызвано как главная задача!
+Число 8 вызвано как главная задача!
+Число 9 вызвано как главная задача!
 ```
 
 So far, it looks like async and threads give us the same basic outcomes, just
@@ -768,14 +768,14 @@ src/main.rs
 ```
         let fut1 = async {
             for i in 1..10 {
-                println!("hi number {i} from the first task!");
+                println!("Число {i} вызвано как главная задача!");
                 trpl::sleep(Duration::from_millis(500)).await;
             }
         };
 
         let fut2 = async {
             for i in 1..5 {
-                println!("hi number {i} from the second task!");
+                println!("Число {i} вызвано как второстепенная задача!");
                 trpl::sleep(Duration::from_millis(500)).await;
             }
         };
@@ -792,19 +792,19 @@ the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 
 ```
-hi number 1 from the first task!
-hi number 1 from the second task!
-hi number 2 from the first task!
-hi number 2 from the second task!
-hi number 3 from the first task!
-hi number 3 from the second task!
-hi number 4 from the first task!
-hi number 4 from the second task!
-hi number 5 from the first task!
-hi number 6 from the first task!
-hi number 7 from the first task!
-hi number 8 from the first task!
-hi number 9 from the first task!
+Число 1 вызвано как главная задача!
+Число 1 вызвано как второстепенная задача!
+Число 2 вызвано как главная задача!
+Число 2 вызвано как второстепенная задача!
+Число 3 вызвано как главная задача!
+Число 3 вызвано как второстепенная задача!
+Число 4 вызвано как главная задача!
+Число 4 вызвано как второстепенная задача!
+Число 5 вызвано как главная задача!
+Число 6 вызвано как главная задача!
+Число 7 вызвано как главная задача!
+Число 8 вызвано как главная задача!
+Число 9 вызвано как главная задача!
 ```
 
 Now, you’ll see the exact same order every time, which is very different from

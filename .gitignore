@@ -269,3 +269,4 @@ rustbook-ru/src/ch00-00-introduction.md.bak
 .vs/slnx.sqlite
 .vs/book/v17/workspaceFileList.bin
 .vs/book/v17/.wsuo
+/rustbook-ru/target
