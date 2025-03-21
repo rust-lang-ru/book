@@ -25,7 +25,7 @@ impl Config {
     // --snip--
     fn new(args: &[String]) -> Config {
         if args.len() < 3 {
-            panic!("not enough arguments");
+            panic!("не хватает переменных");
         }
         // --snip--
         // ANCHOR_END: here

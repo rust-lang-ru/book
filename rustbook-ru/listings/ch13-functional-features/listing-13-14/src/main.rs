@@ -4,4 +4,5 @@ fn main() {
 
     v1.iter().map(|x| x + 1);
     // ANCHOR_END: here
+    
 }

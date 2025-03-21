@@ -581,7 +581,7 @@ src/main.rs
     // --snip--
     fn new(args: &[String]) -> Config {
         if args.len() < 3 {
-            panic!("not enough arguments");
+            panic!("не хватает переменных");
         }
         // --snip--
 ```
@@ -605,7 +605,7 @@ $ cargo run
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
      Running `target/debug/minigrep`
 thread 'main' panicked at src/main.rs:26:13:
-not enough arguments
+не хватает переменных
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
 
@@ -642,7 +642,7 @@ src/main.rs
 impl Config {
     fn build(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
-            return Err("not enough arguments");
+            return Err("не хватает переменных");
         }
 
         let query = args[1].clone();
@@ -708,7 +708,7 @@ value is an `Err` value, this method calls the code in the *closure*, which is
 an anonymous function we define and pass as an argument to `unwrap_or_else`.
 We’ll cover closures in more detail in Chapter 13. For
 now, you just need to know that `unwrap_or_else` will pass the inner value of
-the `Err`, which in this case is the static string `"not enough arguments"`
+the `Err`, which in this case is the static string `"не хватает переменных"`
 that we added in Listing 12-9, to our closure in the argument `err` that
 appears between the vertical pipes. The code in the closure can then use the
 `err` value when it runs.
@@ -726,7 +726,7 @@ $ cargo run
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
      Running `target/debug/minigrep`
-Problem parsing arguments: not enough arguments
+Problem parsing arguments: не хватает переменных
 ```
 
 Great! This output is much friendlier for our users.
@@ -1537,7 +1537,7 @@ use std::env;
 impl Config {
     pub fn build(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
-            return Err("not enough arguments");
+            return Err("не хватает переменных");
         }
 
         let query = args[1].clone();
@@ -1680,7 +1680,7 @@ expecting printed to the screen, so that means it must have ended up in the
 file. This is what *output.txt* contains:
 
 ```
-Problem parsing arguments: not enough arguments
+Problem parsing arguments: не хватает переменных
 ```
 
 Yup, our error message is being printed to standard output. It’s much more
@@ -1721,7 +1721,7 @@ redirecting standard output with `>`:
 
 ```
 $ cargo run > output.txt
-Problem parsing arguments: not enough arguments
+Problem parsing arguments: не хватает переменных
 ```
 
 Now we see the error onscreen and *output.txt* contains nothing, which is the
