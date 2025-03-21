@@ -11,7 +11,7 @@
 
 ## GitLocalize
 
-Проект на GitLocalize: https://gitlocalize.com/repo/4579
+Дело на GitLocalize: https://gitlocalize.com/repo/4579
 
 ## Правила участия в переводе
 
