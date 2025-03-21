@@ -657,7 +657,7 @@ fn main() {
         num_sort_operations += 1;
         r.width
     });
-    println!("{list:#?}, sorted in {num_sort_operations} operations");
+    println!("{list:#?}, упорядочено {num_sort_operations} действиями");
 }
 ```
 
@@ -710,7 +710,7 @@ src/main.rs
     let v1_iter = v1.iter();
 
     for val in v1_iter {
-        println!("Got: {val}");
+        println!("Получено: {val}");
     }
 ```
 

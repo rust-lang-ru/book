@@ -3,7 +3,7 @@ fn main() {
     let y = 10;
 
     match x {
-        Some(50) => println!("Got 50"),
+        Some(50) => println!("Получено 50"),
         Some(n) if n == y => println!("Matched, n = {n}"),
         _ => println!("Default case, x = {x:?}"),
     }
