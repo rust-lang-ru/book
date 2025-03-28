@@ -15,17 +15,17 @@ fn main() {
     });
 
     // ANCHOR: here
-    println!("Searching for {}", config.query);
-    println!("In file {}", config.file_path);
+    println!("Поиск значения:{}", config.query);
+    println!("В файле {}", config.file_path);
 
     run(config);
 }
 
 fn run(config: Config) {
     let contents = fs::read_to_string(config.file_path)
-        .expect("Should have been able to read the file");
+        .expect("Файл не доступен для чтения");
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
 }
 
 // --snip--

@@ -250,9 +250,9 @@ fn main() {
     println!("In file {file_path}");
 
     let contents = fs::read_to_string(file_path)
-        .expect("Should have been able to read the file");
+        .expect("Файл не доступен для чтения");
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
 }
 ```
 
@@ -280,7 +280,7 @@ $ cargo run -- the poem.txt
      Running `target/debug/minigrep the poem.txt`
 Searching for the
 In file poem.txt
-With text:
+Содержимое:
 I'm nobody! Who are you?
 Are you nobody, too?
 Then there's a pair of us - don't tell!
@@ -322,7 +322,7 @@ it will be to keep track of the purpose of each. It’s best to group the
 configuration variables into one structure to make their purpose clear.
 
 The third problem is that we’ve used `expect` to print an error message when
-reading the file fails, but the error message just prints `Should have been able to read the file`. Reading a file can fail in a number of ways: for
+reading the file fails, but the error message just prints `Файл не доступен для чтения`. Reading a file can fail in a number of ways: for
 example, the file could be missing, or we might not have permission to open it.
 Right now, regardless of the situation, we’d print the same error message for
 everything, which wouldn’t give the user any information!
@@ -440,7 +440,7 @@ fn main() {
     println!("In file {}", config.file_path);
 
     let contents = fs::read_to_string(config.file_path)
-        .expect("Should have been able to read the file");
+        .expect("Файл не доступен для чтения");
 
     // --snip--
 }
@@ -759,9 +759,9 @@ fn main() {
 
 fn run(config: Config) {
     let contents = fs::read_to_string(config.file_path)
-        .expect("Should have been able to read the file");
+        .expect("Файл не доступен для чтения");
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
 }
 
 // --snip--
@@ -793,7 +793,7 @@ use std::error::Error;
 fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
 
     Ok(())
 }
@@ -850,7 +850,7 @@ warning: `minigrep` (bin "minigrep") generated 1 warning
      Running `target/debug/minigrep the poem.txt`
 Searching for the
 In file poem.txt
-With text:
+Содержимое:
 I'm nobody! Who are you?
 Are you nobody, too?
 Then there's a pair of us - don't tell!
