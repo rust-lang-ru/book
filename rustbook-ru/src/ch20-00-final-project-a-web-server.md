@@ -4,7 +4,7 @@
 
 В качестве нашего финального проекта мы напишем веб-сервер, который выводит надпись “hello” в веб-браузере, как на рисунке 20-1.
 
-![hello from rust](https://github.com/ruRust/book/blob/master/rustbook-en/src/img/trpl20-01.png?raw=true)
+![hello from rust](img/trpl20-01.png)
 
 <span class="caption">Рисунок 20-1: Наш последний совместный проект</span>
 

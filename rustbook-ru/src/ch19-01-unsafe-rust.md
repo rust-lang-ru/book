@@ -42,7 +42,7 @@
 В листинге 19-1 показано, как создать неизменяемый и изменяемый сырой указатель из ссылок.
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-01/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-01/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-1: Создание необработанных указателей из ссылок</span>
@@ -54,7 +54,7 @@
 Чтобы продемонстрировать это, создадим сырой указатель, в достоверности которого мы не можем быть так уверены. В листинге 19-2 показано, как создать необработанный указатель на произвольное место в памяти. Попытка использовать произвольную память является непредсказуемой: по этому адресу могут быть данные, а могут и не быть, компилятор может оптимизировать код так, что доступа к памяти не будет, или программа может завершиться с ошибкой сегментации. Обычно нет веских причин писать такой код, но это возможно.
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-02/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-02/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-2: Создание сырого указателя на произвольный адрес памяти</span>
@@ -62,7 +62,7 @@
 Напомним, что можно создавать сырые указатели в безопасном коде, но нельзя *разыменовывать* сырые указатели и читать данные, на которые они указывают. В листинге 19-3 мы используем оператор разыменования `*` для сырого указателя, который требует `unsafe` блока.
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-03/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-03/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-3: Разыменование сырых указателей в блоке <code>unsafe</code></span>
@@ -80,13 +80,13 @@
 Вот небезопасная функция с именем `dangerous` которая ничего не делает в своём теле:
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-01-unsafe-fn/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-01-unsafe-fn/src/main.rs:here}}
 ```
 
 Мы должны вызвать функцию `dangerous` в отдельном `unsafe` блоке. Если мы попробуем вызвать `dangerous` без `unsafe` блока, мы получим ошибку:
 
 ```console
-{{#include ../listings/ch19-advanced-features/output-only-01-missing-unsafe/output.txt}}
+{{#include ../listings/ch20-advanced-features/output-only-01-missing-unsafe/output.txt}}
 ```
 
 С помощью блока `unsafe` мы сообщаем Rust, что прочитали документацию к функции, поняли, как правильно её использовать, и убедились, что выполняем контракт функции.
@@ -98,7 +98,7 @@
 То, что функция содержит небезопасный код, не означает, что мы должны пометить всю функцию как небезопасную. На самом деле, обёртывание небезопасного кода в безопасную функцию - это обычная абстракция. В качестве примера рассмотрим функцию `split_at_mut` из стандартной библиотеки, которая требует некоторого небезопасного кода. Рассмотрим, как мы могли бы её реализовать. Этот безопасный метод определён для изменяемых срезов: он берет один срез и превращает его в два, разделяя срез по индексу, указанному в качестве аргумента. В листинге 19-4 показано, как использовать `split_at_mut`.
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-04/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-04/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-4: Использование безопасной функции <code>split_at_mut</code></span>
@@ -106,7 +106,7 @@
 Эту функцию нельзя реализовать, используя только безопасный Rust. Попытка реализации могла бы выглядеть примерно как в листинге 19-5, который не компилируется. Для простоты мы реализуем `split_at_mut` как функцию, а не как метод, и только для значений типа `i32`, а не обобщённого типа `T`.
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-05/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-05/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-5: Попытка реализации <code>split_at_mut</code> с использованием только безопасного Rust</span>
@@ -118,7 +118,7 @@
 При попытке скомпилировать код в листинге 19-5, мы получим ошибку.
 
 ```console
-{{#include ../listings/ch19-advanced-features/listing-19-05/output.txt}}
+{{#include ../listings/ch20-advanced-features/listing-20-05/output.txt}}
 ```
 
 Анализатор заимствований Rust не может понять, что мы заимствуем различные части среза, он понимает лишь, что мы хотим осуществить заимствование частей одного среза дважды. Заимствование различных частей среза в принципе нормально, потому что они не перекрываются, но Rust недостаточно умён, чтобы это понять. Когда мы знаем, что код верный, но Rust этого не понимает, значит пришло время прибегнуть к небезопасному коду.
@@ -126,7 +126,7 @@
 Листинг 19-6 демонстрирует, как можно использовать `unsafe` блок, сырой указатель и вызовы небезопасных функций чтобы `split_at_mut` заработала:
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-06/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-06/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-6. Использование небезопасного кода в реализации функции <code>split_at_mut</code></span>
@@ -142,7 +142,7 @@
 Напротив, использование `slice::from_raw_parts_mut` в листинге 19-7 приведёт к вероятному сбою при использовании среза. Этот код использует произвольный адрес памяти и создаёт срез из 10000 элементов.
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-07/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-07/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-7: Создание среза из произвольного адреса памяти</span>
@@ -158,7 +158,7 @@
 <span class="filename">Имя файла: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-08/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-08/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-8: Объявление и вызов <code>extern</code> функции, написанной на другом языке программирования</span>
@@ -189,7 +189,7 @@
 <span class="filename">Имя файла: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-09/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-09/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-9: Определение и использование неизменяемой статической переменной</span>
@@ -201,7 +201,7 @@
 <span class="filename">Имя файла: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-10/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-10/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-10: Чтение из изменяемой статической переменной или запись в неё небезопасны</span>
@@ -215,7 +215,7 @@
 Мы можем использовать `unsafe` для реализации небезопасного трейта. Трейт является небезопасным, если хотя бы один из его методов имеет некоторый инвариант, который компилятор не может проверить. Мы объявляем трейты `unsafe`, добавляя ключевое слово `unsafe` перед `trait` и помечая реализацию трейта как `unsafe`, как показано в листинге 19-11.
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-11/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-11/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-11: Определение и реализация небезопасного трейта</span>

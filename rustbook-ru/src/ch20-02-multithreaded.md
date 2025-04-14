@@ -9,7 +9,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-10/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-10/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-10: Имитация медленного запроса с помощью 5-секундной задержки</span>
@@ -49,7 +49,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-11/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-11/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-11: Порождение нового потока для каждого соединения</span>
@@ -67,7 +67,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-12/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-12/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-12: Наш идеальный интерфейс <code>ThreadPool</code></span>
@@ -83,7 +83,7 @@
 Внесите изменения листинга 20-12 в файл *src/main.rs*, а затем давайте воспользуемся ошибками компилятора из команды `cargo check` для управления нашей разработкой. Вот первая ошибка, которую мы получаем:
 
 ```console
-{{#include ../listings/ch20-web-server/listing-20-12/output.txt}}
+{{#include ../listings/ch21-web-server/listing-21-12/output.txt}}
 ```
 
 Замечательно! Ошибка говорит о том, что нам нужен тип или модуль `ThreadPool`, поэтому мы сейчас его создадим. Наша реализация `ThreadPool` не будет зависеть от того, что делает наш веб-сервер. Итак, давайте переделаем крейт `hello` из бинарного в библиотечный, чтобы хранить там нашу реализацию `ThreadPool`. После того, как мы переключимся в библиотечный крейт, мы также сможем использовать отдельную библиотеку пула потоков для любой подходящей работы, а не только для обслуживания веб-запросов.
@@ -93,7 +93,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/lib.rs}}
+{{#rustdoc_include ../listings/ch21-web-server/no-listing-01-define-threadpool-struct/src/lib.rs}}
 ```
 
 Затем отредактируйте файл *main.rs*, чтобы внести `ThreadPool`  из библиотечного крейта в текущую область видимости, добавив следующий код в начало *src/main.rs*:
@@ -101,13 +101,13 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/no-listing-01-define-threadpool-struct/src/main.rs:here}}
 ```
 
 Этот код по-прежнему не будет работать, но давайте проверим его ещё раз, чтобы получить следующую ошибку, которую нам нужно устранить:
 
 ```console
-{{#include ../listings/ch20-web-server/no-listing-01-define-threadpool-struct/output.txt}}
+{{#include ../listings/ch21-web-server/no-listing-01-define-threadpool-struct/output.txt}}
 ```
 
 Эта ошибка указывает, что далее нам нужно создать ассоциированную функцию с именем `new` для `ThreadPool`. Мы также знаем, что `new` должна иметь один параметр, который может принимать `4` в качестве аргумента и должен возвращать экземпляр `ThreadPool`. Давайте реализуем простейшую функцию `new`, которая будет иметь эти характеристики:
@@ -115,7 +115,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/src/lib.rs}}
+{{#rustdoc_include ../listings/ch21-web-server/no-listing-02-impl-threadpool-new/src/lib.rs}}
 ```
 
 Мы выбираем `usize` в качестве типа параметра `size`, потому что мы знаем, что отрицательное число потоков не имеет никакого смысла. Мы также знаем, что мы будем использовать число 4 в качестве количества элементов в коллекции потоков, для чего предназначен тип `usize`, как обсуждалось в разделе ["Целочисленные типы"]<!--  --> главы 3.
@@ -123,7 +123,7 @@
 Давайте проверим код ещё раз:
 
 ```console
-{{#include ../listings/ch20-web-server/no-listing-02-impl-threadpool-new/output.txt}}
+{{#include ../listings/ch21-web-server/no-listing-02-impl-threadpool-new/output.txt}}
 ```
 
 Теперь мы ошибка возникает из-за того, что у нас нет метода `execute` в структуре `ThreadPool`. Вспомните раздел ["Создание конечного числа потоков"](#creating-a-finite-number-of-threads)<!-- ignore -->, в котором мы решили, что наш пул потоков должен иметь интерфейс, похожий на `thread::spawn`. Кроме того, мы реализуем функцию `execute`, чтобы она принимала замыкание и передавала его свободному потоку из пула для запуска.
@@ -145,7 +145,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-03-define-execute/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/no-listing-03-define-execute/src/lib.rs:here}}
 ```
 
 Мы по-прежнему используем `()` после `FnOnce` потому что типаж `FnOnce` представляет замыкание, которое не принимает параметров и возвращает единичный тип `()`. Также как и при определении функций, тип возвращаемого значения в сигнатуре может быть опущен, но даже если у нас нет параметров, нам все равно нужны скобки.
@@ -153,7 +153,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 Опять же, это самая простая реализация метода `execute`: она ничего не делает, мы просто пытаемся сделать код компилируемым. Давайте проверим снова:
 
 ```console
-{{#include ../listings/ch20-web-server/no-listing-03-define-execute/output.txt}}
+{{#include ../listings/ch21-web-server/no-listing-03-define-execute/output.txt}}
 ```
 
 Сейчас мы получаем только предупреждения, что означает, что код компилируется! Но обратите внимание, если вы попробуете `cargo run` и сделаете запрос в браузере, вы увидите ошибки в браузере, которые мы видели в начале главы. Наша библиотека на самом деле ещё не вызывает замыкание, переданное в `execute`!
@@ -167,7 +167,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-13/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-13/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-13: Реализация <code>ThreadPool::new</code> с аварийным завершениям работы, если <code>size</code> равен нулю</span>
@@ -199,7 +199,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,not_desired_behavior
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-14/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-14/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-14: Создание вектора в <code>ThreadPool</code> для хранения потоков</span>
@@ -232,7 +232,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-15/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-15/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-15: Изменение <code>ThreadPool</code> для хранения экземпляров <code>Worker</code> вместо непосредственного хранения потоков</span>
@@ -265,7 +265,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-16/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-16/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-16: Модификация <code>ThreadPool</code> для хранения отправляющей части канала, который отправляет экземпляры <code>Job</code></span>
@@ -277,7 +277,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-17/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-17/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-17: Передача принимающей части канала "работникам"</span>
@@ -287,7 +287,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 При попытке проверить код, мы получаем ошибку:
 
 ```console
-{{#include ../listings/ch20-web-server/listing-20-17/output.txt}}
+{{#include ../listings/ch21-web-server/listing-21-17/output.txt}}
 ```
 
 Код пытается передать `receiver` нескольким экземплярам `Worker`. Это не сработает, поскольку, как вы можете помнить из главы 16: реализация канала, которую предоставляет Rust - несколько *производителей*, один *потребитель*. Это означает, что мы не можем просто клонировать принимающую сторону канала, чтобы исправить этот код. Кроме этого, мы не хотим отправлять одно и то же сообщение нескольким потребителям, поэтому нам нужен единый список сообщений для множества обработчиков, чтобы каждое сообщение обрабатывалось лишь один раз.
@@ -299,7 +299,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-18/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-18/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-18. Совместное использование приёмника в "работниках" с применением <code>Arc</code> и <code>Mutex</code></span>
@@ -315,7 +315,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-19/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-19/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-19: Создание псевдонима типа <code>Job</code> для указателя <code>Box</code>, содержащего каждое замыкание и затем отправляющее задание (job) в канал</span>
@@ -327,7 +327,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-20/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-20/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-20: Получение и выполнение заданий в потоке "работника"</span>
@@ -341,7 +341,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 Наш пул потоков теперь находится в рабочем состоянии! Выполните `cargo run` и сделайте несколько запросов:
 
 <!-- manual-regeneration
-cd listings/ch20-web-server/listing-20-20
+cd listings/ch21-web-server/listing-21-20
 cargo run
 make some requests to 127.0.0.1:7878
 Can't automate because the output depends on making requests
@@ -394,7 +394,7 @@ Worker 2 got a job; executing.
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,not_desired_behavior
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-21/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-21/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-22: Альтернативная реализация <code>Worker::new</code> с использованием <code>while let</code></span>

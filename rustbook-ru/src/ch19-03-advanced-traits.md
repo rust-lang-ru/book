@@ -11,7 +11,7 @@
 Одним из примеров трейта с ассоциированным типом является типаж `Iterator` из стандартной библиотеки. Ассоциированный тип называется `Item` и символизирует тип значений, по которым итерируется тип, реализующий типаж `Iterator`. Определение трейта <code>Iterator</code> показано в листинге 19-12.
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-12/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-13/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 19-12: Определение трейта <code>Iterator</code>, который имеет ассоциированный тип <code>Item</code></span>
@@ -23,13 +23,13 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-22-iterator-on-counter/src/lib.rs:ch19}}
+{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-22-iterator-on-counter/src/lib.rs:ch19}}
 ```
 
 Этот синтаксис весьма напоминает обобщённые типы. Так почему же типаж `Iterator` не определён обобщённым типом, как показано в листинге 19-13?
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-13/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-13/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 19-13: Гипотетическое определение типажа <code>Iterator</code> используя обобщённые типы</span>
@@ -51,7 +51,7 @@ Rust не позволяет создавать собственные опер�
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-14/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-15/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-14: Реализация типажа <code>Add</code> для перегрузки оператора <code>+</code> для экземпляров <code>Point</code></span>
@@ -77,7 +77,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-15/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-16/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 19-15: Реализация типажа <code>Add</code> для структуры  <code>Millimeters</code>, чтобы складывать <code>Millimeters</code> и <code>Meters</code></span>
@@ -102,7 +102,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-16/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-17/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-16: Два типажа определены с методом <code>fly</code> и реализованы у типа <code>Human</code>, а также метод <code>fly</code> реализован непосредственно у <code>Human</code></span>
@@ -112,7 +112,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-17/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-18/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-17: Вызов <code>fly</code> у экземпляра <code>Human</code></span>
@@ -124,7 +124,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-18/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-18/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-18: Указание какой метода <code>fly</code> мы хотим вызвать</span>
@@ -134,7 +134,7 @@ trait Add<Rhs = Self> {
 Выполнение этого кода выводит следующее:
 
 ```console
-{{#include ../listings/ch19-advanced-features/listing-19-18/output.txt}}
+{{#include ../listings/ch20-advanced-features/listing-20-19/output.txt}}
 ```
 
 Поскольку метод `fly` принимает параметр `self`, если у нас было два *типа* оба реализующих один *типаж*, то Rust может понять, какую реализацию типажа использовать в зависимости от типа `self`.
@@ -144,7 +144,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-19/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-19/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-19: Типаж с ассоциированной функцией и тип с ассоциированной функцией с тем же именем, которая тоже реализует типаж</span>
@@ -154,7 +154,7 @@ trait Add<Rhs = Self> {
 В `main` мы вызываем функцию `Dog::baby_name`, которая вызывает ассоциированную функцию определённую напрямую у `Dog`. Этот код печатает следующее:
 
 ```console
-{{#include ../listings/ch19-advanced-features/listing-19-19/output.txt}}
+{{#include ../listings/ch20-advanced-features/listing-20-19/output.txt}}
 ```
 
 Этот вывод не является тем, что мы хотели бы получить. Мы хотим вызвать функцию `baby_name`, которая является частью типажа `Animal` реализованного у `Dog`, так чтобы код печатал `A baby dog is called a puppy`. Техника указания имени типажа использованная в листинге 19-18 здесь не помогает; если мы изменим `main` код как в листинге 19-20, мы получим ошибку компиляции.
@@ -162,7 +162,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-20/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-21/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-20. Попытка вызвать функцию <code>baby_name</code> из типажа <code>Animal</code>, но Rust не знает какую реализацию использовать</span>
@@ -170,7 +170,7 @@ trait Add<Rhs = Self> {
 Поскольку `Animal::baby_name` не имеет параметра `self`, и могут быть другие типы, реализующие типаж `Animal`, Rust не может понять, какую реализацию `Animal::baby_name` мы хотим использовать. Мы получим эту ошибку компилятора:
 
 ```console
-{{#include ../listings/ch19-advanced-features/listing-19-20/output.txt}}
+{{#include ../listings/ch20-advanced-features/listing-20-20/output.txt}}
 ```
 
 Чтобы устранить неоднозначность и сказать Rust, что мы хотим использовать реализацию `Animal` для `Dog`, нужно использовать полный синтаксис. Листинг 19-21 демонстрирует, как использовать полный синтаксис.
@@ -178,7 +178,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-21/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-21/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-21: Использование полного синтаксиса для указания, что мы мы хотим вызвать функцию <code>baby_name</code> у типажа <code>Animal</code> реализованную в <code>Dog</code></span>
@@ -186,7 +186,7 @@ trait Add<Rhs = Self> {
 Мы указываем аннотацию типа в угловых скобках, которая указывает на то что мы хотим вызвать метод `baby_name` из типажа `Animal` реализованный в `Dog`, также указывая что мы хотим рассматривать тип `Dog` в качестве `Animal` для вызова этой функции. Этот код теперь напечатает то, что мы хотим:
 
 ```console
-{{#include ../listings/ch19-advanced-features/listing-19-21/output.txt}}
+{{#include ../listings/ch20-advanced-features/listing-20-21/output.txt}}
 ```
 
 В общем, полный синтаксис определяется следующим образом:
@@ -216,7 +216,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-22/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-22/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-22: Реализация типажа <code>OutlinePrint</code> которая требует функциональности типажа <code>Display</code></span>
@@ -228,13 +228,13 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-02-impl-outlineprint-for-point/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-02-impl-outlineprint-for-point/src/main.rs:here}}
 ```
 
 Мы получаем сообщение о том, что требуется реализация `Display`, но её нет:
 
 ```console
-{{#include ../listings/ch19-advanced-features/no-listing-02-impl-outlineprint-for-point/output.txt}}
+{{#include ../listings/ch20-advanced-features/no-listing-02-impl-outlineprint-for-point/output.txt}}
 ```
 
 Чтобы исправить, мы реализуем `Display` у структуры `Point` и выполняем требуемое ограничение `OutlinePrint`, вот так:
@@ -242,7 +242,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-03-impl-display-for-point/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-03-impl-display-for-point/src/main.rs:here}}
 ```
 
 Тогда реализация типажа `OutlinePrint` для структуры `Point` будет скомпилирована успешно и мы можем вызвать `outline_print` у экземпляра `Point` для отображения значения обрамлённое звёздочками.
@@ -256,7 +256,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-23/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-23/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-23. Создание типа <code>Wrapper</code> <code>Vec&lt;String&gt;</code> для реализации <code>Display</code></span>
@@ -268,5 +268,5 @@ trait Add<Rhs = Self> {
 Этот шаблон newtype также полезен, даже когда типажи не задействованы. Давайте переключим внимание и рассмотрим некоторые продвинутые способы взаимодействия с системой типов Rust.
 
 
-["Шаблон Newtype для реализация внешних типажей у внешних типов"]: ch19-03-advanced-traits.html#using-the-newtype-pattern-to-implement-external-traits-on-external-types
+["Шаблон Newtype для реализация внешних типажей у внешних типов"]: ch20-03-advanced-traits.html#using-the-newtype-pattern-to-implement-external-traits-on-external-types
 ["Использование структур кортежей без именованных полей для создания различных типов"]: ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types
