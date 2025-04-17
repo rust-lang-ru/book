@@ -201,7 +201,7 @@
 <span class="filename">Имя файла: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-10/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-11/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-10: Чтение из изменяемой статической переменной или запись в неё небезопасны</span>
@@ -215,7 +215,7 @@
 Мы можем использовать `unsafe` для реализации небезопасного трейта. Трейт является небезопасным, если хотя бы один из его методов имеет некоторый инвариант, который компилятор не может проверить. Мы объявляем трейты `unsafe`, добавляя ключевое слово `unsafe` перед `trait` и помечая реализацию трейта как `unsafe`, как показано в листинге 19-11.
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-11/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-12/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-11: Определение и реализация небезопасного трейта</span>
