@@ -29,7 +29,7 @@
 Этот синтаксис весьма напоминает обобщённые типы. Так почему же типаж `Iterator` не определён обобщённым типом, как показано в листинге 19-13?
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-13/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-14/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 19-13: Гипотетическое определение типажа <code>Iterator</code> используя обобщённые типы</span>
