@@ -189,7 +189,7 @@
 <span class="filename">Имя файла: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-09/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-10/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-9: Определение и использование неизменяемой статической переменной</span>
