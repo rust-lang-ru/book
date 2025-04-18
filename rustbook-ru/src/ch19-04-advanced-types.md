@@ -37,7 +37,7 @@ Box<dyn Fn() + Send + 'static>
 Написание таких длинных типов в сигнатурах функций и в виде аннотаций типов по всему коду может быть утомительным и чреватым ошибками. Представьте себе проект, наполненный таким кодом, как в листинге 19-24.
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-24/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-25/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-24: Использование длинного типа во многих местах</span>
@@ -45,7 +45,7 @@ Box<dyn Fn() + Send + 'static>
 Псевдоним типа делает этот код более удобным для работы, сокращая количество повторений. В листинге 19-25 мы ввели псевдоним `Thunk` для типа verbose и можем заменить все использования этого типа более коротким псевдонимом `Thunk`.
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-25/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-26/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-25: Представление псевдонима <code>Thunk</code> для уменьшения количества повторений</span>
