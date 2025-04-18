@@ -85,7 +85,7 @@ Box<dyn Fn() + Send + 'static>
 Но для чего нужен тип, для которого вы никогда не сможете создать значения? Напомним код из листинга 2-5, фрагмента "игры в загадки"; мы воспроизвели его часть здесь в листинге 19-26.
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-05/src/main.rs:ch20}}
+{{#rustdoc_include ../listings/ch02-guessing-game-tutorial/listing-02-05/src/main.rs:ch19}}
 ```
 
 <span class="caption">Листинг 19-26: Сопоставление <code>match</code> с веткой, которая заканчивается <code>continue</code></span>
