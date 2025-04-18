@@ -16,7 +16,7 @@ $ cd add
 <span class="filename">Файл: Cargo.toml</span>
 
 ```toml
-{{#include ../listings/ch14-more-about-cargo/no-listing-01-workspace-with-adder-crate/add/Cargo.toml}}
+{{#include ../listings/ch14-more-about-cargo/no-listing-01-workspace/add/Cargo.toml}}
 ```
 
 Затем мы создадим исполняемый крейт `adder`, запустив команду `cargo new` в каталоге *add*:
