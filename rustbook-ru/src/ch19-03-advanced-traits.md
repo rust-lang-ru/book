@@ -144,7 +144,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-19/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-20/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-19: Типаж с ассоциированной функцией и тип с ассоциированной функцией с тем же именем, которая тоже реализует типаж</span>
