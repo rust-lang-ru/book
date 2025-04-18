@@ -154,7 +154,7 @@ trait Add<Rhs = Self> {
 В `main` мы вызываем функцию `Dog::baby_name`, которая вызывает ассоциированную функцию определённую напрямую у `Dog`. Этот код печатает следующее:
 
 ```console
-{{#include ../listings/ch20-advanced-features/listing-20-19/output.txt}}
+{{#include ../listings/ch20-advanced-features/listing-20-20/output.txt}}
 ```
 
 Этот вывод не является тем, что мы хотели бы получить. Мы хотим вызвать функцию `baby_name`, которая является частью типажа `Animal` реализованного у `Dog`, так чтобы код печатал `A baby dog is called a puppy`. Техника указания имени типажа использованная в листинге 19-18 здесь не помогает; если мы изменим `main` код как в листинге 19-20, мы получим ошибку компиляции.
@@ -170,7 +170,7 @@ trait Add<Rhs = Self> {
 Поскольку `Animal::baby_name` не имеет параметра `self`, и могут быть другие типы, реализующие типаж `Animal`, Rust не может понять, какую реализацию `Animal::baby_name` мы хотим использовать. Мы получим эту ошибку компилятора:
 
 ```console
-{{#include ../listings/ch20-advanced-features/listing-20-20/output.txt}}
+{{#include ../listings/ch20-advanced-features/listing-20-21/output.txt}}
 ```
 
 Чтобы устранить неоднозначность и сказать Rust, что мы хотим использовать реализацию `Animal` для `Dog`, нужно использовать полный синтаксис. Листинг 19-21 демонстрирует, как использовать полный синтаксис.
@@ -186,7 +186,7 @@ trait Add<Rhs = Self> {
 Мы указываем аннотацию типа в угловых скобках, которая указывает на то что мы хотим вызвать метод `baby_name` из типажа `Animal` реализованный в `Dog`, также указывая что мы хотим рассматривать тип `Dog` в качестве `Animal` для вызова этой функции. Этот код теперь напечатает то, что мы хотим:
 
 ```console
-{{#include ../listings/ch20-advanced-features/listing-20-21/output.txt}}
+{{#include ../listings/ch20-advanced-features/listing-20-22/output.txt}}
 ```
 
 В общем, полный синтаксис определяется следующим образом:
@@ -216,7 +216,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-22/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-23/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-22: Реализация типажа <code>OutlinePrint</code> которая требует функциональности типажа <code>Display</code></span>
@@ -256,7 +256,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-23/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-24/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-23. Создание типа <code>Wrapper</code> <code>Vec&lt;String&gt;</code> для реализации <code>Display</code></span>
