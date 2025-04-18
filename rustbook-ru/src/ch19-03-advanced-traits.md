@@ -178,7 +178,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-21/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-22/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 19-21: Использование полного синтаксиса для указания, что мы мы хотим вызвать функцию <code>baby_name</code> у типажа <code>Animal</code> реализованную в <code>Dog</code></span>
