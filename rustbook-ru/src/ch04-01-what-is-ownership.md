@@ -142,7 +142,7 @@ Rust выбирает другой путь: память автоматичес
 
 Представление *не* похоже на рисунок 4-3, как выглядела бы память, если бы вместо этого Rust также скопировал данные кучи. Если бы Rust сделал это, операция `s2 = s1` могла бы быть очень дорогой с точки зрения производительности во время выполнения, если бы данные в куче были большими.
 
-<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl04-01.svg?raw=true" class="">
+<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="https://github.com/rust-lang-ru/book/blob/master/rustbook-ru/src/img/trpl04-03.svg?raw=true" class="">
 
 <span class="caption">Рисунок 4-3: другой вариант того, что может сделать <code>s2 = s1</code>, если Rust также скопирует данные кучи</span>
 
