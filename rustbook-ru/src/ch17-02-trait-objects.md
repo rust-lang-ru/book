@@ -19,7 +19,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-03/src/lib.rs}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-03/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 17-3: Определение типажа <code>Draw</code></span>
@@ -29,7 +29,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-04/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-04/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-4: Определение структуры <code>Screen</code> с полем <code>components</code>, которое является вектором типаж-объектов, которые реализуют типаж <code>Draw</code></span>
@@ -39,7 +39,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-05/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-05/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-5: Реализация метода <code>run</code> у структуры  <code>Screen</code>, который вызывает метод <code>draw</code> каждого компонента из вектора</span>
@@ -49,7 +49,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-06/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-06/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-6: Альтернативная реализация структуры <code>Screen</code> и метода <code>run</code>, используя обобщённый тип и ограничения типажа</span>
@@ -65,7 +65,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-07/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-07/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-7: Структура <code>Button</code> реализует типаж <code>Draw</code></span>
@@ -77,7 +77,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch17-oop/listing-17-08/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-08/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 17-8: Другой крейт, использующий <code>gui</code> и реализующий типаж <code>Draw</code> у структуры <code>SelectBox</code></span>
@@ -87,7 +87,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch17-oop/listing-17-09/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-09/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 17-9: Использование типаж-объектов для хранения значений разных типов, реализующих один и тот же типаж</span>
@@ -103,7 +103,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch17-oop/listing-17-10/src/main.rs}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-10/src/main.rs}}
 ```
 
 <span class="caption">Листинг 17-10: Попытка использования типа, который не реализует типаж для типаж-объекта</span>
@@ -111,7 +111,7 @@
 Мы получим ошибку, потому что `String` не реализует типаж `Draw`:
 
 ```console
-{{#include ../listings/ch17-oop/listing-17-10/output.txt}}
+{{#include ../listings/ch18-oop/listing-18-10/output.txt}}
 ```
 
 Эта ошибка даёт понять, что либо мы передаём в компонент `Screen` что-то, что мы не собирались передавать и мы тогда должны передать другой тип, либо мы должны реализовать типаж `Draw` у типа `String`, чтобы `Screen` мог вызывать `draw` у него.
