@@ -270,3 +270,4 @@ rustbook-ru/src/ch00-00-introduction.md.bak
 .vs/book/v17/workspaceFileList.bin
 .vs/book/v17/.wsuo
 /rustbook-ru/target
+/rustbook-ru/listings/ch16-fearless-concurrency/listing-16-02/target
