@@ -576,7 +576,7 @@ fn main() {
     });
 
     let received = rx.recv().unwrap();
-    println!("Got: {received}");
+    println!("Получено: {received}");
 }
 ```
 
@@ -639,7 +639,7 @@ fn main() {
     });
 
     let received = rx.recv().unwrap();
-    println!("Got: {received}");
+    println!("Получено: {received}");
 }
 ```
 
@@ -709,7 +709,7 @@ fn main() {
     });
 
     for received in rx {
-        println!("Got: {received}");
+        println!("Получено: {received}");
     }
 }
 ```
@@ -787,7 +787,7 @@ src/main.rs
     });
 
     for received in rx {
-        println!("Got: {received}");
+        println!("Получено: {received}");
     }
 
     // --snip--

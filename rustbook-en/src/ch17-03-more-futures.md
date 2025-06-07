@@ -27,7 +27,7 @@ join on _all_ of them. The `trpl::join_all` function accepts any type that
 implements the `Iterator` trait, which you learned about back in [The Iterator
 Trait and the `next` Method][iterator-trait]<!-- ignore --> Chapter 13, so
 it seems like just the ticket. Let’s try putting our futures in a vector and
-replacing `join!` with `join_all` as show in Listing 17-15.
+replacing `join!` with `join_all` as shown in Listing 17-15.
 
 <Listing  number="17-15" caption="Storing anonymous futures in a vector and calling `join_all`">
 
@@ -76,14 +76,13 @@ trait objects in detail in Chapter 18.) Using trait objects lets us treat each
 of the anonymous futures produced by these types as the same type, because all
 of them implement the `Future` trait.
 
-> Note: In the Chapter 8 section [Using an Enum to Store Multiple
-> Values][enum-alt]<!-- ignore -->, we discussed another way to include multiple
-> types in a `Vec`: using an enum to represent each type that can appear in the
-> vector. We can’t do that here, though. For one thing, we have no way to name
-> the different types, because they are anonymous. For another, the reason we
-> reached for a vector and `join_all` in the first place was to be able to work
-> with a dynamic collection of futures where we only care that they have the
-> same output type.
+> Note: In [Using an Enum to Store Multiple Values][enum-alt]<!-- ignore --> in
+> Chapter 8, we discussed another way to include multiple types in a `Vec`:
+> using an enum to represent each type that can appear in the vector. We can’t
+> do that here, though. For one thing, we have no way to name the different
+> types, because they are anonymous. For another, the reason we reached for a
+> vector and `join_all` in the first place was to be able to work with a dynamic
+> collection of futures where we only care that they have the same output type.
 
 We start by wrapping each future in the `vec!` in a `Box::new`, as shown in
 Listing 17-16.
@@ -592,6 +591,6 @@ to consider first, though:
   with any collection of futures.)
 
 [dyn]: ch12-03-improving-error-handling-and-modularity.html
-[enum-alt]: ch12-03-improving-error-handling-and-modularity.html#returning-errors-from-the-run-function
+[enum-alt]: ch08-01-vectors.html#using-an-enum-to-store-multiple-types
 [async-program]: ch17-01-futures-and-syntax.html#our-first-async-program
 [iterator-trait]: ch13-02-iterators.html#the-iterator-trait-and-the-next-method

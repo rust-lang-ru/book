@@ -11,5 +11,5 @@ fn main() {
     });
 
     let received = rx.recv().unwrap();
-    println!("Got: {received}");
+    println!("Получено: {received}");
 }

@@ -163,7 +163,7 @@ for it to be borrowed from
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-16-no-dangle/src/main.rs:here}}
 ```
 
-Это работает без неполадок. Владение перемещено, и ничего не освобождено.
+Это работает без неполадок. Владение передано, и ничего не освобождено.
 
 ### Правила работы с ссылками
 

@@ -2,9 +2,9 @@ $ cargo run -- the poem.txt
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
      Running `target/debug/minigrep the poem.txt`
-Searching for the
-In file poem.txt
-With text:
+Поиск значения:the
+В файле poem.txt
+Содержимое:
 I'm nobody! Who are you?
 Are you nobody, too?
 Then there's a pair of us - don't tell!

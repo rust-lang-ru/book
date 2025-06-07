@@ -802,7 +802,7 @@ pool and think about how things would look different or the same with async.
 #### Creating a Finite Number of Threads
 
 We want our thread pool to work in a similar, familiar way so that switching
-from threads to a thread pool doesn’t require large changes to the code that
+из основного потокаs to a thread pool doesn’t require large changes to the code that
 uses our API. Listing 21-12 shows the hypothetical interface for a `ThreadPool`
 struct we want to use instead of `thread::spawn`.
 

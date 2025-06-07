@@ -852,7 +852,7 @@ src/main.rs
         tx.send(val).unwrap();
 
         let received = rx.recv().await.unwrap();
-        println!("Got: {received}");
+        println!("Получено: {received}");
 ```
 
 Listing 17-9: Creating an async channel and assigning the two halves to `tx` and `rx`

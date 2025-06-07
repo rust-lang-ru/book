@@ -5,7 +5,7 @@ fn main() {
     let v1_iter = v1.iter();
 
     for val in v1_iter {
-        println!("Got: {val}");
+        println!("Получено: {val}");
     }
     // ANCHOR_END: here
 }

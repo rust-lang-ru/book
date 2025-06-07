@@ -10,13 +10,13 @@ fn main() {
     // --snip--
     // ANCHOR_END: here
 
-    println!("Searching for {query}");
-    println!("In file {file_path}");
+    println!("Поиск значения:{query}");
+    println!("В файле {file_path}");
 
     let contents = fs::read_to_string(file_path)
-        .expect("Should have been able to read the file");
+        .expect("Файл не доступен для чтения");
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
     // ANCHOR: here
 }
 

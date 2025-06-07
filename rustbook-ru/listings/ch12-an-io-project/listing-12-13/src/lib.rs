@@ -12,7 +12,7 @@ impl Config {
         // --snip--
         // ANCHOR_END: here
         if args.len() < 3 {
-            return Err("not enough arguments");
+            return Err("не хватает переменных");
         }
 
         let query = args[1].clone();
@@ -28,7 +28,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     // ANCHOR_END: here
     let contents = fs::read_to_string(config.file_path)?;
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
 
     Ok(())
     // ANCHOR: here

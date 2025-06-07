@@ -7,16 +7,16 @@ fn main() {
 
     let config = parse_config(&args);
 
-    println!("Searching for {}", config.query);
-    println!("In file {}", config.file_path);
+    println!("Поиск значения:{}", config.query);
+    println!("В файле {}", config.file_path);
 
     let contents = fs::read_to_string(config.file_path)
-        .expect("Should have been able to read the file");
+        .expect("Файл не доступен для чтения");
 
     // --snip--
     // ANCHOR_END: here
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
     // ANCHOR: here
 }
 

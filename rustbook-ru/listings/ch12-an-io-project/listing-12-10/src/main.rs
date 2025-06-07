@@ -14,13 +14,13 @@ fn main() {
     // --snip--
     // ANCHOR_END: here
 
-    println!("Searching for {}", config.query);
-    println!("In file {}", config.file_path);
+    println!("Поиск значения:{}", config.query);
+    println!("В файле {}", config.file_path);
 
     let contents = fs::read_to_string(config.file_path)
-        .expect("Should have been able to read the file");
+        .expect("Файл не доступен для чтения");
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
 }
 
 struct Config {
@@ -31,7 +31,7 @@ struct Config {
 impl Config {
     fn build(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
-            return Err("not enough arguments");
+            return Err("не хватает переменных");
         }
 
         let query = args[1].clone();

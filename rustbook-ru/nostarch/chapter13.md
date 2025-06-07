@@ -114,14 +114,14 @@ fn main() {
     let user_pref1 = Some(ShirtColor::Red);
     let giveaway1 = store.giveaway(user_pref1);
     println!(
-        "The user with preference {:?} gets {:?}",
+        "Пользователь выбрал {:?} gets {:?}",
         user_pref1, giveaway1
     );
 
     let user_pref2 = None;
     let giveaway2 = store.giveaway(user_pref2);
     println!(
-        "The user with preference {:?} gets {:?}",
+        "Пользователь выбрал {:?} gets {:?}",
         user_pref2, giveaway2
     );
 }
@@ -160,8 +160,8 @@ $ cargo run
    Compiling shirt-company v0.1.0 (file:///projects/shirt-company)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
      Running `target/debug/shirt-company`
-The user with preference Some(Red) gets Red
-The user with preference None gets Blue
+Пользователь выбрал Some(Red) gets Red
+Пользователь выбрал None gets Blue
 ```
 
 One interesting aspect here is that we’ve passed a closure that calls
@@ -305,13 +305,13 @@ src/main.rs
 ```
 fn main() {
     let list = vec![1, 2, 3];
-    println!("Before defining closure: {list:?}");
+    println!("До определения замыкания: {list:?}");
 
-    let only_borrows = || println!("From closure: {list:?}");
+    let only_borrows = || println!("Вызов замыкания: {list:?}");
 
-    println!("Before calling closure: {list:?}");
+    println!("До вызова замыкания: {list:?}");
     only_borrows();
-    println!("After calling closure: {list:?}");
+    println!("После вызова замыкания: {list:?}");
 }
 ```
 
@@ -333,10 +333,10 @@ $ cargo run
    Compiling closure-example v0.1.0 (file:///projects/closure-example)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
      Running `target/debug/closure-example`
-Before defining closure: [1, 2, 3]
-Before calling closure: [1, 2, 3]
-From closure: [1, 2, 3]
-After calling closure: [1, 2, 3]
+До определения замыкания: [1, 2, 3]
+До вызова замыкания: [1, 2, 3]
+Вызов замыкания: [1, 2, 3]
+После вызова замыкания: [1, 2, 3]
 ```
 
 Next, in Listing 13-5, we change the closure body so that it adds an element to
@@ -347,12 +347,12 @@ src/main.rs
 ```
 fn main() {
     let mut list = vec![1, 2, 3];
-    println!("Before defining closure: {list:?}");
+    println!("До определения замыкания: {list:?}");
 
     let mut borrows_mutably = || list.push(7);
 
     borrows_mutably();
-    println!("After calling closure: {list:?}");
+    println!("После вызова замыкания: {list:?}");
 }
 ```
 
@@ -367,8 +367,8 @@ $ cargo run
    Compiling closure-example v0.1.0 (file:///projects/closure-example)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
      Running `target/debug/closure-example`
-Before defining closure: [1, 2, 3]
-After calling closure: [1, 2, 3, 7]
+До определения замыкания: [1, 2, 3]
+После вызова замыкания: [1, 2, 3, 7]
 ```
 
 Note that there’s no longer a `println!` between the definition and the call of
@@ -397,9 +397,9 @@ use std::thread;
 
 fn main() {
     let list = vec![1, 2, 3];
-    println!("Before defining closure: {list:?}");
+    println!("До определения замыкания: {list:?}");
 
-    thread::spawn(move || println!("From thread: {list:?}"))
+    thread::spawn(move || println!("Из основного потока: {list:?}"))
         .join()
         .unwrap();
 }
@@ -657,7 +657,7 @@ fn main() {
         num_sort_operations += 1;
         r.width
     });
-    println!("{list:#?}, sorted in {num_sort_operations} operations");
+    println!("{list:#?}, упорядочено {num_sort_operations} действиями");
 }
 ```
 
@@ -710,7 +710,7 @@ src/main.rs
     let v1_iter = v1.iter();
 
     for val in v1_iter {
-        println!("Got: {val}");
+        println!("Получено: {val}");
     }
 ```
 
@@ -1013,7 +1013,7 @@ src/lib.rs
 impl Config {
     pub fn build(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
-            return Err("not enough arguments");
+            return Err("не хватает переменных");
         }
 
         let query = args[1].clone();
@@ -1168,7 +1168,7 @@ the program. We want to ignore that and get to the next value, so first we call
 `next` and do nothing with the return value. Second, we call `next` to get the
 value we want to put in the `query` field of `Config`. If `next` returns a
 `Some`, we use a `match` to extract the value. If it returns `None`, it means
-not enough arguments were given and we return early with an `Err` value. We do
+не хватает переменных were given and we return early with an `Err` value. We do
 the same thing for the `file_path` value.
 
 ### Making Code Clearer with Iterator Adapters

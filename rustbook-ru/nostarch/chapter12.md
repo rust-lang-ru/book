@@ -250,9 +250,9 @@ fn main() {
     println!("In file {file_path}");
 
     let contents = fs::read_to_string(file_path)
-        .expect("Should have been able to read the file");
+        .expect("Файл не доступен для чтения");
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
 }
 ```
 
@@ -280,7 +280,7 @@ $ cargo run -- the poem.txt
      Running `target/debug/minigrep the poem.txt`
 Searching for the
 In file poem.txt
-With text:
+Содержимое:
 I'm nobody! Who are you?
 Are you nobody, too?
 Then there's a pair of us - don't tell!
@@ -322,7 +322,7 @@ it will be to keep track of the purpose of each. It’s best to group the
 configuration variables into one structure to make their purpose clear.
 
 The third problem is that we’ve used `expect` to print an error message when
-reading the file fails, but the error message just prints `Should have been able to read the file`. Reading a file can fail in a number of ways: for
+reading the file fails, but the error message just prints `Файл не доступен для чтения`. Reading a file can fail in a number of ways: for
 example, the file could be missing, or we might not have permission to open it.
 Right now, regardless of the situation, we’d print the same error message for
 everything, which wouldn’t give the user any information!
@@ -440,7 +440,7 @@ fn main() {
     println!("In file {}", config.file_path);
 
     let contents = fs::read_to_string(config.file_path)
-        .expect("Should have been able to read the file");
+        .expect("Файл не доступен для чтения");
 
     // --snip--
 }
@@ -581,7 +581,7 @@ src/main.rs
     // --snip--
     fn new(args: &[String]) -> Config {
         if args.len() < 3 {
-            panic!("not enough arguments");
+            panic!("не хватает переменных");
         }
         // --snip--
 ```
@@ -605,7 +605,7 @@ $ cargo run
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
      Running `target/debug/minigrep`
 thread 'main' panicked at src/main.rs:26:13:
-not enough arguments
+не хватает переменных
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
 
@@ -642,7 +642,7 @@ src/main.rs
 impl Config {
     fn build(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
-            return Err("not enough arguments");
+            return Err("не хватает переменных");
         }
 
         let query = args[1].clone();
@@ -708,7 +708,7 @@ value is an `Err` value, this method calls the code in the *closure*, which is
 an anonymous function we define and pass as an argument to `unwrap_or_else`.
 We’ll cover closures in more detail in Chapter 13. For
 now, you just need to know that `unwrap_or_else` will pass the inner value of
-the `Err`, which in this case is the static string `"not enough arguments"`
+the `Err`, which in this case is the static string `"не хватает переменных"`
 that we added in Listing 12-9, to our closure in the argument `err` that
 appears between the vertical pipes. The code in the closure can then use the
 `err` value when it runs.
@@ -726,7 +726,7 @@ $ cargo run
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
      Running `target/debug/minigrep`
-Problem parsing arguments: not enough arguments
+Problem parsing arguments: не хватает переменных
 ```
 
 Great! This output is much friendlier for our users.
@@ -759,9 +759,9 @@ fn main() {
 
 fn run(config: Config) {
     let contents = fs::read_to_string(config.file_path)
-        .expect("Should have been able to read the file");
+        .expect("Файл не доступен для чтения");
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
 }
 
 // --snip--
@@ -793,7 +793,7 @@ use std::error::Error;
 fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
 
     Ok(())
 }
@@ -850,7 +850,7 @@ warning: `minigrep` (bin "minigrep") generated 1 warning
      Running `target/debug/minigrep the poem.txt`
 Searching for the
 In file poem.txt
-With text:
+Содержимое:
 I'm nobody! Who are you?
 Are you nobody, too?
 Then there's a pair of us - don't tell!
@@ -1537,7 +1537,7 @@ use std::env;
 impl Config {
     pub fn build(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
-            return Err("not enough arguments");
+            return Err("не хватает переменных");
         }
 
         let query = args[1].clone();
@@ -1680,7 +1680,7 @@ expecting printed to the screen, so that means it must have ended up in the
 file. This is what *output.txt* contains:
 
 ```
-Problem parsing arguments: not enough arguments
+Problem parsing arguments: не хватает переменных
 ```
 
 Yup, our error message is being printed to standard output. It’s much more
@@ -1721,7 +1721,7 @@ redirecting standard output with `>`:
 
 ```
 $ cargo run > output.txt
-Problem parsing arguments: not enough arguments
+Problem parsing arguments: не хватает переменных
 ```
 
 Now we see the error onscreen and *output.txt* contains nothing, which is the

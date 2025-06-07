@@ -16,8 +16,8 @@ fn main() {
         process::exit(1);
     });
 
-    println!("Searching for {}", config.query);
-    println!("In file {}", config.file_path);
+    println!("Поиск значения:{}", config.query);
+    println!("В файле {}", config.file_path);
 
     run(config);
 }
@@ -26,7 +26,7 @@ fn main() {
 fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
 
-    println!("With text:\n{contents}");
+    println!("Содержимое:\n{contents}");
 
     Ok(())
 }
@@ -40,7 +40,7 @@ struct Config {
 impl Config {
     fn build(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
-            return Err("not enough arguments");
+            return Err("не хватает переменных");
         }
 
         let query = args[1].clone();

@@ -16,9 +16,9 @@ help: use `let _ = ...` to ignore the resulting value
 warning: `minigrep` (bin "minigrep") generated 1 warning
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.71s
      Running `target/debug/minigrep the poem.txt`
-Searching for the
-In file poem.txt
-With text:
+Поиск значения:the
+В файле poem.txt
+Содержимое:
 I'm nobody! Who are you?
 Are you nobody, too?
 Then there's a pair of us - don't tell!
