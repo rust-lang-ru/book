@@ -5,16 +5,16 @@ struct Rectangle {
 }
 
 fn main() {
-    let mut list = [
+    let mut список = [
         Rectangle { width: 10, height: 1 },
         Rectangle { width: 3, height: 5 },
         Rectangle { width: 7, height: 12 },
     ];
 
     let mut num_sort_operations = 0;
-    list.sort_by_key(|r| {
+    список.sort_by_key(|r| {
         num_sort_operations += 1;
         r.width
     });
-    println!("{list:#?}, упорядочено {num_sort_operations} действиями");
+    println!("{список:#?}, упорядочено {num_sort_operations} действиями");
 }

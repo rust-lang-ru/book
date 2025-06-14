@@ -1,5 +1,5 @@
-pub fn greeting(name: &str) -> String {
-    format!("Hello {name}!")
+pub fn greeting(имя: &str) -> String {
+    format!("Здравствуй {имя}!")
 }
 
 #[cfg(test)]

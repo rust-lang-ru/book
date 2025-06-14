@@ -34,7 +34,7 @@ fn main() {
     });
 }
 
-fn slow(name: &str, ms: u64) {
+fn slow(имя: &str, ms: u64) {
     thread::sleep(Duration::from_millis(ms));
-    println!("'{name}' ran for {ms}ms");
+    println!("'{имя}' ran for {ms}ms");
 }

@@ -1,9 +1,9 @@
-enum List {
-    Cons(i32, Rc<List>),
+enum Список {
+    Cons(i32, Rc<Список>),
     Nil,
 }
 
-use crate::List::{Cons, Nil};
+use crate::Список::{Cons, Nil};
 use std::rc::Rc;
 
 // ANCHOR: here

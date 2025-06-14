@@ -1,6 +1,6 @@
 fn main() {
     // ANCHOR: here
-    let mut s = String::from("hello");
+    let mut s = String::from("здравствуй");
 
     let r1 = &s; // no problem
     let r2 = &s; // no problem

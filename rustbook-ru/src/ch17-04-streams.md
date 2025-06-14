@@ -146,16 +146,16 @@ the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 
 ```text
-Message: 'a'
-Message: 'b'
-Message: 'c'
-Message: 'd'
-Message: 'e'
-Message: 'f'
-Message: 'g'
-Message: 'h'
-Message: 'i'
-Message: 'j'
+Сообщение: 'a'
+Сообщение: 'b'
+Сообщение: 'c'
+Сообщение: 'd'
+Сообщение: 'e'
+Сообщение: 'f'
+Сообщение: 'g'
+Сообщение: 'h'
+Сообщение: 'i'
+Сообщение: 'j'
 ```
 
 Опять же, мы могли бы сделать это с помощью обычного API `Receiver` или даже обычного API `Iterator`, поэтому давайте добавим функцию, которая требует потоков: добавим
@@ -181,7 +181,7 @@ Message: 'j'
 опроса.
 
 Однако, поскольку между сообщениями нет задержек, этот тайм-аут не
-меняет поведение программы. Давайте добавим переменную задержку к сообщениям,
+меняет поведение приложения. Давайте добавим переменную задержку к сообщениям,
 которые мы отправляем, как показано в приложении 17-35.
 
 <Listing number="17-35" caption="Отправка сообщений через `tx` с несогласованной задержкой без превращения `get_messages` в несогласованную функцию" file-name="src/main.rs">
@@ -223,21 +223,21 @@ the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 
 ```text
-Message: 'a'
+Сообщение: 'a'
 Problem: Elapsed(())
-Message: 'b'
-Message: 'c'
+Сообщение: 'b'
+Сообщение: 'c'
 Problem: Elapsed(())
-Message: 'd'
-Message: 'e'
+Сообщение: 'd'
+Сообщение: 'e'
 Problem: Elapsed(())
-Message: 'f'
-Message: 'g'
+Сообщение: 'f'
+Сообщение: 'g'
 Problem: Elapsed(())
-Message: 'h'
-Message: 'i'
+Сообщение: 'h'
+Сообщение: 'i'
 Problem: Elapsed(())
-Message: 'j'
+Сообщение: 'j'
 ```
 
 Тайм-аут не мешает сообщениям прибывать в конце. Мы все равно получаем
@@ -271,7 +271,7 @@ Message: 'j'
 включая бесконечный цикл, будет очищено вместе с выполнением.
 
 Такой вид бесконечного круговорота, который заканчивается только тогда, когда вся среда выполнения будет
-завершена, довольно распространен в несогласованном Ржавчина: многим программам нужно продолжать работать
+завершена, довольно распространен в несогласованном Ржавчина: многим приложением нужно продолжать работать
 неопределенно долго. В несогласованном режиме это не блокирует ничего другого, пока есть
 хотя бы одна точка ожидания в каждой итерации круговорота.
 
@@ -325,7 +325,7 @@ changes in the compiler -->
 Interval: 38
 Interval: 39
 Interval: 40
-Message: 'a'
+Сообщение: 'a'
 Interval: 41
 Interval: 42
 Interval: 43
@@ -361,21 +361,21 @@ changes in the compiler -->
 
 ```text
 Interval: 1
-Message: 'a'
+Сообщение: 'a'
 Interval: 2
 Interval: 3
 Problem: Elapsed(())
 Interval: 4
-Message: 'b'
+Сообщение: 'b'
 Interval: 5
-Message: 'c'
+Сообщение: 'c'
 Interval: 6
 Interval: 7
 Problem: Elapsed(())
 Interval: 8
-Message: 'd'
+Сообщение: 'd'
 Interval: 9
-Message: 'e'
+Сообщение: 'e'
 Interval: 10
 Interval: 11
 Problem: Elapsed(())

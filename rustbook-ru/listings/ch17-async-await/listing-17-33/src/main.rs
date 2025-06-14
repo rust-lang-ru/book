@@ -7,8 +7,8 @@ fn main() {
     trpl::run(async {
         let mut messages = get_messages();
 
-        while let Some(message) = messages.next().await {
-            println!("{message}");
+        while let Some(сообщение) = messages.next().await {
+            println!("{сообщение}");
         }
     });
 }
@@ -17,8 +17,8 @@ fn get_messages() -> impl Stream<Item = String> {
     let (tx, rx) = trpl::channel();
 
     let messages = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
-    for message in messages {
-        tx.send(format!("Message: '{message}'")).unwrap();
+    for сообщение in messages {
+        tx.send(format!("Сообщение: '{сообщение}'")).unwrap();
     }
 
     ReceiverStream::new(rx)

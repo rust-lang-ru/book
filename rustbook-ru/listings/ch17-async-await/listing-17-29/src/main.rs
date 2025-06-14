@@ -16,7 +16,7 @@ fn main() {
         };
 
         match timeout(slow, Duration::from_secs(2)).await {
-            Ok(message) => println!("Succeeded with '{message}'"),
+            Ok(сообщение) => println!("Succeeded with '{сообщение}'"),
             Err(duration) => {
                 println!("Failed after {} seconds", duration.as_secs())
             }

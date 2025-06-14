@@ -1,6 +1,6 @@
 // ANCHOR: here
-enum List {
-    Cons(i32, List),
+enum Список {
+    Cons(i32, Список),
     Nil,
 }
 // ANCHOR_END: here

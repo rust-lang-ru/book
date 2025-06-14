@@ -17,7 +17,7 @@ fn main() {
 
         while let Some(result) = stream.next().await {
             match result {
-                Ok(message) => println!("{message}"),
+                Ok(сообщение) => println!("{сообщение}"),
                 Err(reason) => eprintln!("Problem: {reason:?}"),
             }
         }
@@ -29,11 +29,11 @@ fn get_messages() -> impl Stream<Item = String> {
 
     trpl::spawn_task(async move {
         let messages = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
-        for (index, message) in messages.into_iter().enumerate() {
+        for (index, сообщение) in messages.into_iter().enumerate() {
             let time_to_sleep = if index % 2 == 0 { 100 } else { 300 };
             trpl::sleep(Duration::from_millis(time_to_sleep)).await;
 
-            tx.send(format!("Message: '{message}'")).unwrap();
+            tx.send(format!("Сообщение: '{сообщение}'")).unwrap();
         }
     });
 

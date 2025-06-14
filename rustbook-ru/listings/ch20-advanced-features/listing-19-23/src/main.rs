@@ -9,6 +9,6 @@ impl fmt::Display for Wrapper {
 }
 
 fn main() {
-    let w = Wrapper(vec![String::from("hello"), String::from("world")]);
+    let w = Wrapper(vec![String::from("здравствуй"), String::from("world")]);
     println!("w = {w}");
 }

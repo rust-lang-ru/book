@@ -5,12 +5,12 @@ struct Rectangle {
 }
 
 fn main() {
-    let mut list = [
+    let mut список = [
         Rectangle { width: 10, height: 1 },
         Rectangle { width: 3, height: 5 },
         Rectangle { width: 7, height: 12 },
     ];
 
-    list.sort_by_key(|r| r.width);
-    println!("{list:#?}");
+    список.sort_by_key(|r| r.width);
+    println!("{список:#?}");
 }

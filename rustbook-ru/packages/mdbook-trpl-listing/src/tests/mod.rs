@@ -91,7 +91,7 @@ fn actual_listing() {
     let result = rewrite_listing(
         r#"Now open the *main.rs* file you just created and enter the code in Listing 1-1.
 
-<Listing number="1-1" file-name="main.rs" caption="A program that prints `Hello, world!`">
+<Listing number="1-1" file-name="main.rs" caption="A program that prints `здравствуй, world!`">
 
 ```rust
 fn main() {
@@ -119,7 +119,7 @@ fn main() {
 }
 ````
 
-<figcaption>Listing 1-1: A program that prints <code>Hello, world!</code></figcaption>
+<figcaption>Listing 1-1: A program that prints <code>здравствуй, world!</code></figcaption>
 </figure>
 
 Save the file and go back to your terminal window"#

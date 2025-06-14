@@ -28,4 +28,4 @@ help: try wrapping the expression in `Some`
 
 Some errors have detailed explanations: E0308, E0599.
 For more information about an error, try `rustc --explain E0308`.
-error: could not compile `hello` (lib) due to 2 previous errors
+error: could not compile `здравствуй` (lib) due to 2 previous errors

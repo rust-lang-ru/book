@@ -2056,12 +2056,12 @@ other forms different.
 
 ### How to Write a Custom derive Macro
 
-Let’s create a crate named `hello_macro` that defines a trait named
-`HelloMacro` with one associated function named `hello_macro`. Rather than
-making our users implement the `HelloMacro` trait for each of their types,
+Let’s create a crate named `здравствуй_macro` that defines a trait named
+`здравствуйMacro` with one associated function named `здравствуй_macro`. Rather than
+making our users implement the `здравствуйMacro` trait for each of their types,
 we’ll provide a procedural macro so users can annotate their type with
-`#[derive(HelloMacro)]` to get a default implementation of the `hello_macro`
-function. The default implementation will print `Hello, Macro! My name is TypeName!` where `TypeName` is the name of the type on which this trait has
+`#[derive(HelloMacro)]` to get a default implementation of the `здравствуй_macro`
+function. The default implementation will print `здравствуй, Macro! My name is TypeName!` where `TypeName` is the name of the type on which this trait has
 been defined. In other words, we’ll write a crate that enables another
 programmer to write code like Listing 20-31 using our crate.
 
@@ -2081,20 +2081,20 @@ fn main() {
 
 Listing 20-31: The code a user of our crate will be able to write when using our procedural macro
 
-This code will print `Hello, Macro! My name is Pancakes!` when we’re done. The
+This code will print `Здравствуй, Макро! Меня зовут Блины!` when we’re done. The
 first step is to make a new library crate, like this:
 
 ```
 $ cargo new hello_macro --lib
 ```
 
-Next, we’ll define the `HelloMacro` trait and its associated function:
+Next, we’ll define the `здравствуйMacro` trait and its associated function:
 
 src/lib.rs
 
 ```
 pub trait HelloMacro {
-    fn hello_macro();
+    fn здравствуй_macro();
 }
 ```
 
@@ -2109,8 +2109,8 @@ use hello_macro::HelloMacro;
 struct Pancakes;
 
 impl HelloMacro for Pancakes {
-    fn hello_macro() {
-        println!("Hello, Macro! My name is Pancakes!");
+    fn здравствуй_macro() {
+        println!("Здравствуй, Макро! Меня зовут Блины!");
     }
 }
 
@@ -2120,10 +2120,10 @@ fn main() {
 ```
 
 However, they would need to write the implementation block for each type they
-wanted to use with `hello_macro`; we want to spare them from having to do this
+wanted to use with `здравствуй_macro`; we want to spare them from having to do this
 work.
 
-Additionally, we can’t yet provide the `hello_macro` function with default
+Additionally, we can’t yet provide the `здравствуй_macro` function with default
 implementation that will print the name of the type the trait is implemented
 on: Rust doesn’t have reflection capabilities, so it can’t look up the type’s
 name at runtime. We need a macro to generate code at compile time.
@@ -2132,28 +2132,28 @@ The next step is to define the procedural macro. At the time of this writing,
 procedural macros need to be in their own crate. Eventually, this restriction
 might be lifted. The convention for structuring crates and macro crates is as
 follows: for a crate named `foo`, a custom derive procedural macro crate is
-called `foo_derive`. Let’s start a new crate called `hello_macro_derive` inside
-our `hello_macro` project:
+called `foo_derive`. Let’s start a new crate called `здравствуй_macro_derive` inside
+our `здравствуй_macro` project:
 
 ```
 $ cargo new hello_macro_derive --lib
 ```
 
 Our two crates are tightly related, so we create the procedural macro crate
-within the directory of our `hello_macro` crate. If we change the trait
-definition in `hello_macro`, we’ll have to change the implementation of the
-procedural macro in `hello_macro_derive` as well. The two crates will need to
+within the directory of our `здравствуй_macro` crate. If we change the trait
+definition in `здравствуй_macro`, we’ll have to change the implementation of the
+procedural macro in `здравствуй_macro_derive` as well. The two crates will need to
 be published separately, and programmers using these crates will need to add
 both as dependencies and bring them both into scope. We could instead have the
-`hello_macro` crate use `hello_macro_derive` as a dependency and re-export the
+`здравствуй_macro` crate use `здравствуй_macro_derive` as a dependency and re-export the
 procedural macro code. However, the way we’ve structured the project makes it
-possible for programmers to use `hello_macro` even if they don’t want the
+possible for programmers to use `здравствуй_macro` even if they don’t want the
 `derive` functionality.
 
-We need to declare the `hello_macro_derive` crate as a procedural macro crate.
+We need to declare the `здравствуй_macro_derive` crate as a procedural macro crate.
 We’ll also need functionality from the `syn` and `quote` crates, as you’ll see
 in a moment, so we need to add them as dependencies. Add the following to the
-*Cargo.toml* file for `hello_macro_derive`:
+*Cargo.toml* file for `здравствуй_macro_derive`:
 
 hello_macro_derive/Cargo.toml
 
@@ -2169,8 +2169,8 @@ quote = "1.0"
 
 
 To start defining the procedural macro, place the code in Listing 20-32 into
-your *src/lib.rs* file for the `hello_macro_derive` crate. Note that this code
-won’t compile until we add a definition for the `impl_hello_macro` function.
+your *src/lib.rs* file for the `здравствуй_macro_derive` crate. Note that this code
+won’t compile until we add a definition for the `impl_здравствуй_macro` function.
 
 hello_macro_derive/src/lib.rs
 
@@ -2179,25 +2179,25 @@ use proc_macro::TokenStream;
 use quote::quote;
 
 #[proc_macro_derive(HelloMacro)]
-pub fn hello_macro_derive(input: TokenStream) -> TokenStream {
+pub fn здравствуй_macro_derive(input: TokenStream) -> TokenStream {
     // Construct a representation of Rust code as a syntax tree
     // that we can manipulate.
     let ast = syn::parse(input).unwrap();
 
     // Build the trait implementation.
-    impl_hello_macro(&ast)
+    impl_здравствуй_macro(&ast)
 }
 ```
 
 Listing 20-32: Code that most procedural macro crates will require in order to process Rust code
 
-Notice that we’ve split the code into the `hello_macro_derive` function, which
-is responsible for parsing the `TokenStream`, and the `impl_hello_macro`
+Notice that we’ve split the code into the `здравствуй_macro_derive` function, which
+is responsible for parsing the `TokenStream`, and the `impl_здравствуй_macro`
 function, which is responsible for transforming the syntax tree: this makes
 writing a procedural macro more convenient. The code in the outer function
-(`hello_macro_derive` in this case) will be the same for almost every
+(`здравствуй_macro_derive` in this case) will be the same for almost every
 procedural macro crate you see or create. The code you specify in the body of
-the inner function (`impl_hello_macro` in this case) will be different
+the inner function (`impl_здравствуй_macro` in this case) will be different
 depending on your procedural macro’s purpose.
 
 We’ve introduced three new crates: `proc_macro`, [`syn`], and [`quote`]. The
@@ -2211,13 +2211,13 @@ into Rust code. These crates make it much simpler to parse any sort of Rust
 code we might want to владение: writing a full parser for Rust code is no simple
 task.
 
-The `hello_macro_derive` function will be called when a user of our library
+The `здравствуй_macro_derive` function will be called when a user of our library
 specifies `#[derive(HelloMacro)]` on a type. This is possible because we’ve
-annotated the `hello_macro_derive` function here with `proc_macro_derive` and
-specified the name `HelloMacro`, which matches our trait name; this is the
+annotated the `здравствуй_macro_derive` function here with `proc_macro_derive` and
+specified the name `здравствуйMacro`, which matches our trait name; this is the
 convention most procedural macros follow.
 
-The `hello_macro_derive` function first converts the `input` from a
+The `здравствуй_macro_derive` function first converts the `input` from a
 `TokenStream` to a data structure that we can then interpret and perform
 operations on. This is where `syn` comes into play. The `parse` function in
 `syn` takes a `TokenStream` and returns a `DeriveInput` struct representing the
@@ -2252,7 +2252,7 @@ with the `ident` (identifier, meaning the name) of `Pancakes`. There are more
 fields on this struct for describing all sorts of Rust code; check the `syn`
 documentation for `DeriveInput` at *https://docs.rs/syn/2.0/syn/struct.DeriveInput.html* for more information.
 
-Soon we’ll define the `impl_hello_macro` function, which is where we’ll build
+Soon we’ll define the `impl_здравствуй_macro` function, which is where we’ll build
 the new Rust code we want to include. But before we do, note that the output
 for our derive macro is also a `TokenStream`. The returned `TokenStream` is
 added to the code that our crate users write, so when they compile their crate,
@@ -2260,7 +2260,7 @@ they’ll get the extra functionality that we provide in the modified
 `TokenStream`.
 
 You might have noticed that we’re calling `unwrap` to cause the
-`hello_macro_derive` function to panic if the call to the `syn::parse` function
+`здравствуй_macro_derive` function to panic if the call to the `syn::parse` function
 fails here. It’s necessary for our procedural macro to panic on errors because
 `proc_macro_derive` functions must return `TokenStream` rather than `Result` to
 conform to the procedural macro API. We’ve simplified this example by using
@@ -2269,16 +2269,16 @@ about what went wrong by using `panic!` or `expect`.
 
 Now that we have the code to turn the annotated Rust code from a `TokenStream`
 into a `DeriveInput` instance, let’s generate the code that implements the
-`HelloMacro` trait on the annotated type, as shown in Listing 20-34.
+`здравствуйMacro` trait on the annotated type, as shown in Listing 20-34.
 
 hello_macro_derive/src/lib.rs
 
 ```
-fn impl_hello_macro(ast: &syn::DeriveInput) -> TokenStream {
+fn impl_здравствуй_macro(ast: &syn::DeriveInput) -> TokenStream {
     let name = &ast.ident;
     let gen = quote! {
         impl HelloMacro for #name {
-            fn hello_macro() {
+            fn здравствуй_macro() {
                 println!("Hello, Macro! My name is {}!", stringify!(#name));
             }
         }
@@ -2287,11 +2287,11 @@ fn impl_hello_macro(ast: &syn::DeriveInput) -> TokenStream {
 }
 ```
 
-Listing 20-34: Implementing the `HelloMacro` trait using the parsed Rust code
+Listing 20-34: Implementing the `здравствуйMacro` trait using the parsed Rust code
 
 We get an `Ident` struct instance containing the name (identifier) of the
 annotated type using `ast.ident`. The struct in Listing 20-33 shows that when
-we run the `impl_hello_macro` function on the code in Listing 20-31, the
+we run the `impl_здравствуй_macro` function on the code in Listing 20-31, the
 `ident` we get will have the `ident` field with a value of `"Pancakes"`. Thus,
 the `name` variable in Listing 20-34 will contain an `Ident` struct instance
 that, when printed, will be the string `"Pancakes"`, the name of the struct in
@@ -2308,10 +2308,10 @@ enter `#name`, and `quote!` will replace it with the value in the variable
 `name`. You can even do some repetition similar to the way regular macros work.
 Check out the `quote` crate’s docs at *https://docs.rs/quote* for a thorough introduction.
 
-We want our procedural macro to generate an implementation of our `HelloMacro`
+We want our procedural macro to generate an implementation of our `здравствуйMacro`
 trait for the type the user annotated, which we can get by using `#name`. The
-trait implementation has the one function `hello_macro`, whose body contains the
-functionality we want to provide: printing `Hello, Macro! My name is` and then
+trait implementation has the one function `здравствуй_macro`, whose body contains the
+functionality we want to provide: printing `здравствуй, Macro! My name is` and then
 the name of the annotated type.
 
 The `stringify!` macro used here is built into Rust. It takes a Rust
@@ -2322,13 +2322,13 @@ a `String`. There is a possibility that the `#name` input might be an
 expression to print literally, so we use `stringify!`. Using `stringify!` also
 saves an allocation by converting `#name` to a string literal at compile time.
 
-At this point, `cargo build` should complete successfully in both `hello_macro`
-and `hello_macro_derive`. Let’s hook up these crates to the code in Listing
+At this point, `cargo build` should complete successfully in both `здравствуй_macro`
+and `здравствуй_macro_derive`. Let’s hook up these crates to the code in Listing
 20-31 to see the procedural macro in action! Create a new binary project in
 your *projects* directory using `cargo new pancakes`. We need to add
-`hello_macro` and `hello_macro_derive` as dependencies in the `pancakes`
-crate’s *Cargo.toml*. If you’re publishing your versions of `hello_macro` and
-`hello_macro_derive` to crates.io at *https://crates.io/*, they would be regular
+`здравствуй_macro` and `здравствуй_macro_derive` as dependencies in the `pancakes`
+crate’s *Cargo.toml*. If you’re publishing your versions of `здравствуй_macro` and
+`здравствуй_macro_derive` to crates.io at *https://crates.io/*, they would be regular
 dependencies; if not, you can specify them as `path` dependencies as follows:
 
 ```
@@ -2337,8 +2337,8 @@ hello_macro_derive = { path = "../hello_macro/hello_macro_derive" }
 ```
 
 Put the code in Listing 20-31 into *src/main.rs*, and run `cargo run`: it
-should print `Hello, Macro! My name is Pancakes!` The implementation of the
-`HelloMacro` trait from the procedural macro was included without the
+should print `Здравствуй, Макро! Меня зовут Блины!` The implementation of the
+`здравствуйMacro` trait from the procedural macro was included without the
 `pancakes` crate needing to implement it; the `#[derive(HelloMacro)]` added the
 trait implementation.
 

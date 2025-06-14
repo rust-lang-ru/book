@@ -1,6 +1,6 @@
 // ANCHOR: here
-pub fn greeting(name: &str) -> String {
-    String::from("Hello!")
+pub fn greeting(имя: &str) -> String {
+    String::from("Здравствуй!")
 }
 // ANCHOR_END: here
 

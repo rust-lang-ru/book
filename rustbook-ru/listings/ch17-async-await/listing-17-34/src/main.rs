@@ -11,7 +11,7 @@ fn main() {
 
         while let Some(result) = messages.next().await {
             match result {
-                Ok(message) => println!("{message}"),
+                Ok(сообщение) => println!("{сообщение}"),
                 Err(reason) => eprintln!("Problem: {reason:?}"),
             }
         }
@@ -23,8 +23,8 @@ fn get_messages() -> impl Stream<Item = String> {
     let (tx, rx) = trpl::channel();
 
     let messages = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
-    for message in messages {
-        tx.send(format!("Message: '{message}'")).unwrap();
+    for сообщение in messages {
+        tx.send(format!("Сообщение: '{сообщение}'")).unwrap();
     }
 
     ReceiverStream::new(rx)

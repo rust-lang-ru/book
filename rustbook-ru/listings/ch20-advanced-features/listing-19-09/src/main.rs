@@ -1,5 +1,5 @@
-static HELLO_WORLD: &str = "Hello, world!";
+static ЗДРАВСТВУЙ_WORLD: &str = "Здравствуй мир!";
 
 fn main() {
-    println!("name is: {HELLO_WORLD}");
+    println!("name is: {ЗДРАВСТВУЙ_WORLD}");
 }

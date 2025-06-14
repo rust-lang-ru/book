@@ -14,7 +14,7 @@ fn first_word(s: &str) -> &str {
 
 // ANCHOR: usage
 fn main() {
-    let my_string = String::from("hello world");
+    let my_string = String::from("здравствуй мир");
 
     // `first_word` works on slices of `String`s, whether partial or whole
     let word = first_word(&my_string[0..6]);
@@ -23,7 +23,7 @@ fn main() {
     // to whole slices of `String`s
     let word = first_word(&my_string);
 
-    let my_string_literal = "hello world";
+    let my_string_literal = "здравствуй мир";
 
     // `first_word` works on slices of string literals, whether partial or whole
     let word = first_word(&my_string_literal[0..6]);

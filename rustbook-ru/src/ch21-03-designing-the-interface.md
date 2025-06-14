@@ -109,10 +109,10 @@ pub struct ThreadPool;
 ```
 
 Далее, мы создаём новую папку *src/bin* и перемещаем двоичное дополнение  *src/main.rs*
-в *src/bin/main.rs*. Это сделает библиотечное дополнение основным в папке *hello*.
+в *src/bin/main.rs*. Это сделает библиотечное дополнение основным в папке *здравствуй*.
 Это перемещение не повлияет на порядок запуска `cargo run` двоичного файла. После
-перемещения файла *main.rs* внесите в самом верху писания программы изменения,
-описав подключение библиотеки `hello` и её содержания в область программы
+перемещения файла *main.rs* внесите в самом верху писания приложения изменения,
+описав подключение библиотеки `здравствуй` и её содержания в область приложения
 *src/bin/main.rs*:
 
 <span class="filename">Filename: src/bin/main.rs</span>
@@ -127,7 +127,7 @@ use hello::ThreadPool;
 ```text
 $ cargo check --bins
    Compiling hello v0.1.0 (file:///projects/hello)
-error: no associated item named `new` found for type `hello::ThreadPool` in the
+error: no associated item named `new` found for type `здравствуй::ThreadPool` in the
 current scope
   --> src\main.rs:13:16
    |
@@ -162,7 +162,7 @@ warning: unused variable: `size`, #[warn(unused_variables)] on by default
 4 |     pub fn new(size: u32) -> ThreadPool {
   |                ^^^^
 
-error: no method named `execute` found for type `hello::ThreadPool` in the
+error: no method named `execute` found for type `здравствуй::ThreadPool` in the
 current scope
   --> src/main.rs:18:14
    |

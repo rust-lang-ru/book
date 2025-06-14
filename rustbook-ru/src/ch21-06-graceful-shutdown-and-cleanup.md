@@ -38,7 +38,7 @@ goes out of scope</span>
 
 We loop through each of the thread pool `workers`, using `&mut` because `self`
 is itself a mutable reference and we also need to be able to mutate `worker`.
-We print out a message saying that this particular worker is shutting down, and
+We print out a сообщение saying that this particular worker is shutting down, and
 then we call `join` on that worker’s thread. If the call to `join` fails, we
 `unwrap` the error to panic and go into an ungraceful shutdown.
 
@@ -156,17 +156,17 @@ variants:
 
 ```rust
 # struct Job;
-enum Message {
+enum Сообщение {
     NewJob(Job),
     Terminate,
 }
 ```
 
-This `Message` enum will either be a `NewJob` variant that holds the `Job` the
+This `Сообщение` enum will either be a `NewJob` variant that holds the `Job` the
 thread should run, or it will be a `Terminate` variant that will cause the
 thread to exit its loop and stop.
 
-We need to adjust the channel to use values of type `Message` rather than type
+We need to adjust the channel to use values of type `Сообщение` rather than type
 `Job`, as shown in Listing 20-23:
 
 <span class="filename">Filename: src/lib.rs</span>
@@ -174,7 +174,7 @@ We need to adjust the channel to use values of type `Message` rather than type
 ```rust,ignore
 pub struct ThreadPool {
     workers: Vec<Worker>,
-    sender: mpsc::Sender<Message>,
+    sender: mpsc::Sender<Сообщение>,
 }
 
 // ...snip...
@@ -195,27 +195,27 @@ impl ThreadPool {
     {
         let job = Box::new(f);
 
-        self.sender.send(Message::NewJob(job)).unwrap();
+        self.sender.send(Сообщение::NewJob(job)).unwrap();
     }
 }
 
 // ...snip...
 
 impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Message>>>) ->
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Сообщение>>>) ->
         Worker {
 
         let thread = thread::spawn(move ||{
             loop {
-                let message = receiver.lock().unwrap().recv().unwrap();
+                let сообщение = receiver.lock().unwrap().recv().unwrap();
 
-                match message {
-                    Message::NewJob(job) => {
+                match сообщение {
+                    Сообщение::NewJob(job) => {
                         println!("Worker {} got a job; executing.", id);
 
                         job.call_box();
                     },
-                    Message::Terminate => {
+                    Сообщение::Terminate => {
                         println!("Worker {} was told to terminate.", id);
 
                         break;
@@ -232,14 +232,14 @@ impl Worker {
 }
 ```
 
-<span class="caption">Listing 20-23: Sending and receiving `Message` values and
-exiting the loop if a `Worker` receives `Message::Terminate`</span>
+<span class="caption">Listing 20-23: Sending and receiving `Сообщение` values and
+exiting the loop if a `Worker` receives `Сообщение::Terminate`</span>
 
-We need to change `Job` to `Message` in the definition of `ThreadPool`, in
+We need to change `Job` to `Сообщение` in the definition of `ThreadPool`, in
 `ThreadPool::new` where we create the channel, and in the signature of
 `Worker::new`. The `execute` method of `ThreadPool` needs to send jobs wrapped
-in the `Message::NewJob` variant. Then, in `Worker::new` where we receive a
-`Message` from the channel, we’ll process the job if we get the `NewJob`
+in the `Сообщение::NewJob` variant. Then, in `Worker::new` where we receive a
+`Сообщение` from the channel, we’ll process the job if we get the `NewJob`
 variant and break out of the loop if we get the `Terminate` variant.
 
 With these changes, the code will compile again and continue to function in the
@@ -252,10 +252,10 @@ to look like Listing 20-24:
 ```rust,ignore
 impl Drop for ThreadPool {
     fn drop(&mut self) {
-        println!("Sending terminate message to all workers.");
+        println!("Sending terminate сообщение to all workers.");
 
         for _ in &mut self.workers {
-            self.sender.send(Message::Terminate).unwrap();
+            self.sender.send(Сообщение::Terminate).unwrap();
         }
 
         println!("Shutting down all workers.");
@@ -271,31 +271,31 @@ impl Drop for ThreadPool {
 }
 ```
 
-<span class="caption">Listing 20-24: Sending `Message::Terminate` to the
+<span class="caption">Listing 20-24: Sending `Сообщение::Terminate` to the
 workers before calling `join` on each worker thread</span>
 
 We’re now iterating over the workers twice, once to send one `Terminate`
-message for each worker, and once to call `join` on each worker’s thread. If we
-tried to send a message and join immediately in the same loop, it’s not
+сообщение for each worker, and once to call `join` on each worker’s thread. If we
+tried to send a сообщение and join immediately in the same loop, it’s not
 guaranteed that the worker in the current iteration will be the one that gets
-the message from the channel.
+the сообщение from the channel.
 
 To understand better why we need two separate loops, imagine a scenario with
 two workers. If we iterated through each worker in one loop, on the first
-iteration where `worker` is the first worker, we’d send a terminate message
+iteration where `worker` is the first worker, we’d send a terminate сообщение
 down the channel and call `join` on the first worker’s thread. If the first
 worker was busy processing a request at that moment, the second worker would
-pick up the terminate message from the channel and shut down. We’re waiting on
+pick up the terminate сообщение from the channel and shut down. We’re waiting on
 the first worker to shut down, but it never will since the second thread picked
-up the terminate message. We’re now blocking forever waiting for the first
-worker to shut down, and we’ll never send the second message to terminate.
+up the terminate сообщение. We’re now blocking forever waiting for the first
+worker to shut down, and we’ll never send the second сообщение to terminate.
 Deadlock!
 
 To prevent this, we first put all of our `Terminate` messages on the channel,
 and then we join on all the threads. Because each worker will stop receiving
-requests on the channel once it gets a terminate message, we can be sure that
+requests on the channel once it gets a terminate сообщение, we can be sure that
 if we send the same number of terminate messages as there are workers, each
-worker will receive a terminate message before we call `join` on its thread.
+worker will receive a terminate сообщение before we call `join` on its thread.
 
 In order to see this code in action, let’s modify `main` to only accept two
 requests before gracefully shutting the server down as shown in Listing 20-25:
@@ -349,7 +349,7 @@ $ cargo run
 Worker 0 got a job; executing.
 Worker 3 got a job; executing.
 Shutting down.
-Sending terminate message to all workers.
+Sending terminate сообщение to all workers.
 Shutting down all workers.
 Shutting down worker 0
 Worker 1 was told to terminate.
@@ -365,17 +365,17 @@ You may get a different ordering, of course. We can see how this works from the
 messages: workers zero and three got the first two requests, and then on the
 third request, we stop accepting connections. When the `ThreadPool` goes out of
 scope at the end of `main`, its `Drop` implementation kicks in, and the pool
-tells all workers to terminate. The workers each print a message when they see
-the terminate message, and then the thread pool calls `join` to shut down each
+tells all workers to terminate. The workers each print a сообщение when they see
+the terminate сообщение, and then the thread pool calls `join` to shut down each
 worker thread.
 
 One interesting aspect of this particular execution: notice that we sent the
 terminate messages down the channel, and before any worker received the
 messages, we tried to join worker zero. Worker zero had not yet gotten the
-terminate message, so the main thread blocked waiting for worker zero to
+terminate сообщение, so the main thread blocked waiting for worker zero to
 finish. In the meantime, each of the workers received the termination messages.
 Once worker zero finished, the main thread waited for the rest of the workers
-to finish, and they had all received the termination message and were able to
+to finish, and they had all received the termination сообщение and were able to
 shut down at that point.
 
 Congrats! We now have completed our project, and we have a basic web server
@@ -426,10 +426,10 @@ fn handle_connection(mut stream: TcpStream) {
     let sleep = b"GET /sleep HTTP/1.1\r\n";
 
     let (status_line, filename) = if buffer.starts_with(get) {
-        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
+        ("HTTP/1.1 200 OK\r\n\r\n", "здравствуй.html")
     } else if buffer.starts_with(sleep) {
         thread::sleep(Duration::from_secs(5));
-        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
+        ("HTTP/1.1 200 OK\r\n\r\n", "здравствуй.html")
     } else {
         ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
     };
@@ -454,14 +454,14 @@ use std::sync::mpsc;
 use std::sync::Arc;
 use std::sync::Mutex;
 
-enum Message {
+enum Сообщение {
     NewJob(Job),
     Terminate,
 }
 
 pub struct ThreadPool {
     workers: Vec<Worker>,
-    sender: mpsc::Sender<Message>,
+    sender: mpsc::Sender<Сообщение>,
 }
 
 trait FnBox {
@@ -509,16 +509,16 @@ impl ThreadPool {
     {
         let job = Box::new(f);
 
-        self.sender.send(Message::NewJob(job)).unwrap();
+        self.sender.send(Сообщение::NewJob(job)).unwrap();
     }
 }
 
 impl Drop for ThreadPool {
     fn drop(&mut self) {
-        println!("Sending terminate message to all workers.");
+        println!("Sending terminate сообщение to all workers.");
 
         for _ in &mut self.workers {
-            self.sender.send(Message::Terminate).unwrap();
+            self.sender.send(Сообщение::Terminate).unwrap();
         }
 
         println!("Shutting down all workers.");
@@ -539,20 +539,20 @@ struct Worker {
 }
 
 impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Message>>>) ->
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Сообщение>>>) ->
         Worker {
 
         let thread = thread::spawn(move ||{
             loop {
-                let message = receiver.lock().unwrap().recv().unwrap();
+                let сообщение = receiver.lock().unwrap().recv().unwrap();
 
-                match message {
-                    Message::NewJob(job) => {
+                match сообщение {
+                    Сообщение::NewJob(job) => {
                         println!("Worker {} got a job; executing.", id);
 
                         job.call_box();
                     },
-                    Message::Terminate => {
+                    Сообщение::Terminate => {
                         println!("Worker {} was told to terminate.", id);
 
                         break;

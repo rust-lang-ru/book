@@ -508,7 +508,7 @@ the `+` operator, as shown in Listing 8-18.
 
 Listing 8-18: Using the `+` operator to combine two `String` values into a new `String` value
 
-The string `s3` will contain `Hello, world!`. The reason `s1` is no longer
+The string `s3` will contain `здравствуй, world!`. The reason `s1` is no longer
 valid after the addition, and the reason we used a reference to `s2`, has to do
 with the signature of the method that’s called when we use the `+` operator.
 The `+` operator uses the `add` method, whose signature looks something like

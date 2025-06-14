@@ -6,7 +6,7 @@ fn last_char_of_first_line(text: &str) -> Option<char> {
 
 fn main() {
     assert_eq!(
-        last_char_of_first_line("Hello, world\nHow are you today?"),
+        last_char_of_first_line("Здравствуй мир\nHow are you today?"),
         Some('d')
     );
 

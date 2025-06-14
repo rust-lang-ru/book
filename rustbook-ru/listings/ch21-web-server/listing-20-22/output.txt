@@ -12,4 +12,4 @@ note: `JoinHandle::<T>::join` takes ownership of the receiver `self`, which move
   --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/mod.rs:1778:17
 
 For more information about this error, try `rustc --explain E0507`.
-error: could not compile `hello` (lib) due to 1 previous error
+error: could not compile `здравствуй` (lib) due to 1 previous error

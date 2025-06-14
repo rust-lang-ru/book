@@ -1,7 +1,7 @@
 // ANCHOR: here
 use std::ops::Deref;
 
-impl<T> Deref for MyBox<T> {
+impl<T> Deref for МойКороб<T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -10,17 +10,17 @@ impl<T> Deref for MyBox<T> {
 }
 // ANCHOR_END: here
 
-struct MyBox<T>(T);
+struct МойКороб<T>(T);
 
-impl<T> MyBox<T> {
-    fn new(x: T) -> MyBox<T> {
-        MyBox(x)
+impl<T> МойКороб<T> {
+    fn new(x: T) -> МойКороб<T> {
+        МойКороб(x)
     }
 }
 
 fn main() {
     let x = 5;
-    let y = MyBox::new(x);
+    let y = МойКороб::new(x);
 
     assert_eq!(5, x);
     assert_eq!(5, *y);

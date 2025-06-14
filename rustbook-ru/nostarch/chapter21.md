@@ -76,7 +76,7 @@ this. Let’s make a new project in the usual fashion:
 
 ```
 $ cargo new hello
-     Created binary (application) `hello` project
+     Created binary (application) `здравствуй` project
 $ cd hello
 ```
 
@@ -389,11 +389,11 @@ request and sending a response!
 ### Returning Real HTML
 
 Let’s implement the functionality for returning more than a blank page. Create
-the new file *hello.html* in the root of your project directory, not in the
+the new file *здравствуй.html* in the root of your project directory, not in the
 *src* directory. You can input any HTML you want; Listing 21-4 shows one
 possibility.
 
-hello.html
+здравствуй.html
 
 ```
 <!DOCTYPE html>
@@ -435,7 +435,7 @@ fn handle_connection(mut stream: TcpStream) {
         .collect();
 
     let status_line = "HTTP/1.1 200 OK";
-    let contents = fs::read_to_string("hello.html").unwrap();
+    let contents = fs::read_to_string("здравствуй.html").unwrap();
     let length = contents.len();
 
     let response =
@@ -445,7 +445,7 @@ fn handle_connection(mut stream: TcpStream) {
 }
 ```
 
-Listing 21-5: Sending the contents of *hello.html* as the body of the response
+Listing 21-5: Sending the contents of *здравствуй.html* as the body of the response
 
 We’ve added `fs` to the `use` statement to bring the standard library’s
 filesystem module into scope. The code for reading the contents of a file to a
@@ -455,7 +455,7 @@ our I/O project in Listing 12-4.
 Next, we use `format!` to add the file’s contents as the body of the success
 response. To ensure a valid HTTP response, we add the `Content-Length` header
 which is set to the size of our response body, in this case the size of
-`hello.html`.
+`здравствуй.html`.
 
 Run this code with `cargo run` and load *127.0.0.1:7878* in your browser; you
 should see your HTML rendered!
@@ -489,7 +489,7 @@ fn handle_connection(mut stream: TcpStream) {
 
     if request_line == "GET / HTTP/1.1" {
         let status_line = "HTTP/1.1 200 OK";
-        let contents = fs::read_to_string("hello.html").unwrap();
+        let contents = fs::read_to_string("здравствуй.html").unwrap();
         let length = contents.len();
 
         let response = format!(
@@ -521,7 +521,7 @@ means we’ve received some other request. We’ll add code to the `else` block 
 a moment to respond to all other requests.
 
 Run this code now and request *127.0.0.1:7878*; you should get the HTML in
-*hello.html*. If you make any other request, such as
+*здравствуй.html*. If you make any other request, such as
 *127.0.0.1:7878/something-else*, you’ll get a connection error like those you
 saw when running the code in Listing 21-1 and Listing 21-2.
 
@@ -551,7 +551,7 @@ Listing 21-7: Responding with status code 404 and an error page if anything othe
 
 Here, our response has a status line with status code 404 and the reason phrase
 `NOT FOUND`. The body of the response will be the HTML in the file *404.html*.
-You’ll need to create a *404.html* file next to *hello.html* for the error
+You’ll need to create a *404.html* file next to *здравствуй.html* for the error
 page; again feel free to use any HTML you want or use the example HTML in
 Listing 21-8.
 
@@ -574,7 +574,7 @@ Listing 21-8.
 Listing 21-8: Sample content for the page to send back with any 404 response
 
 With these changes, run your server again. Requesting *127.0.0.1:7878* should
-return the contents of *hello.html*, and any other request, like
+return the contents of *здравствуй.html*, and any other request, like
 *127.0.0.1:7878/foo*, should return the error HTML from *404.html*.
 
 ### A Touch of Refactoring
@@ -597,7 +597,7 @@ fn handle_connection(mut stream: TcpStream) {
     // --snip--
 
     let (status_line, filename) = if request_line == "GET / HTTP/1.1" {
-        ("HTTP/1.1 200 OK", "hello.html")
+        ("HTTP/1.1 200 OK", "здравствуй.html")
     } else {
         ("HTTP/1.1 404 NOT FOUND", "404.html")
     };
@@ -668,10 +668,10 @@ fn handle_connection(mut stream: TcpStream) {
     // --snip--
 
     let (status_line, filename) = match &request_line[..] {
-        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "hello.html"),
+        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "здравствуй.html"),
         "GET /sleep HTTP/1.1" => {
             thread::sleep(Duration::from_secs(5));
-            ("HTTP/1.1 200 OK", "hello.html")
+            ("HTTP/1.1 200 OK", "здравствуй.html")
         }
         _ => ("HTTP/1.1 404 NOT FOUND", "404.html"),
     };
@@ -852,12 +852,12 @@ error[E0433]: failed to resolve: use of undeclared type `ThreadPool`
    |                ^^^^^^^^^^ use of undeclared type `ThreadPool`
 
 For more information about this error, try `rustc --explain E0433`.
-error: could not compile `hello` (bin "hello") due to 1 previous error
+error: could not compile `здравствуй` (bin "hello") due to 1 previous error
 ```
 
 Great! This error tells us we need a `ThreadPool` type or module, so we’ll
 build one now. Our `ThreadPool` implementation will be independent of the kind
-of work our web server is doing. So let’s switch the `hello` crate from a
+of work our web server is doing. So let’s switch the `здравствуй` crate from a
 binary crate to a library crate to hold our `ThreadPool` implementation. After
 we change to a library crate, we could also use the separate thread pool
 library for any work we want to do using a thread pool, not just for serving
@@ -898,7 +898,7 @@ error[E0599]: no function or associated item named `new` found for struct `Threa
    |                            ^^^ function or associated item not found in `ThreadPool`
 
 For more information about this error, try `rustc --explain E0599`.
-error: could not compile `hello` (bin "hello") due to 1 previous error
+error: could not compile `здравствуй` (bin "hello") due to 1 previous error
 ```
 
 This error indicates that next we need to create an associated function named
@@ -938,7 +938,7 @@ error[E0599]: no method named `execute` found for struct `ThreadPool` in the cur
    |         -----^^^^^^^ method not found in `ThreadPool`
 
 For more information about this error, try `rustc --explain E0599`.
-error: could not compile `hello` (bin "hello") due to 1 previous error
+error: could not compile `здравствуй` (bin "hello") due to 1 previous error
 ```
 
 Now the error occurs because we don’t have an `execute` method on `ThreadPool`.
@@ -1388,7 +1388,7 @@ help: consider moving the expression out of the loop so it is only moved once
    |
 
 For more information about this error, try `rustc --explain E0382`.
-error: could not compile `hello` (lib) due to 1 previous error
+error: could not compile `здравствуй` (lib) due to 1 previous error
 ```
 
 The code is trying to pass `receiver` to multiple `Worker` instances. This
@@ -1577,7 +1577,7 @@ warning: fields `id` and `thread` are never read
 49 |     thread: thread::JoinHandle<()>,
    |     ^^^^^^
 
-warning: `hello` (lib) generated 2 warnings
+warning: `здравствуй` (lib) generated 2 warnings
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.91s
      Running `target/debug/hello`
 Worker 0 got a job; executing.
@@ -1721,7 +1721,7 @@ note: `JoinHandle::<T>::join` takes ownership of the receiver `self`, which move
      |                 ^^^^
 
 For more information about this error, try `rustc --explain E0507`.
-error: could not compile `hello` (lib) due to 1 previous error
+error: could not compile `здравствуй` (lib) due to 1 previous error
 ```
 
 The error tells us we can’t call `join` because we only have a mutable borrow of
@@ -1983,10 +1983,10 @@ fn handle_connection(mut stream: TcpStream) {
     let request_line = buf_reader.lines().next().unwrap().unwrap();
 
     let (status_line, filename) = match &request_line[..] {
-        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "hello.html"),
+        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "здравствуй.html"),
         "GET /sleep HTTP/1.1" => {
             thread::sleep(Duration::from_secs(5));
-            ("HTTP/1.1 200 OK", "hello.html")
+            ("HTTP/1.1 200 OK", "здравствуй.html")
         }
         _ => ("HTTP/1.1 404 NOT FOUND", "404.html"),
     };

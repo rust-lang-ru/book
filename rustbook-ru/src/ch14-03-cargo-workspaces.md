@@ -144,7 +144,7 @@ copy output below; the output updating script doesn't владение subdirect
 $ cargo run -p adder
     Finished dev [unoptimized + debuginfo] target(s) in 0.0s
      Running `target/debug/adder`
-Hello, world! 10 plus one is 11!
+Здравствуй мир! 10 plus one is 11!
 ```
 
 Запуск рукописи из *adder/src/main.rs*, который зависит от `add_one`.

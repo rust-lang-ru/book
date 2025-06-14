@@ -3,7 +3,7 @@ $ cargo test
 error[E0596]: cannot borrow `self.sent_messages` as mutable, as it is behind a `&` reference
   --> src/lib.rs:58:13
    |
-58 |             self.sent_messages.push(String::from(message));
+58 |             self.sent_messages.push(String::from(сообщение));
    |             ^^^^^^^^^^^^^^^^^^ `self` is a `&` reference, so the data it refers to cannot be borrowed as mutable
    |
 help: consider changing this to be a mutable reference in the `impl` method and the `trait` definition
@@ -12,7 +12,7 @@ help: consider changing this to be a mutable reference in the `impl` method and 
 3  | }
 ...
 56 |     impl Messenger for MockMessenger {
-57 ~         fn send(&mut self, message: &str) {
+57 ~         fn send(&mut self, сообщение: &str) {
    |
 
 For more information about this error, try `rustc --explain E0596`.

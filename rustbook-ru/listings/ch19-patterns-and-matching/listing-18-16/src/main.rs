@@ -3,21 +3,21 @@ enum Color {
     Hsv(i32, i32, i32),
 }
 
-enum Message {
-    Quit,
+enum Сообщение {
+    Выход,
     Move { x: i32, y: i32 },
     Write(String),
-    ChangeColor(Color),
+    Смена_цвета(Color),
 }
 
 fn main() {
-    let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+    let msg = Сообщение::Смена_цвета(Color::Hsv(0, 160, 255));
 
     match msg {
-        Message::ChangeColor(Color::Rgb(r, g, b)) => {
+        Сообщение::Смена_цвета(Color::Rgb(r, g, b)) => {
             println!("Change color to red {r}, green {g}, and blue {b}");
         }
-        Message::ChangeColor(Color::Hsv(h, s, v)) => {
+        Сообщение::Смена_цвета(Color::Hsv(h, s, v)) => {
             println!("Change color to hue {h}, saturation {s}, value {v}")
         }
         _ => (),

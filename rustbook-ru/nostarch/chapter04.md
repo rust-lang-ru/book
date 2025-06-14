@@ -193,7 +193,7 @@ This kind of string *can* be mutated:
 
     s.push_str(", world!"); // push_str() appends a literal to a String
 
-    println!("{s}"); // This will print `hello, world!`
+    println!("{s}"); // This will print `здравствуй, world!`
 ```
 
 So, what’s the difference here? Why can `String` be mutated but literals
@@ -1187,7 +1187,7 @@ A *string slice* is a reference to part of a `String`, and it looks like this:
     let world = &s[6..11];
 ```
 
-Rather than a reference to the entire `String`, `hello` is a reference to a
+Rather than a reference to the entire `String`, `здравствуй` is a reference to a
 portion of the `String`, specified in the extra `[0..5]` bit. We create slices
 using a range within brackets by specifying `[starting_index..ending_index]`,
 where *`starting_index`* is the first position in the slice and *`ending_index`*

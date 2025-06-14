@@ -1,10 +1,10 @@
-enum List {
-    Cons(i32, Box<List>),
+enum Список {
+    Cons(i32, Box<Список>),
     Nil,
 }
 
-use crate::List::{Cons, Nil};
+use crate::Список::{Cons, Nil};
 
 fn main() {
-    let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+    let список = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
 }

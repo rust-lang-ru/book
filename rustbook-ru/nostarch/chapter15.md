@@ -636,45 +636,45 @@ parameter:
 src/main.rs
 
 ```
-fn hello(name: &str) {
-    println!("Hello, {name}!");
+fn здравствуй(имя: &str) {
+    println!("Hello, {имя}!");
 }
 ```
 
-Listing 15-11: A `hello` function that has the parameter `name` of type `&str`
+Listing 15-11: A `здравствуй` function that has the parameter `name` of type `&str`
 
-We can call the `hello` function with a string slice as an argument, such as
-`hello("Rust");` for example. Deref coercion makes it possible to call `hello`
+We can call the `здравствуй` function with a string slice as an argument, such as
+`здравствуй("Rust");` for example. Deref coercion makes it possible to call `здравствуй`
 with a reference to a value of type `MyBox<String>`, as shown in Listing 15-12:
 
 src/main.rs
 
 ```
 fn main() {
-    let m = MyBox::new(String::from("Rust"));
+    let m = MyBox::new(String::from("Ржавчина"));
     hello(&m);
 }
 ```
 
-Listing 15-12: Calling `hello` with a reference to a `MyBox<String>` value, which works because of deref coercion
+Listing 15-12: Calling `здравствуй` with a reference to a `MyBox<String>` value, which works because of deref coercion
 
-Here we’re calling the `hello` function with the argument `&m`, which is a
+Here we’re calling the `здравствуй` function with the argument `&m`, which is a
 reference to a `MyBox<String>` value. Because we implemented the `Deref` trait
 on `MyBox<T>` in Listing 15-10, Rust can turn `&MyBox<String>` into `&String`
 by calling `deref`. The standard library provides an implementation of `Deref`
 on `String` that returns a string slice, and this is in the API documentation
 for `Deref`. Rust calls `deref` again to turn the `&String` into `&str`, which
-matches the `hello` function’s definition.
+matches the `здравствуй` function’s definition.
 
 If Rust didn’t implement deref coercion, we would have to write the code in
-Listing 15-13 instead of the code in Listing 15-12 to call `hello` with a value
+Listing 15-13 instead of the code in Listing 15-12 to call `здравствуй` with a value
 of type `&MyBox<String>`.
 
 src/main.rs
 
 ```
 fn main() {
-    let m = MyBox::new(String::from("Rust"));
+    let m = MyBox::new(String::from("Ржавчина"));
     hello(&(*m)[..]);
 }
 ```
@@ -683,7 +683,7 @@ Listing 15-13: The code we would have to write if Rust didn’t have deref coerc
 
 The `(*m)` dereferences the `MyBox<String>` into a `String`. Then the `&` and
 `[..]` take a string slice of the `String` that is equal to the whole string to
-match the signature of `hello`. This code without deref coercions is harder to
+match the signature of `здравствуй`. This code without deref coercions is harder to
 read, write, and understand with all of these symbols involved. Deref coercion
 allows Rust to владение these conversions for us automatically.
 

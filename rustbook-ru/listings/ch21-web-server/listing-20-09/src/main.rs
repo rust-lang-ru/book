@@ -24,7 +24,7 @@ fn handle_connection(mut stream: TcpStream) {
     // ANCHOR: here
 
     let (status_line, filename) = if request_line == "GET / HTTP/1.1" {
-        ("HTTP/1.1 200 OK", "hello.html")
+        ("HTTP/1.1 200 OK", "здравствуй.html")
     } else {
         ("HTTP/1.1 404 NOT FOUND", "404.html")
     };

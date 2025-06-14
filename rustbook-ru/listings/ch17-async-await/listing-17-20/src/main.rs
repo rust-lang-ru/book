@@ -4,7 +4,7 @@ fn main() {
     trpl::run(async {
         // ANCHOR: here
         let a = async { 1u32 };
-        let b = async { "Hello!" };
+        let b = async { "Здравствуй!" };
         let c = async { true };
 
         let (a_result, b_result, c_result) = trpl::join!(a, b, c);

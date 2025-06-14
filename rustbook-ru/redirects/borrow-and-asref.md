@@ -6,7 +6,7 @@
 > Used to convert a value to a reference value within generic code.
 
 ```rust
-fn is_hello<T: AsRef<str>>(s: T) {
+fn is_здравствуй<T: AsRef<str>>(s: T) {
    assert_eq!("hello", s.as_ref());
 }
 ```

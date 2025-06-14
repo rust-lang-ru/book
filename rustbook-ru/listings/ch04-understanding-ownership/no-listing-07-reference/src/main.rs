@@ -1,7 +1,7 @@
 // ANCHOR: all
 fn main() {
     // ANCHOR: here
-    let s1 = String::from("hello");
+    let s1 = String::from("здравствуй");
 
     let len = calculate_length(&s1);
     // ANCHOR_END: here

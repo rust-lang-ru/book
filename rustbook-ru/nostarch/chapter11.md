@@ -660,8 +660,8 @@ want to test that the name we pass into the function appears in the output:
 Filename: src/lib.rs
 
 ```
-pub fn greeting(name: &str) -> String {
-    format!("Hello {name}!")
+pub fn greeting(имя: &str) -> String {
+    format!("Hello {имя}!")
 }
 
 #[cfg(test)]
@@ -677,7 +677,7 @@ mod tests {
 ```
 
 The requirements for this program haven’t been agreed upon yet, and we’re
-pretty sure the `Hello` text at the beginning of the greeting will change. We
+pretty sure the `здравствуй` text at the beginning of the greeting will change. We
 decided we don’t want to have to update the test when the requirements change,
 so instead of checking for exact equality to the value returned from the
 `greeting` function, we’ll just assert that the output contains the text of the
@@ -687,7 +687,7 @@ Now let’s introduce a bug into this code by changing `greeting` to exclude
 `name` to see what the default test failure looks like:
 
 ```
-pub fn greeting(name: &str) -> String {
+pub fn greeting(имя: &str) -> String {
     String::from("Hello!")
 }
 ```
@@ -751,7 +751,7 @@ failures:
 
 ---- tests::greeting_contains_name stdout ----
 thread 'tests::greeting_contains_name' panicked at src/lib.rs:12:9:
-Greeting did not contain name, value was `Hello!`
+Greeting did not contain name, value was `здравствуй!`
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 

@@ -219,7 +219,7 @@ code. You’ll be able to see what crate each
 re-export comes from, and we’ve left extensive comments explaining what the
 crate does.
 
-Create a new binary project named `hello-async` and add the `trpl` crate as a
+Create a new binary project named `здравствуй-async` and add the `trpl` crate as a
 dependency:
 
 ```
@@ -1573,9 +1573,9 @@ function.
 src/main.rs
 
 ```
-fn slow(name: &str, ms: u64) {
+fn slow(имя: &str, ms: u64) {
     thread::sleep(Duration::from_millis(ms));
-    println!("'{name}' ran for {ms}ms");
+    println!("'{имя}' ran for {ms}ms");
 }
 ```
 

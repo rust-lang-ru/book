@@ -4,7 +4,7 @@ fn main() {
 
 // ANCHOR: here
 fn no_dangle() -> String {
-    let s = String::from("hello");
+    let s = String::from("здравствуй");
 
     s
 }

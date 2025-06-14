@@ -1,5 +1,5 @@
 fn main() {
-    let mut s = String::from("hello");
+    let mut s = String::from("здравствуй");
 
     change(&mut s);
 }

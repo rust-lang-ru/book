@@ -1,9 +1,9 @@
 // ANCHOR: here
-struct MyBox<T>(T);
+struct МойКороб<T>(T);
 
-impl<T> MyBox<T> {
-    fn new(x: T) -> MyBox<T> {
-        MyBox(x)
+impl<T> МойКороб<T> {
+    fn new(x: T) -> МойКороб<T> {
+        МойКороб(x)
     }
 }
 // ANCHOR_END: here

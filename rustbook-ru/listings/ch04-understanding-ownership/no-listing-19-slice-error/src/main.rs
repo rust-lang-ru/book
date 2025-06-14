@@ -12,7 +12,7 @@ fn first_word(s: &String) -> &str {
 
 // ANCHOR: here
 fn main() {
-    let mut s = String::from("hello world");
+    let mut s = String::from("здравствуй мир");
 
     let word = first_word(&s);
 

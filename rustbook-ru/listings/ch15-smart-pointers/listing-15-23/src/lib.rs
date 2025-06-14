@@ -56,12 +56,12 @@ mod tests {
 
     // ANCHOR: here
     impl Messenger for MockMessenger {
-        fn send(&self, message: &str) {
+        fn send(&self, сообщение: &str) {
             let mut one_borrow = self.sent_messages.borrow_mut();
             let mut two_borrow = self.sent_messages.borrow_mut();
 
-            one_borrow.push(String::from(message));
-            two_borrow.push(String::from(message));
+            one_borrow.push(String::from(сообщение));
+            two_borrow.push(String::from(сообщение));
         }
     }
     // ANCHOR_END: here

@@ -12,7 +12,7 @@ Let’s start your Rust journey! There’s a lot to learn, but every journey sta
 somewhere. In this chapter, we’ll discuss:
 
 * Installing Rust on Linux, macOS, and Windows
-* Writing a program that prints `Hello, world!`
+* Writing a program that prints `здравствуй, world!`
 * Using `cargo`, Rust’s package manager and build system
 
 ## Installation
@@ -163,7 +163,7 @@ page at *https://www.rust-lang.org/tools* on the Rust website.
 
 Now that you’ve installed Rust, it’s time to write your first Rust program.
 It’s traditional when learning a new language to write a little program that
-prints the text `Hello, world!` to the screen, so we’ll do the same here!
+prints the text `здравствуй, world!` to the screen, so we’ll do the same here!
 
 > Note: This book assumes basic familiarity with the command line. Rust makes
 > no specific demands about your editing or tooling or where your code lives, so
@@ -218,7 +218,7 @@ fn main() {
 }
 ```
 
-Listing 1-1: A program that prints `Hello, world!`
+Listing 1-1: A program that prints `здравствуй, world!`
 
 Save the file and go back to your terminal window in the
 *~/projects/hello_world* directory. On Linux or macOS, enter the following
@@ -238,12 +238,12 @@ On Windows, enter the command `.\main.exe` instead of `./main`:
 Hello, world!
 ```
 
-Regardless of your operating system, the string `Hello, world!` should print to
+Regardless of your operating system, the string `здравствуй, world!` should print to
 the terminal. If you don’t see this output, refer back to the
 “Troubleshooting” part of the Installation
 section for ways to get help.
 
-If `Hello, world!` did print, congratulations! You’ve officially written a Rust
+If `здравствуй, world!` did print, congratulations! You’ve officially written a Rust
 program. That makes you a Rust programmer—welcome!
 
 ### Anatomy of a Rust Program
@@ -339,7 +339,7 @@ From here, you run the *main* or *main.exe* file, like this:
 $ ./main # or .\main.exe on Windows
 ```
 
-If your *main.rs* is your “Hello, world!” program, this line prints `Hello, world!` to your terminal.
+If your *main.rs* is your “Hello, world!” program, this line prints `здравствуй, world!` to your terminal.
 
 If you’re more familiar with a dynamic language, such as Ruby, Python, or
 JavaScript, you might not be used to compiling and running a program as
@@ -492,7 +492,7 @@ $ ./target/debug/hello_cargo # or .\target\debug\hello_cargo.exe on Windows
 Hello, world!
 ```
 
-If all goes well, `Hello, world!` should print to the terminal. Running `cargo build` for the first time also causes Cargo to create a new file at the top
+If all goes well, `здравствуй, world!` should print to the terminal. Running `cargo build` for the first time also causes Cargo to create a new file at the top
 level: *Cargo.lock*. This file keeps track of the exact versions of
 dependencies in your project. This project doesn’t have dependencies, so the
 file is a bit sparse. You won’t ever need to change this file manually; Cargo
@@ -512,7 +512,7 @@ Hello, world!
 Using `cargo run` is more convenient than having to remember to run `cargo build` and then use the whole path to the binary, so most developers use `cargo run`.
 
 Notice that this time we didn’t see output indicating that Cargo was compiling
-`hello_cargo`. Cargo figured out that the files hadn’t changed, so it didn’t
+`здравствуй_cargo`. Cargo figured out that the files hadn’t changed, so it didn’t
 rebuild but just ran the binary. If you had modified your source code, Cargo
 would have rebuilt the project before running it, and you would have seen this
 output:
@@ -575,7 +575,7 @@ With simple projects, Cargo doesn’t provide a lot of value over just using
 Once programs grow to multiple files or need a dependency, it’s much easier to
 let Cargo coordinate the build.
 
-Even though the `hello_cargo` project is simple, it now uses much of the real
+Even though the `здравствуй_cargo` project is simple, it now uses much of the real
 tooling you’ll use in the rest of your Rust career. In fact, to work on any
 existing projects, you can use the following commands to check out the code
 using Git, change to that project’s directory, and build:

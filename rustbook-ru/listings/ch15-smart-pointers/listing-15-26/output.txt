@@ -1,7 +1,7 @@
 $ cargo run
-   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+   Compiling cons-список v0.1.0 (file:///projects/cons-список)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.53s
-     Running `target/debug/cons-list`
+     Running `target/debug/cons-список`
 a initial rc count = 1
 a next item = Some(RefCell { value: Nil })
 a rc count after b creation = 2

@@ -1,7 +1,7 @@
 fn main() {
     // ANCHOR: here
     {
-        let s = String::from("hello"); // s is valid from this point forward
+        let s = String::from("здравствуй"); // s is valid from this point forward
 
         // do stuff with s
     }                                  // this scope is now over, and s is no

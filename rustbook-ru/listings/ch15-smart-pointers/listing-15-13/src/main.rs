@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-impl<T> Deref for MyBox<T> {
+impl<T> Deref for МойКороб<T> {
     type Target = T;
 
     fn deref(&self) -> &T {
@@ -8,21 +8,21 @@ impl<T> Deref for MyBox<T> {
     }
 }
 
-struct MyBox<T>(T);
+struct МойКороб<T>(T);
 
-impl<T> MyBox<T> {
-    fn new(x: T) -> MyBox<T> {
-        MyBox(x)
+impl<T> МойКороб<T> {
+    fn new(x: T) -> МойКороб<T> {
+        МойКороб(x)
     }
 }
 
-fn hello(name: &str) {
-    println!("Hello, {name}!");
+fn здравствуй(имя: &str) {
+    println!("Здравствуй, {имя}!");
 }
 
 // ANCHOR: here
 fn main() {
-    let m = MyBox::new(String::from("Rust"));
-    hello(&(*m)[..]);
+    let m = МойКороб::new(String::from("Ржавчина"));
+    здравствуй(&(*m)[..]);
 }
 // ANCHOR_END: here
