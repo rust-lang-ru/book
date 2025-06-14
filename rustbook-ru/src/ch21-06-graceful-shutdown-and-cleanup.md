@@ -307,15 +307,15 @@ fn main() {
     let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
     let pool = ThreadPool::new(4);
 
-    let mut counter = 0;
+    let mut счётчик = 0;
 
     for stream in listener.incoming() {
-        if counter == 2 {
+        if счётчик == 2 {
             println!("Shutting down.");
             break;
         }
 
-        counter += 1;
+        счётчик += 1;
 
         let stream = stream.unwrap();
 
@@ -333,8 +333,8 @@ Only serving two requests isn’t behavior you’d like a production web server 
 have, but this will let us see the graceful shutdown and cleanup working since
 we won’t be stopping the server with <span class="keystroke">ctrl-C</span>.
 
-We’ve added a `counter` variable that we’ll increment every time we receive an
-incoming TCP stream. If that counter reaches 2, we’ll stop serving requests and
+We’ve added a `счётчик` variable that we’ll increment every time we receive an
+incoming TCP stream. If that счётчик reaches 2, we’ll stop serving requests and
 instead break out of the `for` loop. The `ThreadPool` will go out of scope at
 the end of `main`, and we’ll see the `drop` implementation run.
 
@@ -400,15 +400,15 @@ fn main() {
     let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
     let pool = ThreadPool::new(4);
 
-    let mut counter = 0;
+    let mut счётчик = 0;
 
     for stream in listener.incoming() {
-        if counter == 2 {
+        if счётчик == 2 {
             println!("Shutting down.");
             break;
         }
 
-        counter += 1;
+        счётчик += 1;
 
         let stream = stream.unwrap();
 
@@ -585,5 +585,5 @@ project, here are some ideas:
 Well done! You’ve made it to the end of the book! We’d like to thank you for
 joining us on this tour of Ржавчины. You’re now ready to go out and implement your
 own Ржавчина projects or help with other people’s. Remember there’s a community of
-other Rustaceans who would love to help you with any challenges you encounter
+other Rustaceans who would love to help you with any challenges you enсчётчик
 on your Ржавчина journey.

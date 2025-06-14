@@ -119,7 +119,7 @@ Listing 18-2: Implementations of the public methods `add`, `remove`, and `averag
 The public methods `add`, `remove`, and `average` are the only ways to access
 or modify data in an instance of `AveragedCollection`. When an item is added
 to `list` using the `add` method or removed using the `remove` method, the
-implementations of each call the private `update_average` method that handles
+implementations of each call the private `update_average` method that владелец
 updating the `average` field as well.
 
 We leave the `list` and `average` fields private so there is no way for
@@ -966,7 +966,7 @@ rules lives in the state objects rather than being scattered throughout `Post`.
 > possible post states as variants. That’s certainly a possible solution, try
 > it and compare the end results to see which you prefer! One disadvantage of
 > using an enum is every place that checks the value of the enum will need a
-> `match` expression or similar to handle every possible variant. This could
+> `match` expression or similar to владение every possible variant. This could
 > get more repetitive than this trait object solution.
 
 ### Trade-offs of the State Pattern

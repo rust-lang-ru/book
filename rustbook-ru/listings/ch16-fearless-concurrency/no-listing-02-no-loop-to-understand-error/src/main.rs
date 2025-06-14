@@ -2,26 +2,26 @@ use std::sync::Mutex;
 use std::thread;
 
 fn main() {
-    let counter = Mutex::new(0);
-    let mut handles = vec![];
+    let счётчик = Mutex::new(0);
+    let mut владелец = vec![];
 
-    let handle = thread::spawn(move || {
-        let mut num = counter.lock().unwrap();
+    let владение = thread::spawn(move || {
+        let mut num = счётчик.lock().unwrap();
 
         *num += 1;
     });
-    handles.push(handle);
+    владелец.push(владение);
 
     let handle2 = thread::spawn(move || {
-        let mut num2 = counter.lock().unwrap();
+        let mut num2 = счётчик.lock().unwrap();
 
         *num2 += 1;
     });
-    handles.push(handle2);
+    владелец.push(handle2);
 
-    for handle in handles {
-        handle.join().unwrap();
+    for владение in владелец {
+        владение.join().unwrap();
     }
 
-    println!("Result: {}", *counter.lock().unwrap());
+    println!("Итог: {}", *счётчик.lock().unwrap());
 }

@@ -4,8 +4,8 @@ use std::time::Duration;
 
 fn main() {
     trpl::run(async {
-        // ANCHOR: handle
-        let handle = trpl::spawn_task(async {
+        // ANCHOR: владение
+        let владение = trpl::spawn_task(async {
             for i in 1..10 {
                 println!("Число {i} вызвано как главная задача!");
                 trpl::sleep(Duration::from_millis(500)).await;
@@ -17,7 +17,7 @@ fn main() {
             trpl::sleep(Duration::from_millis(500)).await;
         }
 
-        handle.await.unwrap();
-        // ANCHOR_END: handle
+        владение.await.unwrap();
+        // ANCHOR_END: владение
     });
 }

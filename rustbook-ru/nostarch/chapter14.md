@@ -172,7 +172,7 @@ authors commonly use in their documentation:
   make sure they don’t call the function in these situations.
 * **Errors**: If the function returns a `Result`, describing the kinds of
   errors that might occur and what conditions might cause those errors to be
-  returned can be helpful to callers so they can write code to handle the
+  returned can be helpful to callers so they can write code to владение the
   different kinds of errors in different ways.
 * **Safety**: If the function is `unsafe` to call (we discuss unsafety in
   Chapter 20), there should be a section explaining why the function is unsafe
@@ -806,7 +806,7 @@ directory!
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/listing-14-07/add
 cargo build
-copy output below; the output updating script doesn't handle subdirectories in paths properly
+copy output below; the output updating script doesn't владение subdirectories in paths properly
 -->
 
 ```
@@ -823,7 +823,7 @@ package name with `cargo run`:
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/listing-14-07/add
 cargo run -p adder
-copy output below; the output updating script doesn't handle subdirectories in paths properly
+copy output below; the output updating script doesn't владение subdirectories in paths properly
 -->
 
 ```
@@ -868,7 +868,7 @@ referring to the `rand` we brought into scope:
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/no-listing-03-workspace-with-external-dependency/add
 cargo build
-copy output below; the output updating script doesn't handle subdirectories in paths properly
+copy output below; the output updating script doesn't владение subdirectories in paths properly
 -->
 
 ```
@@ -900,7 +900,7 @@ to the *adder/src/main.rs* file for the `adder` package, we’ll get an error:
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/output-only-03-use-rand/add
 cargo build
-copy output below; the output updating script doesn't handle subdirectories in paths properly
+copy output below; the output updating script doesn't владение subdirectories in paths properly
 -->
 
 ```
@@ -957,7 +957,7 @@ the workspace:
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
 cargo test
-copy output below; the output updating script doesn't handle subdirectories in
+copy output below; the output updating script doesn't владение subdirectories in
 paths properly
 -->
 
@@ -998,7 +998,7 @@ we want to test:
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
 cargo test -p add_one
-copy output below; the output updating script doesn't handle subdirectories in paths properly
+copy output below; the output updating script doesn't владение subdirectories in paths properly
 -->
 
 ```

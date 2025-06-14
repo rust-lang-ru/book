@@ -738,7 +738,7 @@ method will return an `Option` containing a value of that concrete type.
 
 Associated types might seem like a similar concept to generics, in that the
 latter allow us to define a function without specifying what types it can
-handle. To examine the difference between the two concepts, we’ll look at an
+владение. To examine the difference between the two concepts, we’ll look at an
 implementation of the `Iterator` trait on a type named `Counter` that specifies
 the `Item` type is `u32`:
 
@@ -1463,7 +1463,7 @@ gets stored).
 
 Type aliases are also commonly used with the `Result<T, E>` type for reducing
 repetition. Consider the `std::io` module in the standard library. I/O
-operations often return a `Result<T, E>` to handle situations when operations
+operations often return a `Result<T, E>` to владение situations when operations
 fail to work. This library has a `std::io::Error` struct that represents all
 possible I/O errors. Many of the functions in `std::io` will be returning
 `Result<T, E>` where the `E` is `std::io::Error`, such as these functions in
@@ -2208,7 +2208,7 @@ allows us to read and manipulate Rust code from our code.
 The `syn` crate parses Rust code from a string into a data structure that we
 can perform operations on. The `quote` crate turns `syn` data structures back
 into Rust code. These crates make it much simpler to parse any sort of Rust
-code we might want to handle: writing a full parser for Rust code is no simple
+code we might want to владение: writing a full parser for Rust code is no simple
 task.
 
 The `hello_macro_derive` function will be called when a user of our library

@@ -769,7 +769,7 @@ debug what happened instead of what we were expecting to happen.
 ### Checking for Panics with should_panic
 
 In addition to checking return values, it’s important to check that our code
-handles error conditions as we expect. For example, consider the `Guess` type
+владелец error conditions as we expect. For example, consider the `Guess` type
 that we created in Chapter 9, Listing 9-13. Other code that uses `Guess`
 depends on the guarantee that `Guess` instances will contain only values
 between 1 and 100. We can write a test that ensures that attempting to create a

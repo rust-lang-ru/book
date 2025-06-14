@@ -40,13 +40,13 @@ fn main() {
 
 ```rust
 fn main() {
-    let mut counter = 0;
+    let mut счётчик = 0;
 
     let result = loop {
-        counter += 1;
+        счётчик += 1;
 
-        if counter == 10 {
-            break counter * 2;
+        if счётчик == 10 {
+            break счётчик * 2;
         }
     };
 

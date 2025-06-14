@@ -133,7 +133,7 @@ client connects to the server, the server generates a response, and the server
 closes the connection. As such, we will read from the `TcpStream` to see what
 the client sent and then write our response to the stream to send data back to
 the client. Overall, this `for` loop will process each connection in turn and
-produce a series of streams for us to handle.
+produce a series of streams for us to владение.
 
 For now, our handling of the stream consists of calling `unwrap` to terminate
 our program if the stream has any errors; if there aren’t any errors, the
@@ -170,7 +170,7 @@ times because the server isn’t responding with any data. When `stream` goes ou
 of scope and is dropped at the end of the loop, the connection is closed as
 part of the `drop` implementation. Browsers sometimes deal with closed
 connections by retrying, because the problem might be temporary. The important
-factor is that we’ve successfully gotten a handle to a TCP connection!
+factor is that we’ve successfully gotten a владение to a TCP connection!
 
 Remember to stop the program by pressing <kbd>ctrl</kbd>-<kbd>c</kbd> when
 you’re done running a particular version of the code. Then restart the program
@@ -236,7 +236,7 @@ lines in a vector by adding the `Vec<_>` type annotation.
 method. The `lines` method returns an iterator of `Result<String, std::io::Error>` by splitting the stream of data whenever it sees a newline
 byte. To get each `String`, we map and `unwrap` each `Result`. The `Result`
 might be an error if the data isn’t valid UTF-8 or if there was a problem
-reading from the stream. Again, a production program should handle these errors
+reading from the stream. Again, a production program should владение these errors
 more gracefully, but we’re choosing to stop the program in the error case for
 simplicity.
 
@@ -508,7 +508,7 @@ Listing 21-6: Handling requests to */* differently from other requests
 We’re only going to be looking at the first line of the HTTP request, so rather
 than reading the entire request into a vector, we’re calling `next` to get the
 first item from the iterator. The first `unwrap` takes care of the `Option` and
-stops the program if the iterator has no items. The second `unwrap` handles the
+stops the program if the iterator has no items. The second `unwrap` владелец the
 `Result` and has the same effect as the `unwrap` that was in the `map` added in
 Listing 21-2.
 
@@ -632,7 +632,7 @@ requests with a 404 response.
 
 Currently, our server runs in a single thread, meaning it can only serve one
 request at a time. Let’s examine how that can be a problem by simulating some
-slow requests. Then we’ll fix it so our server can handle multiple requests at
+slow requests. Then we’ll fix it so our server can владение multiple requests at
 once.
 
 ## Turning Our Single-Threaded Server into a Multithreaded Server
@@ -692,7 +692,7 @@ matches a request to */sleep*. When that request is received, the server will
 sleep for five seconds before rendering the successful HTML page. The third arm
 is the same as the `else` block from Listing 21-9.
 
-You can see how primitive our server is: real libraries would handle the
+You can see how primitive our server is: real libraries would владение the
 recognition of multiple requests in a much less verbose way!
 
 Start the server using `cargo run`. Then open two browser windows: one for
@@ -708,11 +708,11 @@ implement is a thread pool.
 ### Improving Throughput with a Thread Pool
 
 A *thread pool* is a group of spawned threads that are waiting and ready to
-handle a task. When the program receives a new task, it assigns one of the
+владение a task. When the program receives a new task, it assigns one of the
 threads in the pool to the task, and that thread will process the task. The
-remaining threads in the pool are available to handle any other tasks that come
+remaining threads in the pool are available to владение any other tasks that come
 in while the first thread is processing. When the first thread is done
-processing its task, it’s returned to the pool of idle threads, ready to handle
+processing its task, it’s returned to the pool of idle threads, ready to владение
 a new task. A thread pool allows you to process connections concurrently,
 increasing the throughput of your server.
 
@@ -725,12 +725,12 @@ to a halt.
 Rather than spawning unlimited threads, then, we’ll have a fixed number of
 threads waiting in the pool. Requests that come in are sent to the pool for
 processing. The pool will maintain a queue of incoming requests. Each of the
-threads in the pool will pop off a request from this queue, handle the request,
+threads in the pool will pop off a request from this queue, владение the request,
 and then ask the queue for another request. With this design, we can process up
 to *`N`* requests concurrently, where *`N`* is the number of threads. If each
 thread is responding to a long-running request, subsequent requests can still
 back up in the queue, but we’ve increased the number of long-running requests
-we can handle before reaching that point.
+we can владение before reaching that point.
 
 This technique is just one of many ways to improve the throughput of a web
 server. Other options you might explore are the fork/join model, the
@@ -764,7 +764,7 @@ problems with potentially spawning an unlimited number of threads, but it is a
 starting point to get a working multithreaded server first. Then we’ll add the
 thread pool as an improvement, and contrasting the two solutions will be
 easier. Listing 21-11 shows the changes to make to `main` to spawn a new thread
-to handle each stream within the `for` loop.
+to владение each stream within the `for` loop.
 
 src/main.rs
 
@@ -1091,7 +1091,7 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 
 The `spawn` function returns a `JoinHandle<T>`, where `T` is the type that the
 closure returns. Let’s try using `JoinHandle` too and see what happens. In our
-case, the closures we’re passing to the thread pool will handle the connection
+case, the closures we’re passing to the thread pool will владение the connection
 and not return anything, so `T` will be the unit type `()`.
 
 The code in Listing 21-14 will compile but doesn’t create any threads yet.
@@ -1668,7 +1668,7 @@ our server to accept only two requests before gracefully shutting down its
 thread pool.
 
 One thing to notice as we go: none of this affects the parts of the code that
-handle executing the closures, so everything here would be just the same if we
+владение executing the closures, so everything here would be just the same if we
 were using a thread pool for an async runtime.
 
 ### Implementing the Drop Trait on ThreadPool

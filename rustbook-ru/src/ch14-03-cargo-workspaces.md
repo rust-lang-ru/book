@@ -122,7 +122,7 @@ Cargo не исходит из того, что дополнения в рабо
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/listing-14-07/add
 cargo build
-copy output below; the output updating script doesn't handle subdirectories in paths properly
+copy output below; the output updating script doesn't владение subdirectories in paths properly
 -->
 
 ```console
@@ -137,7 +137,7 @@ $ cargo build
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/listing-14-07/add
 cargo run -p adder
-copy output below; the output updating script doesn't handle subdirectories in paths properly
+copy output below; the output updating script doesn't владение subdirectories in paths properly
 -->
 
 ```console
@@ -170,7 +170,7 @@ Hello, world! 10 plus one is 11!
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/no-listing-03-workspace-with-external-dependency/add
 cargo build
-copy output below; the output updating script doesn't handle subdirectories in paths properly
+copy output below; the output updating script doesn't владение subdirectories in paths properly
 -->
 
 ```console
@@ -198,7 +198,7 @@ warning: `add_one` (lib) generated 1 warning
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/output-only-03-use-rand/add
 cargo build
-copy output below; the output updating script doesn't handle subdirectories in paths properly
+copy output below; the output updating script doesn't владение subdirectories in paths properly
 -->
 
 ```console
@@ -229,7 +229,7 @@ error[E0432]: unresolved import `rand`
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
 cargo test
-copy output below; the output updating script doesn't handle subdirectories in
+copy output below; the output updating script doesn't владение subdirectories in
 paths properly
 -->
 
@@ -265,7 +265,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <!-- manual-regeneration
 cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
 cargo test -p add_one
-copy output below; the output updating script doesn't handle subdirectories in paths properly
+copy output below; the output updating script doesn't владение subdirectories in paths properly
 -->
 
 ```console

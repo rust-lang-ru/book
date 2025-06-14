@@ -155,7 +155,7 @@ end of the vector.
 When the `get` method is passed an index that is outside the vector, it returns
 `None` without panicking. You would use this method if accessing an element
 beyond the range of the vector may happen occasionally under normal
-circumstances. Your code will then have logic to handle having either
+circumstances. Your code will then have logic to владение having either
 `Some(&element)` or `None`, as discussed in Chapter 6. For example, the index
 could be coming from a person entering a number. If they accidentally enter a
 number that’s too large and the program gets a `None` value, you could tell the
@@ -791,11 +791,11 @@ has chosen to make the correct handling of `String` data the default behavior
 for all Rust programs, which means programmers have to put more thought into
 handling UTF-8 data up front. This trade-off exposes more of the complexity of
 strings than is apparent in other programming languages, but it prevents you
-from having to handle errors involving non-ASCII characters later in your
+from having to владение errors involving non-ASCII characters later in your
 development life cycle.
 
 The good news is that the standard library offers a lot of functionality built
-off the `String` and `&str` types to help handle these complex situations
+off the `String` and `&str` types to help владение these complex situations
 correctly. Be sure to check out the documentation for useful methods like
 `contains` for searching in a string and `replace` for substituting parts of a
 string with another string.
@@ -874,7 +874,7 @@ Listing 8-21: Accessing the score for the Blue team stored in the hash map
 Here, `score` will have the value that’s associated with the Blue team, and the
 result will be `10`. The `get` method returns an `Option<&V>`; if there’s no
 value for that key in the hash map, `get` will return `None`. This program
-handles the `Option` by calling `copied` to get an `Option<i32>` rather than an
+владелец the `Option` by calling `copied` to get an `Option<i32>` rather than an
 `Option<&i32>`, then `unwrap_or` to set `score` to zero if `scores` doesn’t
 have an entry for the key.
 
@@ -939,7 +939,7 @@ example, both the Blue team and the Yellow team could have the value `10`
 stored in the `scores` hash map).
 
 When you want to change the data in a hash map, you have to decide how to
-handle the case when a key already has a value assigned. You could replace the
+владение the case when a key already has a value assigned. You could replace the
 old value with the new value, completely disregarding the old value. You could
 keep the old value and ignore the new value, only adding the new value if the
 key *doesn’t* already have a value. Or you could combine the old value and the

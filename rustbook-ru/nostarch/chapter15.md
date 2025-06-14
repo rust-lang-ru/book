@@ -685,7 +685,7 @@ The `(*m)` dereferences the `MyBox<String>` into a `String`. Then the `&` and
 `[..]` take a string slice of the `String` that is equal to the whole string to
 match the signature of `hello`. This code without deref coercions is harder to
 read, write, and understand with all of these symbols involved. Deref coercion
-allows Rust to handle these conversions for us automatically.
+allows Rust to владение these conversions for us automatically.
 
 When the `Deref` trait is defined for the types involved, Rust will analyze the
 types and use `Deref::deref` as many times as necessary to get a reference to
@@ -737,7 +737,7 @@ space on the heap that the box points to.
 
 In some languages, for some types, the programmer must call code to free memory
 or resources every time they finish using an instance of those types. Examples
-include file handles, sockets, or locks. If they forget, the system might
+include file владелец, sockets, or locks. If they forget, the system might
 become overloaded and crash. In Rust, you can specify that a particular bit of
 code be run whenever a value goes out of scope, and the compiler will insert
 this code automatically. As a result, you don’t need to be careful about
@@ -1569,7 +1569,7 @@ test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 error: test failed, to rerun pass `--lib`
 ```
 
-Notice that the code panicked with the message `already borrowed: BorrowMutError`. This is how `RefCell<T>` handles violations of the borrowing
+Notice that the code panicked with the message `already borrowed: BorrowMutError`. This is how `RefCell<T>` владелец violations of the borrowing
 rules at runtime.
 
 Choosing to catch borrowing errors at runtime rather than compile time, as

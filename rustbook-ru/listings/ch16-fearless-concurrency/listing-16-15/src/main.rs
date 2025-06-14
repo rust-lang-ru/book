@@ -2,22 +2,22 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 fn main() {
-    let counter = Arc::new(Mutex::new(0));
-    let mut handles = vec![];
+    let счётчик = Arc::new(Mutex::new(0));
+    let mut владелец = vec![];
 
     for _ in 0..10 {
-        let counter = Arc::clone(&counter);
-        let handle = thread::spawn(move || {
-            let mut num = counter.lock().unwrap();
+        let счётчик = Arc::clone(&счётчик);
+        let владение = thread::spawn(move || {
+            let mut num = счётчик.lock().unwrap();
 
             *num += 1;
         });
-        handles.push(handle);
+        владелец.push(владение);
     }
 
-    for handle in handles {
-        handle.join().unwrap();
+    for владение in владелец {
+        владение.join().unwrap();
     }
 
-    println!("Result: {}", *counter.lock().unwrap());
+    println!("Итог: {}", *счётчик.lock().unwrap());
 }

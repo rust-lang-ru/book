@@ -1,15 +1,15 @@
-struct Counter {
+struct Счётчик {
     count: u32,
 }
 
-impl Counter {
-    fn new() -> Counter {
-        Counter { count: 0 }
+impl Счётчик {
+    fn new() -> Счётчик {
+        Счётчик { count: 0 }
     }
 }
 
 // ANCHOR: ch19
-impl Iterator for Counter {
+impl Iterator for Счётчик {
     type Item = u32;
 
     fn next(&mut self) -> Option<Self::Item> {

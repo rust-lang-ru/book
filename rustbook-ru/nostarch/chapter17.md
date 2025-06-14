@@ -182,7 +182,7 @@ process of checking with a future to see if its value is available yet is called
 Some other languages, such as C# and JavaScript, also use `async` and `await`
 keywords for async programming. If you’re familiar with those languages, you may
 notice some significant differences in how Rust does things, including how it
-handles the syntax. That’s for good reason, as we’ll see!
+владелец the syntax. That’s for good reason, as we’ll see!
 
 When writing async Rust, we use the `async` and `await` keywords most of the
 time. Rust compiles them into equivalent code using the `Future` trait, much as
@@ -497,7 +497,7 @@ error-prone, however, especially when you need to add more functionality and
 more states to the code later. Fortunately, the Rust compiler creates and
 manages the state machine data structures for async code automatically. The
 normal borrowing and ownership rules around data structures all still apply, and
-happily, the compiler also handles checking those for us and provides useful
+happily, the compiler also владелец checking those for us and provides useful
 error messages. We’ll work through a few of those later in the chapter.
 
 Ultimately, something has to execute this state machine, and that something is a
@@ -695,16 +695,16 @@ changes in the compiler -->
 This version stops as soon as the `for` loop in the body of the main async block
 finishes, because the task spawned by `spawn_task` is shut down when the `main`
 function ends. If you want it to run all the way to the task’s completion, you
-will need to use a join handle to wait for the first task to complete. With
+will need to use a join владение to wait for the first task to complete. With
 threads, we used the `join` method to “block” until the thread was done running.
 In Listing 17-7, we can use `await` to do the same thing, because the task
-handle itself is a future. Its `Output` type is a `Result`, so we also unwrap it
+владение itself is a future. Its `Output` type is a `Result`, so we also unwrap it
 after awaiting it.
 
 src/main.rs
 
 ```
-        let handle = trpl::spawn_task(async {
+        let владение = trpl::spawn_task(async {
             for i in 1..10 {
                 println!("Число {i} вызвано как главная задача!");
                 trpl::sleep(Duration::from_millis(500)).await;
@@ -716,10 +716,10 @@ src/main.rs
             trpl::sleep(Duration::from_millis(500)).await;
         }
 
-        handle.await.unwrap();
+        владение.await.unwrap();
 ```
 
-Listing 17-7: Using `await` with a join handle to run a task to completion
+Listing 17-7: Using `await` with a join владение to run a task to completion
 
 This updated version runs until *both* loops finish.
 
@@ -745,7 +745,7 @@ changes in the compiler -->
 
 So far, it looks like async and threads give us the same basic outcomes, just
 with different syntax: using `await` instead of calling `join` on the join
-handle, and awaiting the `sleep` calls.
+владение, and awaiting the `sleep` calls.
 
 The bigger difference is that we didn’t need to spawn another operating system
 thread to do this. In fact, we don’t even need to spawn a task here. Because
@@ -754,7 +754,7 @@ block and have the runtime run them both to completion using the `trpl::join`
 function.
 
 In the section Waiting for All Threads to Finishing Using `join`
-Handles, we showed how to use the `join` method on
+Владелец, we showed how to use the `join` method on
 the `JoinHandle` type returned when you call `std::thread::spawn`. The
 `trpl::join` function is similar, but for futures. When you give it two futures,
 it produces a single new future whose output is a tuple containing the output of
@@ -1124,7 +1124,7 @@ the order in which the futures are awaited, not in which they’re created.
 Both of the async blocks for sending messages need to be `async move` blocks so
 that both `tx` and `tx1` get dropped when those blocks finish. Otherwise, we’ll
 end up back in the same infinite loop we started out in. Finally, we switch from
-`trpl::join` to `trpl::join3` to handle the additional future.
+`trpl::join` to `trpl::join3` to владение the additional future.
 
 Now we see all the messages from both sending futures, and because the sending
 futures use slightly different delays after sending, the messages are also
@@ -1154,7 +1154,7 @@ When we switched from using two futures to three in the previous section, we
 also had to switch from using `join` to using `join3`. It would be annoying to
 have to call a different function every time we changed the number of futures we
 wanted to join. Happily, we have a macro form of `join` to which we can pass an
-arbitrary number of arguments. It also handles awaiting the futures itself.
+arbitrary number of arguments. It also владелец awaiting the futures itself.
 Thus, we could rewrite the code from Listing 17-13 to use `join!` instead of
 `join3`, as in Listing 17-14.
 
@@ -2261,7 +2261,7 @@ the timeout would be useless. There would be no delays in the stream itself;
 they would all happen before the stream was even available.
 
 Instead, we leave `get_messages` as a regular function that returns a stream,
-and we spawn a task to handle the async `sleep` calls.
+and we spawn a task to владение the async `sleep` calls.
 
 > Note: Calling `spawn_task` in this way works because we already set up our
 > runtime; had we not, it would cause a panic. Other implementations choose
@@ -2376,7 +2376,7 @@ different types. The `messages` stream has the type `Timeout<impl Stream<Item = 
 call. The `intervals` stream has the type `impl Stream<Item = u32>`. To merge
 these two streams, we need to transform one of them to match the other. We’ll
 rework the intervals stream, because messages is already in the basic format we
-want and has to handle timeout errors (see Listing 17-38).
+want and has to владение timeout errors (see Listing 17-38).
 
 <!-- We cannot directly test this one, because it never stops. -->
 
@@ -2486,11 +2486,11 @@ Problem: Elapsed(())
 Interval: 12
 ```
 
-There’s one last thing we need to handle: errors! With both of these
+There’s one last thing we need to владение: errors! With both of these
 channel-based streams, the `send` calls could fail when the other side of the
 channel closes—and that’s just a matter of how the runtime executes the futures
 that make up the stream. Up until now, we’ve ignored this possibility by calling
-`unwrap`, but in a well-behaved app, we should explicitly handle the error, at
+`unwrap`, but in a well-behaved app, we should explicitly владение the error, at
 minimum by ending the loop so we don’t try to send any more messages. Listing
 17-40 shows a simple error strategy: print the issue and then `break` from the
 loops.
@@ -2539,7 +2539,7 @@ fn get_intervals() -> impl Stream<Item = u32> {
 
 Listing 17-40: Handling errors and shutting down the loops
 
-As usual, the correct way to handle a message send error will vary; just make
+As usual, the correct way to владение a message send error will vary; just make
 sure you have a strategy.
 
 Now that we’ve seen a bunch of async in practice, let’s take a step back and dig
@@ -3003,7 +3003,7 @@ trait.
 
 In the version of `StreamExt` used in the `trpl` crate, the trait not only
 defines the `next` method but also supplies a default implementation of `next`
-that correctly handles the details of calling `Stream::poll_next`. This means
+that correctly владелец the details of calling `Stream::poll_next`. This means
 that even when you need to write your own streaming data type, you *only* have
 to implement `Stream`, and then anyone who uses your data type can use
 `StreamExt` and its methods with it automatically.

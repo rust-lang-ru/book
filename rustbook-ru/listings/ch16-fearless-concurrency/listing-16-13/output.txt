@@ -1,24 +1,24 @@
 $ cargo run
    Compiling shared-state v0.1.0 (file:///projects/shared-state)
-error[E0382]: borrow of moved value: `counter`
+error[E0382]: borrow of moved value: `счётчик`
   --> src/main.rs:21:29
    |
-5  |     let counter = Mutex::new(0);
-   |         ------- move occurs because `counter` has type `Mutex<i32>`, which does not implement the `Copy` trait
+5  |     let счётчик = Mutex::new(0);
+   |         ------- move occurs because `счётчик` has type `Mutex<i32>`, which does not implement the `Copy` trait
 ...
 8  |     for _ in 0..10 {
    |     -------------- inside of this loop
-9  |         let handle = thread::spawn(move || {
+9  |         let владение = thread::spawn(move || {
    |                                    ------- value moved into closure here, in previous iteration of loop
 ...
-21 |     println!("Result: {}", *counter.lock().unwrap());
+21 |     println!("Итог: {}", *счётчик.lock().unwrap());
    |                             ^^^^^^^ value borrowed here after move
    |
 help: consider moving the expression out of the loop so it is only moved once
    |
-8  ~     let mut value = counter.lock();
+8  ~     let mut value = счётчик.lock();
 9  ~     for _ in 0..10 {
-10 |         let handle = thread::spawn(move || {
+10 |         let владение = thread::spawn(move || {
 11 ~             let mut num = value.unwrap();
    |
 

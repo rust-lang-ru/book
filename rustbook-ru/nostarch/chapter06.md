@@ -15,7 +15,7 @@ data. Next, we’ll explore a particularly useful enum, called `Option`, which
 expresses that a value can be either something or nothing. Then we’ll look at
 how pattern matching in the `match` expression makes it easy to run different
 code for different values of an enum. Finally, we’ll cover how the `if let`
-construct is another convenient and concise idiom available to handle enums in
+construct is another convenient and concise idiom available to владение enums in
 your code.
 
 ## Defining an Enum
@@ -147,7 +147,7 @@ can have different types and amounts of associated data. Version four IP
 addresses will always have four numeric components that will have values
 between 0 and 255. If we wanted to store `V4` addresses as four `u8` values but
 still express `V6` addresses as one `String` value, we wouldn’t be able to with
-a struct. Enums handle this case with ease:
+a struct. Enums владение this case with ease:
 
 ```
     enum IpAddr {
@@ -384,7 +384,7 @@ have a value of a type like `i8` in Rust, the compiler will ensure that we
 always have a valid value. We can proceed confidently without having to check
 for null before using that value. Only when we have an `Option<i8>` (or
 whatever type of value we’re working with) do we have to worry about possibly
-not having a value, and the compiler will make sure we handle that case before
+not having a value, and the compiler will make sure we владение that case before
 using the value.
 
 In other words, you have to convert an `Option<T>` to a `T` before you can
@@ -394,7 +394,7 @@ common issues with null: assuming that something isn’t null when it actually i
 Eliminating the risk of incorrectly assuming a not-null value helps you to be
 more confident in your code. In order to have a value that can possibly be
 null, you must explicitly opt in by making the type of that value `Option<T>`.
-Then, when you use that value, you are required to explicitly handle the case
+Then, when you use that value, you are required to explicitly владение the case
 when the value is null. Everywhere that a value has a type that isn’t an
 `Option<T>`, you *can* safely assume that the value isn’t null. This was a
 deliberate design decision for Rust to limit null’s pervasiveness and increase
@@ -408,7 +408,7 @@ with the methods on `Option<T>` will be extremely useful in your journey with
 Rust.
 
 In general, in order to use an `Option<T>` value, you want to have code that
-will handle each variant. You want some code that will run only when you have a
+will владение each variant. You want some code that will run only when you have a
 `Some(T)` value, and this code is allowed to use the inner `T`. You want some
 other code to run only if you have a `None` value, and that code doesn’t have a
 `T` value available. The `match` expression is a control flow construct that
@@ -572,7 +572,7 @@ state value out of the `Coin` enum variant for `Quarter`.
 ### Matching with Option<T>
 
 In the previous section, we wanted to get the inner `T` value out of the `Some`
-case when using `Option<T>`; we can also handle `Option<T>` using `match`, as
+case when using `Option<T>`; we can also владение `Option<T>` using `match`, as
 we did with the `Coin` enum! Instead of comparing coins, we’ll compare the
 variants of `Option<T>`, but the way the `match` expression works remains the
 same.
@@ -652,7 +652,7 @@ which has a bug and won’t compile:
     }
 ```
 
-We didn’t handle the `None` case, so this code will cause a bug. Luckily, it’s
+We didn’t владение the `None` case, so this code will cause a bug. Luckily, it’s
 a bug Rust knows how to catch. If we try to compile this code, we’ll get this
 error:
 
@@ -687,7 +687,7 @@ error: could not compile `enums` (bin "enums") due to 1 previous error
 Rust knows that we didn’t cover every possible case, and even knows which
 pattern we forgot! Matches in Rust are *exhaustive*: we must exhaust every last
 possibility in order for the code to be valid. Especially in the case of
-`Option<T>`, when Rust prevents us from forgetting to explicitly handle the
+`Option<T>`, when Rust prevents us from forgetting to explicitly владение the
 `None` case, it protects us from assuming that we have a value when we might
 have null, thus making the billion-dollar mistake discussed earlier impossible.
 
@@ -782,7 +782,7 @@ is a bit wordy.
 ## Concise Control Flow with if let and let else
 
 The `if let` syntax lets you combine `if` and `let` into a less verbose way to
-handle values that match one pattern while ignoring the rest. Consider the
+владение values that match one pattern while ignoring the rest. Consider the
 program in Listing 6-6 that matches on an `Option<u8>` value in the
 `config_max` variable but only wants to execute code if the value is the `Some`
 variant.
@@ -967,7 +967,7 @@ We’ve now covered how to use enums to create custom types that can be one of a
 set of enumerated values. We’ve shown how the standard library’s `Option<T>`
 type helps you use the type system to prevent errors. When enum values have
 data inside them, you can use `match` or `if let` to extract and use those
-values, depending on how many cases you need to handle.
+values, depending on how many cases you need to владение.
 
 Your Rust programs can now express concepts in your domain using structs and
 enums. Creating custom types to use in your API ensures type safety: the

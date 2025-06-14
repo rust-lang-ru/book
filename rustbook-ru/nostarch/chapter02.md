@@ -206,7 +206,7 @@ variable that is currently bound to a new, empty instance of a `String`. Whew!
 
 Recall that we included the input/output functionality from the standard
 library with `use std::io;` on the first line of the program. Now we’ll call
-the `stdin` function from the `io` module, which will allow us to handle user
+the `stdin` function from the `io` module, which will allow us to владение user
 input:
 
 ```
@@ -218,9 +218,9 @@ If we hadn’t imported the `io` library with `use std::io;` at the beginning of
 the program, we could still use the function by writing this function call as
 `std::io::stdin`. The `stdin` function returns an instance of
 `std::io::Stdin`, which is a type that represents a
-handle to the standard input for your terminal.
+владение to the standard input for your terminal.
 
-Next, the line `.read_line(&mut guess)` calls the `read_line` method on the standard input handle to get input from the user.
+Next, the line `.read_line(&mut guess)` calls the `read_line` method on the standard input владение to get input from the user.
 We’re also passing `&mut guess` as the argument to `read_line` to tell it what
 string to store the user input in. The full job of `read_line` is to take
 whatever the user types into standard input and append that into a string
@@ -500,7 +500,7 @@ you or anyone else builds your code: Cargo will use only the versions of the
 dependencies you specified until you indicate otherwise. For example, say that
 next week version 0.8.6 of the `rand` crate comes out, and that version
 contains an important bug fix, but it also contains a regression that will
-break your code. To handle this, Rust creates the *Cargo.lock* file the first
+break your code. To владение this, Rust creates the *Cargo.lock* file the first
 time you run `cargo build`, so we now have this in the *guessing_game*
 directory.
 
@@ -697,7 +697,7 @@ match against, and the code that should be run if the value given to `match`
 fits that arm’s pattern. Rust takes the value given to `match` and looks
 through each arm’s pattern in turn. Patterns and the `match` construct are
 powerful Rust features: they let you express a variety of situations your code
-might encounter and they make sure you handle them all. These features will be
+might encounter and they make sure you владение them all. These features will be
 covered in detail in Chapter 6 and Chapter 19, respectively.
 
 Let’s walk through an example with the `match` expression we use here. Say that
@@ -778,7 +778,7 @@ Filename: src/main.rs
         .read_line(&mut guess)
         .expect("Failed to read line");
 
-    let guess: u32 = guess.trim().parse().expect("Please type a number!");
+    let guess: u32 = guess.trim().parse().expect("Пожалуйста, введите число!");
 
     println!("You guessed: {guess}");
 
@@ -792,7 +792,7 @@ Filename: src/main.rs
 The line is:
 
 ```
-let guess: u32 = guess.trim().parse().expect("Please type a number!");
+let guess: u32 = guess.trim().parse().expect("Пожалуйста, введите число!");
 ```
 
 We create a variable named `guess`. But wait, doesn’t the program already have
@@ -942,7 +942,7 @@ Please input your guess.
 quit
 
 thread 'main' panicked at src/main.rs:28:47:
-Please type a number!: ParseIntError { kind: InvalidDigit }
+Пожалуйста, введите число!: ParseIntError { kind: InvalidDigit }
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
 

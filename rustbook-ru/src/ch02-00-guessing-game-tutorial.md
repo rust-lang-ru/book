@@ -424,7 +424,7 @@ anchor or snip comments
 Вот эта строка:
 
 ```rust,ignore
-let guess: u32 = guess.trim().parse().expect("Please type a number!");
+let guess: u32 = guess.trim().parse().expect("Пожалуйста, введите число!");
 ```
 
 Мы создаём переменную с именем `guess`. Но подождите, разве в программе уже нет переменной с этим именем `guess`? Так и есть, но Ржавчина позволяет нам затенять предыдущее значение <code>guess</code> новым. <em>Затенение</em> позволяет нам повторно использовать имя переменной `guess`, чтобы избежать создания двух единственных переменных, таких как `guess_str` и `guess`, например. Мы рассмотрим это более подробно в главе 3, а пока знайте, что эта функция часто используется, когда необходимо преобразовать значение из одного вида данных в другой.
@@ -506,7 +506,7 @@ You guessed: 59
 You win!
 Please input your guess.
 quit
-thread 'main' panicked at 'Please type a number!: ParseIntError { kind: InvalidDigit }', src/main.rs:28:47
+thread 'main' panicked at 'Пожалуйста, введите число!: ParseIntError { kind: InvalidDigit }', src/main.rs:28:47
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
 

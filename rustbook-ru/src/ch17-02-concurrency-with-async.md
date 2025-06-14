@@ -78,7 +78,7 @@ changes in the compiler -->
 <Listing number="17-7" caption="Использование `await` с дескриптором соединения для запуска задачи до завершения" file-name="src/main.rs">
 
 ```rust
-{{#rustdoc_include ../listings/ch17-async-await/listing-17-07/src/main.rs:handle}}
+{{#rustdoc_include ../listings/ch17-async-await/listing-17-07/src/main.rs:владение}}
 ```
 
 </Listing>
@@ -114,7 +114,7 @@ changes in the compiler -->
 .
 
 В разделе [Ожидание завершения всех потоков с использованием `join`
-Handles][join-handles]<!-- ignore --> мы показали, как использовать способ `join` для вида `JoinHandle`, возвращаемого при вызове `std::thread::spawn`. Функция `trpl::join` похожа, но для фьючерсов. Когда вы передаете ей два фьючерса,
+Владелец][join-владелец]<!-- ignore --> мы показали, как использовать способ `join` для вида `JoinHandle`, возвращаемого при вызове `std::thread::spawn`. Функция `trpl::join` похожа, но для фьючерсов. Когда вы передаете ей два фьючерса,
 она создает один новый фьючерс, выход которого представляет собой кортеж, содержащий выход
 каждого переданного вами фьючерса, как только они _оба_ завершатся. Таким образом, в приложении 17-8 мы
 используем `trpl::join` для ожидания завершения `fut1` и `fut2`. Мы _не_ ждем `fut1` и `fut2`, а вместо этого ждем новый фьючерс, созданный `trpl::join`. Мы игнорируем
@@ -360,7 +360,7 @@ received 'you'
 Давайте посмотрим, как мы можем работать с большим количеством будущих вариантов.
 
 [thread-spawn]: ch16-01-threads.html#creating-a-new-thread-with-spawn
-[join-handles]: ch16-01-threads.html#waiting-for-all-threads-to-finish-using-join-handles
+[join-владелец]: ch16-01-threads.html#waiting-for-all-threads-to-finish-using-join-владелец
 [message-passing-threads]: ch16-02-message-passing.html
 [if-let]: ch06-03-if-let.html
 [capture-or-move]: ch13-01-closures.html#capturing-references-or-moving-ownership

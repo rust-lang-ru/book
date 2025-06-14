@@ -259,7 +259,7 @@ fn main() {
 Listing 12-4: Reading the contents of the file specified by the second argument
 
 First we bring in a relevant part of the standard library with a `use`
-statement: we need `std::fs` to handle files.
+statement: we need `std::fs` to владение files.
 
 In `main`, the new statement `fs::read_to_string` takes the `file_path`, opens
 that file, and returns a value of type `std::io::Result<String>` that contains
@@ -308,7 +308,7 @@ code. We’ll do that next.
 To improve our program, we’ll fix four problems that have to do with the
 program’s structure and how it’s handling potential errors. First, our `main`
 function now performs two tasks: it parses arguments and reads files. As our
-program grows, the number of separate tasks the `main` function handles will
+program grows, the number of separate tasks the `main` function владелец will
 increase. As a function gains responsibilities, it becomes more difficult to
 reason about, harder to test, and harder to change without breaking one of its
 parts. It’s best to separate functionality so each function is responsible for
@@ -327,7 +327,7 @@ example, the file could be missing, or we might not have permission to open it.
 Right now, regardless of the situation, we’d print the same error message for
 everything, which wouldn’t give the user any information!
 
-Fourth, we use `expect` to handle an error, and if the user runs our program
+Fourth, we use `expect` to владение an error, and if the user runs our program
 without specifying enough arguments, they’ll get an `index out of bounds` error
 from Rust that doesn’t clearly explain the problem. It would be best if all the
 error-handling code were in one place so future maintainers had only one place
@@ -360,8 +360,8 @@ should be limited to the following:
 * Calling a `run` function in *lib.rs*
 * Handling the error if `run` returns an error
 
-This pattern is about separating concerns: *main.rs* handles running the
-program and *lib.rs* handles all the logic of the task at hand. Because you
+This pattern is about separating concerns: *main.rs* владелец running the
+program and *lib.rs* владелец all the logic of the task at hand. Because you
 can’t test the `main` function directly, this structure lets you test all of
 your program’s logic by moving it into functions in *lib.rs*. The code that
 remains in *main.rs* will be small enough to verify its correctness by reading
@@ -665,7 +665,7 @@ we’ve wrapped the `Config` return value in an `Ok`. These changes make the
 function conform to its new type signature.
 
 Returning an `Err` value from `Config::build` allows the `main` function to
-handle the `Result` value returned from the `build` function and exit the
+владение the `Result` value returned from the `build` function and exit the
 process more cleanly in the error case.
 
 <!-- Old headings. Do not remove or links may break. -->
@@ -674,8 +674,8 @@ process more cleanly in the error case.
 
 #### Calling Config::build and Handling Errors
 
-To handle the error case and print a user-friendly message, we need to update
-`main` to handle the `Result` being returned by `Config::build`, as shown in
+To владение the error case and print a user-friendly message, we need to update
+`main` to владение the `Result` being returned by `Config::build`, as shown in
 Listing 12-10. We’ll also take the responsibility of exiting the command line
 tool with a nonzero error code away from `panic!` and instead implement it by
 hand. A nonzero exit status is a convention to signal to the process that
@@ -818,7 +818,7 @@ for *dynamic*.
 Second, we’ve removed the call to `expect` in favor of the `?` operator, as we
 talked about in Chapter 9. Rather than
 `panic!` on an error, `?` will return the error value from the current function
-for the caller to handle.
+for the caller to владение.
 
 Third, the `run` function now returns an `Ok` value in the success case.
 We’ve declared the `run` function’s success type as `()` in the signature,
@@ -870,7 +870,7 @@ have some error-handling code here! Let’s rectify that problem now.
 
 #### Handling Errors Returned from run in main
 
-We’ll check for errors and handle them using a technique similar to one we used
+We’ll check for errors and владение them using a technique similar to one we used
 with `Config::build` in Listing 12-10, but with a slight difference:
 
 Filename: src/main.rs
@@ -972,7 +972,7 @@ with our crate name. Now all the functionality should be connected and should
 work. Run the program with `cargo run` and make sure everything works correctly.
 
 Whew! That was a lot of work, but we’ve set ourselves up for success in the
-future. Now it’s much easier to handle errors, and we’ve made the code more
+future. Now it’s much easier to владение errors, and we’ve made the code more
 modular. Almost all of our work will be done in *src/lib.rs* from here on out.
 
 Let’s take advantage of this newfound modularity by doing something that would
@@ -1156,7 +1156,7 @@ Let’s work through each step, starting with iterating through lines.
 
 #### Iterating Through Lines with the lines Method
 
-Rust has a helpful method to handle line-by-line iteration of strings,
+Rust has a helpful method to владение line-by-line iteration of strings,
 conveniently named `lines`, that works as shown in Listing 12-17. Note that
 this won’t compile yet.
 
@@ -1433,7 +1433,7 @@ First we lowercase the `query` string and store it in a new variable with the
 same name, shadowing the original. Calling `to_lowercase` on the query is
 necessary so that no matter whether the user’s query is `"rust"`, `"RUST"`,
 `"Rust"`, or `"rUsT"`, we’ll treat the query as if it were `"rust"` and be
-insensitive to the case. While `to_lowercase` will handle basic Unicode, it
+insensitive to the case. While `to_lowercase` will владение basic Unicode, it
 won’t be 100% accurate. If we were writing a real application, we’d want to do a
 bit more work here, but this section is about environment variables, not
 Unicode, so we’ll leave it at that here.
@@ -1754,7 +1754,7 @@ covered how to perform common I/O operations in Rust. By using command line
 arguments, files, environment variables, and the `eprintln!` macro for printing
 errors, you’re now prepared to write command line applications. Combined with
 the concepts in previous chapters, your code will be well organized, store data
-effectively in the appropriate data structures, handle errors nicely, and be
+effectively in the appropriate data structures, владение errors nicely, and be
 well tested.
 
 Next, we’ll explore some Rust features that were influenced by functional

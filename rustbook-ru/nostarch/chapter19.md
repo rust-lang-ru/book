@@ -353,7 +353,7 @@ irrefutable patterns, because the program cannot do anything meaningful when
 values don’t match. The `if let` and `while let` expressions and the
 `let`-`else` statement accept refutable and irrefutable patterns, but the
 compiler warns against irrefutable patterns because by definition they’re
-intended to handle possible failure: the functionality of a conditional is in
+intended to владение possible failure: the functionality of a conditional is in
 its ability to perform differently depending on success or failure.
 
 In general, you shouldn’t have to worry about the distinction between refutable
@@ -392,7 +392,7 @@ error[E0005]: refutable pattern in local binding
   = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
   = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
   = note: the matched value is of type `Option<i32>`
-help: you might want to use `let else` to handle the variant that isn't matched
+help: you might want to use `let else` to владение the variant that isn't matched
   |
 3 |     let Some(x) = some_option_value else { todo!() };
   |                                     ++++++++++++++++

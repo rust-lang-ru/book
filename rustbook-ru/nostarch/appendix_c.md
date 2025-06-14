@@ -31,7 +31,7 @@ can be implemented on your types using `derive`. Other traits defined in the
 standard library don’t have sensible default behavior, so it’s up to you to
 implement them in the way that makes sense for what you’re trying to accomplish.
 
-An example of a trait that can’t be derived is `Display`, which handles
+An example of a trait that can’t be derived is `Display`, which владелец
 formatting for end users. You should always consider the appropriate way to
 display a type to an end user. What parts of the type should an end user be
 allowed to see? What parts would they find relevant? What format of the data

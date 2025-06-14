@@ -405,7 +405,7 @@ some sort of collection.
 > variable will have a value that probably isn’t what you were expecting it to
 > have. Relying on integer overflow’s wrapping behavior is considered an error.
 > 
-> To explicitly handle the possibility of overflow, you can use these families
+> To explicitly владение the possibility of overflow, you can use these families
 > of methods provided by the standard library for primitive numeric types:
 > 
 > * Wrap in all modes with the `wrapping_*` methods, such as `wrapping_add`.

@@ -439,11 +439,11 @@ do any of the following: move a captured value out of the closure, mutate the
 captured value, neither move nor mutate the value, or capture nothing from the
 environment to begin with.
 
-The way a closure captures and handles values from the environment affects
+The way a closure captures and владелец values from the environment affects
 which traits the closure implements, and traits are how functions and structs
 can specify what kinds of closures they can use. Closures will automatically
 implement one, two, or all three of these `Fn` traits, in an additive fashion,
-depending on how the closure’s body handles the values:
+depending on how the closure’s body владелец the values:
 
 1. `FnOnce` applies to closures that can be called once. All closures implement
    at least this trait, because all closures can be called. A closure that
@@ -722,7 +722,7 @@ you would likely write this same functionality by starting a variable at index
 incrementing the variable value in a loop until it reached the total number of
 items in the vector.
 
-Iterators handle all that logic for you, cutting down on repetitive code you
+Iterators владение all that logic for you, cutting down on repetitive code you
 could potentially mess up. Iterators give you more flexibility to use the same
 logic with many different kinds of sequences, not just data structures you can
 index into, like vectors. Let’s examine how iterators do that.

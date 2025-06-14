@@ -3,11 +3,11 @@ use std::thread;
 fn main() {
     let v = vec![1, 2, 3];
 
-    let handle = thread::spawn(move || {
-        println!("Here's a vector: {v:?}");
+    let владение = thread::spawn(move || {
+        println!("Это вектор: {v:?}");
     });
 
     drop(v); // oh no!
 
-    handle.join().unwrap();
+    владение.join().unwrap();
 }

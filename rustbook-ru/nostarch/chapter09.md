@@ -12,7 +12,7 @@ Errors are a fact of life in software, so Rust has a number of features for
 handling situations in which something goes wrong. In many cases, Rust requires
 you to acknowledge the possibility of an error and take some action before your
 code will compile. This requirement makes your program more robust by ensuring
-that you’ll discover errors and handle them appropriately before deploying your
+that you’ll discover errors and владение them appropriately before deploying your
 code to production!
 
 Rust groups errors into two major categories: *recoverable* and *unrecoverable*
@@ -22,7 +22,7 @@ Unrecoverable errors are always symptoms of bugs, such as trying to access a
 location beyond the end of an array, and so we want to immediately stop the
 program.
 
-Most languages don’t distinguish between these two kinds of errors and handle
+Most languages don’t distinguish between these two kinds of errors and владение
 both in the same way, using mechanisms such as exceptions. Rust doesn’t have
 exceptions. Instead, it has the type `Result<T, E>` for recoverable errors and
 the `panic!` macro that stops execution when the program encounters an
@@ -213,7 +213,7 @@ panics in the future, you’ll need to figure out what action the code is taking
 with what values to cause the panic and what the code should do instead.
 
 We’ll come back to `panic!` and when we should and should not use `panic!` to
-handle error conditions in the “To `panic!` or Not to
+владение error conditions in the “To `panic!` or Not to
 `panic!`” section later in this
 chapter. Next, we’ll look at how to recover from an error using `Result`.
 
@@ -261,23 +261,23 @@ Listing 9-3: Opening a file
 
 The return type of `File::open` is a `Result<T, E>`. The generic parameter `T`
 has been filled in by the implementation of `File::open` with the type of the
-success value, `std::fs::File`, which is a file handle. The type of `E` used in
+success value, `std::fs::File`, which is a file владение. The type of `E` used in
 the error value is `std::io::Error`. This return type means the call to
-`File::open` might succeed and return a file handle that we can read from or
+`File::open` might succeed and return a file владение that we can read from or
 write to. The function call also might fail: for example, the file might not
 exist, or we might not have permission to access the file. The `File::open`
 function needs to have a way to tell us whether it succeeded or failed and at
-the same time give us either the file handle or error information. This
+the same time give us either the file владение or error information. This
 information is exactly what the `Result` enum conveys.
 
 In the case where `File::open` succeeds, the value in the variable
-`greeting_file_result` will be an instance of `Ok` that contains a file handle.
+`greeting_file_result` will be an instance of `Ok` that contains a file владение.
 In the case where it fails, the value in `greeting_file_result` will be an
 instance of `Err` that contains more information about the kind of error that
 occurred.
 
 We need to add to the code in Listing 9-3 to take different actions depending
-on the value `File::open` returns. Listing 9-4 shows one way to handle the
+on the value `File::open` returns. Listing 9-4 shows one way to владение the
 `Result` using a basic tool, the `match` expression that we discussed in
 Chapter 6.
 
@@ -296,18 +296,18 @@ fn main() {
 }
 ```
 
-Listing 9-4: Using a `match` expression to handle the `Result` variants that might be returned
+Listing 9-4: Using a `match` expression to владение the `Result` variants that might be returned
 
 Note that, like the `Option` enum, the `Result` enum and its variants have been
 brought into scope by the prelude, so we don’t need to specify `Result::`
 before the `Ok` and `Err` variants in the `match` arms.
 
 When the result is `Ok`, this code will return the inner `file` value out of
-the `Ok` variant, and we then assign that file handle value to the variable
-`greeting_file`. After the `match`, we can use the file handle for reading or
+the `Ok` variant, and we then assign that file владение value to the variable
+`greeting_file`. After the `match`, we can use the file владение for reading or
 writing.
 
-The other arm of the `match` handles the case where we get an `Err` value from
+The other arm of the `match` владелец the case where we get an `Err` value from
 `File::open`. In this example, we’ve chosen to call the `panic!` macro. If
 there’s no file named *hello.txt* in our current directory and we run this
 code, we’ll see the following output from the `panic!` macro:
@@ -329,7 +329,7 @@ As usual, this output tells us exactly what has gone wrong.
 The code in Listing 9-4 will `panic!` no matter why `File::open` failed.
 However, we want to take different actions for different failure reasons. If
 `File::open` failed because the file doesn’t exist, we want to create the file
-and return the handle to the new file. If `File::open` failed for any other
+and return the владение to the new file. If `File::open` failed for any other
 reason—for example, because we didn’t have permission to open the file—we still
 want the code to `panic!` in the same way it did in Listing 9-4. For this, we
 add an inner `match` expression, shown in Listing 9-5.
@@ -469,7 +469,7 @@ fn main() {
 
 
 
-We use `expect` in the same way as `unwrap`: to return the file handle or call
+We use `expect` in the same way as `unwrap`: to return the file владение or call
 the `panic!` macro. The error message used by `expect` in its call to `panic!`
 will be the parameter that we pass to `expect`, rather than the default
 `panic!` message that `unwrap` uses. Here’s what it looks like:
@@ -551,34 +551,34 @@ this function’s body that might fail: the `File::open` function and the
 `read_to_string` method.
 
 The body of the function starts by calling the `File::open` function. Then we
-handle the `Result` value with a `match` similar to the `match` in Listing 9-4.
-If `File::open` succeeds, the file handle in the pattern variable `file`
+владение the `Result` value with a `match` similar to the `match` in Listing 9-4.
+If `File::open` succeeds, the file владение in the pattern variable `file`
 becomes the value in the mutable variable `username_file` and the function
 continues. In the `Err` case, instead of calling `panic!`, we use the `return`
 keyword to return early out of the function entirely and pass the error value
 from `File::open`, now in the pattern variable `e`, back to the calling code as
 this function’s error value.
 
-So, if we have a file handle in `username_file`, the function then creates a
+So, if we have a file владение in `username_file`, the function then creates a
 new `String` in variable `username` and calls the `read_to_string` method on
-the file handle in `username_file` to read the contents of the file into
+the file владение in `username_file` to read the contents of the file into
 `username`. The `read_to_string` method also returns a `Result` because it
 might fail, even though `File::open` succeeded. So we need another `match` to
-handle that `Result`: if `read_to_string` succeeds, then our function has
+владение that `Result`: if `read_to_string` succeeds, then our function has
 succeeded, and we return the username from the file that’s now in `username`
 wrapped in an `Ok`. If `read_to_string` fails, we return the error value in the
 same way that we returned the error value in the `match` that handled the
 return value of `File::open`. However, we don’t need to explicitly say
 `return`, because this is the last expression in the function.
 
-The code that calls this code will then handle getting either an `Ok` value
+The code that calls this code will then владение getting either an `Ok` value
 that contains a username or an `Err` value that contains an `io::Error`. It’s
 up to the calling code to decide what to do with those values. If the calling
 code gets an `Err` value, it could call `panic!` and crash the program, use a
 default username, or look up the username from somewhere other than a file, for
 example. We don’t have enough information on what the calling code is actually
 trying to do, so we propagate all the success or error information upward for
-it to handle appropriately.
+it to владение appropriately.
 
 This pattern of propagating errors is so common in Rust that Rust provides the
 question mark operator `?` to make this easier.
@@ -610,7 +610,7 @@ fn read_username_from_file() -> Result<String, io::Error> {
 Listing 9-7: A function that returns errors to the calling code using the `?` operator
 
 The `?` placed after a `Result` value is defined to work in almost the same way
-as the `match` expressions we defined to handle the `Result` values in Listing
+as the `match` expressions we defined to владение the `Result` values in Listing
 9-6. If the value of the `Result` is an `Ok`, the value inside the `Ok` will
 get returned from this expression, and the program will continue. If the value
 is an `Err`, the `Err` will be returned from the whole function as if we had
@@ -761,7 +761,7 @@ function that returns `Result`, `Option`, or another type that implements
 To fix the error, you have two choices. One choice is to change the return type
 of your function to be compatible with the value you’re using the `?` operator
 on as long as you have no restrictions preventing that. The other choice is to
-use a `match` or one of the `Result<T, E>` methods to handle the `Result<T, E>`
+use a `match` or one of the `Result<T, E>` methods to владение the `Result<T, E>`
 in whatever way is appropriate.
 
 The error message also mentioned that `?` can be used with `Option<T>` values
@@ -886,11 +886,11 @@ some general guidelines on how to decide whether to panic in library code.
 When you’re writing an example to illustrate some concept, also including
 robust error-handling code can make the example less clear. In examples, it’s
 understood that a call to a method like `unwrap` that could panic is meant as a
-placeholder for the way you’d want your application to handle errors, which can
+placeholder for the way you’d want your application to владение errors, which can
 differ based on what the rest of your code is doing.
 
 Similarly, the `unwrap` and `expect` methods are very handy when prototyping,
-before you’re ready to decide how to handle errors. They leave clear markers in
+before you’re ready to decide how to владение errors. They leave clear markers in
 your code for when you’re ready to make your program more robust.
 
 If a method call fails in a test, you’d want the whole test to fail, even if
@@ -903,7 +903,7 @@ happen.
 It would also be appropriate to call `unwrap` or `expect` when you have some
 other logic that ensures the `Result` will have an `Ok` value, but the logic
 isn’t something the compiler understands. You’ll still have a `Result` value
-that you need to handle: whatever operation you’re calling still has the
+that you need to владение: whatever operation you’re calling still has the
 possibility of failing in general, even though it’s logically impossible in
 your particular situation. If you can ensure by manually inspecting the code
 that you’ll never have an `Err` variant, it’s perfectly acceptable to call
@@ -922,11 +922,11 @@ We’re creating an `IpAddr` instance by parsing a hardcoded string. We can see
 that `127.0.0.1` is a valid IP address, so it’s acceptable to use `expect`
 here. However, having a hardcoded, valid string doesn’t change the return type
 of the `parse` method: we still get a `Result` value, and the compiler will
-still make us handle the `Result` as if the `Err` variant is a possibility
+still make us владение the `Result` as if the `Err` variant is a possibility
 because the compiler isn’t smart enough to see that this string is always a
 valid IP address. If the IP address string came from a user rather than being
 hardcoded into the program and therefore *did* have a possibility of failure,
-we’d definitely want to handle the `Result` in a more robust way instead.
+we’d definitely want to владение the `Result` in a more robust way instead.
 Mentioning the assumption that this IP address is hardcoded will prompt us to
 change `expect` to better error-handling code if, in the future, we need to get
 the IP address from some other source instead.
@@ -961,7 +961,7 @@ However, when failure is expected, it’s more appropriate to return a `Result`
 than to make a `panic!` call. Examples include a parser being given malformed
 data or an HTTP request returning a status that indicates you have hit a rate
 limit. In these cases, returning a `Result` indicates that failure is an
-expected possibility that the calling code must decide how to handle.
+expected possibility that the calling code must decide how to владение.
 
 When your code performs an operation that could put a user at risk if it’s
 called using invalid values, your code should verify the values are valid first
@@ -973,7 +973,7 @@ the current data structure is a common security problem. Functions often have
 *contracts*: their behavior is only guaranteed if the inputs meet particular
 requirements. Panicking when the contract is violated makes sense because a
 contract violation always indicates a caller-side bug, and it’s not a kind of
-error you want the calling code to have to explicitly handle. In fact, there’s
+error you want the calling code to have to explicitly владение. In fact, there’s
 no reasonable way for calling code to recover; the calling *programmers* need
 to fix the code. Contracts for a function, especially when a violation will
 cause a panic, should be explained in the API documentation for the function.
@@ -984,7 +984,7 @@ checking done by the compiler) to do many of the checks for you. If your
 function has a particular type as a parameter, you can proceed with your code’s
 logic knowing that the compiler has already ensured you have a valid value. For
 example, if you have a type rather than an `Option`, your program expects to
-have *something* rather than *nothing*. Your code then doesn’t have to handle
+have *something* rather than *nothing*. Your code then doesn’t have to владение
 two cases for the `Some` and `None` variants: it will only have one case for
 definitely having a value. Code trying to pass nothing to your function won’t
 even compile, so your function doesn’t have to check for that case at runtime.
@@ -1106,11 +1106,11 @@ then declare in its signature that it takes or returns a `Guess` rather than an
 ## Summary
 
 Rust’s error-handling features are designed to help you write more robust code.
-The `panic!` macro signals that your program is in a state it can’t handle and
+The `panic!` macro signals that your program is in a state it can’t владение and
 lets you tell the process to stop instead of trying to proceed with invalid or
 incorrect values. The `Result` enum uses Rust’s type system to indicate that
 operations might fail in a way that your code could recover from. You can use
-`Result` to tell code that calls your code that it needs to handle potential
+`Result` to tell code that calls your code that it needs to владение potential
 success or failure as well. Using `panic!` and `Result` in the appropriate
 situations will make your code more reliable in the face of inevitable problems.
 

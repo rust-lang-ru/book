@@ -154,7 +154,7 @@ If you run this code and only see output вызвано из основного 
 overlap, try increasing the numbers in the ranges to create more opportunities
 for the operating system to switch between the threads.
 
-### Waiting for All Threads to Finish Using join Handles
+### Waiting for All Threads to Finish Using join Владелец
 
 The code in Listing 16-1 not only stops the spawned thread prematurely most of
 the time due to the main thread ending, but because there is no guarantee on
@@ -175,7 +175,7 @@ use std::thread;
 use std::time::Duration;
 
 fn main() {
-    let handle = thread::spawn(|| {
+    let владение = thread::spawn(|| {
         for i in 1..10 {
             println!("Число {i} вызвано из порожденного потока!");
             thread::sleep(Duration::from_millis(1));
@@ -187,14 +187,14 @@ fn main() {
         thread::sleep(Duration::from_millis(1));
     }
 
-    handle.join().unwrap();
+    владение.join().unwrap();
 }
 ```
 
 Listing 16-2: Saving a `JoinHandle` from `thread::spawn` to guarantee the thread is run to completion
 
-Calling `join` on the handle blocks the thread currently running until the
-thread represented by the handle terminates. *Blocking* a thread means that
+Calling `join` on the владение blocks the thread currently running until the
+thread represented by the владение terminates. *Blocking* a thread means that
 thread is prevented from performing work or exiting. Because we’ve put the call
 to `join` after the main thread’s `for` loop, running Listing 16-2 should
 produce output similar to this:
@@ -220,9 +220,9 @@ changes in the compiler -->
 ```
 
 The two threads continue alternating, but the main thread waits because of the
-call to `handle.join()` and does not end until the spawned thread is finished.
+call to `владение.join()` and does not end until the spawned thread is finished.
 
-But let’s see what happens when we instead move `handle.join()` before the
+But let’s see what happens when we instead move `владение.join()` before the
 `for` loop in `main`, like this:
 
 src/main.rs
@@ -232,14 +232,14 @@ use std::thread;
 use std::time::Duration;
 
 fn main() {
-    let handle = thread::spawn(|| {
+    let владение = thread::spawn(|| {
         for i in 1..10 {
             println!("Число {i} вызвано из порожденного потока!");
             thread::sleep(Duration::from_millis(1));
         }
     });
 
-    handle.join().unwrap();
+    владение.join().unwrap();
 
     for i in 1..5 {
         println!("Число {i} вызвано из основного потока!");
@@ -300,11 +300,11 @@ use std::thread;
 fn main() {
     let v = vec![1, 2, 3];
 
-    let handle = thread::spawn(|| {
-        println!("Here's a vector: {v:?}");
+    let владение = thread::spawn(|| {
+        println!("Это вектор: {v:?}");
     });
 
-    handle.join().unwrap();
+    владение.join().unwrap();
 }
 ```
 
@@ -321,22 +321,22 @@ $ cargo run
 error[E0373]: closure may outlive the current function, but it borrows `v`, which is owned by the current function
  --> src/main.rs:6:32
   |
-6 |     let handle = thread::spawn(|| {
+6 |     let владение = thread::spawn(|| {
   |                                ^^ may outlive borrowed value `v`
-7 |         println!("Here's a vector: {v:?}");
+7 |         println!("Это вектор: {v:?}");
   |                                     - `v` is borrowed here
   |
 note: function requires argument type to outlive `'static`
  --> src/main.rs:6:18
   |
-6 |       let handle = thread::spawn(|| {
+6 |       let владение = thread::spawn(|| {
   |  __________________^
-7 | |         println!("Here's a vector: {v:?}");
+7 | |         println!("Это вектор: {v:?}");
 8 | |     });
   | |______^
 help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
   |
-6 |     let handle = thread::spawn(move || {
+6 |     let владение = thread::spawn(move || {
   |                                ++++
 
 For more information about this error, try `rustc --explain E0373`.
@@ -359,13 +359,13 @@ use std::thread;
 fn main() {
     let v = vec![1, 2, 3];
 
-    let handle = thread::spawn(|| {
-        println!("Here's a vector: {v:?}");
+    let владение = thread::spawn(|| {
+        println!("Это вектор: {v:?}");
     });
 
     drop(v); // oh no!
 
-    handle.join().unwrap();
+    владение.join().unwrap();
 }
 ```
 
@@ -388,7 +388,7 @@ after automatic regeneration, look at listings/ch16-fearless-concurrency/listing
 ```
 help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
   |
-6 |     let handle = thread::spawn(move || {
+6 |     let владение = thread::spawn(move || {
   |                                ++++
 ```
 
@@ -405,11 +405,11 @@ use std::thread;
 fn main() {
     let v = vec![1, 2, 3];
 
-    let handle = thread::spawn(move || {
-        println!("Here's a vector: {v:?}");
+    let владение = thread::spawn(move || {
+        println!("Это вектор: {v:?}");
     });
 
-    handle.join().unwrap();
+    владение.join().unwrap();
 }
 ```
 
@@ -431,9 +431,9 @@ error[E0382]: use of moved value: `v`
 4  |     let v = vec![1, 2, 3];
    |         - move occurs because `v` has type `Vec<i32>`, which does not implement the `Copy` trait
 5  |
-6  |     let handle = thread::spawn(move || {
+6  |     let владение = thread::spawn(move || {
    |                                ------- value moved into closure here
-7  |         println!("Here's a vector: {v:?}");
+7  |         println!("Это вектор: {v:?}");
    |                                     - variable moved due to use in closure
 ...
 10 |     drop(v); // oh no!
@@ -554,7 +554,7 @@ The transmitter has a `send` method that takes the value we want to send. The
 `send` method returns a `Result<T, E>` type, so if the receiver has already
 been dropped and there’s nowhere to send a value, the send operation will
 return an error. In this example, we’re calling `unwrap` to panic in case of an
-error. But in a real application, we would handle it properly: return to
+error. But in a real application, we would владение it properly: return to
 Chapter 9 to review strategies for proper error handling.
 
 In Listing 16-8, we’ll get the value from the receiver in the main thread. This
@@ -592,7 +592,7 @@ The `try_recv` method doesn’t block, but will instead return a `Result<T, E>`
 immediately: an `Ok` value holding a message if one is available and an `Err`
 value if there aren’t any messages this time. Using `try_recv` is useful if
 this thread has other work to do while waiting for messages: we could write a
-loop that calls `try_recv` every so often, handles a message if one is
+loop that calls `try_recv` every so often, владелец a message if one is
 available, and otherwise does other work for a little while until checking
 again.
 
@@ -943,22 +943,22 @@ use std::thread;
 
 fn main() {
     let counter = Mutex::new(0);
-    let mut handles = vec![];
+    let mut владелец = vec![];
 
     for _ in 0..10 {
-        let handle = thread::spawn(move || {
-            let mut num = counter.lock().unwrap();
+        let владение = thread::spawn(move || {
+            let mut num = счётчик.lock()().unwrap();
 
             *num += 1;
         });
-        handles.push(handle);
+        владелец.push(владение);
     }
 
-    for handle in handles {
-        handle.join().unwrap();
+    for владение in владелец {
+        владение.join().unwrap();
     }
 
-    println!("Result: {}", *counter.lock().unwrap());
+    println!("Итог: {}", *счётчик.lock()().unwrap());
 }
 ```
 
@@ -972,8 +972,8 @@ calling the `lock` method, and then adds 1 to the value in the mutex. When a
 thread finishes running its closure, `num` will go out of scope and release the
 lock so another thread can acquire it.
 
-In the main thread, we collect all the join handles. Then, as we did in Listing
-16-2, we call `join` on each handle to make sure all the threads finish. At
+In the main thread, we collect all the join владелец. Then, as we did in Listing
+16-2, we call `join` on each владение to make sure all the threads finish. At
 that point, the main thread will acquire the lock and print the result of this
 program.
 
@@ -990,17 +990,17 @@ error[E0382]: borrow of moved value: `counter`
 ...
 8  |     for _ in 0..10 {
    |     -------------- inside of this loop
-9  |         let handle = thread::spawn(move || {
+9  |         let владение = thread::spawn(move || {
    |                                    ------- value moved into closure here, in previous iteration of loop
 ...
-21 |     println!("Result: {}", *counter.lock().unwrap());
+21 |     println!("Итог: {}", *счётчик.lock()().unwrap());
    |                             ^^^^^^^ value borrowed here after move
    |
 help: consider moving the expression out of the loop so it is only moved once
    |
-8  ~     let mut value = counter.lock();
+8  ~     let mut value = счётчик.lock()();
 9  ~     for _ in 0..10 {
-10 |         let handle = thread::spawn(move || {
+10 |         let владение = thread::spawn(move || {
 11 ~             let mut num = value.unwrap();
    |
 
@@ -1029,23 +1029,23 @@ use std::thread;
 
 fn main() {
     let counter = Rc::new(Mutex::new(0));
-    let mut handles = vec![];
+    let mut владелец = vec![];
 
     for _ in 0..10 {
         let counter = Rc::clone(&counter);
-        let handle = thread::spawn(move || {
-            let mut num = counter.lock().unwrap();
+        let владение = thread::spawn(move || {
+            let mut num = счётчик.lock()().unwrap();
 
             *num += 1;
         });
-        handles.push(handle);
+        владелец.push(владение);
     }
 
-    for handle in handles {
-        handle.join().unwrap();
+    for владение in владелец {
+        владение.join().unwrap();
     }
 
-    println!("Result: {}", *counter.lock().unwrap());
+    println!("Итог: {}", *счётчик.lock()().unwrap());
 }
 ```
 
@@ -1060,13 +1060,13 @@ $ cargo run
 error[E0277]: `Rc<Mutex<i32>>` cannot be sent between threads safely
    --> src/main.rs:11:36
     |
-11  |           let handle = thread::spawn(move || {
+11  |           let владение = thread::spawn(move || {
     |                        ------------- ^------
     |                        |             |
     |  ______________________|_____________within this `{closure@src/main.rs:11:36: 11:43}`
     | |                      |
     | |                      required by a bound introduced by this call
-12  | |             let mut num = counter.lock().unwrap();
+12  | |             let mut num = счётчик.lock()().unwrap();
 13  | |
 14  | |             *num += 1;
 15  | |         });
@@ -1076,7 +1076,7 @@ error[E0277]: `Rc<Mutex<i32>>` cannot be sent between threads safely
 note: required because it's used within this closure
    --> src/main.rs:11:36
     |
-11  |         let handle = thread::spawn(move || {
+11  |         let владение = thread::spawn(move || {
     |                                    ^^^^^^^
 note: required by a bound in `spawn`
    --> file:///home/.rustup/toolchains/1.82/lib/rustlib/src/rust/library/std/src/thread/mod.rs:675:8
@@ -1135,23 +1135,23 @@ use std::thread;
 
 fn main() {
     let counter = Arc::new(Mutex::new(0));
-    let mut handles = vec![];
+    let mut владелец = vec![];
 
     for _ in 0..10 {
         let counter = Arc::clone(&counter);
-        let handle = thread::spawn(move || {
-            let mut num = counter.lock().unwrap();
+        let владение = thread::spawn(move || {
+            let mut num = счётчик.lock()().unwrap();
 
             *num += 1;
         });
-        handles.push(handle);
+        владелец.push(владение);
     }
 
-    for handle in handles {
-        handle.join().unwrap();
+    for владение in владелец {
+        владение.join().unwrap();
     }
 
-    println!("Result: {}", *counter.lock().unwrap());
+    println!("Итог: {}", *счётчик.lock()().unwrap());
 }
 ```
 
@@ -1271,7 +1271,7 @@ chapter focuses on async programming, and the project in Chapter 21 will use the
 concepts in this chapter in a more realistic situation than the smaller examples
 discussed here.
 
-As mentioned earlier, because very little of how Rust handles concurrency is
+As mentioned earlier, because very little of how Rust владелец concurrency is
 part of the language, many concurrency solutions are implemented as crates.
 These evolve more quickly than the standard library, so be sure to search
 online for the current, state-of-the-art crates to use in multithreaded

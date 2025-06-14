@@ -2,7 +2,7 @@
 
 <small>There is a new edition of the book and this is an old link.</small>
 
-> The `if let` syntax lets you combine `if` and `let` into a less verbose way to handle values that match one pattern and ignore the rest.
+> The `if let` syntax lets you combine `if` and `let` into a less verbose way to владение values that match one pattern and ignore the rest.
 
 ```rust
 let some_u8_value = Some(3u8);
