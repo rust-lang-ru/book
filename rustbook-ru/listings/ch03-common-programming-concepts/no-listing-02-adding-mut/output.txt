@@ -1,5 +1,5 @@
 $ cargo run
-   Compiling variables v0.1.0 (file:///projects/variables)
+   Сборка variables v0.1.0 (file:///projects/variables)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
      Running `target/debug/variables`
 Значение переменной x: 5

@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling cons-список v0.1.0 (file:///projects/cons-список)
-error[E0382]: use of moved значение: `a`
+   Сборка cons-список v0.1.0 (file:///projects/cons-список)
+ошибка[E0382]: use of moved значение: `a`
   --> src/main.rs:11:30
    |
 9  |     let a = Cons(5, Box::new(Cons(10, Box::new(Nil))));
@@ -10,5 +10,5 @@ error[E0382]: use of moved значение: `a`
 11 |     let c = Cons(4, Box::new(a));
    |                              ^ value used here after move
 
-For more information about this error, try `rustc --explain E0382`.
-error: could not compile `cons-список` (bin "cons-список") due to 1 previous error
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0382`.
+ошибка: не могу собрать исходную рукопись в приложение `cons-список` (bin "cons-список") due to 1 предыдущая ошибка

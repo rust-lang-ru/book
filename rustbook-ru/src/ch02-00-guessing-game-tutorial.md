@@ -201,7 +201,7 @@ input 6 -->
 
 ```console
 $ cargo run
-   Compiling игра_угадай_число v0.1.0 (file:///projects/guessing_game)
+   Сборка игра_угадай_число v0.1.0 (file:///projects/guessing_game)
     Finished dev [unoptimized + debuginfo] target(s) in 6.44s
      Running `target/debug/guessing_game`
 Угадай число!
@@ -256,14 +256,14 @@ $ cargo build
   Downloaded ppv-lite86 v0.2.16
   Downloaded rand_chacha v0.3.1
   Downloaded rand_core v0.6.3
-   Compiling libc v0.2.127
-   Compiling getrandom v0.2.7
-   Compiling cfg-if v1.0.0
-   Compiling ppv-lite86 v0.2.16
-   Compiling rand_core v0.6.3
-   Compiling rand_chacha v0.3.1
-   Compiling rand v0.8.5
-   Compiling игра_угадай_число v0.1.0 (file:///projects/guessing_game)
+   Сборка libc v0.2.127
+   Сборка getrandom v0.2.7
+   Сборка cfg-if v1.0.0
+   Сборка ppv-lite86 v0.2.16
+   Сборка rand_core v0.6.3
+   Сборка rand_chacha v0.3.1
+   Сборка rand v0.8.5
+   Сборка игра_угадай_число v0.1.0 (file:///projects/guessing_game)
     Finished dev [unoptimized + debuginfo] target(s) in 2.53s
 ```
 
@@ -286,7 +286,7 @@ cargo build -->
 
 ```console
 $ cargo build
-   Compiling игра_угадай_число v0.1.0 (file:///projects/guessing_game)
+   Сборка игра_угадай_число v0.1.0 (file:///projects/guessing_game)
     Finished dev [unoptimized + debuginfo] target(s) in 2.53 secs
 ```
 
@@ -357,7 +357,7 @@ cargo run
 
 ```console
 $ cargo run
-   Compiling игра_угадай_число v0.1.0 (file:///projects/guessing_game)
+   Сборка игра_угадай_число v0.1.0 (file:///projects/guessing_game)
     Finished dev [unoptimized + debuginfo] target(s) in 2.53s
      Running `target/debug/guessing_game`
 Угадай число!
@@ -447,7 +447,7 @@ cargo run
 
 ```console
 $ cargo run
-   Compiling игра_угадай_число v0.1.0 (file:///projects/guessing_game)
+   Сборка игра_угадай_число v0.1.0 (file:///projects/guessing_game)
     Finished dev [unoptimized + debuginfo] target(s) in 0.43s
      Running `target/debug/guessing_game`
 Угадай число!
@@ -487,7 +487,7 @@ cargo run
 
 ```console
 $ cargo run
-   Compiling игра_угадай_число v0.1.0 (file:///projects/guessing_game)
+   Сборка игра_угадай_число v0.1.0 (file:///projects/guessing_game)
     Finished dev [unoptimized + debuginfo] target(s) in 1.50s
      Running `target/debug/guessing_game`
 Угадай число!
@@ -555,7 +555,7 @@ foo
 
 ```console
 $ cargo run
-   Compiling игра_угадай_число v0.1.0 (file:///projects/guessing_game)
+   Сборка игра_угадай_число v0.1.0 (file:///projects/guessing_game)
     Finished dev [unoptimized + debuginfo] target(s) in 4.45s
      Running `target/debug/guessing_game`
 Угадай число!

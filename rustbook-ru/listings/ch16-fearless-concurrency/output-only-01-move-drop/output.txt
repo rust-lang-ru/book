@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling threads v0.1.0 (file:///projects/threads)
-error[E0382]: use of moved значение: `v`
+   Сборка threads v0.1.0 (file:///projects/threads)
+ошибка[E0382]: use of moved значение: `v`
   --> src/main.rs:10:10
    |
 4  |     let v = vec![1, 2, 3];
@@ -14,5 +14,5 @@ error[E0382]: use of moved значение: `v`
 10 |     drop(v); // oh no!
    |          ^ value used here after move
 
-For more information about this error, try `rustc --explain E0382`.
-error: could not compile `threads` (bin "threads") due to 1 previous error
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0382`.
+ошибка: не могу собрать исходную рукопись в приложение `threads` (bin "threads") due to 1 предыдущая ошибка

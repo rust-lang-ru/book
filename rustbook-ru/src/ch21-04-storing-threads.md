@@ -111,14 +111,14 @@ impl ThreadPool {
 
 ```text
 $ cargo check
-   Compiling hello v0.1.0 (file:///projects/hello)
-error[E0308]: mismatched types
+   Сборка hello v0.1.0 (file:///projects/hello)
+ошибка[E0308]: не соответствие видов данных
   --> src\main.rs:70:46
    |
 70 |         let mut threads = Vec::with_capacity(размер);
    |                                              ^^^^ expected uразмер, found u32
 
-error: aborting due to previous error
+ошибка: aborting due to предыдущая ошибка
 ```
 `size` имеет вид данных `u32`. Функции `Vec::with_capacity` нужно входное свойство вида данных
 `usize`. У нас есть две возможности - мы можем изменить вид свойства функции или мы можем

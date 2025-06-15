@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling cons-список v0.1.0 (file:///projects/cons-список)
-error[E0072]: recursive type `Список` has infinite size
+   Сборка cons-список v0.1.0 (file:///projects/cons-список)
+ошибка[E0072]: recursive type `Список` has infinite size
  --> src/main.rs:1:1
   |
 1 | enum Список {
@@ -8,12 +8,12 @@ error[E0072]: recursive type `Список` has infinite size
 2 |     Cons(i32, Список),
   |               ---- recursive without indirection
   |
-help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle
+помощь: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle
   |
 2 |     Cons(i32, Box<Список>),
   |               ++++    +
 
-error[E0391]: cycle detected when computing when `Список` needs drop
+ошибка[E0391]: cycle detected when computing when `Список` needs drop
  --> src/main.rs:1:1
   |
 1 | enum Список {
@@ -25,4 +25,4 @@ error[E0391]: cycle detected when computing when `Список` needs drop
 
 Some errors have detailed explanations: E0072, E0391.
 For more information about an error, try `rustc --explain E0072`.
-error: could not compile `cons-список` (bin "cons-список") due to 2 previous errors
+ошибка: не могу собрать исходную рукопись в приложение `cons-список` (bin "cons-список") due to 2 предыдущая ошибкаs

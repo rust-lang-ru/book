@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling functions v0.1.0 (file:///projects/functions)
-error: expected expression, found `let` statement
+   Сборка functions v0.1.0 (file:///projects/functions)
+ошибка: expected expression, found `let` statement
  --> src/main.rs:2:14
   |
 2 |     let x = (let y = 6);
@@ -15,11 +15,11 @@ warning: unnecessary parentheses around assigned value
   |             ^         ^
   |
   = note: `#[warn(unused_parens)]` on by default
-help: remove these parentheses
+помощь: remove these parentheses
   |
 2 -     let x = (let y = 6);
 2 +     let x = let y = 6;
   |
 
 warning: `functions` (bin "functions") generated 1 warning
-error: could not compile `functions` (bin "functions") due to 1 previous error; 1 warning emitted
+ошибка: не могу собрать исходную рукопись в приложение `functions` (bin "functions") due to 1 предыдущая ошибка; 1 warning emitted

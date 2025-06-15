@@ -127,8 +127,8 @@ copy output below; the output updating script doesn't владение subdirect
 
 ```console
 $ cargo build
-   Compiling add_one v0.1.0 (file:///projects/add/add_one)
-   Compiling adder v0.1.0 (file:///projects/add/adder)
+   Сборка add_one v0.1.0 (file:///projects/add/add_one)
+   Сборка adder v0.1.0 (file:///projects/add/adder)
     Finished dev [unoptimized + debuginfo] target(s) in 0.68s
 ```
 
@@ -178,8 +178,8 @@ $ cargo build
     Updating crates.io index
   Downloaded rand v0.8.5
    --snip--
-   Compiling rand v0.8.5
-   Compiling add_one v0.1.0 (file:///projects/add/add_one)
+   Сборка rand v0.8.5
+   Сборка add_one v0.1.0 (file:///projects/add/add_one)
 warning: unused import: `rand`
  --> add_one/src/lib.rs:1:5
   |
@@ -189,7 +189,7 @@ warning: unused import: `rand`
   = note: `#[warn(unused_imports)]` on by default
 
 warning: `add_one` (lib) generated 1 warning
-   Compiling adder v0.1.0 (file:///projects/add/adder)
+   Сборка adder v0.1.0 (file:///projects/add/adder)
     Finished dev [unoptimized + debuginfo] target(s) in 10.18s
 ```
 
@@ -204,8 +204,8 @@ copy output below; the output updating script doesn't владение subdirect
 ```console
 $ cargo build
   --snip--
-   Compiling adder v0.1.0 (file:///projects/add/adder)
-error[E0432]: unresolved import `rand`
+   Сборка adder v0.1.0 (file:///projects/add/adder)
+ошибка[E0432]: unresolved import `rand`
  --> adder/src/main.rs:2:5
   |
 2 | use rand;
@@ -235,8 +235,8 @@ paths properly
 
 ```console
 $ cargo test
-   Compiling add_one v0.1.0 (file:///projects/add/add_one)
-   Compiling adder v0.1.0 (file:///projects/add/adder)
+   Сборка add_one v0.1.0 (file:///projects/add/add_one)
+   Сборка adder v0.1.0 (file:///projects/add/adder)
     Finished test [unoptimized + debuginfo] target(s) in 0.27s
      Running unittests src/lib.rs (target/debug/deps/add_one-f0253159197f7841)
 

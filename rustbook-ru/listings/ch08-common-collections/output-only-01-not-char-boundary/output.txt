@@ -1,5 +1,5 @@
 $ cargo run
-   Compiling collections v0.1.0 (file:///projects/collections)
+   Сборка collections v0.1.0 (file:///projects/collections)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
      Running `target/debug/collections`
 thread 'main' panicked at src/main.rs:4:19:

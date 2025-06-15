@@ -1,5 +1,5 @@
 $ cargo test
-   Compiling прямоугольник v0.1.0 (file:///projects/прямоугольник)
+   Сборка прямоугольник v0.1.0 (file:///projects/прямоугольник)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
      Running unittests src/lib.rs (target/debug/deps/прямоугольник-6584c4561e48942e)
 
@@ -20,4 +20,4 @@ failures:
 
 test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-error: test failed, to rerun pass `--lib`
+ошибка: test failed, to rerun pass `--lib`

@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling unsafe-example v0.1.0 (file:///projects/unsafe-example)
-error[E0499]: cannot borrow `*values` as mutable more than once at a time
+   Сборка unsafe-example v0.1.0 (file:///projects/unsafe-example)
+ошибка[E0499]: cannot borrow `*values` as mutable more than once at a time
  --> src/main.rs:6:31
   |
 1 | fn split_at_mut(values: &mut [i32], mid: usize) -> (&mut [i32], &mut [i32]) {
@@ -13,7 +13,7 @@ error[E0499]: cannot borrow `*values` as mutable more than once at a time
   |     |     first mutable borrow occurs here
   |     returning this value requires that `*values` is borrowed for `'1`
   |
-  = help: use `.split_at_mut(position)` to obtain two mutable non-overlapping sub-slices
+  = помощь: use `.split_at_mut(position)` to obtain two mutable non-overlapping sub-slices
 
-For more information about this error, try `rustc --explain E0499`.
-error: could not compile `unsafe-example` (bin "unsafe-example") due to 1 previous error
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0499`.
+ошибка: не могу собрать исходную рукопись в приложение `unsafe-example` (bin "unsafe-example") due to 1 предыдущая ошибка

@@ -1,5 +1,5 @@
 $ cargo run
-   Compiling shirt-company v0.1.0 (file:///projects/shirt-company)
+   Сборка shirt-company v0.1.0 (file:///projects/shirt-company)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
      Running `target/debug/shirt-company`
 Пользователь выбрал Some(Red) получил Красную

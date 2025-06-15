@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling collections v0.1.0 (file:///projects/collections)
-error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
+   Сборка collections v0.1.0 (file:///projects/collections)
+ошибка[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
  --> src/main.rs:6:5
   |
 4 |     let первый = &v[0];
@@ -12,5 +12,5 @@ error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immuta
 8 |     println!("The first element is: {первый}");
   |                                     ------- immutable borrow later used here
 
-For more information about this error, try `rustc --explain E0502`.
-error: could not compile `collections` (bin "collections") due to 1 previous error
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0502`.
+ошибка: не могу собрать исходную рукопись в приложение `collections` (bin "collections") due to 1 предыдущая ошибка

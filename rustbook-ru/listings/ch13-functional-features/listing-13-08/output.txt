@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling прямоугольникs v0.1.0 (file:///projects/прямоугольникs)
-error[E0507]: cannot move out of `value`, a captured variable in an `FnMut` closure
+   Сборка прямоугольникs v0.1.0 (file:///projects/прямоугольникs)
+ошибка[E0507]: cannot move out of `value`, a captured variable in an `FnMut` closure
   --> src/main.rs:18:30
    |
 15 |     let value = String::from("closure called");
@@ -11,10 +11,10 @@ error[E0507]: cannot move out of `value`, a captured variable in an `FnMut` clos
 18 |         sort_operations.push(value);
    |                              ^^^^^ move occurs because `value` has type `String`, which does not implement the `Copy` trait
    |
-help: consider cloning the value if the performance cost is acceptable
+помощь: consider cloning the value if the performance cost is acceptable
    |
 18 |         sort_operations.push(value.clone());
    |                                   ++++++++
 
-For more information about this error, try `rustc --explain E0507`.
-error: could not compile `прямоугольникs` (bin "прямоугольникs") due to 1 previous error
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0507`.
+ошибка: не могу собрать исходную рукопись в приложение `прямоугольникs` (bin "прямоугольникs") due to 1 предыдущая ошибка

@@ -1,5 +1,5 @@
 $ cargo run
-   Compiling patterns v0.1.0 (file:///projects/patterns)
+   Сборка patterns v0.1.0 (file:///projects/patterns)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.52s
      Running `target/debug/patterns`
 a is at index 0

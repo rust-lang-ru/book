@@ -1,5 +1,5 @@
 $ cargo run
-   Compiling прямоугольникs v0.1.0 (file:///projects/прямоугольникs)
+   Сборка прямоугольникs v0.1.0 (file:///projects/прямоугольникs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
      Running `target/debug/прямоугольникs`
 [

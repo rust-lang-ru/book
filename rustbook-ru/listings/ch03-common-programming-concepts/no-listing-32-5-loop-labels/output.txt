@@ -1,5 +1,5 @@
 $ cargo run
-   Compiling loops v0.1.0 (file:///projects/loops)
+   Сборка loops v0.1.0 (file:///projects/loops)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.58s
      Running `target/debug/loops`
 счётчик = 0

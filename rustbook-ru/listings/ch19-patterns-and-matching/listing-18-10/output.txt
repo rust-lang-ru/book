@@ -1,5 +1,5 @@
 $ cargo run
-   Compiling patterns v0.1.0 (file:///projects/patterns)
+   Сборка patterns v0.1.0 (file:///projects/patterns)
 warning: irrefutable `if let` pattern
  --> src/main.rs:2:8
   |
@@ -7,7 +7,7 @@ warning: irrefutable `if let` pattern
   |        ^^^^^^^^^
   |
   = note: this pattern will always match, so the `if let` is useless
-  = help: consider replacing the `if let` with a `let`
+  = помощь: consider replacing the `if let` with a `let`
   = note: `#[warn(irrefutable_let_patterns)]` on by default
 
 warning: `patterns` (bin "patterns") generated 1 warning

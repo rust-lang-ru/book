@@ -349,7 +349,7 @@ Can't automate because the output depends on making requests
 
 ```console
 $ cargo run
-   Compiling hello v0.1.0 (file:///projects/hello)
+   Сборка hello v0.1.0 (file:///projects/hello)
 warning: field is never read: `workers`
  --> src/lib.rs:7:5
   |

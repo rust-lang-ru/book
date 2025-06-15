@@ -151,7 +151,7 @@ fn main() {
 
 Описание ошибки:
 ```
-error: `nested_modules` is ambiguous
+ошибка: `nested_modules` is ambiguous
   --> src/main.rs:19:5
    |
 19 |     nested_modules();
@@ -221,8 +221,8 @@ mod tests {
 
 ```text
 $ cargo test
-   Compiling communicator v0.1.0 (file:///projects/communicator)
-error[E0433]: failed to resolve. Use of undeclared type or module `client`
+   Сборка communicator v0.1.0 (file:///projects/communicator)
+ошибка[E0433]: failed to resolve. Use of undeclared type or module `client`
  --> src/lib.rs:9:9
   |
 9 |         client::connect();
@@ -275,7 +275,7 @@ mod tests {
 
 ```text
 $ cargo test
-   Compiling communicator v0.1.0 (file:///projects/communicator)
+   Сборка communicator v0.1.0 (file:///projects/communicator)
      Running target/debug/communicator-92007ddb5330fa5a
 
 running 1 test

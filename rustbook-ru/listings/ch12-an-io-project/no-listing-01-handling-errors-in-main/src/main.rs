@@ -20,7 +20,7 @@ fn main() {
     println!("В файле {}", config.file_path);
 
     if let Err(e) = run(config) {
-        println!("Application error: {e}");
+        println!("Application ошибка: {e}");
         process::exit(1);
     }
 }

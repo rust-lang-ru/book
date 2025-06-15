@@ -1,5 +1,5 @@
 $ cargo run
-   Compiling error-handling v0.1.0 (file:///projects/error-handling)
+   Сборка error-handling v0.1.0 (file:///projects/error-handling)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
      Running `target/debug/error-handling`
 thread 'main' panicked at src/main.rs:8:23:

@@ -1,5 +1,5 @@
 $ cargo test -- --show-output
-   Compiling silly-function v0.1.0 (file:///projects/silly-function)
+   Сборка silly-function v0.1.0 (file:///projects/silly-function)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
      Running unittests src/lib.rs (target/debug/deps/silly_function-160869f38cff9166)
 
@@ -32,4 +32,4 @@ failures:
 
 test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-error: test failed, to rerun pass `--lib`
+ошибка: test failed, to rerun pass `--lib`

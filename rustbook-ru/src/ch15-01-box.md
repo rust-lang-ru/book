@@ -107,7 +107,7 @@ after doing automatic regeneration, look at listings/ch15-smart-pointers/listing
 -->
 
 ```text
-help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to make `Список` representable
+помощь: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to make `Список` representable
   |
 2 |     Cons(i32, Box<Список>),
   |               ++++    +

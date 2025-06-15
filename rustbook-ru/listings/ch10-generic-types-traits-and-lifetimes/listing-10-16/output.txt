@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
-error[E0597]: `x` does not live long enough
+   Сборка chapter10 v0.1.0 (file:///projects/chapter10)
+ошибка[E0597]: `x` does not live long enough
  --> src/main.rs:6:13
   |
 5 |         let x = 5;
@@ -13,5 +13,5 @@ error[E0597]: `x` does not live long enough
 9 |     println!("r: {r}");
   |                  --- borrow later used here
 
-For more information about this error, try `rustc --explain E0597`.
-error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0597`.
+ошибка: не могу собрать исходную рукопись в приложение `chapter10` (bin "chapter10") due to 1 предыдущая ошибка

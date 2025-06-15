@@ -126,7 +126,7 @@ mod tests {
     fn lint_file_returns_a_vec_with_errs_when_lines_of_interest_are_found() {
         let string = r#"
         $ cargo run
-               Compiling guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
+               Сборка guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
                  Running `target/guessing_game`
             Guess the number!
             The secret number is: 61
@@ -145,7 +145,7 @@ mod tests {
             You guessed: 61
             You win!
             $ cargo run
-               Compiling guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
+               Сборка guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
                  Running `target/debug/guessing_game`
             Guess the number!
             The secret number is: 7
@@ -159,7 +159,7 @@ mod tests {
             Please input your guess.
             5
             $ cargo run
-               Compiling guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
+               Сборка guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
                  Running `target/debug/guessing_game`
             Hello, world!
         "#;
@@ -177,7 +177,7 @@ mod tests {
     fn lint_file_returns_an_empty_vec_when_no_lines_of_interest_are_found() {
         let string = r#"
             $ cargo run
-               Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+               Сборка guessing_game v0.1.0 (file:///projects/guessing_game)
                  Running `target/guessing_game`
             Guess the number!
             The secret number is: 61
@@ -236,7 +236,7 @@ mod tests {
     fn is_line_of_interest_does_not_report_a_line_if_the_line_contains_a_file_url_which_is_directly_followed_by_the_project_path()
      {
         let sample_line =
-            "Compiling guessing_game v0.1.0 (file:///projects/guessing_game)";
+            "Сборка guessing_game v0.1.0 (file:///projects/guessing_game)";
 
         assert!(!super::is_line_of_interest(sample_line));
     }
@@ -244,7 +244,7 @@ mod tests {
     #[test]
     fn is_line_of_interest_reports_a_line_if_the_line_contains_a_file_url_which_is_not_directly_followed_by_the_project_path()
      {
-        let sample_line = "Compiling guessing_game v0.1.0 (file:///home/you/projects/guessing_game)";
+        let sample_line = "Сборка guessing_game v0.1.0 (file:///home/you/projects/guessing_game)";
 
         assert!(super::is_line_of_interest(sample_line));
     }

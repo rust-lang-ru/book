@@ -11,7 +11,7 @@ fn наибольший_i32(список: &[i32]) -> &i32 {
     наибольшее
 }
 
-fn наибольший_char(список: &[char]) -> &char {
+fn наибольший_знак(список: &[char]) -> &char {
     let mut наибольшее = &список[0];
 
     for предмет in список {
@@ -32,9 +32,9 @@ fn main() {
     assert_eq!(*result, 100);
     // ANCHOR: here
 
-    let char_list = vec!['y', 'm', 'a', 'q'];
+    let список_знаков = vec!['y', 'm', 'a', 'q'];
 
-    let итог = наибольший_char(&char_list);
+    let итог = наибольший_знак(&список_знаков);
     println!("Наибольший знак {итог}");
     // ANCHOR_END: here
     assert_eq!(*result, 'y');

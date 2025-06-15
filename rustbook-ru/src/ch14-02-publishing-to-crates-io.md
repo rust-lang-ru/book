@@ -186,10 +186,10 @@ $ cargo publish
 warning: manifest has no description, license, license-file, documentation, homepage or repository.
 See https://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info.
 --snip--
-error: failed to publish to registry at https://crates.io
+ошибка: failed to publish to registry at https://crates.io
 
 Caused by:
-  the remote server responded with an error: missing or empty metadata fields: description, license. Please see https://doc.rust-lang.org/cargo/reference/manifest.html for how to upload metadata
+  the remote server responded with an ошибка: missing or empty metadata fields: description, license. Please see https://doc.rust-lang.org/cargo/reference/manifest.html for how to upload metadata
 ```
 
 Это ошибка, потому что вам не хватает важной сведений: необходимы описание и лицензия, чтобы люди знали, что делает ваш дополнение и на каких условиях они могут его использовать. В поле *Cargo.toml* добавьте описание, состоящее из одного-двух предложений, поскольку оно будет появляться вместе с вашим дополнением в итогах поиска. Для поля `license` нужно указать значение *определителя лицензии*. В [Linux Foundation's Software Package Data Exchange (SPDX)] перечислены определители, которые можно использовать для этого значения. Например, чтобы указать, что вы лицензировали свой crate, используя лицензию MIT, добавьте определитель `MIT`:
@@ -242,7 +242,7 @@ $ cargo publish
     Updating crates.io index
    Packaging игра_угадай_число v0.1.0 (file:///projects/guessing_game)
    Verifying игра_угадай_число v0.1.0 (file:///projects/guessing_game)
-   Compiling игра_угадай_число v0.1.0
+   Сборка игра_угадай_число v0.1.0
 (file:///projects/guessing_game/target/package/guessing_game-0.1.0)
     Finished dev [unoptimized + debuginfo] target(s) in 0.19s
    Uploading игра_угадай_число v0.1.0 (file:///projects/guessing_game)

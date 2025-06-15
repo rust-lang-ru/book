@@ -142,7 +142,7 @@ CTRL-C
 
 ```console
 $ cargo run
-   Compiling loops v0.1.0 (file:///projects/loops)
+   Сборка loops v0.1.0 (file:///projects/loops)
     Finished dev [unoptimized + debuginfo] target(s) in 0.29s
      Running `target/debug/loops`
 снова!

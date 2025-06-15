@@ -195,7 +195,7 @@ copy just the compiler error
 -->
 
 ```text
-error[E0752]: `main` function is not allowed to be `async`
+ошибка[E0752]: `main` function is not allowed to be `async`
  --> src/main.rs:6:1
   |
 6 | async fn main() {

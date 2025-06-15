@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling variables v0.1.0 (file:///projects/variables)
-error[E0308]: mismatched types
+   Сборка variables v0.1.0 (file:///projects/variables)
+ошибка[E0308]: не соответствие видов данных
  --> src/main.rs:3:14
   |
 2 |     let mut spaces = "   ";
@@ -8,5 +8,5 @@ error[E0308]: mismatched types
 3 |     spaces = spaces.len();
   |              ^^^^^^^^^^^^ expected `&str`, found `usize`
 
-For more information about this error, try `rustc --explain E0308`.
-error: could not compile `variables` (bin "variables") due to 1 previous error
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0308`.
+ошибка: не могу собрать исходную рукопись в приложение `variables` (bin "variables") due to 1 предыдущая ошибка

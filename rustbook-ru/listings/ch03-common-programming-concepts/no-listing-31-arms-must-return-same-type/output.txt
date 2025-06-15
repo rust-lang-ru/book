@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling branches v0.1.0 (file:///projects/branches)
-error[E0308]: `if` and `else` have incompatible types
+   Сборка branches v0.1.0 (file:///projects/branches)
+ошибка[E0308]: `if` and `else` have incompatible types
  --> src/main.rs:4:44
   |
 4 |     let число = if условие { 5 } else { "six" };
@@ -8,5 +8,5 @@ error[E0308]: `if` and `else` have incompatible types
   |                                 |
   |                                 expected because of this
 
-For more information about this error, try `rustc --explain E0308`.
-error: could not compile `branches` (bin "branches") due to 1 previous error
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0308`.
+ошибка: не могу собрать исходную рукопись в приложение `branches` (bin "branches") due to 1 предыдущая ошибка

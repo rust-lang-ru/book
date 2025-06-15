@@ -41,7 +41,7 @@ copy just the compiler error
 -->
 
 ```text
-error[E0308]: mismatched types
+ошибка[E0308]: не соответствие видов данных
   --> src/main.rs:45:37
    |
 10 |         let tx1_fut = async move {
@@ -56,7 +56,7 @@ error[E0308]: mismatched types
    = note: expected `async` block `{async block@src/main.rs:10:23: 10:33}`
               found `async` block `{async block@src/main.rs:24:22: 24:27}`
    = note: no two async blocks, even if identical, have the same type
-   = help: consider pinning your async block and casting it to a trait object
+   = помощь: consider pinning your async block and casting it to a trait object
 ```
 
 Это может быть удивительно. В конце концов, ни один из несогласованных разделов ничего не возвращает,
@@ -125,7 +125,7 @@ cargo build
 -->
 
 ```text
-error[E0277]: `dyn Future<Output = ()>` cannot be unpinned
+ошибка[E0277]: `dyn Future<Output = ()>` cannot be unpinned
    --> src/main.rs:49:24
     |
 49  |         trpl::join_all(futures).await;
@@ -145,7 +145,7 @@ note: required by a bound in `join_all`
 105 |     I::Item: Future,
     |              ^^^^^^ required by this bound in `join_all`
 
-error[E0277]: `dyn Future<Output = ()>` cannot be unpinned
+ошибка[E0277]: `dyn Future<Output = ()>` cannot be unpinned
   --> src/main.rs:49:9
    |
 49 |         trpl::join_all(futures).await;
@@ -163,7 +163,7 @@ note: required by a bound in `futures_util::future::join_all::JoinAll`
 29 |     F: Future,
    |        ^^^^^^ required by this bound in `JoinAll`
 
-error[E0277]: `dyn Future<Output = ()>` cannot be unpinned
+ошибка[E0277]: `dyn Future<Output = ()>` cannot be unpinned
   --> src/main.rs:49:33
    |
 49 |         trpl::join_all(futures).await;
@@ -181,8 +181,8 @@ note: required by a bound in `futures_util::future::join_all::JoinAll`
 29 |     F: Future,
    |        ^^^^^^ required by this bound in `JoinAll`
 
-For more information about this error, try `rustc --explain E0277`.
-error: could not compile `async_await` (bin "async_await") due to 3 previous errors
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0277`.
+ошибка: не могу собрать исходную рукопись в приложение `async_await` (bin "async_await") due to 3 предыдущая ошибкаs
 ```
 
 Это _много_ для усвоения, поэтому давайте разберем это. Первая часть сообщения

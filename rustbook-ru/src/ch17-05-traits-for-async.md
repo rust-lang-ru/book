@@ -128,7 +128,7 @@ copy *only* the final `error` block from the errors
 -->
 
 ```text
-error[E0277]: `{async block@src/main.rs:10:23: 10:33}` cannot be unpinned
+ошибка[E0277]: `{async block@src/main.rs:10:23: 10:33}` cannot be unpinned
   --> src/main.rs:48:33
    |
 48 |         trpl::join_all(futures).await;

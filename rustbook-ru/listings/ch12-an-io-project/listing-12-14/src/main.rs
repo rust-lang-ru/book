@@ -21,7 +21,7 @@ fn main() {
     if let Err(e) = minigrep::run(config) {
         // --snip--
         // ANCHOR_END: here
-        println!("Application error: {e}");
+        println!("Application ошибка: {e}");
         process::exit(1);
         // ANCHOR: here
     }

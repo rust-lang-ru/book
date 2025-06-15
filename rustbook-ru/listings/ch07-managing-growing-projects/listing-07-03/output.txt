@@ -1,6 +1,6 @@
 $ cargo build
-   Compiling restaurant v0.1.0 (file:///projects/restaurant)
-error[E0603]: module `hosting` is private
+   Сборка restaurant v0.1.0 (file:///projects/restaurant)
+ошибка[E0603]: module `hosting` is private
  --> src/lib.rs:9:28
   |
 9 |     crate::front_of_house::hosting::add_to_waitlist();
@@ -14,7 +14,7 @@ note: the module `hosting` is defined here
 2 |     mod hosting {
   |     ^^^^^^^^^^^
 
-error[E0603]: module `hosting` is private
+ошибка[E0603]: module `hosting` is private
   --> src/lib.rs:12:21
    |
 12 |     front_of_house::hosting::add_to_waitlist();
@@ -28,5 +28,5 @@ note: the module `hosting` is defined here
 2  |     mod hosting {
    |     ^^^^^^^^^^^
 
-For more information about this error, try `rustc --explain E0603`.
-error: could not compile `restaurant` (lib) due to 2 previous errors
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0603`.
+ошибка: не могу собрать исходную рукопись в приложение `restaurant` (lib) due to 2 предыдущая ошибкаs

@@ -56,7 +56,7 @@ fn main() {
 раздела `client`. Но при сборке этой рукописи получим сообщении об ошибке:
 
 ```text
-error: module `client` is private
+ошибка: module `client` is private
  --> src/main.rs:4:5
   |
 4 |     communicator::client::connect();
@@ -85,7 +85,7 @@ mod network;
 Ключевое слово `pub` перед `mod`. Сборка. Сообщение об ошибке:
 
 ```text
-error: function `connect` is private
+ошибка: function `connect` is private
  --> src/main.rs:4:5
   |
 4 |     communicator::client::connect();

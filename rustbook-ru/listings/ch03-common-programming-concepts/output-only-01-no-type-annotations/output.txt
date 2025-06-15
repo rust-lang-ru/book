@@ -1,16 +1,16 @@
 $ cargo build
-   Compiling no_type_annotations v0.1.0 (file:///projects/no_type_annotations)
-error[E0284]: type annotations needed
+   Сборка no_type_annotations v0.1.0 (file:///projects/no_type_annotations)
+ошибка[E0284]: type annotations needed
  --> src/main.rs:2:9
   |
 2 |     let догадка = "42".parse().expect("Не число!");
   |         ^^^^^        ----- type must be known at this point
   |
   = note: cannot satisfy `<_ as FromStr>::Err == _`
-help: consider giving `догадка` an explicit type
+помощь: consider giving `догадка` an explicit type
   |
 2 |     let догадка: /* Type */ = "42".parse().expect("Не число!");
   |              ++++++++++++
 
-For more information about this error, try `rustc --explain E0284`.
-error: could not compile `no_type_annotations` (bin "no_type_annotations") due to 1 previous error
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0284`.
+ошибка: не могу собрать исходную рукопись в приложение `no_type_annotations` (bin "no_type_annotations") due to 1 предыдущая ошибка

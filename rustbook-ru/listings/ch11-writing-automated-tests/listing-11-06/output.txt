@@ -1,5 +1,5 @@
 $ cargo test
-   Compiling прямоугольник v0.1.0 (file:///projects/прямоугольник)
+   Сборка прямоугольник v0.1.0 (file:///projects/прямоугольник)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
      Running unittests src/lib.rs (target/debug/deps/прямоугольник-6584c4561e48942e)
 

@@ -12,7 +12,7 @@ fn main() {
     });
 
     if let Err(e) = minigrep::run(config) {
-        println!("Application error: {e}");
+        println!("Application ошибка: {e}");
         process::exit(1);
     }
 }

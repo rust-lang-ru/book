@@ -40,12 +40,12 @@ fn main() {
 
 ```console
 $ cargo build
-   Compiling myprogram v0.1.0 (file:///projects/myprogram)
+   Сборка myprogram v0.1.0 (file:///projects/myprogram)
 warning: unused variable: `i`
  --> src/main.rs:4:9
   |
 4 |     for i in 0..100 {
-  |         ^ help: consider using `_i` instead
+  |         ^ помощь: consider using `_i` instead
   |
   = note: #[warn(unused_variables)] on by default
 
@@ -110,15 +110,15 @@ fn main() {
 Запуск `cargo clippy` для этого дела вызовет следующую ошибку:
 
 ```text
-error: approximate value of `f{32, 64}::consts::PI` found
+ошибка: approximate value of `f{32, 64}::consts::PI` found
  --> src/main.rs:2:13
   |
 2 |     let x = 3.1415;
   |             ^^^^^^
   |
   = note: `#[deny(clippy::approx_constant)]` on by default
-  = help: consider using the constant directly
-  = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#approx_constant
+  = помощь: consider using the constant directly
+  = помощь: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#approx_constant
 ```
 
 Эта ошибка сообщает вам, что в Ржавчине уже определена более точная постоянное значение `PI`, и что ваша приложение будет более правильной, если вы вместо неё будете использовать эту постоянное значение. Затем вы должны изменить свою рукопись, чтобы использовать постоянное значение `PI`. Следующая рукопись не приводит к ошибкам или предупреждениям от Clippy:

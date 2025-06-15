@@ -77,7 +77,7 @@ $ cd hello
 
 ```console
 $ cargo run
-   Compiling hello v0.1.0 (file:///projects/hello)
+   Сборка hello v0.1.0 (file:///projects/hello)
     Finished dev [unoptimized + debuginfo] target(s) in 0.42s
      Running `target/debug/hello`
 Request: [

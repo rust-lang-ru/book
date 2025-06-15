@@ -134,8 +134,8 @@ impl Worker {
 
 ```text
 $ cargo check
-   Compiling hello v0.1.0 (file:///projects/hello)
-error[E0382]: use of moved значение: `receiver`
+   Сборка hello v0.1.0 (file:///projects/hello)
+ошибка[E0382]: use of moved значение: `receiver`
   --> src/lib.rs:27:42
    |
 27 |             workers.push(Worker::new(id, receiver));
@@ -292,10 +292,10 @@ impl Worker {
 
 К сожалению, мы получим ошибку при сборке этой рукописи
 Theoretically, this code should compile. Unfortunately, the Ржавчина compiler isn’t
-perfect yet, and we get this error:
+perfect yet, and we get this ошибка:
 
 ```text
-error[E0161]: cannot move a value of type std::ops::FnOnce() +
+ошибка[E0161]: cannot move a value of type std::ops::FnOnce() +
 std::marker::Send: the size of std::ops::FnOnce() + std::marker::Send cannot be
 statically determined
   --> src/lib.rs:63:17
@@ -405,7 +405,7 @@ and make some requests:
 
 ```text
 $ cargo run
-   Compiling hello v0.1.0 (file:///projects/hello)
+   Сборка hello v0.1.0 (file:///projects/hello)
 warning: field is never used: `workers`
  --> src/lib.rs:7:5
   |

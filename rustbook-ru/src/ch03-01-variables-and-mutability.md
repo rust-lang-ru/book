@@ -19,7 +19,7 @@ println!("Значение переменной x: {}", x);
 Сохраните и запустите программу, используя `cargo run`. Будет получено сообщение об ошибке относительно неизменяемости, как показано ниже:
 
 ```console
-error[E0384]: cannot assign twice to immutable variable `x`  --> src/main.rs:4:5   | 2 |     let x = 5;   |         - first assignment to `x` 3 |     println!("Значение переменной x: {}", x); 4 |     x = 6;   |     ^^^^^ cannot assign twice to immutable variable
+ошибка[E0384]: cannot assign twice to immutable variable `x`  --> src/main.rs:4:5   | 2 |     let x = 5;   |         - first assignment to `x` 3 |     println!("Значение переменной x: {}", x); 4 |     x = 6;   |     ^^^^^ cannot assign twice to immutable variable
 ```
 
 В этом примере показано, как сборщик помогает находить ошибки в ваших приложениех. Ошибки сборщика могут расстраивать, но в действительности они означают, что приложение пока не делает правильно то, что вы ожидаете; это *не значит*, что вы плохой программист! Даже опытные Rustaceans иногда сталкиваются с ошибками сборщика.

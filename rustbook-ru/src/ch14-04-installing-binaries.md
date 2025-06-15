@@ -21,7 +21,7 @@ $ cargo install ripgrep
   Downloaded 1 crate (243.3 KB) in 0.88s
   Installing ripgrep v13.0.0
 --snip--
-   Compiling ripgrep v13.0.0
+   Сборка ripgrep v13.0.0
     Finished release [optimized + debuginfo] target(s) in 3m 10s
   Installing ~/.cargo/bin/rg
    Installed package `ripgrep v13.0.0` (executable `rg`)

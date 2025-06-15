@@ -301,15 +301,15 @@ more text
     fn ignores_quotes_in_pre_sections() {
         let source = r###"```bash
 $ cargo build
-   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
-src/main.rs:23:21: 23:35 error: mismatched types [E0308]
+   Сборка guessing_game v0.1.0 (file:///projects/guessing_game)
+src/main.rs:23:21: 23:35 ошибка: не соответствие видов данных [E0308]
 src/main.rs:23     match guess.cmp(&secret_number) {
                                    ^~~~~~~~~~~~~~
-src/main.rs:23:21: 23:35 help: run `rustc --explain E0308` to see a detailed explanation
+src/main.rs:23:21: 23:35 помощь: run `rustc --explain E0308` to see a detailed explanation
 src/main.rs:23:21: 23:35 note: expected type `&std::string::String`
 src/main.rs:23:21: 23:35 note:    found type `&_`
-error: aborting due to previous error
-Could not compile `guessing_game`.
+ошибка: aborting due to предыдущая ошибка
+Не могу собрать исходную рукопись в приложение `guessing_game`.
 ```
 "###
             .to_string();
@@ -326,8 +326,8 @@ Could not compile `guessing_game`.
     fn ignores_pre_sections_with_final_quote() {
         let source = r###"```bash
 $ cargo run
-   Compiling points v0.1.0 (file:///projects/points)
-error: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
+   Сборка points v0.1.0 (file:///projects/points)
+ошибка: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
  --> src/main.rs:8:29
 8 |>     println!("Point 1: {}", p1);
   |>                             ^^
@@ -341,8 +341,8 @@ note: required by `std::fmt::Display::fmt`
 "###.to_string();
         let target = r###"```bash
 $ cargo run
-   Compiling points v0.1.0 (file:///projects/points)
-error: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
+   Сборка points v0.1.0 (file:///projects/points)
+ошибка: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
  --> src/main.rs:8:29
 8 |>     println!("Point 1: {}", p1);
   |>                             ^^

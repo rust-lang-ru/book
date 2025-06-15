@@ -86,15 +86,15 @@ fn main() {
 
 ```text
 $ cargo check
-   Compiling hello v0.1.0 (file:///projects/hello)
-error[E0433]: failed to resolve. Use of undeclared type or module `ThreadPool`
+   Сборка hello v0.1.0 (file:///projects/hello)
+ошибка[E0433]: failed to resolve. Use of undeclared type or module `ThreadPool`
   --> src\main.rs:10:16
    |
 10 |     let pool = ThreadPool::new(4);
    |                ^^^^^^^^^^^^^^^ Use of undeclared type or module
    `ThreadPool`
 
-error: aborting due to previous error
+ошибка: aborting due to предыдущая ошибка
 ```
 
 Отлично! Нам нужен `ThreadPool`. Давайте вернёмся к дополнению из двоичного файла.
@@ -126,8 +126,8 @@ use hello::ThreadPool;
 
 ```text
 $ cargo check --bins
-   Compiling hello v0.1.0 (file:///projects/hello)
-error: no associated предмет named `new` found for type `здравствуй::ThreadPool` in the
+   Сборка hello v0.1.0 (file:///projects/hello)
+ошибка: no associated предмет named `new` found for type `здравствуй::ThreadPool` in the
 current scope
   --> src\main.rs:13:16
    |
@@ -155,14 +155,14 @@ impl ThreadPool {
 
 ```text
 $ cargo check
-   Compiling hello v0.1.0 (file:///projects/hello)
+   Сборка hello v0.1.0 (file:///projects/hello)
 warning: unused variable: `size`, #[warn(unused_variables)] on by default
  --> src/lib.rs:4:16
   |
 4 |     pub fn new(размер: u32) -> ThreadPool {
   |                ^^^^
 
-error: no method named `execute` found for type `здравствуй::ThreadPool` in the
+ошибка: no method named `execute` found for type `здравствуй::ThreadPool` in the
 current scope
   --> src/main.rs:18:14
    |
@@ -214,13 +214,13 @@ representing a closure that takes no parameters and doesn’t return a value.
 Just like function definitions, the return type can be omitted from the
 signature, but even if we have no parameters, we still need the parentheses.
 
-Again, since we’re working on getting the interface compiling, we’re adding the
+Again, since we’re working on getting the interface сборка, we’re adding the
 simplest implementation of the `execute` method, which does nothing. Let’s
 check again:
 
 ```text
 $ cargo check
-   Compiling hello v0.1.0 (file:///projects/hello)
+   Сборка hello v0.1.0 (file:///projects/hello)
 warning: unused variable: `size`, #[warn(unused_variables)] on by default
  --> src/lib.rs:4:16
   |

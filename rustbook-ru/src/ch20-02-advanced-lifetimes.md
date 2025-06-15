@@ -63,7 +63,7 @@ fn parse_context(context: Context) -> Result<(), &str> {
 При попытке сборки мы получаем две хорошо описанные ошибки:
 
 ```text
-error: borrowed value does not live long enough
+ошибка: borrowed value does not live long enough
   --> <anon>:16:5
    |
 16 |     Parser { context: &context }.parse()
@@ -81,7 +81,7 @@ body at 15:55...
 17 | | }
    | |_^
 
-error: `context` does not live long enough
+ошибка: `context` does not live long enough
   --> <anon>:16:24
    |
 16 |     Parser { context: &context }.parse()
@@ -160,7 +160,7 @@ indicate that it goes with the lifetime of the string slice in `Context`.
 Here’s the error we get now:
 
 ```text
-error[E0491]: in type `&'c Context<'s>`, reference has a longer lifetime than the data it references
+ошибка[E0491]: in type `&'c Context<'s>`, reference has a longer lifetime than the data it references
  --> src/main.rs:4:5
   |
 4 |     context: &'c Context<'s>,
@@ -224,13 +224,13 @@ struct Ref<'a, T>(&'a T);
 сборщик не знает как долго вид данных `T` будет существовать:
 
 ```text
-error[E0309]: the parameter type `T` may not live long enough
+ошибка[E0309]: the parameter type `T` may not live long enough
  --> <anon>:1:19
   |
 1 | struct Ref<'a, T>(&'a T);
   |                   ^^^^^^
   |
-  = help: consider adding an explicit lifetime bound `T: 'a`...
+  = помощь: consider adding an explicit lifetime bound `T: 'a`...
 note: ...so that the reference type `&'a T` does not outlive the data it points at
  --> <anon>:1:19
   |

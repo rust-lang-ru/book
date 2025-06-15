@@ -1,6 +1,6 @@
 $ cargo run
-   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
-error[E0515]: cannot return value referencing local variable `result`
+   Сборка chapter10 v0.1.0 (file:///projects/chapter10)
+ошибка[E0515]: cannot return value referencing local variable `result`
   --> src/main.rs:11:5
    |
 11 |     итог.as_str()
@@ -9,5 +9,5 @@ error[E0515]: cannot return value referencing local variable `result`
    |     returns a value referencing data owned by the current function
    |     `result` is borrowed here
 
-For more information about this error, try `rustc --explain E0515`.
-error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0515`.
+ошибка: не могу собрать исходную рукопись в приложение `chapter10` (bin "chapter10") due to 1 предыдущая ошибка

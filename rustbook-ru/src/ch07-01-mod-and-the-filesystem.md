@@ -207,7 +207,7 @@ fn connect() {
 
 ```text
 $ cargo build
-   Compiling communicator v0.1.0 (file:///projects/communicator)
+   Сборка communicator v0.1.0 (file:///projects/communicator)
 
 warning: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/client.rs:1:1
@@ -283,8 +283,8 @@ fn connect() {
 
 ```text
 $ cargo build
-   Compiling communicator v0.1.0 (file:///projects/communicator)
-error: cannot declare a new module at this location
+   Сборка communicator v0.1.0 (file:///projects/communicator)
+ошибка: cannot declare a new module at this location
  --> src/network.rs:4:5
   |
 4 | mod server;

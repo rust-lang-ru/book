@@ -45,7 +45,7 @@ then we call `join` on that worker’s thread. If the call to `join` fails, we
 Here’s the error we get if we compile this code:
 
 ```text
-error[E0507]: cannot move out of borrowed content
+ошибка[E0507]: cannot move out of borrowed content
   --> src/lib.rs:65:13
    |
 65 |             worker.thread.join().unwrap();
@@ -78,14 +78,14 @@ Now let’s lean on the compiler to find the other places that need to change. W
 get two errors:
 
 ```text
-error: no method named `join` found for type
+ошибка: no method named `join` found for type
 `std::option::Option<std::thread::JoinHandle<()>>` in the current scope
   --> src/lib.rs:65:27
    |
 65 |             worker.thread.join().unwrap();
    |                           ^^^^
 
-error[E0308]: mismatched types
+ошибка[E0308]: не соответствие видов данных
   --> src/lib.rs:89:21
    |
 89 |             thread,
@@ -343,7 +343,7 @@ should error, and in your terminal you should see output that looks like:
 
 ```text
 $ cargo run
-   Compiling hello v0.1.0 (file:///projects/hello)
+   Сборка hello v0.1.0 (file:///projects/hello)
     Finished dev [unoptimized + debuginfo] target(s) in 1.0 secs
      Running `target/debug/hello`
 Worker 0 got a job; executing.

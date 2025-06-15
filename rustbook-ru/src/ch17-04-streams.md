@@ -47,7 +47,7 @@ copy only the error output
 -->
 
 ```console
-error[E0599]: no method named `next` found for struct `Iter` in the current scope
+ошибка[E0599]: no method named `next` found for struct `Iter` in the current scope
   --> src/main.rs:10:40
    |
 10 |         while let Some(value) = stream.next().await {
@@ -55,8 +55,8 @@ error[E0599]: no method named `next` found for struct `Iter` in the current scop
    |
    = note: the full type name has been written to 'file:///projects/async-await/target/debug/deps/async_await-575db3dd3197d257.long-type-14490787947592691573.txt'
    = note: consider using `--verbose` to print the full type name to the console
-   = help: items from traits can only be used if the trait is in scope
-help: the following traits which provide `next` are implemented but not in scope; perhaps you want to import one of them
+   = помощь: items from traits can only be used if the trait is in scope
+помощь: the following traits which provide `next` are implemented but not in scope; perhaps you want to import one of them
    |
 1  + use crate::trpl::StreamExt;
    |
@@ -66,7 +66,7 @@ help: the following traits which provide `next` are implemented but not in scope
    |
 1  + use std::str::pattern::Searcher;
    |
-help: there is a method `try_next` with a similar name
+помощь: there is a method `try_next` with a similar name
    |
 10 |         while let Some(value) = stream.try_next().await {
    |                                        ~~~~~~~~

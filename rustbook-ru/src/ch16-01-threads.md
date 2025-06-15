@@ -157,7 +157,7 @@ after automatic regeneration, look at listings/ch16-fearless-concurrency/listing
 -->
 
 ```text
-help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
+помощь: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
   |
 6 |     let владение = thread::spawn(move || {
   |                                ++++

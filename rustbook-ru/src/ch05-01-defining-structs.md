@@ -150,27 +150,27 @@
 >
 > ```console
 > $ cargo run
->    Compiling structs v0.1.0 (file:///projects/structs)
-> error[E0106]: missing lifetime specifier
+>    Сборка structs v0.1.0 (file:///projects/structs)
+> ошибка[E0106]: missing lifetime specifier
 >  --> src/main.rs:3:15
 >   |
 > 3 |     имя_пользователя: &str,
 >   |               ^ expected named lifetime parameter
 >   |
-> help: consider introducing a named lifetime parameter
+> помощь: consider introducing a named lifetime parameter
 >   |
 > 1 ~ struct User<'a> {
 > 2 |     действующий: bool,
 > 3 ~     имя_пользователя: &'a str,
 >   |
 >
-> error[E0106]: missing lifetime specifier
+> ошибка[E0106]: missing lifetime specifier
 >  --> src/main.rs:4:12
 >   |
 > 4 |     email: &str,
 >   |            ^ expected named lifetime parameter
 >   |
-> help: consider introducing a named lifetime parameter
+> помощь: consider introducing a named lifetime parameter
 >   |
 > 1 ~ struct User<'a> {
 > 2 |     действующий: bool,
@@ -178,8 +178,8 @@
 > 4 ~     email: &'a str,
 >   |
 >
-> For more information about this error, try `rustc --explain E0106`.
-> error: could not compile `structs` due to 2 previous errors
+> Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0106`.
+> ошибка: не могу собрать исходную рукопись в приложение `structs` due to 2 предыдущая ошибкаs
 > ```
 >
 > В главе 10 мы обсудим, как исправить эти ошибки, чтобы иметь возможность хранить ссылки в стопках, а пока мы исправим подобные ошибки, используя владеющие виды данных вроде `String` вместо ссылок `&str`.
