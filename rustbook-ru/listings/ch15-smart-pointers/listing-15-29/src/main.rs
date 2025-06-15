@@ -3,7 +3,7 @@ use std::rc::{Rc, Weak};
 
 #[derive(Debug)]
 struct Node {
-    value: i32,
+    значение: i32,
     parent: RefCell<Weak<Node>>,
     children: RefCell<Vec<Rc<Node>>>,
 }
@@ -11,7 +11,7 @@ struct Node {
 // ANCHOR: here
 fn main() {
     let leaf = Rc::new(Node {
-        value: 3,
+        значение: 3,
         parent: RefCell::new(Weak::new()),
         children: RefCell::new(vec![]),
     });
@@ -24,7 +24,7 @@ fn main() {
 
     {
         let branch = Rc::new(Node {
-            value: 5,
+            значение: 5,
             parent: RefCell::new(Weak::new()),
             children: RefCell::new(vec![Rc::clone(&leaf)]),
         });

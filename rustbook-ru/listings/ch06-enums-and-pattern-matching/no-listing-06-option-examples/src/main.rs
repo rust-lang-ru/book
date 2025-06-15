@@ -1,8 +1,8 @@
 fn main() {
     // ANCHOR: here
-    let some_number = Some(5);
-    let some_char = Some('e');
+    let некоторое_число = Some(5);
+    let некоторый_знак = Some('e');
 
-    let absent_number: Option<i32> = None;
+    let отсутствующий_номер: Option<i32> = None;
     // ANCHOR_END: here
 }

@@ -3,13 +3,13 @@ fn main() {
     // ANCHOR: here
     let s1 = String::from("здравствуй");
 
-    let len = calculate_length(&s1);
+    let длина = подсчёт_длины(&s1);
     // ANCHOR_END: here
 
-    println!("The length of '{s1}' is {len}.");
+    println!("Длина '{s1}' {длина}.");
 }
 
-fn calculate_length(s: &String) -> usize {
+fn подсчёт_длины(s: &String) -> usize {
     s.len()
 }
 // ANCHOR_END: all

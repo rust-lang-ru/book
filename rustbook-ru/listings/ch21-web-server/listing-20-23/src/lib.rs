@@ -18,23 +18,23 @@ impl ThreadPool {
     // ANCHOR_END: here
     /// Create a new ThreadPool.
     ///
-    /// The size is the number of threads in the pool.
+    /// The size is the число of threads in the pool.
     ///
     /// # Panics
     ///
     /// The `new` function will panic if the size is zero.
     // ANCHOR: here
-    pub fn new(size: usize) -> ThreadPool {
+    pub fn new(размер: usize) -> ThreadPool {
         // --snip--
 
         // ANCHOR_END: here
-        assert!(size > 0);
+        assert!(размер > 0);
 
         let (sender, receiver) = mpsc::channel();
 
         let receiver = Arc::new(Mutex::new(receiver));
 
-        let mut workers = Vec::with_capacity(size);
+        let mut workers = Vec::with_capacity(размер);
 
         for id in 0..size {
             workers.push(Worker::new(id, Arc::clone(&receiver)));
@@ -73,12 +73,12 @@ impl Drop for ThreadPool {
 // ANCHOR_END: here
 
 struct Worker {
-    id: usize,
+    id: uразмер,
     thread: Option<thread::JoinHandle<()>>,
 }
 
 impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         let thread = thread::spawn(move || loop {
             let job = receiver.lock().unwrap().recv().unwrap();
 

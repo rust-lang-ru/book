@@ -4,6 +4,6 @@ fn main() {
     change(&mut s);
 }
 
-fn change(some_string: &mut String) {
-    some_string.push_str(", world");
+fn change(некоторая_строка: &mut String) {
+    некоторая_строка.push_str(", world");
 }

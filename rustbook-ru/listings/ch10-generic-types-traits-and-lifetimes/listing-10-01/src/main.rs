@@ -1,16 +1,16 @@
 // ANCHOR: here
 fn main() {
-    let number_list = vec![34, 50, 25, 100, 65];
+    let список_чисел = vec![34, 50, 25, 100, 65];
 
-    let mut наибольшее = &number_list[0];
+    let mut наибольшее = &список_чисел[0];
 
-    for number in &number_list {
-        if number > наибольшее {
-            наибольшее = number;
+    for число in &список_чисел {
+        if число > наибольшее {
+            наибольшее = число;
         }
     }
 
-    println!("The наибольшее number is {наибольшее}");
+    println!("Наибольшее число {наибольшее}");
     // ANCHOR_END: here
     assert_eq!(*наибольшее, 100);
     // ANCHOR: here

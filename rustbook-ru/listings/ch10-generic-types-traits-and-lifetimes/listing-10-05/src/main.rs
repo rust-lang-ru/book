@@ -1,9 +1,9 @@
 fn наибольшее<T>(список: &[T]) -> &T {
     let mut наибольшее = &список[0];
 
-    for item in список {
-        if item > наибольшее {
-            наибольшее = item;
+    for предмет in список {
+        if предмет > наибольшее {
+            наибольшее = предмет;
         }
     }
 
@@ -11,13 +11,13 @@ fn наибольшее<T>(список: &[T]) -> &T {
 }
 
 fn main() {
-    let number_list = vec![34, 50, 25, 100, 65];
+    let список_чисел = vec![34, 50, 25, 100, 65];
 
-    let result = наибольшее(&number_list);
-    println!("The наибольшее number is {result}");
+    let итог = наибольшее(&список_чисел);
+    println!("Наибольшее число {итог}");
 
     let char_list = vec!['y', 'm', 'a', 'q'];
 
-    let result = наибольшее(&char_list);
-    println!("The наибольшее char is {result}");
+    let итог = наибольшее(&char_list);
+    println!("Наибольший знак {итог}");
 }

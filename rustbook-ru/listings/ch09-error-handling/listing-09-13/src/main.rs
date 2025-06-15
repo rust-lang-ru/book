@@ -1,34 +1,34 @@
-use guessing_game::Guess;
+use игра_угадай_число::Guess;
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
 
 fn main() {
-    println!("Guess the number!");
+    println!("Угадай число!");
 
-    let secret_number = rand::thread_rng().gen_range(1..=100);
+    let загаданное_число = rand::thread_rng().gen_range(1..=100);
 
     loop {
-        println!("Please input your guess.");
+        println!("Пожалуйста, введите ваше число.");
 
-        let mut guess = String::new();
+        let mut догадка = String::new();
 
         io::stdin()
-            .read_line(&mut guess)
-            .expect("Failed to read line");
+            .read_line(&mut догадка)
+            .expect("Ошибка при чтении");
 
-        let guess: i32 = match guess.trim().parse() {
+        let догадка: i32 = match догадка.trim().parse() {
             Ok(num) => num,
             Err(_) => continue,
         };
 
-        let guess = Guess::new(guess);
+        let догадка = догадка::new(догадка);
 
-        match guess.value().cmp(&secret_number) {
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
+        match догадка.value().cmp(&загаданное_число) {
+            Ordering::Less => println!("Слишком мало!"),
+            Ordering::Greater => println!("Слишком много!"),
             Ordering::Equal => {
-                println!("You win!");
+                println!("Вы выиграли!");
                 break;
             }
         }

@@ -1,8 +1,8 @@
-fn first_word(s: &String) -> &str {
+fn первое_слово(s: &String) -> &str {
     let bytes = s.as_bytes();
 
-    for (i, &item) in bytes.iter().enumerate() {
-        if item == b' ' {
+    for (i, &предмет) in bytes.iter().enumerate() {
+        if предмет == b' ' {
             return &s[0..i];
         }
     }
@@ -14,10 +14,10 @@ fn first_word(s: &String) -> &str {
 fn main() {
     let mut s = String::from("здравствуй мир");
 
-    let word = first_word(&s);
+    let слово = первое_слово(&s);
 
     s.clear(); // error!
 
-    println!("the first word is: {word}");
+    println!("первое слово: {слово}");
 }
 // ANCHOR_END: here

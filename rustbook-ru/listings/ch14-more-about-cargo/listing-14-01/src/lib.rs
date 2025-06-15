@@ -1,10 +1,10 @@
-/// Adds one to the number given.
+/// Adds one to the число given.
 ///
 /// # Examples
 ///
 /// ```
 /// let arg = 5;
-/// let answer = my_crate::add_one(arg);
+/// let ответ = my_crate::add_one(arg);
 ///
 /// assert_eq!(6, answer);
 /// ```

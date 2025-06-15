@@ -1,7 +1,7 @@
 #[derive(Debug, PartialEq, Copy, Clone)]
 enum ShirtColor {
     Red,
-    Blue,
+    Голубой,
 }
 
 struct Inventory {
@@ -15,25 +15,25 @@ impl Inventory {
 
     fn most_stocked(&self) -> ShirtColor {
         let mut num_red = 0;
-        let mut num_blue = 0;
+        let mut num_голубой = 0;
 
         for color in &self.shirts {
             match color {
                 ShirtColor::Red => num_red += 1,
-                ShirtColor::Blue => num_blue += 1,
+                ShirtColor::Голубой => num_голубой += 1,
             }
         }
-        if num_red > num_blue {
+        if num_red > num_голубой {
             ShirtColor::Red
         } else {
-            ShirtColor::Blue
+            ShirtColor::Голубой
         }
     }
 }
 
 fn main() {
     let store = Inventory {
-        shirts: vec![ShirtColor::Blue, ShirtColor::Red, ShirtColor::Blue],
+        shirts: vec![ShirtColor::Голубой, ShirtColor::Red, ShirtColor::Голубой],
     };
 
     let user_pref1 = Some(ShirtColor::Red);

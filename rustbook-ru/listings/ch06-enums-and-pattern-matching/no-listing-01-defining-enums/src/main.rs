@@ -8,7 +8,7 @@ enum IpAddrKind {
 fn main() {
     // ANCHOR: instance
     let four = IpAddrKind::V4;
-    let six = IpAddrKind::V6;
+    let шесть = IpAddrKind::V6;
     // ANCHOR_END: instance
 
     // ANCHOR: fn_call

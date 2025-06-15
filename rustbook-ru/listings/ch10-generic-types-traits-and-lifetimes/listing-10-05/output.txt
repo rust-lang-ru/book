@@ -3,7 +3,7 @@ $ cargo run
 error[E0369]: binary operation `>` cannot be applied to type `&T`
  --> src/main.rs:5:17
   |
-5 |         if item > наибольшее {
+5 |         if предмет > наибольшее {
   |            ---- ^ ------- &T
   |            |
   |            &T

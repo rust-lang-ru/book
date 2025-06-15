@@ -6,7 +6,7 @@ pub struct NewsArticle {
     pub headline: String,
     pub location: String,
     pub author: String,
-    pub content: String,
+    pub содержимое: String,
 }
 
 impl Summary for NewsArticle {
@@ -16,20 +16,20 @@ impl Summary for NewsArticle {
 }
 
 pub struct Tweet {
-    pub username: String,
-    pub content: String,
+    pub имя_пользователя: String,
+    pub содержимое: String,
     pub reply: bool,
     pub retweet: bool,
 }
 
 impl Summary for Tweet {
     fn summarize(&self) -> String {
-        format!("{}: {}", self.username, self.content)
+        format!("{}: {}", self.имя_пользователя, self.content)
     }
 }
 
 // ANCHOR: here
-pub fn notify(item: &impl Summary) {
+pub fn notify(предмет: &impl Summary) {
     println!("Breaking news! {}", item.summarize());
 }
 // ANCHOR_END: here

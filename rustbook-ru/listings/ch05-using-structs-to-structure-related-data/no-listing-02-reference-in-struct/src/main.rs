@@ -1,6 +1,6 @@
 struct User {
-    active: bool,
-    username: &str,
+    действующий: bool,
+    имя_пользователя: &str,
     email: &str,
     sign_in_count: u64,
 }
@@ -8,8 +8,8 @@ struct User {
 fn main() {
     let user1 = User {
         email: "someone@example.com",
-        username: "someusername123",
-        active: true,
+        имя_пользователя: "someимя_пользователя123",
+        действующий: true,
         sign_in_count: 1,
     };
 }

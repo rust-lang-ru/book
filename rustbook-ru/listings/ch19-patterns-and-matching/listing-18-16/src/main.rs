@@ -15,7 +15,7 @@ fn main() {
 
     match msg {
         Сообщение::Смена_цвета(Color::Rgb(r, g, b)) => {
-            println!("Change color to red {r}, green {g}, and blue {b}");
+            println!("Change color to red {r}, green {g}, and голубой {b}");
         }
         Сообщение::Смена_цвета(Color::Hsv(h, s, v)) => {
             println!("Change color to hue {h}, saturation {s}, value {v}")

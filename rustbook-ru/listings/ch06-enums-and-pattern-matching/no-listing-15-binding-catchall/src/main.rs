@@ -1,10 +1,10 @@
 fn main() {
     // ANCHOR: here
-    let dice_roll = 9;
-    match dice_roll {
+    let бросок_кости = 9;
+    match бросок_кости {
         3 => add_fancy_hat(),
         7 => remove_fancy_hat(),
-        other => move_player(other),
+        иное => move_player(other),
     }
 
     fn add_fancy_hat() {}

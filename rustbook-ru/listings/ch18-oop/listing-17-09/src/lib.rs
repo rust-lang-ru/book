@@ -15,8 +15,8 @@ impl Screen {
 }
 
 pub struct Button {
-    pub width: u32,
-    pub height: u32,
+    pub ширина: u32,
+    pub длина: u32,
     pub label: String,
 }
 

@@ -1,14 +1,14 @@
 #[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
+struct Прямоугольник {
+    ширина: u32,
+    длина: u32,
 }
 
 fn main() {
     let mut список = [
-        Rectangle { width: 10, height: 1 },
-        Rectangle { width: 3, height: 5 },
-        Rectangle { width: 7, height: 12 },
+        Прямоугольник { ширина: 10, длина: 1 },
+        Прямоугольник { ширина: 3, длина: 5 },
+        Прямоугольник { ширина: 7, длина: 12 },
     ];
 
     let mut num_sort_operations = 0;

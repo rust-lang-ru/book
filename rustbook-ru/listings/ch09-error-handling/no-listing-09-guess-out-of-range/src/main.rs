@@ -3,41 +3,41 @@ use std::cmp::Ordering;
 use std::io;
 
 fn main() {
-    println!("Guess the number!");
+    println!("Угадай число!");
 
-    let secret_number = rand::thread_rng().gen_range(1..=100);
+    let загаданное_число = rand::thread_rng().gen_range(1..=100);
 
     // ANCHOR: here
     loop {
         // --snip--
 
         // ANCHOR_END: here
-        println!("Please input your guess.");
+        println!("Пожалуйста, введите ваше число.");
 
-        let mut guess = String::new();
+        let mut догадка = String::new();
 
         io::stdin()
-            .read_line(&mut guess)
-            .expect("Failed to read line");
+            .read_line(&mut догадка)
+            .expect("Ошибка при чтении");
 
         // ANCHOR: here
-        let guess: i32 = match guess.trim().parse() {
+        let догадка: i32 = match догадка.trim().parse() {
             Ok(num) => num,
             Err(_) => continue,
         };
 
-        if guess < 1 || guess > 100 {
-            println!("The secret number will be between 1 and 100.");
+        if догадка < 1 || догадка > 100 {
+            println!("Загаданное число will be between 1 and 100.");
             continue;
         }
 
-        match guess.cmp(&secret_number) {
+        match догадка.cmp(&загаданное_число) {
             // --snip--
             // ANCHOR_END: here
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
+            Ordering::Less => println!("Слишком мало!"),
+            Ordering::Greater => println!("Слишком много!"),
             Ordering::Equal => {
-                println!("You win!");
+                println!("Вы выиграли!");
                 break;
             }
         }

@@ -1,15 +1,15 @@
 $ cargo run
    Compiling chapter10 v0.1.0 (file:///projects/chapter10)
-error[E0597]: `string2` does not live long enough
+error[E0597]: `строка2` does not live long enough
  --> src/main.rs:6:44
   |
-5 |         let string2 = String::from("xyz");
-  |             ------- binding `string2` declared here
-6 |         result = longest(string1.as_str(), string2.as_str());
+5 |         let строка2 = String::from("xyz");
+  |             ------- binding `строка2` declared here
+6 |         итог = наибольшее(строка1.as_str(), строка2.as_str());
   |                                            ^^^^^^^ borrowed value does not live long enough
 7 |     }
-  |     - `string2` dropped here while still borrowed
-8 |     println!("The longest string is {result}");
+  |     - `строка2` dropped here while still borrowed
+8 |     println!("Наибольшая строка {итог}");
   |                                     -------- borrow later used here
 
 For more information about this error, try `rustc --explain E0597`.

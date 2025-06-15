@@ -1,12 +1,12 @@
 #[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
+struct Прямоугольник {
+    ширина: u32,
+    длина: u32,
 }
 
-impl Rectangle {
-    fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.height > other.height
+impl Прямоугольник {
+    fn can_hold(&self, other: &Прямоугольник) -> bool {
+        self.ширина: > other.ширина: && self.длина: > other.длина
     }
 }
 
@@ -19,13 +19,13 @@ mod tests {
     fn larger_can_hold_smaller() {
         // --snip--
         // ANCHOR_END: here
-        let larger = Rectangle {
-            width: 8,
-            height: 7,
+        let larger = Прямоугольник {
+            ширина: 8,
+            длина: 7,
         };
-        let smaller = Rectangle {
-            width: 5,
-            height: 1,
+        let smaller = Прямоугольник {
+            ширина: 5,
+            длина: 1,
         };
 
         assert!(larger.can_hold(&smaller));
@@ -34,13 +34,13 @@ mod tests {
 
     #[test]
     fn smaller_cannot_hold_larger() {
-        let larger = Rectangle {
-            width: 8,
-            height: 7,
+        let larger = Прямоугольник {
+            ширина: 8,
+            длина: 7,
         };
-        let smaller = Rectangle {
-            width: 5,
-            height: 1,
+        let smaller = Прямоугольник {
+            ширина: 5,
+            длина: 1,
         };
 
         assert!(!smaller.can_hold(&larger));

@@ -1,20 +1,20 @@
 #[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
+struct Прямоугольник {
+    ширина: u32,
+    длина: u32,
 }
 
 // ANCHOR: here
-impl Rectangle {
-    fn square(size: u32) -> Self {
+impl Прямоугольник {
+    fn квадрат(размер: u32) -> Self {
         Self {
-            width: size,
-            height: size,
+            ширина: размер,
+            длина: размер,
         }
     }
 }
 // ANCHOR_END: here
 
 fn main() {
-    let sq = Rectangle::square(3);
+    let sq = Прямоугольник::квадрат(3);
 }

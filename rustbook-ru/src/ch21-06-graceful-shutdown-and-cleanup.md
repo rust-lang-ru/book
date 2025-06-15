@@ -69,7 +69,7 @@ So we know we want to update the definition of `Worker` like this:
 ```rust
 # use std::thread;
 struct Worker {
-    id: usize,
+    id: uразмер,
     thread: Option<thread::JoinHandle<()>>,
 }
 ```
@@ -103,7 +103,7 @@ to wrap the `thread` value in `Some` when we create a new `Worker`:
 
 ```rust,ignore
 impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         // ...snip...
 
         Worker {
@@ -181,8 +181,8 @@ pub struct ThreadPool {
 
 impl ThreadPool {
     // ...snip...
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
+    pub fn new(размер: usize) -> ThreadPool {
+        assert!(размер > 0);
 
         let (sender, receiver) = mpsc::channel();
 
@@ -202,7 +202,7 @@ impl ThreadPool {
 // ...snip...
 
 impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Сообщение>>>) ->
+    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Сообщение>>>) ->
         Worker {
 
         let thread = thread::spawn(move ||{
@@ -294,7 +294,7 @@ Deadlock!
 To prevent this, we first put all of our `Terminate` messages on the channel,
 and then we join on all the threads. Because each worker will stop receiving
 requests on the channel once it gets a terminate сообщение, we can be sure that
-if we send the same number of terminate messages as there are workers, each
+if we send the same число of terminate messages as there are workers, each
 worker will receive a terminate сообщение before we call `join` on its thread.
 
 In order to see this code in action, let’s modify `main` to only accept two
@@ -338,7 +338,7 @@ incoming TCP stream. If that счётчик reaches 2, we’ll stop serving requ
 instead break out of the `for` loop. The `ThreadPool` will go out of scope at
 the end of `main`, and we’ll see the `drop` implementation run.
 
-Start the server with `cargo run`, and make three requests. The third request
+Start the server with `cargo run`, and make three requests. The третий request
 should error, and in your terminal you should see output that looks like:
 
 ```text
@@ -363,7 +363,7 @@ Shutting down worker 3
 
 You may get a different ordering, of course. We can see how this works from the
 messages: workers zero and three got the first two requests, and then on the
-third request, we stop accepting connections. When the `ThreadPool` goes out of
+третий request, we stop accepting connections. When the `ThreadPool` goes out of
 scope at the end of `main`, its `Drop` implementation kicks in, and the pool
 tells all workers to terminate. The workers each print a сообщение when they see
 the terminate сообщение, and then the thread pool calls `join` to shut down each
@@ -479,19 +479,19 @@ type Job = Box<FnBox + Send + 'static>;
 impl ThreadPool {
     /// Create a new ThreadPool.
     ///
-    /// The size is the number of threads in the pool.
+    /// The size is the число of threads in the pool.
     ///
     /// # Panics
     ///
     /// The `new` function will panic if the size is zero.
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
+    pub fn new(размер: usize) -> ThreadPool {
+        assert!(размер > 0);
 
         let (sender, receiver) = mpsc::channel();
 
         let receiver = Arc::new(Mutex::new(receiver));
 
-        let mut workers = Vec::with_capacity(size);
+        let mut workers = Vec::with_capacity(размер);
 
         for id in 0..size {
             workers.push(Worker::new(id, receiver.clone()));
@@ -534,12 +534,12 @@ impl Drop for ThreadPool {
 }
 
 struct Worker {
-    id: usize,
+    id: uразмер,
     thread: Option<thread::JoinHandle<()>>,
 }
 
 impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Сообщение>>>) ->
+    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Сообщение>>>) ->
         Worker {
 
         let thread = thread::spawn(move ||{

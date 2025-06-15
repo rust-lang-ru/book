@@ -1,6 +1,6 @@
 $ cargo run
    Compiling threads v0.1.0 (file:///projects/threads)
-error[E0382]: use of moved value: `v`
+error[E0382]: use of moved значение: `v`
   --> src/main.rs:10:10
    |
 4  |     let v = vec![1, 2, 3];

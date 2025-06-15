@@ -1,22 +1,22 @@
-pub struct Guess {
-    value: i32,
+pub struct Догадка {
+    значение: i32,
 }
 
-impl Guess {
-    pub fn new(value: i32) -> Guess {
+impl Догадка {
+    pub fn new(значение: i32) -> Догадка {
         // ANCHOR: here
         if value < 1 {
             panic!(
-                "Guess value must be less than or equal to 100, got {value}."
+                "Догадка value must be less than or equal to 100, got {value}."
             );
         } else if value > 100 {
             panic!(
-                "Guess value must be greater than or equal to 1, got {value}."
+                "Догадка value must be greater than or equal to 1, got {value}."
             );
         }
         // ANCHOR_END: here
 
-        Guess { value }
+        Догадка { value }
     }
 }
 
@@ -27,6 +27,6 @@ mod tests {
     #[test]
     #[should_panic(expected = "less than or equal to 100")]
     fn greater_than_100() {
-        Guess::new(200);
+        догадка::new(200);
     }
 }

@@ -379,7 +379,7 @@ use std::pin::Pin;
 use std::task::{Context, Poll};
 
 trait Stream {
-    type Item;
+    type Предмет;
 
     fn poll_next(
         self: Pin<&mut Self>,

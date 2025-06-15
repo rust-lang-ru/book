@@ -14,6 +14,6 @@ fn main() {
             println!("Using orange as the background color");
         }
     } else {
-        println!("Using blue as the background color");
+        println!("Using голубой as the background color");
     }
 }

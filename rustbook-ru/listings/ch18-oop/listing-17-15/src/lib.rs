@@ -1,6 +1,6 @@
 pub struct Post {
     state: Option<Box<dyn State>>,
-    content: String,
+    содержимое: String,
 }
 
 // ANCHOR: here
@@ -10,7 +10,7 @@ impl Post {
     pub fn new() -> Post {
         Post {
             state: Some(Box::new(Draft {})),
-            content: String::new(),
+            содержимое: String::new(),
         }
     }
 

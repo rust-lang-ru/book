@@ -1,6 +1,6 @@
 $ cargo run
    Compiling сообщение-passing v0.1.0 (file:///projects/сообщение-passing)
-error[E0382]: borrow of moved value: `val`
+error[E0382]: borrow of moved значение: `val`
   --> src/main.rs:10:26
    |
 8  |         let val = String::from("hi");

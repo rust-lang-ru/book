@@ -1,15 +1,15 @@
 struct User {
-    active: bool,
-    username: String,
+    действующий: bool,
+    имя_пользователя: String,
     email: String,
     sign_in_count: u64,
 }
 
 // ANCHOR: here
-fn build_user(email: String, username: String) -> User {
+fn создать_пользователя(email: String, имя_пользователя: String) -> User {
     User {
-        active: true,
-        username: username,
+        действующий: true,
+        имя_пользователя: имя_пользователя,
         email: email,
         sign_in_count: 1,
     }
@@ -17,8 +17,8 @@ fn build_user(email: String, username: String) -> User {
 // ANCHOR_END: here
 
 fn main() {
-    let user1 = build_user(
+    let user1 = создать_пользователя(
         String::from("someone@example.com"),
-        String::from("someusername123"),
+        String::from("someимя_пользователя123"),
     );
 }

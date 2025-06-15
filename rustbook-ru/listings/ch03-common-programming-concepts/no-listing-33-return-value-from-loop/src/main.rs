@@ -1,7 +1,7 @@
 fn main() {
     let mut счётчик = 0;
 
-    let result = loop {
+    let итог = loop {
         счётчик += 1;
 
         if счётчик == 10 {
@@ -9,5 +9,5 @@ fn main() {
         }
     };
 
-    println!("The result is {result}");
+    println!("Итог: {итог}");
 }

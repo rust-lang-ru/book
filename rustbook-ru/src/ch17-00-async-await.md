@@ -62,7 +62,7 @@ API операционной системы для взаимодействия 
 в блокирующем коде, например так:
 
 ```Rust,ignore,does_not_compile
-let data = fetch_data_from(url).await;
+let данные = fetch_data_from(url).await;
 println!("{data}");
 ```
 

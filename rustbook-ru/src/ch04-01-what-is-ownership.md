@@ -37,7 +37,7 @@
 В качестве первого примера владения мы рассмотрим *область видимости* некоторых переменных. Область видимости — это раздел внутри приложения, для которого допустима переменная. Возьмём следующую переменную:
 
 ```rust
-let s = "hello";
+let s = "здравствуй";
 ```
 
 Переменная `s` относится к строковой записи, где значение строки жёстко определено  в писании нашей приложения. Переменная действительна с места её объявления до конца текущей *области видимости*. В приложении 4-1 показана приложение с примечаниями, указывающими, где начало и конец области видимости для переменной `s` .
@@ -64,7 +64,7 @@ let s = "hello";
 Мы уже видели строковые записи, где строковое значение жёстко определено  в нашей программе. Строковые записи удобны, но они подходят не для каждого случая, где мы можем хотеть использовать писание. Одна из причин заключается в том, что они неизменны. Кроме того, не каждое строковое значение может быть известно во время написания рукописи: что, если мы захотим принять и сохранить пользовательский ввод? Для таких случаев в Ржавчине есть ещё один строковый вид данных — `String`. Этот вид данных управляет данными, выделенными в куче, и поэтому может хранить размер писания, который во время сборки неизвестен. Также вы можете создать `String` из строковой записи, используя функцию `from`, например:
 
 ```rust
-let s = String::from("hello");
+let s = String::from("здравствуй");
 ```
 
 Приказчик "Двойное двоеточие" `::` позволяет использовать пространство имён данной  функции `from` с видом данных `String`, а не какое-то иное имя, такое как `string_from`. Мы обсудим эти правила написания более подробно в разделе [«Правила написания способов»]. раздел <!-- ignore --> Главы 5, и в ходе обсуждения пространств имён с разделами в [ «Пути для обращения к переменной в дереве разделов»]<!-- ignore --> в главе 7.
@@ -128,21 +128,21 @@ let s = String::from("hello");
 
 Взгляните на рисунок 4-1, чтобы увидеть, что происходит со `String` под капотом. `String` состоит из трёх частей, показанных слева: указатель на память, в которой хранится содержимое строки, длина и ёмкость. Это объединение данных хранится в обойме. Справа — память в куче, которая хранит содержимое.
 
-<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="img/trpl04-01.svg" class="center" style="width: 150%;" />
+<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="img/trpl04-01.svg" class="center" style="ширина: 150%;" />
 
-<span class="caption">Рисунок 4-1: представление в памяти <code>String</code>, содержащей значение <code>"hello"</code>, привязанное к <code>s1</code></span>
+<span class="caption">Рисунок 4-1: представление в памяти <code>String</code>, содержащей значение <code>"здравствуй"</code>, привязанное к <code>s1</code></span>
 
 Длина — это размер памяти в байтах, которое в настоящее время использует содержимое `String`. Ёмкость — это общий размер памяти в байтах, которое `String` получил от распределителя. Разница между длиной и ёмкостью имеет значение, но не в этой среде, поэтому в данное мгновение можно пренебречь ёмкостью.
 
 Когда мы присваиваем `s1` значению `s2`, данные `String` повторяются, то есть мы повторяем указатель, длину и ёмкость, которые находятся в обойме. Мы не повторяем данные в куче, на которые указывает указатель. Другими словами, представление данных в памяти выглядит так, как показано на рис. 4-2.
 
-<img alt="Three tables: tables s1 and s2 representing those strings on the&lt;br&gt;stack, respectively, and both pointing to the same string data on the heap." src="img/trpl04-02.svg" class="center" style="width: 150%;" />
+<img alt="Three tables: tables s1 and s2 representing those strings on the&lt;br&gt;stack, respectively, and both pointing to the same string data on the heap." src="img/trpl04-02.svg" class="center" style="ширина: 150%;" />
 
 <span class="caption">Рисунок 4-2: представление в памяти переменной <code>s2</code>, имеющей повтор указателя, длины и ёмкости <code>s1</code></span>
 
 Представление *не* похоже на рисунок 4-3, как выглядела бы память, если бы вместо этого Ржавчина также воспроизвела данные кучи. Если бы Ржавчина сделала это, действие `s2 = s1` могла бы быть очень дорогой с точки зрения производительности во время выполнения, если бы данные в куче были большими.
 
-<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="img/trpl04-03.svg" class="center" style="width: 150%;" />
+<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="img/trpl04-03.svg" class="center" style="ширина: 150%;" />
 
 <span class="caption">Рисунок 4-3: другой исход того, что может сделать <code>s2 = s1</code>, если Ржавчина также воспроизведет данные кучи</span>
 
@@ -166,7 +166,7 @@ let s = String::from("hello");
 
 Если вы слышали понятия *поверхностное повторение* и *глубокое повторение* при работе с другими языками, подход повторения указателя, длины и ёмкости без повторения данных, вероятно, звучит как создание поверхностных повторов. Но поскольку Ржавчина также отменяет первую переменную, вместо того, чтобы называть это поверхностным повторением, это называется *перемещением*. В этом примере мы бы сказали, что `s1` был *перемещён* в `s2`. Итак, что на самом деле происходит, показано на рисунке 4-4.
 
-<img alt="Три таблицы: таблицы s1 и s2, представляющие эти строки в обойме соответственно, и обе указывающие на одни и те же строковые данные в куче. Таблица s1 выделена серым цветом, потому что s1 больше недействительна; только s2 можно использовать для доступа к данным кучи." src="img/trpl04-04.svg" class="center" style="width:150%;" />
+<img alt="Три таблицы: таблицы s1 и s2, представляющие эти строки в обойме соответственно, и обе указывающие на одни и те же строковые данные в куче. Таблица s1 выделена серым цветом, потому что s1 больше недействительна; только s2 можно использовать для доступа к данным кучи." src="img/trpl04-04.svg" class="center" style="ширина:150%;" />
 
 <span class="caption">Рисунок 4-4: представление в памяти после того, как <code>s1</code> был признан недействительным</span>
 

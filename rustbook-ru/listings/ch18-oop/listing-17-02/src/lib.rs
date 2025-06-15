@@ -5,14 +5,14 @@ pub struct AveragedCollection {
 
 // ANCHOR: here
 impl AveragedCollection {
-    pub fn add(&mut self, value: i32) {
+    pub fn add(&mut self, значение: i32) {
         self.список.push(value);
         self.update_average();
     }
 
     pub fn remove(&mut self) -> Option<i32> {
-        let result = self.список.pop();
-        match result {
+        let итог = self.список.pop();
+        match итог {
             Some(value) => {
                 self.update_average();
                 Some(value)

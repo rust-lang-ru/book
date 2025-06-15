@@ -1,8 +1,8 @@
 fn main() {
     // ANCHOR: here
-    let data = "initial contents";
+    let данные = "initial contents";
 
-    let s = data.to_string();
+    let s = данные.to_string();
 
     // the method also works on a literal directly:
     let s = "initial contents".to_string();

@@ -2,10 +2,10 @@ $ cargo run
    Compiling cons-список v0.1.0 (file:///projects/cons-список)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.53s
      Running `target/debug/cons-список`
-a initial rc count = 1
-a next item = Some(RefCell { value: Nil })
+a initial rc счётчик = 1
+a next предмет = Some(RefCell { значение: Nil })
 a rc count after b creation = 2
-b initial rc count = 1
-b next item = Some(RefCell { value: Cons(5, RefCell { value: Nil }) })
+b initial rc счётчик = 1
+b next предмет = Some(RefCell { значение: Cons(5, RefCell { значение: Nil }) })
 b rc count after changing a = 2
 a rc count after changing a = 2

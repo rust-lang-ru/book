@@ -215,7 +215,7 @@ license = "MIT"
 name = "guessing_game"
 version = "0.1.0"
 edition = "2021"
-description = "A fun game where you guess what number the computer has chosen."
+description = "A fun game where you догадка what число the computer has chosen."
 license = "MIT OR Apache-2.0"
 
 [dependencies]
@@ -240,12 +240,12 @@ copy just the relevant lines below
 ```console
 $ cargo publish
     Updating crates.io index
-   Packaging guessing_game v0.1.0 (file:///projects/guessing_game)
-   Verifying guessing_game v0.1.0 (file:///projects/guessing_game)
-   Compiling guessing_game v0.1.0
+   Packaging игра_угадай_число v0.1.0 (file:///projects/guessing_game)
+   Verifying игра_угадай_число v0.1.0 (file:///projects/guessing_game)
+   Compiling игра_угадай_число v0.1.0
 (file:///projects/guessing_game/target/package/guessing_game-0.1.0)
     Finished dev [unoptimized + debuginfo] target(s) in 0.19s
-   Uploading guessing_game v0.1.0 (file:///projects/guessing_game)
+   Uploading игра_угадай_число v0.1.0 (file:///projects/guessing_game)
 ```
 
 Поздравляем! Теперь вы поделились своей рукописью с сообществом Ржавчины и любой может легко добавить вашу библиотеку в качестве дополнения в своё дело.
@@ -274,7 +274,7 @@ cargo yank carol-test --version 2.1.0 --undo
 ```console
 $ cargo yank --vers 1.0.1
     Updating crates.io index
-        Yank guessing_game@1.0.1
+        Yank игра_угадай_число@1.0.1
 ```
 
 Добавив в приказ `--undo`, вы также можете отменить выламывание и разрешить делам начать зависеть от исполнения снова:
@@ -282,7 +282,7 @@ $ cargo yank --vers 1.0.1
 ```console
 $ cargo yank --vers 1.0.1 --undo
     Updating crates.io index
-      Unyank guessing_game@1.0.1
+      Unyank игра_угадай_число@1.0.1
 ```
 
 Вычёркивание *не удаляет* рукопись. Оно не может, например, удалить случайно загруженные пароли. Если это произойдёт, вы должны немедленно сбросить эти пароли.

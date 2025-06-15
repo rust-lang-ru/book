@@ -1,6 +1,6 @@
 fn main() {
     // ANCHOR: here
-    fn plus_one(x: Option<i32>) -> Option<i32> {
+    fn увеличить_на_единицу(x: Option<i32>) -> Option<i32> {
         match x {
             // ANCHOR: first_arm
             None => None,
@@ -11,8 +11,8 @@ fn main() {
         }
     }
 
-    let five = Some(5);
-    let six = plus_one(five);
-    let none = plus_one(None);
+    let пять = Some(5);
+    let шесть = увеличить_на_единицу(пять);
+    let none = увеличить_на_единицу(None);
     // ANCHOR_END: here
 }

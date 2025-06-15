@@ -13,7 +13,7 @@ fn main() {
     });
 }
 
-fn get_messages() -> impl Stream<Item = String> {
+fn get_messages() -> impl Stream<Предмет = String> {
     let (tx, rx) = trpl::channel();
 
     let messages = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];

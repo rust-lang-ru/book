@@ -42,7 +42,7 @@ fn main() {
 fn main() {
     let mut счётчик = 0;
 
-    let result = loop {
+    let итог = loop {
         счётчик += 1;
 
         if счётчик == 10 {

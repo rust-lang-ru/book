@@ -1,5 +1,5 @@
 pub trait Iterator {
-    type Item;
+    type Предмет;
 
     fn next(&mut self) -> Option<Self::Item>;
 }

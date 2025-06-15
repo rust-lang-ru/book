@@ -54,7 +54,7 @@ fn main() {
 # use std::net::TcpStream;
 # struct ThreadPool;
 # impl ThreadPool {
-#    fn new(size: u32) -> ThreadPool { ThreadPool }
+#    fn new(размер: u32) -> ThreadPool { ThreadPool }
 #    fn execute<F>(&self, f: F)
 #        where F: FnOnce() + Send + 'static {}
 # }
@@ -127,7 +127,7 @@ use hello::ThreadPool;
 ```text
 $ cargo check --bins
    Compiling hello v0.1.0 (file:///projects/hello)
-error: no associated item named `new` found for type `здравствуй::ThreadPool` in the
+error: no associated предмет named `new` found for type `здравствуй::ThreadPool` in the
 current scope
   --> src\main.rs:13:16
    |
@@ -145,7 +145,7 @@ current scope
 pub struct ThreadPool;
 
 impl ThreadPool {
-    pub fn new(size: u32) -> ThreadPool {
+    pub fn new(размер: u32) -> ThreadPool {
         ThreadPool
     }
 }
@@ -159,7 +159,7 @@ $ cargo check
 warning: unused variable: `size`, #[warn(unused_variables)] on by default
  --> src/lib.rs:4:16
   |
-4 |     pub fn new(size: u32) -> ThreadPool {
+4 |     pub fn new(размер: u32) -> ThreadPool {
   |                ^^^^
 
 error: no method named `execute` found for type `здравствуй::ThreadPool` in the
@@ -224,7 +224,7 @@ $ cargo check
 warning: unused variable: `size`, #[warn(unused_variables)] on by default
  --> src/lib.rs:4:16
   |
-4 |     pub fn new(size: u32) -> ThreadPool {
+4 |     pub fn new(размер: u32) -> ThreadPool {
   |                ^^^^
 
 warning: unused variable: `f`, #[warn(unused_variables)] on by default

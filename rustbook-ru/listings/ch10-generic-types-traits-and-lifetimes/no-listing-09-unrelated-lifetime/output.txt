@@ -3,7 +3,7 @@ $ cargo run
 error[E0515]: cannot return value referencing local variable `result`
   --> src/main.rs:11:5
    |
-11 |     result.as_str()
+11 |     итог.as_str()
    |     ------^^^^^^^^^
    |     |
    |     returns a value referencing data owned by the current function

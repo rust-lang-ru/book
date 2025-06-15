@@ -1,14 +1,14 @@
 $ cargo test
-   Compiling rectangle v0.1.0 (file:///projects/rectangle)
+   Compiling прямоугольник v0.1.0 (file:///projects/прямоугольник)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
-     Running unittests src/lib.rs (target/debug/deps/rectangle-6584c4561e48942e)
+     Running unittests src/lib.rs (target/debug/deps/прямоугольник-6584c4561e48942e)
 
 running 1 test
 test tests::larger_can_hold_smaller ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-   Doc-tests rectangle
+   Doc-tests прямоугольник
 
 running 0 tests
 

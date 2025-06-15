@@ -1,24 +1,24 @@
 #[derive(Debug)]
-enum UsState {
+enum ШтатСША {
     Alabama,
     Alaska,
     // --snip--
 }
 
-enum Coin {
+enum Монета {
     Penny,
     Nickel,
     Dime,
-    Quarter(UsState),
+    Quarter(ШтатСША),
 }
 
 // ANCHOR: here
-fn value_in_cents(coin: Coin) -> u8 {
-    match coin {
-        Coin::Penny => 1,
-        Coin::Nickel => 5,
-        Coin::Dime => 10,
-        Coin::Quarter(state) => {
+fn значение_в_центах(монета: Монета) -> u8 {
+    match монета {
+        Монета::Penny => 1,
+        Монета::Nickel => 5,
+        Монета::Dime => 10,
+        Монета::Quarter(state) => {
             println!("State quarter from {state:?}!");
             25
         }
@@ -27,5 +27,5 @@ fn value_in_cents(coin: Coin) -> u8 {
 // ANCHOR_END: here
 
 fn main() {
-    value_in_cents(Coin::Quarter(UsState::Alaska));
+    значение_в_центах(Монета::Quarter(ШтатСША::Alaska));
 }

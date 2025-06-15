@@ -1,11 +1,11 @@
 fn main() {
     // ANCHOR: here
-    let number = 7;
+    let число = 7;
     // ANCHOR_END: here
 
-    if number < 5 {
-        println!("condition was true");
+    if число < 5 {
+        println!("условие истинно");
     } else {
-        println!("condition was false");
+        println!("условие ложно");
     }
 }

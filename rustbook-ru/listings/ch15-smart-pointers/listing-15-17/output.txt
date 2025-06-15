@@ -1,6 +1,6 @@
 $ cargo run
    Compiling cons-список v0.1.0 (file:///projects/cons-список)
-error[E0382]: use of moved value: `a`
+error[E0382]: use of moved значение: `a`
   --> src/main.rs:11:30
    |
 9  |     let a = Cons(5, Box::new(Cons(10, Box::new(Nil))));

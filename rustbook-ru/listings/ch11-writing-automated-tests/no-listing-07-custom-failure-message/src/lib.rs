@@ -9,10 +9,10 @@ mod tests {
     // ANCHOR: here
     #[test]
     fn greeting_contains_name() {
-        let result = greeting("Carol");
+        let итог = greeting("Carol");
         assert!(
             result.contains("Carol"),
-            "Greeting did not contain name, value was `{result}`"
+            "Greeting did not contain name, value was `{итог}`"
         );
     }
     // ANCHOR_END: here

@@ -1,4 +1,4 @@
-enum Coin {
+enum Монета {
     Penny,
     Nickel,
     Dime,
@@ -6,15 +6,15 @@ enum Coin {
 }
 
 // ANCHOR: here
-fn value_in_cents(coin: Coin) -> u8 {
-    match coin {
-        Coin::Penny => {
+fn значение_в_центах(монета: Монета) -> u8 {
+    match монета {
+        Монета::Penny => {
             println!("Lucky penny!");
             1
         }
-        Coin::Nickel => 5,
-        Coin::Dime => 10,
-        Coin::Quarter => 25,
+        Монета::Nickel => 5,
+        Монета::Dime => 10,
+        Монета::Quarter => 25,
     }
 }
 // ANCHOR_END: here

@@ -1,13 +1,13 @@
-struct Rectangle {
-    width: u32,
-    height: u32,
+struct Прямоугольник {
+    ширина: u32,
+    длина: u32,
 }
 
 fn main() {
-    let rect1 = Rectangle {
-        width: 30,
-        height: 50,
+    let прямоугольник1 = Прямоугольник {
+        ширина: 30,
+        длина: 50,
     };
 
-    println!("rect1 is {}", rect1);
+    println!("прямоугольник1 is {}", прямоугольник1);
 }

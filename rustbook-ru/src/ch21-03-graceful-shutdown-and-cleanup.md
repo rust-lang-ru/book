@@ -106,7 +106,7 @@ cargo run
 curl http://127.0.0.1:7878
 curl http://127.0.0.1:7878
 curl http://127.0.0.1:7878
-third request will error because server will have shut down
+третий request will error because server will have shut down
 copy output below
 Can't automate because the output depends on making requests
 -->

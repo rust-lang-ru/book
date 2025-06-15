@@ -1,12 +1,12 @@
 fn main() {
-    let rect1 = (30, 50);
+    let прямоугольник1 = (30, 50);
 
     println!(
-        "The area of the rectangle is {} square pixels.",
-        area(rect1)
+        "Размер прямоугольника составляет {} square pixels.",
+        размер(прямоугольник1)
     );
 }
 
-fn area(dimensions: (u32, u32)) -> u32 {
-    dimensions.0 * dimensions.1
+fn размер(измерения: (u32, u32)) -> u32 {
+    измерения.0 * измерения.1
 }

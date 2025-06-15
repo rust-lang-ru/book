@@ -3,13 +3,13 @@ $ cargo build
 error[E0284]: type annotations needed
  --> src/main.rs:2:9
   |
-2 |     let guess = "42".parse().expect("Not a number!");
+2 |     let догадка = "42".parse().expect("Не число!");
   |         ^^^^^        ----- type must be known at this point
   |
   = note: cannot satisfy `<_ as FromStr>::Err == _`
-help: consider giving `guess` an explicit type
+help: consider giving `догадка` an explicit type
   |
-2 |     let guess: /* Type */ = "42".parse().expect("Not a number!");
+2 |     let догадка: /* Type */ = "42".parse().expect("Не число!");
   |              ++++++++++++
 
 For more information about this error, try `rustc --explain E0284`.

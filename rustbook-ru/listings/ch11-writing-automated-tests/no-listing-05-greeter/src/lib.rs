@@ -8,7 +8,7 @@ mod tests {
 
     #[test]
     fn greeting_contains_name() {
-        let result = greeting("Carol");
+        let итог = greeting("Carol");
         assert!(result.contains("Carol"));
     }
 }

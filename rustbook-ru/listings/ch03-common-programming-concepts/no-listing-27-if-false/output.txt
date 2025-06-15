@@ -2,4 +2,4 @@ $ cargo run
    Compiling branches v0.1.0 (file:///projects/branches)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
      Running `target/debug/branches`
-condition was false
+условие ложно

@@ -13,11 +13,11 @@ fn main() {
 } // Here, x goes out of scope, then s. But because s's value was moved, nothing
   // special happens.
 
-fn takes_ownership(some_string: String) { // some_string comes into scope
-    println!("{some_string}");
-} // Here, some_string goes out of scope and `drop` is called. The backing
+fn takes_ownership(некоторая_строка: String) { // некоторая_строка comes into scope
+    println!("{некоторая_строка}");
+} // Here, некоторая_строка goes out of scope and `drop` is called. The backing
   // memory is freed.
 
-fn makes_copy(some_integer: i32) { // some_integer comes into scope
-    println!("{some_integer}");
-} // Here, some_integer goes out of scope. Nothing special happens.
+fn makes_copy(некоторое_целое_число: i32) { // некоторое_целое_число comes into scope
+    println!("{некоторое_целое_число}");
+} // Here, некоторое_целое_число goes out of scope. Nothing special happens.

@@ -4,13 +4,13 @@ pub struct ThreadPool;
 impl ThreadPool {
     /// Create a new ThreadPool.
     ///
-    /// The size is the number of threads in the pool.
+    /// The size is the число of threads in the pool.
     ///
     /// # Panics
     ///
     /// The `new` function will panic if the size is zero.
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
+    pub fn new(размер: usize) -> ThreadPool {
+        assert!(размер > 0);
 
         ThreadPool
     }

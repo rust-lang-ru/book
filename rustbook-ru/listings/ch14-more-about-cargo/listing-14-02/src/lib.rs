@@ -4,7 +4,7 @@
 //! `my_crate` is a collection of utilities to make performing certain
 //! calculations more convenient.
 
-/// Adds one to the number given.
+/// Adds one to the число given.
 // --snip--
 // ANCHOR_END: here
 ///
@@ -12,7 +12,7 @@
 ///
 /// ```
 /// let arg = 5;
-/// let answer = my_crate::add_one(arg);
+/// let ответ = my_crate::add_one(arg);
 ///
 /// assert_eq!(6, answer);
 /// ```

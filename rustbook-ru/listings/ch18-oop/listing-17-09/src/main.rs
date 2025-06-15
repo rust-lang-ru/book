@@ -1,8 +1,8 @@
 use gui::Draw;
 
 struct SelectBox {
-    width: u32,
-    height: u32,
+    ширина: u32,
+    длина: u32,
     options: Vec<String>,
 }
 
@@ -19,8 +19,8 @@ fn main() {
     let screen = Screen {
         components: vec![
             Box::new(SelectBox {
-                width: 75,
-                height: 10,
+                ширина: 75,
+                длина: 10,
                 options: vec![
                     String::from("Yes"),
                     String::from("Maybe"),
@@ -28,8 +28,8 @@ fn main() {
                 ],
             }),
             Box::new(Button {
-                width: 50,
-                height: 10,
+                ширина: 50,
+                длина: 10,
                 label: String::from("OK"),
             }),
         ],

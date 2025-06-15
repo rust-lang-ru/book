@@ -11,7 +11,7 @@ enum Список {
 impl Список {
     fn tail(&self) -> Option<&RefCell<Rc<Список>>> {
         match self {
-            Cons(_, item) => Some(item),
+            Cons(_, item) => Some(предмет),
             Nil => None,
         }
     }
@@ -21,14 +21,14 @@ impl Список {
 fn main() {
     let a = Rc::new(Cons(5, RefCell::new(Rc::new(Nil))));
 
-    println!("a initial rc count = {}", Rc::strong_count(&a));
-    println!("a next item = {:?}", a.tail());
+    println!("a initial rc счётчик = {}", Rc::strong_count(&a));
+    println!("a next предмет = {:?}", a.tail());
 
     let b = Rc::new(Cons(10, RefCell::new(Rc::clone(&a))));
 
     println!("a rc count after b creation = {}", Rc::strong_count(&a));
-    println!("b initial rc count = {}", Rc::strong_count(&b));
-    println!("b next item = {:?}", b.tail());
+    println!("b initial rc счётчик = {}", Rc::strong_count(&b));
+    println!("b next предмет = {:?}", b.tail());
 
     if let Some(link) = a.tail() {
         *link.borrow_mut() = Rc::clone(&b);
@@ -39,6 +39,6 @@ fn main() {
 
     // Uncomment the next line to see that we have a cycle;
     // it will overflow the stack
-    // println!("a next item = {:?}", a.tail());
+    // println!("a next предмет = {:?}", a.tail());
 }
 // ANCHOR_END: here

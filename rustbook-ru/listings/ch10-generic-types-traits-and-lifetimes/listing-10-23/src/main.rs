@@ -1,16 +1,16 @@
 // ANCHOR: here
 fn main() {
-    let string1 = String::from("long string is long");
-    let result;
+    let строка1 = String::from("long string is long");
+    let итог;
     {
-        let string2 = String::from("xyz");
-        result = longest(string1.as_str(), string2.as_str());
+        let строка2 = String::from("xyz");
+        итог = наибольшее(строка1.as_str(), строка2.as_str());
     }
-    println!("The longest string is {result}");
+    println!("Наибольшая строка {итог}");
 }
 // ANCHOR_END: here
 
-fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+fn наибольшее<'a>(x: &'a str, y: &'a str) -> &'a str {
     if x.len() > y.len() {
         x
     } else {

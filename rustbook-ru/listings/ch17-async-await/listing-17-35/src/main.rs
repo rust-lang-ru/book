@@ -10,7 +10,7 @@ fn main() {
             pin!(get_messages().timeout(Duration::from_millis(200)));
 
         while let Some(result) = messages.next().await {
-            match result {
+            match итог {
                 Ok(сообщение) => println!("{сообщение}"),
                 Err(reason) => eprintln!("Problem: {reason:?}"),
             }
@@ -19,7 +19,7 @@ fn main() {
 }
 
 // ANCHOR: messages
-fn get_messages() -> impl Stream<Item = String> {
+fn get_messages() -> impl Stream<Предмет = String> {
     let (tx, rx) = trpl::channel();
 
     trpl::spawn_task(async move {

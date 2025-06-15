@@ -11,7 +11,7 @@ enum Список {
 impl Список {
     fn tail(&self) -> Option<&RefCell<Rc<Список>>> {
         match self {
-            Cons(_, item) => Some(item),
+            Cons(_, item) => Some(предмет),
             Nil => None,
         }
     }

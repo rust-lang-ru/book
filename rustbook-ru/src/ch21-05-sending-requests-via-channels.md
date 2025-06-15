@@ -39,12 +39,12 @@ struct Job;
 
 impl ThreadPool {
     // ...snip...
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
+    pub fn new(размер: usize) -> ThreadPool {
+        assert!(размер > 0);
 
         let (sender, receiver) = mpsc::channel();
 
-        let mut workers = Vec::with_capacity(size);
+        let mut workers = Vec::with_capacity(размер);
 
         for id in 0..size {
             workers.push(Worker::new(id));
@@ -59,7 +59,7 @@ impl ThreadPool {
 }
 #
 # struct Worker {
-#     id: usize,
+#     id: uразмер,
 #     thread: thread::JoinHandle<()>,
 # }
 #
@@ -90,12 +90,12 @@ impl ThreadPool {
 ```rust,ignore
 impl ThreadPool {
     // ...snip...
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
+    pub fn new(размер: usize) -> ThreadPool {
+        assert!(размер > 0);
 
         let (sender, receiver) = mpsc::channel();
 
-        let mut workers = Vec::with_capacity(size);
+        let mut workers = Vec::with_capacity(размер);
 
         for id in 0..size {
             workers.push(Worker::new(id, receiver));
@@ -112,7 +112,7 @@ impl ThreadPool {
 // ...snip...
 
 impl Worker {
-    fn new(id: usize, receiver: mpsc::Receiver<Job>) -> Worker {
+    fn new(id: uразмер, receiver: mpsc::Receiver<Job>) -> Worker {
         let thread = thread::spawn(|| {
             receiver;
         });
@@ -135,7 +135,7 @@ impl Worker {
 ```text
 $ cargo check
    Compiling hello v0.1.0 (file:///projects/hello)
-error[E0382]: use of moved value: `receiver`
+error[E0382]: use of moved значение: `receiver`
   --> src/lib.rs:27:42
    |
 27 |             workers.push(Worker::new(id, receiver));
@@ -172,14 +172,14 @@ use std::sync::Mutex;
 #
 impl ThreadPool {
     // ...snip...
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
+    pub fn new(размер: usize) -> ThreadPool {
+        assert!(размер > 0);
 
         let (sender, receiver) = mpsc::channel();
 
         let receiver = Arc::new(Mutex::new(receiver));
 
-        let mut workers = Vec::with_capacity(size);
+        let mut workers = Vec::with_capacity(размер);
 
         for id in 0..size {
             workers.push(Worker::new(id, receiver.clone()));
@@ -194,12 +194,12 @@ impl ThreadPool {
     // ...snip...
 }
 # struct Worker {
-#     id: usize,
+#     id: uразмер,
 #     thread: thread::JoinHandle<()>,
 # }
 #
 impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         // ...snip...
 #         let thread = thread::spawn(|| {
 #            receiver;
@@ -264,7 +264,7 @@ impl ThreadPool {
 // ...snip...
 
 impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         let thread = thread::spawn(move || {
             loop {
                 let job = receiver.lock().unwrap().recv().unwrap();
@@ -355,7 +355,7 @@ type Job = Box<FnBox + Send + 'static>;
 // ...snip...
 
 impl Worker {
-    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         let thread = thread::spawn(move || {
             loop {
                 let job = receiver.lock().unwrap().recv().unwrap();
@@ -417,7 +417,7 @@ warning: field is never used: `workers`
 warning: field is never used: `id`
   --> src/lib.rs:61:5
    |
-61 |     id: usize,
+61 |     id: uразмер,
    |     ^^^^^^^^^
    |
    = note: #[warn(dead_code)] on by default

@@ -4,8 +4,8 @@ pub trait Messenger {
 
 pub struct LimitTracker<'a, T: Messenger> {
     messenger: &'a T,
-    value: usize,
-    max: usize,
+    значение: uразмер,
+    max: uразмер,
 }
 
 impl<'a, T> LimitTracker<'a, T>
@@ -15,12 +15,12 @@ where
     pub fn new(messenger: &'a T, max: usize) -> LimitTracker<'a, T> {
         LimitTracker {
             messenger,
-            value: 0,
+            значение: 0,
             max,
         }
     }
 
-    pub fn set_value(&mut self, value: usize) {
+    pub fn set_value(&mut self, значение: usize) {
         self.value = value;
 
         let percentage_of_max = self.value as f64 / self.max as f64;

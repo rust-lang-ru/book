@@ -1,24 +1,24 @@
 #[derive(Debug)]
-enum UsState {
+enum ШтатСША {
     Alabama,
     Alaska,
     // --snip--
 }
 
-enum Coin {
+enum Монета {
     Penny,
     Nickel,
     Dime,
-    Quarter(UsState),
+    Quarter(ШтатСША),
 }
 
 fn main() {
-    let coin = Coin::Penny;
+    let монета = Монета::Penny;
     // ANCHOR: here
-    let mut count = 0;
-    match coin {
-        Coin::Quarter(state) => println!("State quarter from {state:?}!"),
-        _ => count += 1,
+    let mut счётчик = 0;
+    match монета {
+        Монета::Quarter(state) => println!("State quarter from {state:?}!"),
+        _ => счётчик += 1,
     }
     // ANCHOR_END: here
 }

@@ -1,7 +1,7 @@
 // ANCHOR: here
 struct User {
-    active: bool,
-    username: String,
+    действующий: bool,
+    имя_пользователя: String,
     email: String,
     sign_in_count: u64,
 }

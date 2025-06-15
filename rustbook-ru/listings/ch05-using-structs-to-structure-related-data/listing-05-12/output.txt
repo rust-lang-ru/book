@@ -1,5 +1,5 @@
 $ cargo run
-   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+   Compiling прямоугольникs v0.1.0 (file:///projects/прямоугольникs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
-     Running `target/debug/rectangles`
-rect1 is Rectangle { width: 30, height: 50 }
+     Running `target/debug/прямоугольникs`
+прямоугольник1 is Прямоугольник { ширина: 30, длина: 50 }

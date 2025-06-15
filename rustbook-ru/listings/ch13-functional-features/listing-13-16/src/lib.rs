@@ -32,7 +32,7 @@ mod tests {
         let in_my_size = shoes_in_size(shoes, 10);
 
         assert_eq!(
-            in_my_size,
+            in_my_размер,
             vec![
                 Shoe {
                     size: 10,

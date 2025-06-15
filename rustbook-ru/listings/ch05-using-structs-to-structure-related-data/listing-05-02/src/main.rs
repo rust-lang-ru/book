@@ -1,6 +1,6 @@
 struct User {
-    active: bool,
-    username: String,
+    действующий: bool,
+    имя_пользователя: String,
     email: String,
     sign_in_count: u64,
 }
@@ -8,8 +8,8 @@ struct User {
 // ANCHOR: here
 fn main() {
     let user1 = User {
-        active: true,
-        username: String::from("someusername123"),
+        действующий: true,
+        имя_пользователя: String::from("someимя_пользователя123"),
         email: String::from("someone@example.com"),
         sign_in_count: 1,
     };

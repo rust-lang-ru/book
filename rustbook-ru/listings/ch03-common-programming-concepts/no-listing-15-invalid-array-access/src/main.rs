@@ -3,20 +3,20 @@ use std::io;
 fn main() {
     let a = [1, 2, 3, 4, 5];
 
-    println!("Please enter an array index.");
+    println!("Пожалуйста, введите указатель массива.");
 
-    let mut index = String::new();
+    let mut указатель = String::new();
 
     io::stdin()
-        .read_line(&mut index)
-        .expect("Failed to read line");
+        .read_line(&mut указатель)
+        .expect("Ошибка при чтении");
 
-    let index: usize = index
+    let index: usize = указатель
         .trim()
         .parse()
-        .expect("Index entered was not a number");
+        .expect("Введённый указатель не число");
 
-    let element = a[index];
+    let element = a[указатель];
 
-    println!("The value of the element at index {index} is: {element}");
+    println!("The value of the element at index {указатель} is: {element}");
 }

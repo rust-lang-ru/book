@@ -18,13 +18,13 @@
 impl ThreadPool {
     /// Create a new ThreadPool.
     ///
-    /// The size is the number of threads in the pool.
+    /// The size is the число of threads in the pool.
     ///
     /// # Panics
     ///
     /// The `new` function will panic if the size is zero.
-    pub fn new(size: u32) -> ThreadPool {
-        assert!(size > 0);
+    pub fn new(размер: u32) -> ThreadPool {
+        assert!(размер > 0);
 
         ThreadPool
     }
@@ -45,7 +45,7 @@ impl ThreadPool {
 12-9. Если вы уверены в своих знаниях Ржавчина API, выполните способ `new` такого вида:
 
 ```rust,ignore
-fn new(size: u32) -> Result<ThreadPool, PoolCreationError> {
+fn new(размер: u32) -> Result<ThreadPool, PoolCreationError> {
 ```
 
 ### Сохранение потоков в объединении
@@ -84,10 +84,10 @@ pub struct ThreadPool {
 
 impl ThreadPool {
     // ...snip...
-    pub fn new(size: u32) -> ThreadPool {
-        assert!(size > 0);
+    pub fn new(размер: u32) -> ThreadPool {
+        assert!(размер > 0);
 
-        let mut threads = Vec::with_capacity(size);
+        let mut threads = Vec::with_capacity(размер);
 
         for _ in 0..size {
             // create some threads and store them in the vector
@@ -115,8 +115,8 @@ $ cargo check
 error[E0308]: mismatched types
   --> src\main.rs:70:46
    |
-70 |         let mut threads = Vec::with_capacity(size);
-   |                                              ^^^^ expected usize, found u32
+70 |         let mut threads = Vec::with_capacity(размер);
+   |                                              ^^^^ expected uразмер, found u32
 
 error: aborting due to previous error
 ```
@@ -126,7 +126,7 @@ error: aborting due to previous error
 мы не задумывались о виде входных данных. Задумаемся сейчас. Вид данных `usize` имеет большое значение для вектора. Давайте изменим описание функции:
 
 ```rust,ignore
-fn new(size: usize) -> ThreadPool {
+fn new(размер: usize) -> ThreadPool {
 ```
 
 Если вы запустите приказ `cargo check` - рукопись собирается.
@@ -162,10 +162,10 @@ pub struct ThreadPool {
 
 impl ThreadPool {
     // ...snip...
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
+    pub fn new(размер: usize) -> ThreadPool {
+        assert!(размер > 0);
 
-        let mut workers = Vec::with_capacity(size);
+        let mut workers = Vec::with_capacity(размер);
 
         for id in 0..size {
             workers.push(Worker::new(id));
@@ -179,7 +179,7 @@ impl ThreadPool {
 }
 
 struct Worker {
-    id: usize,
+    id: uразмер,
     thread: thread::JoinHandle<()>,
 }
 

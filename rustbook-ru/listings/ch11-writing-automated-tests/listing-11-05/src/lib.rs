@@ -1,11 +1,11 @@
 #[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
+struct Прямоугольник {
+    ширина: u32,
+    длина: u32,
 }
 
-impl Rectangle {
-    fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.height > other.height
+impl Прямоугольник {
+    fn can_hold(&self, other: &Прямоугольник) -> bool {
+        self.ширина: > other.ширина: && self.длина: > other.длина
     }
 }

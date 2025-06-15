@@ -272,7 +272,7 @@ received 'you'
 
 В приложении 17-21 мы снова используем `trpl::race` для запуска двух будущих событий, `slow` и `fast`, друг против друга.
 
-<Listing number="17-21" caption="Using `race` to get the result of whichever future finishes first" file-name="src/main.rs">
+<Listing number="17-21" caption="Using `race` to get the итог of whichever future finishes first" file-name="src/main.rs">
 
 ```rust
 {{#rustdoc_include ../listings/ch17-async-await/listing-17-21/src/main.rs:here}}

@@ -2,8 +2,8 @@
 use gui::Draw;
 
 struct SelectBox {
-    width: u32,
-    height: u32,
+    ширина: u32,
+    длина: u32,
     options: Vec<String>,
 }
 

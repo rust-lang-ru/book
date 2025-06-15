@@ -8,7 +8,7 @@ pub mod kinds {
     pub enum PrimaryColor {
         Red,
         Yellow,
-        Blue,
+        Голубой,
     }
 
     /// The secondary colors according to the RYB color model.

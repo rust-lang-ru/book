@@ -1,15 +1,15 @@
 pub struct Post {
-    content: String,
+    содержимое: String,
 }
 
 pub struct DraftPost {
-    content: String,
+    содержимое: String,
 }
 
 impl Post {
     pub fn new() -> DraftPost {
         DraftPost {
-            content: String::new(),
+            содержимое: String::new(),
         }
     }
 
@@ -25,19 +25,19 @@ impl DraftPost {
 
     pub fn request_review(self) -> PendingReviewPost {
         PendingReviewPost {
-            content: self.content,
+            содержимое: self.content,
         }
     }
 }
 
 pub struct PendingReviewPost {
-    content: String,
+    содержимое: String,
 }
 
 impl PendingReviewPost {
     pub fn approve(self) -> Post {
         Post {
-            content: self.content,
+            содержимое: self.content,
         }
     }
 }

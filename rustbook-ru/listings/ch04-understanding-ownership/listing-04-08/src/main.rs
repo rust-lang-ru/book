@@ -1,8 +1,8 @@
-fn first_word(s: &String) -> usize {
+fn первое_слово(s: &String) -> usize {
     let bytes = s.as_bytes();
 
-    for (i, &item) in bytes.iter().enumerate() {
-        if item == b' ' {
+    for (i, &предмет) in bytes.iter().enumerate() {
+        if предмет == b' ' {
             return i;
         }
     }
@@ -14,7 +14,7 @@ fn first_word(s: &String) -> usize {
 fn main() {
     let mut s = String::from("здравствуй мир");
 
-    let word = first_word(&s); // word will get the value 5
+    let слово = первое_слово(&s); // word will get the value 5
 
     s.clear(); // this empties the String, making it equal to ""
 

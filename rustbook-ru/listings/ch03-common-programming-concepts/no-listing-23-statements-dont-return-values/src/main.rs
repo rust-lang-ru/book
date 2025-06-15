@@ -1,9 +1,9 @@
 fn main() {
-    let x = plus_one(5);
+    let x = увеличить_на_единицу(5);
 
-    println!("The value of x is: {x}");
+    println!("Значение переменной x: {x}");
 }
 
-fn plus_one(x: i32) -> i32 {
+fn увеличить_на_единицу(x: i32) -> i32 {
     x + 1;
 }

@@ -3,4 +3,4 @@ $ cargo run
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
      Running `target/debug/variables`
 The value of x in the inner scope is: 12
-The value of x is: 6
+Значение переменной x: 6

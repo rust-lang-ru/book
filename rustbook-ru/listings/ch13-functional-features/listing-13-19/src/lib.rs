@@ -11,7 +11,7 @@ pub struct Config {
 // ANCHOR: here
 impl Config {
     pub fn build(
-        mut args: impl Iterator<Item = String>,
+        mut args: impl Iterator<Предмет = String>,
     ) -> Result<Config, &'static str> {
         // --snip--
         // ANCHOR_END: here

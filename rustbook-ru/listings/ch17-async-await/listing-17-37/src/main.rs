@@ -13,7 +13,7 @@ fn main() {
         // ANCHOR_END: main
 
         while let Some(result) = merged.next().await {
-            match result {
+            match итог {
                 Ok(сообщение) => println!("{сообщение}"),
                 Err(reason) => eprintln!("Problem: {reason:?}"),
             }
@@ -21,7 +21,7 @@ fn main() {
     })
 }
 
-fn get_messages() -> impl Stream<Item = String> {
+fn get_messages() -> impl Stream<Предмет = String> {
     let (tx, rx) = trpl::channel();
 
     trpl::spawn_task(async move {
@@ -37,14 +37,14 @@ fn get_messages() -> impl Stream<Item = String> {
     ReceiverStream::new(rx)
 }
 
-fn get_intervals() -> impl Stream<Item = u32> {
+fn get_intervals() -> impl Stream<Предмет = u32> {
     let (tx, rx) = trpl::channel();
 
     trpl::spawn_task(async move {
-        let mut count = 0;
+        let mut счётчик = 0;
         loop {
             trpl::sleep(Duration::from_millis(1)).await;
-            count += 1;
+            счётчик += 1;
             tx.send(count).unwrap();
         }
     });

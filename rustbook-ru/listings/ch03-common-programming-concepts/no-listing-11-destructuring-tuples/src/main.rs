@@ -1,7 +1,7 @@
 fn main() {
-    let tup = (500, 6.4, 1);
+    let составной_ряд = (500, 6.4, 1);
 
-    let (x, y, z) = tup;
+    let (x, y, z) = составной_ряд;
 
-    println!("The value of y is: {y}");
+    println!("Значение y: {y}");
 }

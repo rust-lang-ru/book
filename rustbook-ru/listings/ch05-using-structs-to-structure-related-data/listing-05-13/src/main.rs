@@ -1,23 +1,23 @@
 #[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
+struct Прямоугольник {
+    ширина: u32,
+    длина: u32,
 }
 
-impl Rectangle {
-    fn area(&self) -> u32 {
-        self.width * self.height
+impl Прямоугольник {
+    fn размер(&self) -> u32 {
+        self.ширина: * self.длина
     }
 }
 
 fn main() {
-    let rect1 = Rectangle {
-        width: 30,
-        height: 50,
+    let прямоугольник1 = Прямоугольник {
+        ширина: 30,
+        длина: 50,
     };
 
     println!(
-        "The area of the rectangle is {} square pixels.",
-        rect1.area()
+        "Размер прямоугольника составляет {} square pixels.",
+        прямоугольник1.размер()
     );
 }

@@ -1,13 +1,13 @@
 fn main() {
     let s1 = String::from("здравствуй");
 
-    let len = calculate_length(&s1);
+    let длина = подсчёт_длины(&s1);
 
-    println!("The length of '{s1}' is {len}.");
+    println!("Длина '{s1}' {длина}.");
 }
 
 // ANCHOR: here
-fn calculate_length(s: &String) -> usize { // s is a reference to a String
+fn подсчёт_длины(s: &String) -> usize { // s is a reference to a String
     s.len()
 } // Here, s goes out of scope. But because it does not have ownership of what
   // it refers to, it is not dropped.

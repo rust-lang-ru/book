@@ -1,6 +1,6 @@
 $ cargo run
    Compiling shared-state v0.1.0 (file:///projects/shared-state)
-error[E0382]: borrow of moved value: `счётчик`
+error[E0382]: borrow of moved значение: `счётчик`
   --> src/main.rs:21:29
    |
 5  |     let счётчик = Mutex::new(0);

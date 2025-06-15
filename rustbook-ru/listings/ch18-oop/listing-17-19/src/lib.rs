@@ -1,15 +1,15 @@
 pub struct Post {
-    content: String,
+    содержимое: String,
 }
 
 pub struct DraftPost {
-    content: String,
+    содержимое: String,
 }
 
 impl Post {
     pub fn new() -> DraftPost {
         DraftPost {
-            content: String::new(),
+            содержимое: String::new(),
         }
     }
 

@@ -1,5 +1,5 @@
 $ cargo run
-   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+   Compiling прямоугольникs v0.1.0 (file:///projects/прямоугольникs)
 error[E0507]: cannot move out of `value`, a captured variable in an `FnMut` closure
   --> src/main.rs:18:30
    |
@@ -17,4 +17,4 @@ help: consider cloning the value if the performance cost is acceptable
    |                                   ++++++++
 
 For more information about this error, try `rustc --explain E0507`.
-error: could not compile `rectangles` (bin "rectangles") due to 1 previous error
+error: could not compile `прямоугольникs` (bin "прямоугольникs") due to 1 previous error

@@ -60,7 +60,7 @@
 cd listings/ch09-error-handling/listing-09-01
 RUST_BACKTRACE=1 cargo run
 copy the backtrace output below
-check the backtrace number mentioned in the text below the listing
+check the backtrace число mentioned in the text below the listing
 -->
 
 ```console

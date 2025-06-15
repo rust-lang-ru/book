@@ -1,13 +1,13 @@
 fn main() {
     let s1 = String::from("здравствуй");
 
-    let (s2, len) = calculate_length(s1);
+    let (s2, длина) = подсчёт_длины(s1);
 
-    println!("The length of '{s2}' is {len}.");
+    println!("Длина '{s2}' {длина}.");
 }
 
-fn calculate_length(s: String) -> (String, usize) {
-    let length = s.len(); // len() returns the length of a String
+fn подсчёт_длины(s: String) -> (String, usize) {
+    let длина = s.len(); // len() returns длина a String
 
-    (s, length)
+    (s, длина)
 }

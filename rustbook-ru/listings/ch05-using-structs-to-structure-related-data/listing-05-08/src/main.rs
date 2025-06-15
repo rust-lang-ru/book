@@ -1,17 +1,17 @@
 // ANCHOR: all
 fn main() {
-    let width1 = 30;
-    let height1 = 50;
+    let ширина1 = 30;
+    let длина1 = 50;
 
     println!(
-        "The area of the rectangle is {} square pixels.",
-        area(width1, height1)
+        "Размер прямоугольника составляет {} square pixels.",
+        размер(ширина1, длина1)
     );
 }
 
 // ANCHOR: here
-fn area(width: u32, height: u32) -> u32 {
+fn размер(ширина: u32, длина: u32) -> u32 {
     // ANCHOR_END: here
-    width * height
+    ширина: * height
 }
 // ANCHOR_END: all

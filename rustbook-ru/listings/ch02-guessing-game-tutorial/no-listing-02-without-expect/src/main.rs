@@ -1,13 +1,13 @@
 use std::io;
 
 fn main() {
-    println!("Guess the number!");
+    println!("Угадай число!");
 
-    println!("Please input your guess.");
+    println!("Пожалуйста, введите ваше число.");
 
-    let mut guess = String::new();
+    let mut догадка = String::new();
 
-    io::stdin().read_line(&mut guess);
+    io::stdin().read_line(&mut догадка);
 
-    println!("You guessed: {guess}");
+    println!("Вы угадали: {догадка}");
 }

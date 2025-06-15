@@ -1,15 +1,15 @@
 #[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
+struct Прямоугольник {
+    ширина: u32,
+    длина: u32,
 }
 
 fn main() {
     let scale = 2;
-    let rect1 = Rectangle {
-        width: dbg!(30 * scale),
-        height: 50,
+    let прямоугольник1 = Прямоугольник {
+        ширина: dbg!(30 * scale),
+        длина: 50,
     };
 
-    dbg!(&rect1);
+    dbg!(&прямоугольник1);
 }

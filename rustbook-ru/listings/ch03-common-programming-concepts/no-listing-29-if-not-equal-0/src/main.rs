@@ -1,7 +1,7 @@
 fn main() {
-    let number = 3;
+    let число = 3;
 
-    if number != 0 {
-        println!("number was something other than zero");
+    if число != 0 {
+        println!("число было что-то отличное от ноля");
     }
 }

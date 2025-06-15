@@ -19,7 +19,7 @@ fn main() {
             println!("Text сообщение: {text}");
         }
         Сообщение::Смена_цвета(r, g, b) => {
-            println!("Change the color to red {r}, green {g}, and blue {b}")
+            println!("Change the color to red {r}, green {g}, and голубой {b}")
         }
     }
 }

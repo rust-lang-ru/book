@@ -1,9 +1,9 @@
 fn main() {
     // addition
-    let sum = 5 + 10;
+    let сложение = 5 + 10;
 
     // subtraction
-    let difference = 95.5 - 4.3;
+    let разница = 95.5 - 4.3;
 
     // multiplication
     let product = 4 * 30;

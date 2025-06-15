@@ -3,7 +3,7 @@ $ cargo run
 error[E0277]: cannot add `Option<i8>` to `i8`
  --> src/main.rs:5:17
   |
-5 |     let sum = x + y;
+5 |     let сложение = x + y;
   |                 ^ no implementation for `i8 + Option<i8>`
   |
   = help: the trait `Add<Option<i8>>` is not implemented for `i8`

@@ -4,11 +4,11 @@ $ cargo test
      Running unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
 
 running 1 test
-test tests::one_result ... FAILED
+test tests::one_итог ... FAILED
 
 failures:
 
----- tests::one_result stdout ----
+---- tests::one_итог stdout ----
 thread 'tests::one_result' panicked at src/lib.rs:44:9:
 assertion `left == right` failed
   left: ["safe, fast, productive."]

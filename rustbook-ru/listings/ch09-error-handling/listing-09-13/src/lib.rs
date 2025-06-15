@@ -1,14 +1,14 @@
-pub struct Guess {
-    value: i32,
+pub struct Догадка {
+    значение: i32,
 }
 
-impl Guess {
-    pub fn new(value: i32) -> Guess {
+impl Догадка {
+    pub fn new(значение: i32) -> Догадка {
         if value < 1 || value > 100 {
-            panic!("Guess value must be between 1 and 100, got {value}.");
+            panic!("Догадка value must be between 1 and 100, got {value}.");
         }
 
-        Guess { value }
+        Догадка { value }
     }
 
     pub fn value(&self) -> i32 {

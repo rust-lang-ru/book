@@ -9,8 +9,8 @@ pub trait Summary {
 // ANCHOR_END: here
 
 pub struct Tweet {
-    pub username: String,
-    pub content: String,
+    pub имя_пользователя: String,
+    pub содержимое: String,
     pub reply: bool,
     pub retweet: bool,
 }
@@ -18,7 +18,7 @@ pub struct Tweet {
 // ANCHOR: impl
 impl Summary for Tweet {
     fn summarize_author(&self) -> String {
-        format!("@{}", self.username)
+        format!("@{}", self.имя_пользователя)
     }
 }
 // ANCHOR_END: impl
