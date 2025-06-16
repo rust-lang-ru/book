@@ -25,7 +25,7 @@ fn write_md(output: String) {
 
 fn parse_references(buffer: String) -> (String, HashMap<String, String>) {
     let mut ref_map = HashMap::new();
-    // FIXME: currently doesn't владение "title" in following line.
+    // FIXME: currently doesn't handle "title" in following line.
     let re = Regex::new(r###"(?m)\n?^ {0,3}\[([^]]+)\]:[[:blank:]]*(.*)$"###)
         .unwrap();
     let output = re
@@ -59,19 +59,19 @@ fn parse_links((buffer, ref_map): (String, HashMap<String, String>)) -> String {
                             Some(key) => {
                                 match key.as_str() {
                                     // `[name][]`
-                                    "" => ref_map.get(&name.to_uppercase()).unwrap_or_else(|| panic!("could not find url for the link text `{имя}`")).to_string(),
+                                    "" => ref_map.get(&name.to_uppercase()).unwrap_or_else(|| panic!("could not find url for the link text `{name}`")).to_string(),
                                     // `[name][reference]`
                                     _ => ref_map.get(&key.as_str().to_uppercase()).unwrap_or_else(|| panic!("could not find url for the link text `{}`", key.as_str())).to_string(),
                                 }
                             }
                             // `[name]` is within code and should not be treated as a link
                             None => {
-                                return format!("[{имя}]");
+                                return format!("[{name}]");
                             }
                         }
                     }
                 };
-                format!("{имя} at *{val}*")
+                format!("{name} at *{val}*")
             }
         }
     });
@@ -301,15 +301,15 @@ more text
     fn ignores_quotes_in_pre_sections() {
         let source = r###"```bash
 $ cargo build
-   Сборка guessing_game v0.1.0 (file:///projects/guessing_game)
-src/main.rs:23:21: 23:35 ошибка: не соответствие видов данных [E0308]
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+src/main.rs:23:21: 23:35 error: mismatched types [E0308]
 src/main.rs:23     match guess.cmp(&secret_number) {
                                    ^~~~~~~~~~~~~~
-src/main.rs:23:21: 23:35 помощь: run `rustc --explain E0308` to see a detailed explanation
+src/main.rs:23:21: 23:35 help: run `rustc --explain E0308` to see a detailed explanation
 src/main.rs:23:21: 23:35 note: expected type `&std::string::String`
 src/main.rs:23:21: 23:35 note:    found type `&_`
-ошибка: aborting due to предыдущая ошибка
-Не могу собрать исходную рукопись в приложение `guessing_game`.
+error: aborting due to previous error
+Could not compile `guessing_game`.
 ```
 "###
             .to_string();
@@ -326,8 +326,8 @@ src/main.rs:23:21: 23:35 note:    found type `&_`
     fn ignores_pre_sections_with_final_quote() {
         let source = r###"```bash
 $ cargo run
-   Сборка points v0.1.0 (file:///projects/points)
-ошибка: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
+   Compiling points v0.1.0 (file:///projects/points)
+error: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
  --> src/main.rs:8:29
 8 |>     println!("Point 1: {}", p1);
   |>                             ^^
@@ -341,8 +341,8 @@ note: required by `std::fmt::Display::fmt`
 "###.to_string();
         let target = r###"```bash
 $ cargo run
-   Сборка points v0.1.0 (file:///projects/points)
-ошибка: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
+   Compiling points v0.1.0 (file:///projects/points)
+error: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
  --> src/main.rs:8:29
 8 |>     println!("Point 1: {}", p1);
   |>                             ^^
