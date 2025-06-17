@@ -15,14 +15,14 @@ impl Summary for NewsArticle {
     }
 }
 
-pub struct Tweet {
+pub struct SocialPost {
     pub имя_пользователя: String,
     pub содержимое: String,
     pub reply: bool,
-    pub retweet: bool,
+    pub resocialpost: bool,
 }
 
-impl Summary for Tweet {
+impl Summary for SocialPost {
     fn summarize(&self) -> String {
         format!("{}: {}", self.имя_пользователя, self.content)
     }
@@ -30,13 +30,13 @@ impl Summary for Tweet {
 
 // ANCHOR: here
 fn returns_summarizable() -> impl Summary {
-    Tweet {
+    SocialPost {
         имя_пользователя: String::from("horse_ebooks"),
         содержимое: String::from(
             "of course, as you probably already know, people",
         ),
         reply: false,
-        retweet: false,
+        resocialpost: false,
     }
 }
 // ANCHOR_END: here

@@ -1,16 +1,16 @@
-use aggregator::{self, Summary, Tweet};
+use aggregator::{self, Summary, SocialPost};
 
 fn main() {
     // ANCHOR: here
-    let tweet = Tweet {
+    let socialpost = SocialPost {
         имя_пользователя: String::from("horse_ebooks"),
         содержимое: String::from(
             "of course, as you probably already know, people",
         ),
         reply: false,
-        retweet: false,
+        resocialpost: false,
     };
 
-    println!("1 new tweet: {}", tweet.summarize());
+    println!("1 new socialpost: {}", socialpost.summarize());
     // ANCHOR_END: here
 }

@@ -40,7 +40,7 @@
 
 ## Основы Ржавчины
 
-- [Управление растущими делами с помощью дополнений, дополнений и разделов](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
+- [Управление растущими приложениями с помощью дополнений, дополнений и разделов](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
 
     - [Дополнения и дополнения](ch07-01-packages-and-crates.md)
     - [Определение разделов для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
@@ -87,7 +87,7 @@
 
     - [Замыкания: безымянные функции, которые получают своё окружение](ch13-01-closures.md)
     - [Обработка последовательности переменных с помощью повторителей](ch13-02-iterators.md)
-    - [Улучшение нашего дела с вводом/выводом](ch13-03-improving-our-io-project.md)
+    - [Улучшение нашего приложения с вводом/выводом](ch13-03-improving-our-io-project.md)
     - [Сравнение производительности: круговороты и повторители](ch13-04-performance.md)
 
 - [Подробнее о Cargo и Crates.io](ch14-00-more-about-cargo.md)

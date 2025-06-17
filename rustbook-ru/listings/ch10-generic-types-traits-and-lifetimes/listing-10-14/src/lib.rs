@@ -15,14 +15,14 @@ pub struct NewsArticle {
 
 impl Summary for NewsArticle {}
 
-pub struct Tweet {
+pub struct SocialPost {
     pub имя_пользователя: String,
     pub содержимое: String,
     pub reply: bool,
-    pub retweet: bool,
+    pub resocialpost: bool,
 }
 
-impl Summary for Tweet {
+impl Summary for SocialPost {
     fn summarize(&self) -> String {
         format!("{}: {}", self.имя_пользователя, self.content)
     }
