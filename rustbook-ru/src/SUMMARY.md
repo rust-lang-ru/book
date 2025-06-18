@@ -40,9 +40,9 @@
 
 ## Основы Ржавчины
 
-- [Управление растущими приложениями с помощью дополнений, дополнений и разделов](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
+- [Управление растущими приложениями с помощью дополнений, ящиков и разделов](ch07-00-managing-growing-projects-with-packages-crates-and-modules.md)
 
-    - [Дополнения и дополнения](ch07-01-packages-and-crates.md)
+    - [Дополнения и ящики](ch07-01-packages-and-crates.md)
     - [Определение разделов для управления областью действия и тайностью](ch07-02-defining-modules-to-control-scope-and-privacy.md)
     - [Пути для ссылки на переменную в дереве разделов](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md)
     - [Введение путей в область видимости с помощью ключевого слова `use`](ch07-04-bringing-paths-into-scope-with-the-use-keyword.md)
@@ -95,7 +95,7 @@
     - [Настройка сборок с помощью режимов выпуска](ch14-01-release-profiles.md)
     - [Обнародование дополнения на Crates.io](ch14-02-publishing-to-crates-io.md)
     - [Рабочие области Cargo](ch14-03-cargo-workspaces.md)
-    - [Установка двоичных файлов с Crates.io с помощью `cargo install`](ch14-04-installing-binaries.md)
+    - [Установка исполняемых файлов с Crates.io с помощью `cargo install`](ch14-04-installing-binaries.md)
     - [Расширение возможностей Cargo путём добавления пользовательских приказов](ch14-05-extending-cargo.md)
 
 - [Умные указатели](ch15-00-smart-pointers.md)
@@ -147,7 +147,7 @@
 
     - [Создание однопоточного сетевого-отдельного вычислителя](ch21-01-single-threaded.md)
     - [Превращение нашего однопоточного отдельного вычислителя в многопоточный отдельный вычислитель](ch21-02-multithreaded.md)
-    - [	Мягкое завершение работы и очистка](ch21-03-graceful-shutdown-and-cleanup.md)
+    - [Мягкое завершение работы и очистка](ch21-03-graceful-shutdown-and-cleanup.md)
 
 - [Приложения](appendix-00.md)
 

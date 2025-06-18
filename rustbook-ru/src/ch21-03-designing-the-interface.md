@@ -97,7 +97,7 @@ $ cargo check
 ошибка: aborting due to предыдущая ошибка
 ```
 
-Отлично! Нам нужен `ThreadPool`. Давайте вернёмся к дополнению из двоичного файла.
+Отлично! Нам нужен `ThreadPool`. Давайте вернёмся к дополнению из исполняемого файла.
 Использование `ThreadPool` будет независимой от работы сетевого-отдельного вычислителя. После того, как библиотека выполняющая работу объединения потоков будет написана, мы сможем использовать её в любых выполнениех.
 
 Итак, дополнение будет содержать файл *src/lib.rs*  с простыми определением вида данных `ThreadPool`, которую мы сейчас можем иметь:
@@ -108,9 +108,9 @@ $ cargo check
 pub struct ThreadPool;
 ```
 
-Далее, мы создаём новую папку *src/bin* и перемещаем двоичное дополнение  *src/main.rs*
+Далее, мы создаём новую папку *src/bin* и перемещаем исполняемое дополнение  *src/main.rs*
 в *src/bin/main.rs*. Это сделает библиотечное дополнение основным в папке *здравствуй*.
-Это перемещение не повлияет на порядок запуска `cargo run` двоичного файла. После
+Это перемещение не повлияет на порядок запуска `cargo run` исполняемого файла. После
 перемещения файла *main.rs* внесите в самом верху писания приложения изменения,
 описав подключение библиотеки `здравствуй` и её содержания в область приложения
 *src/bin/main.rs*:
@@ -187,9 +187,9 @@ passing the argument we get in `execute` to `spawn`. We can be further
 confident that `FnOnce` is the trait that we want to use since the thread for
 running a request is only going to execute that request’s closure one time.
 
-`F` also has the trait bound `Send` and the lifetime bound `'static`, which
+`F` also has the trait bound `Send` and the lifetime bound `static`, which
 also make sense for our situation: we need `Send` to transfer the closure from
-one thread to another, and `'static` because we don’t know how long the thread
+one thread to another, and `static` because we don’t know how long the thread
 will execute. Let’s create an `execute` method on `ThreadPool` that will take a
 generic parameter `F` with these bounds:
 

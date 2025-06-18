@@ -1,8 +1,4 @@
-file:///I:/rustbook/ch05-02-example-structs.html
-file:///I:/rustbook/ch06-01-defining-an-enum.html
-file:///I:/rustbook/ch06-02-match.html
-file:///I:/rustbook/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html
-file:///I:/rustbook/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html
-file:///I:/rustbook/ch07-05-separating-modules-into-different-files.html
-file:///I:/rustbook/ch08-01-vectors.html
-file:///I:/rustbook/ch08-02-strings.html
+«Написание и запуск приложения на Ржавчине» Главы 1 ссылку сделать в 07-01
+
+https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html
+убрать ; в начале

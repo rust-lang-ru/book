@@ -7,7 +7,7 @@ $ cargo run
   |                ^ expected named lifetime parameter
   |
   = помощь: this function's return type contains a borrowed value, but there is no value for it to be borrowed from
-помощь: consider using the `'static` lifetime, but this is uncommon unless you're returning a borrowed value from a `const` or a `static`
+помощь: consider using the `static` lifetime, but this is uncommon unless you're returning a borrowed value from a `const` or a `static`
   |
 5 | fn dangle() -> &'static String {
   |                 +++++++

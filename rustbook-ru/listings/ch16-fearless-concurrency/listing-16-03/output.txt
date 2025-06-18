@@ -8,7 +8,7 @@ $ cargo run
 7 |         println!("Это вектор: {v:?}");
   |                                     - `v` is borrowed here
   |
-note: function requires argument type to outlive `'static`
+note: function requires argument type to outlive `static`
  --> src/main.rs:6:18
   |
 6 |       let владение = thread::spawn(|| {
