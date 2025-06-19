@@ -1,6 +1,6 @@
 $ cargo build
    Сборка restaurant v0.1.0 (file:///projects/restaurant)
-ошибка[E0603]: module `hosting` is private
+ошибка[E0603]: module `hosting` является частным (закрытым) с ограниченным доступом
  --> src/lib.rs:9:28
   |
 9 |     crate::front_of_house::hosting::add_to_waitlist();
@@ -8,13 +8,13 @@ $ cargo build
   |                            |
   |                            private module
   |
-note: the module `hosting` is defined here
+note: раздел `hosting` определён здесь
  --> src/lib.rs:2:5
   |
 2 |     mod hosting {
   |     ^^^^^^^^^^^
 
-ошибка[E0603]: module `hosting` is private
+ошибка[E0603]: module `hosting` является частным (закрытым) с ограниченным доступом
   --> src/lib.rs:12:21
    |
 12 |     front_of_house::hosting::add_to_waitlist();
@@ -22,7 +22,7 @@ note: the module `hosting` is defined here
    |                     |
    |                     private module
    |
-note: the module `hosting` is defined here
+note: раздел `hosting` определён здесь
   --> src/lib.rs:2:5
    |
 2  |     mod hosting {
