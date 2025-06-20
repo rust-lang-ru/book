@@ -5,9 +5,9 @@ mod front_of_house {
 }
 
 pub fn eat_at_restaurant() {
-    // Absolute path
+    // Безусловный путь
     crate::front_of_house::hosting::add_to_waitlist();
 
-    // Relative path
+    // Относительный путь
     front_of_house::hosting::add_to_waitlist();
 }
