@@ -53,9 +53,9 @@ copy just the compiler error
 45 |         let futures = vec![tx1_fut, rx_fut, tx_fut];
    |                                     ^^^^^^ expected `async` block, found a different `async` block
    |
-   = note: expected `async` block `{async block@src/main.rs:10:23: 10:33}`
+   = примечание: expected `async` block `{async block@src/main.rs:10:23: 10:33}`
               found `async` block `{async block@src/main.rs:24:22: 24:27}`
-   = note: no two async blocks, even if identical, have the same type
+   = примечание: no two async blocks, even if identical, have the same type
    = помощь: consider pinning your async block and casting it to a trait object
 ```
 
@@ -133,10 +133,10 @@ cargo build
     |         |
     |         required by a bound introduced by this call
     |
-    = note: consider using the `pin!` macro
+    = примечание: consider using the `pin!` macro
             consider using `Box::pin` if you need to access the pinned value outside of the current scope
-    = note: required for `Box<dyn Future<Output = ()>>` to implement `Future`
-note: required by a bound in `join_all`
+    = примечание: required for `Box<dyn Future<Output = ()>>` to implement `Future`
+примечание: required by a bound in `join_all`
    --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:105:14
     |
 102 | pub fn join_all<I>(iter: I) -> JoinAll<I::Item>
@@ -151,10 +151,10 @@ note: required by a bound in `join_all`
 49 |         trpl::join_all(futures).await;
    |         ^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unpin` is not implemented for `dyn Future<Output = ()>`
    |
-   = note: consider using the `pin!` macro
+   = примечание: consider using the `pin!` macro
            consider using `Box::pin` if you need to access the pinned value outside of the current scope
-   = note: required for `Box<dyn Future<Output = ()>>` to implement `Future`
-note: required by a bound in `futures_util::future::join_all::JoinAll`
+   = примечание: required for `Box<dyn Future<Output = ()>>` to implement `Future`
+примечание: required by a bound in `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
    |
 27 | pub struct JoinAll<F>
@@ -169,10 +169,10 @@ note: required by a bound in `futures_util::future::join_all::JoinAll`
 49 |         trpl::join_all(futures).await;
    |                                 ^^^^^ the trait `Unpin` is not implemented for `dyn Future<Output = ()>`
    |
-   = note: consider using the `pin!` macro
+   = примечание: consider using the `pin!` macro
            consider using `Box::pin` if you need to access the pinned value outside of the current scope
-   = note: required for `Box<dyn Future<Output = ()>>` to implement `Future`
-note: required by a bound in `futures_util::future::join_all::JoinAll`
+   = примечание: required for `Box<dyn Future<Output = ()>>` to implement `Future`
+примечание: required by a bound in `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
    |
 27 | pub struct JoinAll<F>
@@ -265,7 +265,7 @@ received 'you'
 
 ### Гонки будущего
 
-Когда мы «соединяем» будущие с помощью семейства функций и макросов `join`, нам
+Когда мы «соединяем» будущие с помощью семейства способов (функций) и макросов `join`, нам
 требуется, чтобы _все_ из них завершились, прежде чем мы двинемся дальше. Иногда, однако, нам
 нужно только _некоторое_ будущее из набора, чтобы завершиться, прежде чем мы двинемся дальше — что-то вроде
 гонки одного будущего против другого.
@@ -457,7 +457,7 @@ futures. Затем мы запускаем 1000 итераций и смотр�
 когда оно передает управление через точки ожидания. Поэтому каждое future также несет
 ответственность за то, чтобы не допустить слишком длительной блокировки. В некоторых встроенных операционных системах на основе Ржавчина это _единственный_ вид многозадачности!
 
-В реальном коде вы, конечно, обычно не будете чередовать вызовы функций с точками ожидания
+В реальном коде вы, конечно, обычно не будете чередовать вызовы способов (функций) с точками ожидания
 на каждой строке. Хотя передача управления таким образом
 относительно недорога, это не бесплатно. Во многих случаях попытка разбить
 вычислительно ограниченную задачу может значительно замедлить ее, поэтому иногда лучше

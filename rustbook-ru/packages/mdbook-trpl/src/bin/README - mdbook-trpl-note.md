@@ -3,7 +3,7 @@
 This is a _very_ simple [preprocessor][pre] for [mdBook][mdbook], focused specifically on the content of _The Rust Programming Language_ book. This preprocessor takes Markdown like this—
 
 ```markdown
-> Note: This is some material we want to provide more emphasis for, because it
+> Примечание: This is some material we want to provide more emphasis for, because it
 > is important in some way!
 
 Some text.

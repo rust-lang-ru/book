@@ -8,7 +8,7 @@ $ cargo build
   |                            |
   |                            private module
   |
-note: раздел `hosting` определён здесь
+примечание: раздел `hosting` определён здесь
  --> src/lib.rs:2:5
   |
 2 |     mod hosting {
@@ -22,7 +22,7 @@ note: раздел `hosting` определён здесь
    |                     |
    |                     private module
    |
-note: раздел `hosting` определён здесь
+примечание: раздел `hosting` определён здесь
   --> src/lib.rs:2:5
    |
 2  |     mod hosting {

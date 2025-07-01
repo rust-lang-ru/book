@@ -1,16 +1,16 @@
 $ cargo run
    Сборка patterns v0.1.0 (file:///projects/patterns)
-warning: irrefutable `if let` pattern
+предупреждение: irrefutable `if let` pattern
  --> src/main.rs:2:8
   |
 2 |     if let x = 5 {
   |        ^^^^^^^^^
   |
-  = note: this pattern will always match, so the `if let` is useless
+  = примечание: this pattern will always match, so the `if let` is useless
   = помощь: consider replacing the `if let` with a `let`
-  = note: `#[warn(irrefutable_let_patterns)]` on by default
+  = примечание: `#[warn(irrefutable_let_patterns)]` on by default
 
-warning: `patterns` (bin "patterns") generated 1 warning
+предупреждение: `patterns` (bin "patterns") generated 1 warning
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
      Running `target/debug/patterns`
 5

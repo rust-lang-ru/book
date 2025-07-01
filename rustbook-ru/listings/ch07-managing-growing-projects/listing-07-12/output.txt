@@ -1,24 +1,24 @@
 $ cargo build
    Сборка restaurant v0.1.0 (file:///projects/restaurant)
-ошибка[E0433]: failed to resolve: use of undeclared crate or module `hosting`
+ошибка[E0433]: failed to resolve: используется необъявленный ящик или раздел crate or module `hosting`
   --> src/lib.rs:11:9
    |
 11 |         hosting::add_to_waitlist();
-   |         ^^^^^^^ use of undeclared crate or module `hosting`
+   |         ^^^^^^^ используется необъявленный ящик или раздел crate or module `hosting`
    |
 помощь: consider importing this module through its public re-export
    |
 10 +     use crate::hosting;
    |
 
-warning: unused import: `crate::front_of_house::hosting`
+предупреждение: unused import: `crate::front_of_house::hosting`
  --> src/lib.rs:7:5
   |
 7 | use crate::front_of_house::hosting;
   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   |
-  = note: `#[warn(unused_imports)]` on by default
+  = примечание: `#[warn(unused_imports)]` on by default
 
 Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0433`.
-warning: `restaurant` (lib) generated 1 warning
+предупреждение: `restaurant` (lib) generated 1 warning
 ошибка: не могу собрать исходную рукопись в приложение `restaurant` (lib) due to 1 предыдущая ошибка; 1 warning emitted

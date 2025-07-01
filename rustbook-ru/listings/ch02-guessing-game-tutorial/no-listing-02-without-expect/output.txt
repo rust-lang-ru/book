@@ -1,17 +1,17 @@
 $ cargo build
    Сборка игра_угадай_число v0.1.0 (file:///projects/guessing_game)
-warning: unused `Result` that must be used
+предупреждение: unused `Result` that must be used
   --> src/main.rs:10:5
    |
 10 |     io::stdin().read_line(&mut догадка);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: this `Result` may be an `Err` variant, which should be handled
-   = note: `#[warn(unused_must_use)]` on by default
+   = примечание: this `Result` may be an `Err` variant, which should be handled
+   = примечание: `#[warn(unused_must_use)]` on by default
 помощь: use `let _ = ...` to ignore the resulting value
    |
 10 |     let _ = io::stdin().read_line(&mut догадка);
    |     +++++++
 
-warning: `guessing_game` (bin "guessing_game") generated 1 warning
+предупреждение: `guessing_game` (bin "guessing_game") generated 1 warning
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.59s

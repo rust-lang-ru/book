@@ -3,7 +3,7 @@
 //! - Eliminate extraneous leading `>`
 //! - Eliminate extraneous indent.
 //!
-//! Note: later versions of `pulldown-cmark-to-cmark` will likely fix this, so
+//! Примечание: later versions of `pulldown-cmark-to-cmark` will likely fix this, so
 //! check when upgrading it if it is still necessary!
 
 use std::io::{self, Read};
@@ -58,7 +58,7 @@ mod tests {
         let input = r#"Start
 
 >
-> Note: Hey.
+> Примечание: Hey.
 
 Wrap."#
             .into();
@@ -68,7 +68,7 @@ Wrap."#
             actual,
             r#"Start
 
-> Note: Hey.
+> Примечание: Hey.
 
 Wrap."#
         );
@@ -91,7 +91,7 @@ them to. This laziness allows Rust to avoid running async code until it’s
 actually needed.
 
  >
- > Note: This is different from the behavior we saw when using `thread::spawn` in
+ > Примечание: This is different from the behavior we saw when using `thread::spawn` in
  > the previous chapter, where the closure we passed to another thread started
  > running immediately. It’s also different from how many other languages
  > approach async! But it’s important for Rust. We’ll see why that is later.
@@ -124,7 +124,7 @@ futures, the same basic idea applies: they do nothing unless you explicitly ask
 them to. This laziness allows Rust to avoid running async code until it’s
 actually needed.
 
-> Note: This is different from the behavior we saw when using `thread::spawn` in
+> Примечание: This is different from the behavior we saw when using `thread::spawn` in
 > the previous chapter, where the closure we passed to another thread started
 > running immediately. It’s also different from how many other languages
 > approach async! But it’s important for Rust. We’ll see why that is later.

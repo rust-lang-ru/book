@@ -134,10 +134,10 @@ copy *only* the final `error` block from the errors
 48 |         trpl::join_all(futures).await;
    |                                 ^^^^^ the trait `Unpin` is not implemented for `{async block@src/main.rs:10:23: 10:33}`
    |
-   = note: consider using the `pin!` macro
+   = примечание: consider using the `pin!` macro
            consider using `Box::pin` if you need to access the pinned value outside of the current scope
-   = note: required for `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
-note: required by a bound in `futures_util::future::join_all::JoinAll`
+   = примечание: required for `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
+примечание: required by a bound in `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
    |
 27 | pub struct JoinAll<F>
@@ -151,7 +151,7 @@ note: required by a bound in `futures_util::future::join_all::JoinAll`
 будущее неявно. Вот почему нам не нужно использовать `pin!` везде, где мы хотим
 ожидать будущие.
 
-Однако мы не ожидаем будущего напрямую. Вместо этого мы создаем новое будущее `JoinAll`, передавая коллекцию будущих функций в способ (функцию) `join_all`. Сигнатура для `join_all` требует, чтобы виды данных элементов в
+Однако мы не ожидаем будущего напрямую. Вместо этого мы создаем новое будущее `JoinAll`, передавая коллекцию будущих способов (функций) в способ (функцию) `join_all`. Сигнатура для `join_all` требует, чтобы виды данных элементов в
 коллекции все реализовывали сущность `Future`, а `Box<T>` использует
 `Future` только в том случае, если `T`, который он оборачивает, является будущим, реализующим сущность `Unpin`.
 
@@ -418,7 +418,7 @@ in traits, since the lack thereof is the reason they do not yet have this.
 
 > Примечание: Фактическое определение, которое мы использовали ранее в этой главе, выглядит немного
 > иначе, чем это, поскольку оно поддерживает исполнения Ржавчина, которые еще
-> не поддерживали использование несогласованных функций в видажах. В итоге оно выглядит так:
+> не поддерживали использование несогласованных способов (функций) в видажах. В итоге оно выглядит так:
 >
 > ```rust,ignore
 > fn next(&mut self) -> Next<'_, Self> где Self: Unpin;

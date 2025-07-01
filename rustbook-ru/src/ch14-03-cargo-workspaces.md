@@ -180,15 +180,15 @@ $ cargo build
    --snip--
    Сборка rand v0.8.5
    Сборка add_one v0.1.0 (file:///projects/add/add_one)
-warning: unused import: `rand`
+предупреждение: unused import: `rand`
  --> add_one/src/lib.rs:1:5
   |
 1 | use rand;
   |     ^^^^
   |
-  = note: `#[warn(unused_imports)]` on by default
+  = примечание: `#[warn(unused_imports)]` on by default
 
-warning: `add_one` (lib) generated 1 warning
+предупреждение: `add_one` (lib) generated 1 warning
    Сборка adder v0.1.0 (file:///projects/add/adder)
     Finished dev [unoptimized + debuginfo] target(s) in 10.18s
 ```

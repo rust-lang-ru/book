@@ -2,7 +2,7 @@
 use std::fmt::Result;
 use std::io::Result as IoResult;
 
-fn function1() -> Итог {
+fn function1() -> Result {
     // --snip--
     // ANCHOR_END: here
     Ok(())

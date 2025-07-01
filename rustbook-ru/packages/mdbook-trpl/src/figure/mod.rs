@@ -125,7 +125,7 @@ fn rewrite_figure(text: &str) -> Result<String> {
                 // that we have started a caption. We will push the body of the
                 // caption into the figure’s events when we hit them.
                 //
-                // Note: this does not support `<figcaption class="...">`.
+                // Примечание: this does not support `<figcaption class="...">`.
                 (Event::Html(tag), Some(fig))
                     if tag.starts_with(OPEN_CAPTION) =>
                 {

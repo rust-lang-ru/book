@@ -1,6 +1,6 @@
 use super::*;
 
-/// Note: This inserts an additional backtick around the re-emitted code.
+/// Примечание: This inserts an additional backtick around the re-emitted code.
 /// It is not clear *why*, but that seems to be an artifact of the rendering
 /// done by the `pulldown_cmark_to_cmark` crate.
 #[test]

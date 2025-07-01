@@ -7,11 +7,11 @@ $ cargo run
   |                ^ string indices are ranges of `usize`
   |
   = помощь: the trait `SliceIndex<str>` is not implemented for `{integer}`, which is required by `String: Index<_>`
-  = note: you can use `.chars().nth()` or `.bytes().nth()`
+  = примечание: you can use `.chars().nth()` or `.bytes().nth()`
           for more information, see chapter 8 in The Book: <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>
   = помощь: the trait `SliceIndex<[_]>` is implemented for `usize`
   = помощь: for that trait implementation, expected `[_]`, found `str`
-  = note: required for `String` to implement `Index<{integer}>`
+  = примечание: required for `String` to implement `Index<{integer}>`
 
 Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0277`.
 ошибка: не могу собрать исходную рукопись в приложение `collections` (bin "collections") due to 1 предыдущая ошибка

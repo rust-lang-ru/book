@@ -1,10 +1,10 @@
 $ cargo check
     Checking hello v0.1.0 (file:///projects/hello)
-ошибка[E0433]: failed to resolve: use of undeclared type `ThreadPool`
+ошибка[E0433]: failed to resolve: используется необъявленный ящик или раздел type `ThreadPool`
   --> src/main.rs:11:16
    |
 11 |     let pool = ThreadPool::new(4);
-   |                ^^^^^^^^^^ use of undeclared type `ThreadPool`
+   |                ^^^^^^^^^^ используется необъявленный ящик или раздел type `ThreadPool`
 
 Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0433`.
 ошибка: не могу собрать исходную рукопись в приложение `здравствуй` (bin "здравствуй") due to 1 предыдущая ошибка

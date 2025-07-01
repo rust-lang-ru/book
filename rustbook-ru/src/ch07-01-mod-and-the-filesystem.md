@@ -39,7 +39,7 @@ Cargo  создаёт пустую проверку, чтобы показать
 ### Определение раздела
 
 Первым делом напишем определение раздела `network`, которое будет содержать
-определение способы (функции) `connect`. Определение начинается с ключевого слова `mod`.
+определение способов (функций) `connect`. Определение начинается с ключевого слова `mod`.
 
 
 <span class="filename">Filename: src/lib.rs</span>
@@ -51,8 +51,8 @@ mod network {
 }
 ```
 
-После определения раздела, внутри узорчатых скобок пишем определения способы (функции) и
-все что входит в состав раздела. В нашем случае это описание способы (функции).
+После определения раздела, внутри узорчатых скобок пишем определения способа (функции) и
+все что входит в состав раздела. В нашем случае это описание способа (функции).
 Если мы хотим вызывать способ (функцию) извне раздела, мы должны явно указать это `network::connect()`.
 
 У нас может быть множество описаний разделов в одном файле  *src/lib.rs*.
@@ -75,8 +75,8 @@ mod client {
 <span class="caption">Пример 7-1: Определение разделов `network` и `client`в файле
  *src/lib.rs*</span>
 
-Теперь у нас есть описание двух функций, которые могут быть вызваны с помощью связанных стопок `network::connect` и `client::connect`.
-У каждой из этих функций могут быть различные полезные  возможности, но у них нет
+Теперь у нас есть описание двух способов (функций), которые могут быть вызваны с помощью связанных стопок `network::connect` и `client::connect`.
+У каждой из этих способов (функций) могут быть различные полезные  возможности, но у них нет
 между собой никакого несоответствия имён.
 
 В этом случае, если мы создаём библиотеку, файл *src/lib.rs* хранит точку доступа к
@@ -158,7 +158,7 @@ communicator
      └── server
 ```
 
-Если разделы имеют множество функций и эти способы (функции) длинные, было бы удобно разделить такую рукопись на несколько файлов.
+Если разделы имеют множество способов (функций) и эти способы (функции) длинные, было бы удобно разделить такую рукопись на несколько файлов.
 
 Сначала заменим рукопись раздела `client` на объявление раздела:
 
@@ -209,19 +209,19 @@ fn connect() {
 $ cargo build
    Сборка communicator v0.1.0 (file:///projects/communicator)
 
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/client.rs:1:1
   |
 1 | fn connect() {
   | ^
 
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/lib.rs:4:5
   |
 4 |     fn connect() {
   |     ^
 
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/lib.rs:8:9
   |
 8 |         fn connect() {
@@ -229,7 +229,7 @@ warning: function is never used: `connect`, #[warn(dead_code)] on by default
 ```
 
 Эти сообщения сообщают нам, что наши способы (функции) нигде не используются. Пренебрегаем
-ими до разделы "Управление доступом с помощью ключевого слова `pub`".
+ими до раздела "Управление доступом с помощью ключевого слова `pub`".
 
 Теперь перенесём раздел `network` в свой файл:
 
@@ -290,12 +290,12 @@ $ cargo build
 4 | mod server;
   |     ^^^^^^
   |
-note: maybe move this module `network` to its own directory via `network/mod.rs`
+примечание: maybe move this module `network` to its own directory via `network/mod.rs`
  --> src/network.rs:4:5
   |
 4 | mod server;
   |     ^^^^^^
-note: ... or maybe `use` раздел `server` instead of possibly redeclaring it
+примечание: ... or maybe `use` раздел `server` instead of possibly redeclaring it
  --> src/network.rs:4:5
   |
 4 | mod server;
@@ -308,7 +308,7 @@ note: ... or maybe `use` раздел `server` instead of possibly redeclaring i
 Сборщик предлагает решение:
 
 ```text
-note: maybe move this module `network` to its own directory via
+примечание: maybe move this module `network` to its own directory via
 `network/mod.rs`
 ```
 Вместо того, чтобы создавать файл подобно предыдущему, сделаем следующее:

@@ -1,6 +1,6 @@
 //! Check that the config options are correctly handled.
 //!
-//! Note: none of these tests particularly exercise the *wiring*. They just
+//! Примечание: none of these tests particularly exercise the *wiring*. They just
 //! assume that the config itself is done correctly. This is a small enough
 //! chunk of code that it easy to verify by hand at present. If it becomes
 //! more complex in the future, it would be good to revisit and integrate

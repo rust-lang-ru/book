@@ -21,9 +21,9 @@ $ cargo build
    |                 |
    |                 arguments to this method are incorrect
    |
-   = note: expected reference `&String`
+   = примечание: expected reference `&String`
               found reference `&{integer}`
-note: method defined here
+примечание: method defined here
   --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/cmp.rs:839:8
 
 Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0308`.

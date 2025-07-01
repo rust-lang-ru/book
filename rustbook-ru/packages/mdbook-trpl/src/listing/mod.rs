@@ -279,7 +279,7 @@ impl Listing {
     }
 }
 
-/// Note: Although this has the same structure as [`Listing`], it does not have
+/// Примечание: Although this has the same structure as [`Listing`], it does not have
 /// the same *semantics*. In particular, this has the *source* for the `caption`
 /// while `Listing` has the *rendered* version.
 struct ListingBuilder {

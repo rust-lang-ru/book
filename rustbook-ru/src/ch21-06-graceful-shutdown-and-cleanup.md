@@ -92,7 +92,7 @@ get two errors:
    |             ^^^^^^ expected enum `std::option::Option`, found
    struct `std::thread::JoinHandle`
    |
-   = note: expected type `std::option::Option<std::thread::JoinHandle<()>>`
+   = примечание: expected type `std::option::Option<std::thread::JoinHandle<()>>`
               found type `std::thread::JoinHandle<_>`
 ```
 

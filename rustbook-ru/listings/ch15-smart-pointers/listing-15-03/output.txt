@@ -19,9 +19,9 @@ $ cargo run
 1 | enum Список {
   | ^^^^^^^^^
   |
-  = note: ...which immediately requires computing when `Список` needs drop again
-  = note: cycle used when computing whether `Список` needs drop
-  = note: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information
+  = примечание: ...which immediately requires computing when `Список` needs drop again
+  = примечание: cycle used when computing whether `Список` needs drop
+  = примечание: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information
 
 Some errors have detailed explanations: E0072, E0391.
 For more information about an error, try `rustc --explain E0072`.

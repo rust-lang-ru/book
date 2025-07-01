@@ -25,7 +25,7 @@ fn default_mode_is_unchanged() {
     );
 }
 
-// Note: these tests all check that the result of rewriting a header *with* and
+// Примечание: these tests all check that the result of rewriting a header *with* and
 // *without* the markup is the same, so that other “normalization” that happens
 // along the way (inserting or removing newlines, e.g.) is ignored.
 mod simple_mode {

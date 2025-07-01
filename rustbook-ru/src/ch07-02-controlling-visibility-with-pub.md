@@ -1,21 +1,21 @@
 ## Управление доступом с помощью ключевого слова `pub`
 
-Мы исправили ошибки связанные с распределением рукописи. Но остались сбои с использованием рукописи (способы (функции) не используются):
+Мы исправили ошибки связанные с распределением рукописи. Но остались сбои с использованием рукописи способов (функций):
 
 ```text
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
 src/client.rs:1:1
   |
 1 | fn connect() {
   | ^
 
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/network/mod.rs:1:1
   |
 1 | fn connect() {
   | ^
 
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/network/server.rs:1:1
   |
 1 | fn connect() {
@@ -63,10 +63,10 @@ fn main() {
   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ```
 
-Это сообщение говорит нам о том, что раздел `client` закрытое.
+Это сообщение говорит нам о том, что раздел `client` закрытый.
 Т.к. рукопись в разделе закрытая по умолчанию и не используется внутри библиотеки - на это надо обратить внимание, т.к. это явная ошибка в согласовании рукописи.
 
-После определения способы (функции) `client::connect`, как доступной (`pub`), не только сообщение об ошибке исчезнет, но и пропадёт сообщение о том, что рукопись не используется.
+После определения способов (функции) `client::connect`, как доступной (`pub`), не только сообщение об ошибке исчезнет, но и пропадёт сообщение о том, что рукопись не используется.
 Создания доступной рукописи в Ржавчине даёт возможность её использования вне библиотеки.
 Когда какая-либо рукопись помечается как `pub`, сборщик больше не сообщает об неиспользованной рукописи, если даже она в действительности не используется.
 
@@ -92,7 +92,7 @@ mod network;
   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ```
 
-Сделаем исправления в определении способы (функции) в файле *src/client.rs*:
+Сделаем исправления в определении способов (функций) в файле *src/client.rs*:
 
 <span class="filename">Filename: src/client.rs</span>
 
@@ -104,20 +104,20 @@ pub fn connect() {
 Снова выполним `cargo clean && cargo build`:
 
 ```text
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/network/mod.rs:1:1
   |
 1 | fn connect() {
   | ^
 
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/network/server.rs:1:1
   |
 1 | fn connect() {
   | ^
 ```
 
-Рукопись собралась и предостережения о способы (функции) `client::connect` уже нет!
+Рукопись собралась и предостережения о способах (функциях) `client::connect` уже нет!
 
 Вам решать, что делать с неиспользованной рукописью, то ли открыть к ней доступ, то ли
 удалить.
@@ -137,13 +137,13 @@ mod server;
 Соберем и рассмотрим ошибки:
 
 ```text
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/network/mod.rs:1:1
   |
 1 | pub fn connect() {
   | ^
 
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/network/server.rs:1:1
   |
 1 | fn connect() {
@@ -163,7 +163,7 @@ pub mod network;
 Новые сообщения сборщика:
 
 ```text
-warning: function is never used: `connect`, #[warn(dead_code)] on by default
+предупреждение: function is never used: `connect`, #[warn(dead_code)] on by default
  --> src/network/server.rs:1:1
   |
 1 | fn connect() {
@@ -205,7 +205,7 @@ fn try_me() {
 }
 ```
 
-<span class="caption">Рукопись 7-5: Примеры открытых и закрытый функций с ошибками</span>
+<span class="caption">Рукопись 7-5: Примеры открытых и закрытый способов (функций) с ошибками</span>
 
 Перед сборкой рукописи, попробуйте догадаться, где будет ошибка. Убедитесь в этом
 с помощью сборки. Исправьте ошибки в рукописи!
@@ -213,15 +213,15 @@ fn try_me() {
 #### Рассмотрим ошибки
 
 Способ (функция) `try_me` находится на верхнем уровне раздела нашего дела. Раздел
-`outermost` закрытое, но к его функциям может быть доступ, т.к. раздел верхнего
+`outermost` закрытое, но к его способам (функциям) может быть доступ, т.к. раздел верхнего
 уровня.
 
-Вызов остальных двух функций вызовет ошибку, т.к. не применяются правила видимости.
+Вызов остальных двух способов (функций) вызовет ошибку, т.к. не применяются правила видимости.
 Пожалуйста, исправьте ошибку!
 
 #### Исправление ошибок
 
-Пожалуйста, попытайтесь по	проводить опыты с доступом к функциям  и посмотрите
+Пожалуйста, попытайтесь по	проводить опыты с доступом к способам (функциям)  и посмотрите
 на описания ошибок!
 
 Далее, мы поговорим об использовании ключевого слова `use`.

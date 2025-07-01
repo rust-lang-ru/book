@@ -15,7 +15,7 @@ use pulldown_cmark_to_cmark::cmark;
 /// Takes in Markdown like this:
 ///
 /// ```markdown
-/// > Note: This is a note.
+/// > Примечание: This is a note.
 /// ```
 ///
 /// Spits out Markdown like this:
@@ -61,7 +61,7 @@ pub fn rewrite(text: &str) -> String {
             }
 
             (StartingBlockquote(blockquote_events), Text(content)) => {
-                if content.starts_with("Note: ") {
+                if content.starts_with("Примечание: ") {
                     // This needs the "extra" `SoftBreak`s so that when the final rendering pass
                     // happens, it does not end up treating the internal content as inline *or*
                     // treating the HTML tags as inline tags:

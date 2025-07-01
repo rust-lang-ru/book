@@ -8,7 +8,7 @@ $ cargo check
    |             |
    |             move occurs because `worker.thread` has type `JoinHandle<()>`, which does not implement the `Copy` trait
    |
-note: `JoinHandle::<T>::join` takes ownership of the receiver `self`, which moves `worker.thread`
+примечание: `JoinHandle::<T>::join` takes ownership of the receiver `self`, which moves `worker.thread`
   --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/mod.rs:1778:17
 
 Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0507`.

@@ -12,11 +12,11 @@ fn no_note() {
 
 #[test]
 fn with_note() {
-    let text = "> Note: This is some text.\n> It keeps going.";
+    let text = "> Примечание: This is some text.\n> It keeps going.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
-        "<section class=\"note\" aria-role=\"note\">\n<p>Note: This is some text.\nIt keeps going.</p>\n</section>"
+        "<section class=\"note\" aria-role=\"note\">\n<p>Примечание: This is some text.\nIt keeps going.</p>\n</section>"
     );
 }
 
@@ -32,31 +32,31 @@ fn regular_blockquote() {
 
 #[test]
 fn combined() {
-    let text = "> Note: This is some text.\n> It keeps going.\n\nThis is regular text.\n\n> This is a blockquote.\n";
+    let text = "> Примечание: This is some text.\n> It keeps going.\n\nThis is regular text.\n\n> This is a blockquote.\n";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
-        "<section class=\"note\" aria-role=\"note\">\n<p>Note: This is some text.\nIt keeps going.</p>\n</section>\n<p>This is regular text.</p>\n<blockquote>\n<p>This is a blockquote.</p>\n</blockquote>\n"
+        "<section class=\"note\" aria-role=\"note\">\n<p>Примечание: This is some text.\nIt keeps going.</p>\n</section>\n<p>This is regular text.</p>\n<blockquote>\n<p>This is a blockquote.</p>\n</blockquote>\n"
     );
 }
 
 #[test]
 fn blockquote_then_note() {
-    let text = "> This is quoted.\n\n> Note: This is noted.";
+    let text = "> This is quoted.\n\n> Примечание: This is noted.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
-        "<blockquote>\n<p>This is quoted.</p>\n</blockquote>\n<section class=\"note\" aria-role=\"note\">\n<p>Note: This is noted.</p>\n</section>"
+        "<blockquote>\n<p>This is quoted.</p>\n</blockquote>\n<section class=\"note\" aria-role=\"note\">\n<p>Примечание: This is noted.</p>\n</section>"
     );
 }
 
 #[test]
 fn note_then_blockquote() {
-    let text = "> Note: This is noted.\n\n> This is quoted.";
+    let text = "> Примечание: This is noted.\n\n> This is quoted.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
-        "<section class=\"note\" aria-role=\"note\">\n<p>Note: This is noted.</p>\n</section>\n<blockquote>\n<p>This is quoted.</p>\n</blockquote>\n"
+        "<section class=\"note\" aria-role=\"note\">\n<p>Примечание: This is noted.</p>\n</section>\n<blockquote>\n<p>This is quoted.</p>\n</blockquote>\n"
     );
 }
 
@@ -166,12 +166,12 @@ fn normal_table() {
 
 #[test]
 fn table_in_note() {
-    let text = "> Note: table stuff.\n\n| Header 1 | Header 2 |\n| -------- | -------- |\n| Text 123 | More 456 |";
+    let text = "> Примечание: table stuff.\n\n| Header 1 | Header 2 |\n| -------- | -------- |\n| Text 123 | More 456 |";
     let processed = rewrite(text);
 
     assert_eq!(
         processed,
-        "\n\n<section class=\"note\" aria-role=\"note\">\n\nNote: table stuff.\n\n</section>\n\n|Header 1|Header 2|\n|--------|--------|\n|Text 123|More 456|",
+        "\n\n<section class=\"note\" aria-role=\"note\">\n\nПримечание: table stuff.\n\n</section>\n\n|Header 1|Header 2|\n|--------|--------|\n|Text 123|More 456|",
         "It adds the note markup but leaves the table untouched, to be rendered as Markdown."
     );
 }

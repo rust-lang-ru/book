@@ -6,20 +6,20 @@ $ cargo run
 2 |     let x = (let y = 6);
   |              ^^^
   |
-  = note: only supported directly in conditions of `if` and `while` expressions
+  = примечание: only supported directly in conditions of `if` and `while` expressions
 
-warning: unnecessary parentheses around assigned value
+предупреждение: unnecessary parentheses around assigned value
  --> src/main.rs:2:13
   |
 2 |     let x = (let y = 6);
   |             ^         ^
   |
-  = note: `#[warn(unused_parens)]` on by default
+  = примечание: `#[warn(unused_parens)]` on by default
 помощь: remove these parentheses
   |
 2 -     let x = (let y = 6);
 2 +     let x = let y = 6;
   |
 
-warning: `functions` (bin "functions") generated 1 warning
+предупреждение: `functions` (bin "functions") generated 1 warning
 ошибка: не могу собрать исходную рукопись в приложение `functions` (bin "functions") due to 1 предыдущая ошибка; 1 warning emitted

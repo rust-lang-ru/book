@@ -6,7 +6,7 @@ $ cargo build
 2 |     let догадка = "42".parse().expect("Не число!");
   |         ^^^^^        ----- type must be known at this point
   |
-  = note: cannot satisfy `<_ as FromStr>::Err == _`
+  = примечание: cannot satisfy `<_ as FromStr>::Err == _`
 помощь: consider giving `догадка` an explicit type
   |
 2 |     let догадка: /* Type */ = "42".parse().expect("Не число!");

@@ -71,7 +71,7 @@ fn parse_context(context: Context) -> Result<(), &str> {
 17 | }
    | - temporary value only lives until here
    |
-note: borrowed value must be valid for the anonymous lifetime #1 defined on the
+примечание: borrowed value must be valid for the anonymous lifetime #1 defined on the
 body at 15:55...
   --> <anon>:15:56
    |
@@ -89,7 +89,7 @@ body at 15:55...
 17 | }
    | - borrowed value only lives until here
    |
-note: borrowed value must be valid for the anonymous lifetime #1 defined on the
+примечание: borrowed value must be valid for the anonymous lifetime #1 defined on the
 body at 15:55...
   --> <anon>:15:56
    |
@@ -166,14 +166,14 @@ Here’s the error we get now:
 4 |     context: &'c Context<'s>,
   |     ^^^^^^^^^^^^^^^^^^^^^^^^
   |
-note: the pointer is valid for the lifetime 'c as defined on the struct at 3:0
+примечание: the pointer is valid for the lifetime 'c as defined on the struct at 3:0
  --> src/main.rs:3:1
   |
 3 | / struct Parser<'c, 's> {
 4 | |     context: &'c Context<'s>,
 5 | | }
   | |_^
-note: but the referenced data is only valid for the lifetime 's as defined on the struct at 3:0
+примечание: but the referenced data is only valid for the lifetime 's as defined on the struct at 3:0
  --> src/main.rs:3:1
   |
 3 | / struct Parser<'c, 's> {
@@ -231,7 +231,7 @@ struct Ref<'a, T>(&'a T);
   |                   ^^^^^^
   |
   = помощь: consider adding an explicit lifetime bound `T: 'a`...
-note: ...so that the reference type `&'a T` does not outlive the data it points at
+примечание: ...so that the reference type `&'a T` does not outlive the data it points at
  --> <anon>:1:19
   |
 1 | struct Ref<'a, T>(&'a T);

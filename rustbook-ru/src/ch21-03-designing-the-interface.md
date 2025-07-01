@@ -87,11 +87,11 @@ fn main() {
 ```text
 $ cargo check
    Сборка hello v0.1.0 (file:///projects/hello)
-ошибка[E0433]: failed to resolve. Use of undeclared type or module `ThreadPool`
+ошибка[E0433]: failed to resolve. Используется необъявленный ящик или раздел type or module `ThreadPool`
   --> src\main.rs:10:16
    |
 10 |     let pool = ThreadPool::new(4);
-   |                ^^^^^^^^^^^^^^^ Use of undeclared type or module
+   |                ^^^^^^^^^^^^^^^ Используется необъявленный ящик или раздел type or module
    `ThreadPool`
 
 ошибка: aborting due to предыдущая ошибка
@@ -156,7 +156,7 @@ impl ThreadPool {
 ```text
 $ cargo check
    Сборка hello v0.1.0 (file:///projects/hello)
-warning: unused variable: `size`, #[warn(unused_variables)] on by default
+предупреждение: unused variable: `size`, #[warn(unused_variables)] on by default
  --> src/lib.rs:4:16
   |
 4 |     pub fn new(размер: u32) -> ThreadPool {
@@ -221,13 +221,13 @@ check again:
 ```text
 $ cargo check
    Сборка hello v0.1.0 (file:///projects/hello)
-warning: unused variable: `size`, #[warn(unused_variables)] on by default
+предупреждение: unused variable: `size`, #[warn(unused_variables)] on by default
  --> src/lib.rs:4:16
   |
 4 |     pub fn new(размер: u32) -> ThreadPool {
   |                ^^^^
 
-warning: unused variable: `f`, #[warn(unused_variables)] on by default
+предупреждение: unused variable: `f`, #[warn(unused_variables)] on by default
  --> src/lib.rs:8:30
   |
 8 |     pub fn execute<F>(&self, f: F)

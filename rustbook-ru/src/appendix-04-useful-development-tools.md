@@ -41,13 +41,13 @@ fn main() {
 ```console
 $ cargo build
    Сборка myprogram v0.1.0 (file:///projects/myprogram)
-warning: unused variable: `i`
+предупреждение: unused variable: `i`
  --> src/main.rs:4:9
   |
 4 |     for i in 0..100 {
   |         ^ помощь: consider using `_i` instead
   |
-  = note: #[warn(unused_variables)] on by default
+  = примечание: #[warn(unused_variables)] on by default
 
     Finished dev [unoptimized + debuginfo] target(s) in 0.50s
 ```
@@ -116,7 +116,7 @@ fn main() {
 2 |     let x = 3.1415;
   |             ^^^^^^
   |
-  = note: `#[deny(clippy::approx_constant)]` on by default
+  = примечание: `#[deny(clippy::approx_constant)]` on by default
   = помощь: consider using the constant directly
   = помощь: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#approx_constant
 ```

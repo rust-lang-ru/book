@@ -7,7 +7,7 @@ $ cargo run
   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Draw` is not implemented for `String`
   |
   = помощь: the trait `Draw` is implemented for `Button`
-  = note: required for the cast from `Box<String>` to `Box<dyn Draw>`
+  = примечание: required for the cast from `Box<String>` to `Box<dyn Draw>`
 
 Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0277`.
 ошибка: не могу собрать исходную рукопись в приложение `gui` (bin "gui") due to 1 предыдущая ошибка

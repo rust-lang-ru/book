@@ -13,7 +13,7 @@ thread 'tests::it_adds_two' panicked at src/lib.rs:12:9:
 assertion `left == right` failed
   left: 5
  right: 4
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 
 failures:

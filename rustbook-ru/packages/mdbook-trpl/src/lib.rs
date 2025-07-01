@@ -8,7 +8,7 @@ pub use config::Mode;
 pub use figure::TrplFigure as Figure;
 pub use heading::TrplHeading as Heading;
 pub use listing::TrplListing as Listing;
-pub use note::TrplNote as Note;
+pub use примечание::TrplNote as Note;
 use pulldown_cmark::{Options, Parser};
 
 /// Convenience function to get a parser matching `mdbook::new_cmark_parser`.

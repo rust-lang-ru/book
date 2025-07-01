@@ -11,7 +11,7 @@ $ cargo run
 5 |     println!("{s1}, мир!");
   |               ^^^^ value borrowed here after move
   |
-  = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+  = примечание: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
 помощь: consider cloning the value if the performance cost is acceptable
   |
 3 |     let s2 = s1.clone();

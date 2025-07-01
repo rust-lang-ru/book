@@ -306,8 +306,8 @@ src/main.rs:23:21: 23:35 error: mismatched types [E0308]
 src/main.rs:23     match guess.cmp(&secret_number) {
                                    ^~~~~~~~~~~~~~
 src/main.rs:23:21: 23:35 help: run `rustc --explain E0308` to see a detailed explanation
-src/main.rs:23:21: 23:35 note: expected type `&std::string::String`
-src/main.rs:23:21: 23:35 note:    found type `&_`
+src/main.rs:23:21: 23:35 примечание: expected type `&std::string::String`
+src/main.rs:23:21: 23:35 примечание:    found type `&_`
 error: aborting due to previous error
 Could not compile `guessing_game`.
 ```
@@ -331,11 +331,11 @@ error: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0
  --> src/main.rs:8:29
 8 |>     println!("Point 1: {}", p1);
   |>                             ^^
-<std macros>:2:27: 2:58: note: in this expansion of format_args!
-<std macros>:3:1: 3:54: note: in this expansion of print! (defined in <std macros>)
-src/main.rs:8:5: 8:33: note: in this expansion of println! (defined in <std macros>)
-note: `Point` cannot be formatted with the default formatter; try using `:?` instead if you are using a format string
-note: required by `std::fmt::Display::fmt`
+<std macros>:2:27: 2:58: примечание: in this expansion of format_args!
+<std macros>:3:1: 3:54: примечание: in this expansion of print! (defined in <std macros>)
+src/main.rs:8:5: 8:33: примечание: in this expansion of println! (defined in <std macros>)
+примечание: `Point` cannot be formatted with the default formatter; try using `:?` instead if you are using a format string
+примечание: required by `std::fmt::Display::fmt`
 ```
 `here` is another [link](the ref)
 "###.to_string();
@@ -346,11 +346,11 @@ error: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0
  --> src/main.rs:8:29
 8 |>     println!("Point 1: {}", p1);
   |>                             ^^
-<std macros>:2:27: 2:58: note: in this expansion of format_args!
-<std macros>:3:1: 3:54: note: in this expansion of print! (defined in <std macros>)
-src/main.rs:8:5: 8:33: note: in this expansion of println! (defined in <std macros>)
-note: `Point` cannot be formatted with the default formatter; try using `:?` instead if you are using a format string
-note: required by `std::fmt::Display::fmt`
+<std macros>:2:27: 2:58: примечание: in this expansion of format_args!
+<std macros>:3:1: 3:54: примечание: in this expansion of print! (defined in <std macros>)
+src/main.rs:8:5: 8:33: примечание: in this expansion of println! (defined in <std macros>)
+примечание: `Point` cannot be formatted with the default formatter; try using `:?` instead if you are using a format string
+примечание: required by `std::fmt::Display::fmt`
 ```
 `here` is another link at *the ref*
 "###.to_string();

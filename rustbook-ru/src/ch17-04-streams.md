@@ -53,8 +53,8 @@ copy only the error output
 10 |         while let Some(value) = stream.next().await {
    |                                        ^^^^
    |
-   = note: the full type name has been written to 'file:///projects/async-await/target/debug/deps/async_await-575db3dd3197d257.long-type-14490787947592691573.txt'
-   = note: consider using `--verbose` to print the full type name to the console
+   = примечание: the full type name has been written to 'file:///projects/async-await/target/debug/deps/async_await-575db3dd3197d257.long-type-14490787947592691573.txt'
+   = примечание: consider using `--verbose` to print the full type name to the console
    = помощь: items from traits can only be used if the trait is in scope
 помощь: the following traits which provide `next` are implemented but not in scope; perhaps you want to import one of them
    |
@@ -343,7 +343,7 @@ Interval: 43
 </Listing>
 
 Во-первых, мы используем способ `throttle` в потоке `intervals`, чтобы он не
-перегружал поток `messages`. _Throttling_ — это способ ограничить частоту, с которой будет вызываться функция, или, в данном случае, частоту опроса потока. Один раз в 100 миллисекунд должно хватить, потому что примерно так часто
+перегружал поток `messages`. _Throttling_ — это способ ограничить частоту, с которой будет вызываться способ (функция), или, в данном случае, частоту опроса потока. Один раз в 100 миллисекунд должно хватить, потому что примерно так часто
 приходят наши сообщения.
 
 Чтобы ограничить количество элементов, которые мы будем принимать из потока, мы применяем способ `take` к потоку `merged`, потому что мы хотим ограничить конечный вывод, а не только один поток.

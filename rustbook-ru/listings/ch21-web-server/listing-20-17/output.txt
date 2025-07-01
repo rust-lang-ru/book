@@ -11,7 +11,7 @@ $ cargo check
 26 |             workers.push(Worker::new(id, receiver));
    |                                          ^^^^^^^^ value moved here, in previous iteration of loop
    |
-note: consider changing this parameter type in method `new` to borrow instead if owning значениеn't necessary
+примечание: consider changing this parameter type in method `new` to borrow instead if owning значениеn't necessary
   --> src/lib.rs:47:33
    |
 47 |     fn new(id: uразмер, receiver: mpsc::Receiver<Job>) -> Worker {

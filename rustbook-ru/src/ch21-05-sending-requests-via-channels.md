@@ -142,7 +142,7 @@ $ cargo check
    |                                          ^^^^^^^^ value moved here in
    previous iteration of loop
    |
-   = note: move occurs because `receiver` has type
+   = примечание: move occurs because `receiver` has type
    `std::sync::mpsc::Receiver<Job>`, which does not implement the `Copy` trait
 ```
 
@@ -218,7 +218,7 @@ impl Worker {
 Рукопись будет собираться.
 
 Теперь используем способ `execute` в `ThreadPool`. Мы также изменим устройство `Job`.
-Вместо того, чтобы быть устройством - сделаем её псевдонимом сложного вида данных:
+Вместо того, чтобы быть устройством - сделаем её ярлыком сложного вида данных:
 
 <span class="filename">Filename: src/lib.rs</span>
 
@@ -406,29 +406,29 @@ and make some requests:
 ```text
 $ cargo run
    Сборка hello v0.1.0 (file:///projects/hello)
-warning: field is never used: `workers`
+предупреждение: field is never used: `workers`
  --> src/lib.rs:7:5
   |
 7 |     workers: Vec<Worker>,
   |     ^^^^^^^^^^^^^^^^^^^^
   |
-  = note: #[warn(dead_code)] on by default
+  = примечание: #[warn(dead_code)] on by default
 
-warning: field is never used: `id`
+предупреждение: field is never used: `id`
   --> src/lib.rs:61:5
    |
 61 |     id: uразмер,
    |     ^^^^^^^^^
    |
-   = note: #[warn(dead_code)] on by default
+   = примечание: #[warn(dead_code)] on by default
 
-warning: field is never used: `thread`
+предупреждение: field is never used: `thread`
   --> src/lib.rs:62:5
    |
 62 |     thread: thread::JoinHandle<()>,
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: #[warn(dead_code)] on by default
+   = примечание: #[warn(dead_code)] on by default
 
     Finished dev [unoptimized + debuginfo] target(s) in 0.99 secs
      Running `target/debug/hello`
