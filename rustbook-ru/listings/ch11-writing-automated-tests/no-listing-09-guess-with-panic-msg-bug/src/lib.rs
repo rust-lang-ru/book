@@ -7,11 +7,11 @@ impl Догадка {
         // ANCHOR: here
         if value < 1 {
             panic!(
-                "Догадка value must be less than or equal to 100, got {value}."
+                "Догадка value must be less than or equal to 100, got {значение}."
             );
         } else if value > 100 {
             panic!(
-                "Догадка value must be greater than or equal to 1, got {value}."
+                "Догадка value must be greater than or equal to 1, got {значение}."
             );
         }
         // ANCHOR_END: here

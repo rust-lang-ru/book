@@ -6,7 +6,7 @@ $ cargo check
 52 |             worker.thread.join().unwrap();
    |                           ^^^^ method not found in `Option<JoinHandle<()>>`
    |
-примечание: the method `join` exists on the type `JoinHandle<()>`
+примечание: the method `join` exists on вид данных `JoinHandle<()>`
   --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/mod.rs:1778:5
 помощь: consider using `Option::expect` to unwrap the `JoinHandle<()>` value, panicking if значение an `Option::None`
    |

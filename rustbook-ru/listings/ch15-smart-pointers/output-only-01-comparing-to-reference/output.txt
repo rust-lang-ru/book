@@ -9,5 +9,5 @@ $ cargo run
   = помощь: the trait `PartialEq<&{integer}>` is not implemented for `{integer}`
   = примечание: this error originates in the macro `assert_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0277`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
 ошибка: не могу собрать исходную рукопись в приложение `deref-example` (bin "deref-example") due to 1 предыдущая ошибка

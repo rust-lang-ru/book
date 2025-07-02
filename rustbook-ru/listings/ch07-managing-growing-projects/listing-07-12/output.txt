@@ -3,7 +3,7 @@ $ cargo build
 ошибка[E0433]: failed to resolve: используется необъявленный ящик или раздел crate or module `hosting`
   --> src/lib.rs:11:9
    |
-11 |         hosting::add_to_waitlist();
+11 |         hosting::добавить_в_ожидание();
    |         ^^^^^^^ используется необъявленный ящик или раздел crate or module `hosting`
    |
 помощь: consider importing this module through its public re-export
@@ -11,14 +11,14 @@ $ cargo build
 10 +     use crate::hosting;
    |
 
-предупреждение: unused import: `crate::front_of_house::hosting`
+предупреждение: unused import: `crate::перед_дома::hosting`
  --> src/lib.rs:7:5
   |
-7 | use crate::front_of_house::hosting;
+7 | use crate::перед_дома::hosting;
   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   |
   = примечание: `#[warn(unused_imports)]` on by default
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0433`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0433`.
 предупреждение: `restaurant` (lib) generated 1 warning
 ошибка: не могу собрать исходную рукопись в приложение `restaurant` (lib) due to 1 предыдущая ошибка; 1 warning emitted

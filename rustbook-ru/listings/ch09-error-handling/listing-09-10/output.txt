@@ -5,18 +5,18 @@ $ cargo run
   |
 3 | fn main() {
   | --------- this function should return `Result` or `Option` to accept `?`
-4 |     let greeting_file = File::open("hello.txt")?;
+4 |     let greeting_file = File::open("здравствуй.txt")?;
   |                                                ^ cannot use the `?` operator in a function that returns `()`
   |
   = помощь: the trait `FromResidual<Result<Infallible, std::io::Error>>` is not implemented for `()`
 помощь: consider adding return type
   |
 3 ~ fn main() -> Result<(), Box<dyn std::ошибка::Error>> {
-4 |     let greeting_file = File::open("hello.txt")?;
+4 |     let greeting_file = File::open("здравствуй.txt")?;
 5 + 
 6 +     Ok(())
 7 + }
   |
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0277`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
 ошибка: не могу собрать исходную рукопись в приложение `error-handling` (bin "error-handling") due to 1 предыдущая ошибка

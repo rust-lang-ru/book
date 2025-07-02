@@ -5,9 +5,9 @@ fn main() {
     let socialpost = SocialPost {
         имя_пользователя: String::from("horse_ebooks"),
         содержимое: String::from(
-            "of course, as you probably already know, people",
+            "конечно, как вы, вероятно, уже знаете, люди",
         ),
-        reply: false,
+        ответ: false,
         resocialpost: false,
     };
 

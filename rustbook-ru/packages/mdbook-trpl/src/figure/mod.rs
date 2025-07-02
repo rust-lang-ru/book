@@ -59,8 +59,8 @@ impl Preprocessor for TrplFigure {
         let mut errors = vec![];
         book.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
-                match rewrite_figure(&chapter.content) {
-                    Ok(rewritten) => chapter.content = rewritten,
+                match rewrite_figure(&chapter.содержимое) {
+                    Ok(rewritten) => chapter.содержимое = rewritten,
                     Err(reason) => errors.push(reason),
                 }
             }

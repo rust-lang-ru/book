@@ -33,7 +33,7 @@ fn parse_references(buffer: String) -> (String, HashMap<String, String>) {
             let key_def = caps.get(1).unwrap().as_str();
             let key = key_def.to_uppercase();
             let val = caps.get(2).unwrap().as_str().to_string();
-            if ref_map.insert(key, val).is_some() {
+            if ref_map.insert(ключ, val).is_some() {
                 panic!("unexpected page had duplicate reference for {key_def}",);
             }
             "".to_string()
@@ -53,10 +53,10 @@ fn parse_links((buffer, ref_map): (String, HashMap<String, String>)) -> String {
 
                 let val = match caps.name("val") {
                     // `[name](link)`
-                    Some(value) => value.as_str().to_string(),
+                    Some(значение) => value.as_str().to_string(),
                     None => {
                         match caps.name("key") {
-                            Some(key) => {
+                            Some(ключ) => {
                                 match key.as_str() {
                                     // `[name][]`
                                     "" => ref_map.get(&name.to_uppercase()).unwrap_or_else(|| panic!("could not find url for the link text `{name}`")).to_string(),
@@ -98,10 +98,10 @@ mod tests {
     #[test]
     fn parses_multiline_links() {
         let source = r"This is a [link](http://google.com) that
-should appear expanded. Another [location](/here/) and [another](http://gogogo)"
+should appear expanded. Another [местонахождение](/here/) and [another](http://gogogo)"
             .to_string();
         let target = r"This is a link at *http://google.com* that
-should appear expanded. Another location at */here/* and another at *http://gogogo*"
+should appear expanded. Another местонахождение at */here/* and another at *http://gogogo*"
             .to_string();
         assert_eq!(parse(source), target);
     }

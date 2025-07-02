@@ -42,7 +42,7 @@ impl Preprocessor for TrplNote {
     ) -> Result<mdbook::book::Book> {
         book.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
-                chapter.content = rewrite(&chapter.content);
+                chapter.содержимое = rewrite(&chapter.содержимое);
             }
         });
         Ok(book)

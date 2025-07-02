@@ -4,7 +4,7 @@
 
 ### Создание рабочего пространства
 
-*Workspace* - это набор дополнений, которые используют один и тот же *Cargo.lock* и папку для хранения итогов сборки. Давайте создадим дело с использованием *workspace* - мы будем использовать обыкновенный рукопись, чтобы сосредоточиться на устройстве рабочего пространства. Существует несколько способов внутренне выстроить
+*Workspace* - это набор дополнений, которые используют один и тот же *Cargo.lock* и папку для хранения итогов сборки. Давайте создадим ящик с использованием *workspace* - мы будем использовать обыкновенный рукопись, чтобы сосредоточиться на устройстве рабочего пространства. Существует несколько способов внутренне выстроить
 
  рабочую область, но мы покажем только один из них. У нас будет рабочая область, содержащая исполняемый файл и две библиотеки. Исполняемый файл, который обеспечивает основную возможность, будет зависеть от двух библиотек. Одна библиотека предоставит способ (функцию) `add_one`, а вторая - `add_two`. Эти три дополнения будут частью одного *workspace*. Начнём с создания папки для рабочего окружения:
 
@@ -107,7 +107,7 @@ $ cargo new add_one --lib
 
 Cargo не исходит из того, что дополнения в рабочем пространстве могут зависеть друг от друга, поэтому нам необходимо явно указать отношения зависимости.
 
-Далее, давайте используем способ (функцию) `add_one` (из дополнения `add_one`) в дополнение `adder`. Откройте файл *adder/src/main.rs* и добавьте строку `use` в верхней части, чтобы ввести в область видимости новый библиотечное дополнение `add_one`. Затем измените способ (функцию) `main` для вызова способы (функции) `add_one`, как показано в приложении 14-7.
+Далее, давайте используем способ (функцию) `add_one` (из дополнения `add_one`) в дополнение `adder`. Откройте файл *adder/src/main.rs* и добавьте строку `use` в верхней части, чтобы ввести в область видимости новый библиотечное дополнение `add_one`. Затем измените способ (функцию) `main` для вызова способа (функции) `add_one`, как показано в приложении 14-7.
 
 <span class="filename">Файл: adder/src/main.rs</span>
 
@@ -143,7 +143,7 @@ copy output below; the output updating script doesn't владение subdirect
 ```console
 $ cargo run -p adder
     Finished dev [unoptimized + debuginfo] target(s) in 0.0s
-     Running `target/debug/adder`
+     Запщущен `target/debug/adder`
 Здравствуй мир! 10 plus one is 11!
 ```
 
@@ -216,7 +216,7 @@ $ cargo build
 
 #### Добавление проверки в рабочее пространство
 
-В качестве ещё одного улучшения давайте добавим проверка способы (функции) `add_one::add_one` в `add_one`:
+В качестве ещё одного улучшения давайте добавим проверка способа (функции) `add_one::add_one` в `add_one`:
 
 <span class="filename">Файл: add_one/src/lib.rs</span>
 
@@ -238,22 +238,22 @@ $ cargo test
    Сборка add_one v0.1.0 (file:///projects/add/add_one)
    Сборка adder v0.1.0 (file:///projects/add/adder)
     Finished test [unoptimized + debuginfo] target(s) in 0.27s
-     Running unittests src/lib.rs (target/debug/deps/add_one-f0253159197f7841)
+     Запщущен unittests src/lib.rs (target/debug/deps/add_one-f0253159197f7841)
 
-running 1 test
+запщущен 1 test
 test tests::it_works ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-     Running unittests src/main.rs (target/debug/deps/adder-49979ff40686fa8e)
+     Запщущен unittests src/main.rs (target/debug/deps/adder-49979ff40686fa8e)
 
-running 0 tests
+запщущен 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
    Doc-tests add_one
 
-running 0 tests
+запщущен 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
@@ -271,16 +271,16 @@ copy output below; the output updating script doesn't владение subdirect
 ```console
 $ cargo test -p add_one
     Finished test [unoptimized + debuginfo] target(s) in 0.00s
-     Running unittests src/lib.rs (target/debug/deps/add_one-b3235fea9a156f74)
+     Запщущен unittests src/lib.rs (target/debug/deps/add_one-b3235fea9a156f74)
 
-running 1 test
+запщущен 1 test
 test tests::it_works ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
    Doc-tests add_one
 
-running 0 tests
+запщущен 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```

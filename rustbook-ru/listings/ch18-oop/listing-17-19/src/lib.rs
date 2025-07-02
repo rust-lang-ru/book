@@ -14,12 +14,12 @@ impl Post {
     }
 
     pub fn content(&self) -> &str {
-        &self.content
+        &self.содержимое
     }
 }
 
 impl DraftPost {
     pub fn add_text(&mut self, text: &str) {
-        self.content.push_str(text);
+        self.содержимое.push_str(text);
     }
 }

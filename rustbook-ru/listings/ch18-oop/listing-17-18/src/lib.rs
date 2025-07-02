@@ -12,11 +12,11 @@ impl Post {
     }
 
     pub fn add_text(&mut self, text: &str) {
-        self.content.push_str(text);
+        self.содержимое.push_str(text);
     }
 
     pub fn content(&self) -> &str {
-        self.state.as_ref().unwrap().content(self)
+        self.state.as_ref().unwrap().содержимое(self)
     }
 
     pub fn request_review(&mut self) {
@@ -88,7 +88,7 @@ impl State for Published {
 
     // ANCHOR: here
     fn content<'a>(&self, post: &'a Post) -> &'a str {
-        &post.content
+        &post.содержимое
     }
 }
 // ANCHOR_END: here

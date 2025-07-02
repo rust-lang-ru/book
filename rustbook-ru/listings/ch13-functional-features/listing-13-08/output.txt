@@ -8,7 +8,7 @@ $ cargo run
 16 |
 17 |     список.sort_by_key(|r| {
    |                      --- captured by this `FnMut` closure
-18 |         sort_operations.push(value);
+18 |         sort_operations.push(значение);
    |                              ^^^^^ move occurs because `value` has type `String`, which does not implement the `Copy` trait
    |
 помощь: consider cloning the value if the performance cost is acceptable
@@ -16,5 +16,5 @@ $ cargo run
 18 |         sort_operations.push(value.clone());
    |                                   ++++++++
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0507`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0507`.
 ошибка: не могу собрать исходную рукопись в приложение `прямоугольникs` (bin "прямоугольникs") due to 1 предыдущая ошибка

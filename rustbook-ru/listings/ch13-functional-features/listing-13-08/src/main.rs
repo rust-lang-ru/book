@@ -15,7 +15,7 @@ fn main() {
     let value = String::from("closure called");
 
     список.sort_by_key(|r| {
-        sort_operations.push(value);
+        sort_operations.push(значение);
         r.width
     });
     println!("{список:#?}");

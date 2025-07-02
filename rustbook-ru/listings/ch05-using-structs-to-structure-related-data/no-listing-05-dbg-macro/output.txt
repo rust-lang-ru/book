@@ -1,7 +1,7 @@
 $ cargo run
    Сборка прямоугольникs v0.1.0 (file:///projects/прямоугольникs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.61s
-     Running `target/debug/прямоугольникs`
+     Запщущен `target/debug/прямоугольникs`
 [src/main.rs:10:16] 30 * scale = 60
 [src/main.rs:14:5] &прямоугольник1 = Прямоугольник {
     ширина: 60,

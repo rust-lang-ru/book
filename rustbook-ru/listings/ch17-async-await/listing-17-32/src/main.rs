@@ -12,8 +12,8 @@ fn main() {
         let mut filtered =
             stream.filter(|value| value % 3 == 0 || value % 5 == 0);
 
-        while let Some(value) = filtered.next().await {
-            println!("The value was: {value}");
+        while let Some(значение) = filtered.next().await {
+            println!("The value was: {значение}");
         }
     });
 }

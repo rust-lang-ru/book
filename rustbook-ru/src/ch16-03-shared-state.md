@@ -106,7 +106,7 @@
 Рукопись выведет следующее:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text

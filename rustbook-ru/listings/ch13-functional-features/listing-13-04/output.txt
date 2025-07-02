@@ -3,7 +3,7 @@ $ cargo run
       Adding closure-example v0.1.0 (/Users/chris/dev/rust-lang/book/tmp/listings/ch13-functional-features/listing-13-04)
    Сборка closure-example v0.1.0 (file:///projects/closure-example)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
-     Running `target/debug/closure-example`
+     Запщущен `target/debug/closure-example`
 До определения замыкания: [1, 2, 3]
 До вызова замыкания: [1, 2, 3]
 Вызов замыкания: [1, 2, 3]

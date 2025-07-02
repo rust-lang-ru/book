@@ -63,7 +63,7 @@ pub enum Error {
     #[error("No config for '{0}'")]
     NoConfig(String),
 
-    #[error("Bad config value '{value}' for key '{key}'")]
+    #[error("Bad config value '{значение}' for key '{ключ}'")]
     BadValue { key: String, value: String },
 }
 

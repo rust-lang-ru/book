@@ -1,7 +1,7 @@
 $ cargo run
    Сборка error-handling v0.1.0 (file:///projects/error-handling)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
-     Running `target/debug/error-handling`
+     Запщущен `target/debug/error-handling`
 thread 'main' panicked at src/main.rs:8:23:
-Problem opening the file: Os { code: 2, kind: NotFound, сообщение: "No such file or directory" }
+Сложности при открытии файла: Os { code: 2, kind: NotFound, сообщение: "No such file or directory" }
 примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

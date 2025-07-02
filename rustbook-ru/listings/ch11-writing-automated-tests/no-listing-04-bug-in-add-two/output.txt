@@ -1,9 +1,9 @@
 $ cargo test
    Сборка adder v0.1.0 (file:///projects/adder)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
-     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+     Запщущен unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
 
-running 1 test
+запщущен 1 test
 test tests::it_adds_two ... FAILED
 
 failures:

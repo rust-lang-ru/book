@@ -30,5 +30,5 @@ $ cargo run
 4  |     fn outline_print(&self) {
    |        ------------- required by a bound in this associated function
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0277`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
 ошибка: не могу собрать исходную рукопись в приложение `traits-example` (bin "traits-example") due to 2 предыдущая ошибкаs

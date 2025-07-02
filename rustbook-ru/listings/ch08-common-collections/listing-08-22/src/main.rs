@@ -2,12 +2,12 @@ fn main() {
     // ANCHOR: here
     use std::collections::HashMap;
 
-    let field_name = String::from("Favorite color");
-    let field_value = String::from("Голубой");
+    let имя_поля = String::from("Любимый цвет");
+    let значение_поля = String::from("Голубой");
 
     let mut map = HashMap::new();
-    map.insert(field_name, field_value);
-    // field_name and field_value are invalid at this point, try using them and
+    map.insert(имя_поля, значение_поля);
+    // имя_поля and значение_поля are invalid at this point, try using them and
     // see what compiler error you get!
     // ANCHOR_END: here
 }

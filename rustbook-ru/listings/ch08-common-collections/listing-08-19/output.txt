@@ -1,6 +1,6 @@
 $ cargo run
    Сборка collections v0.1.0 (file:///projects/collections)
-ошибка[E0277]: the type `str` cannot be indexed by `{integer}`
+ошибка[E0277]: вид данных `str` cannot be indexed by `{integer}`
  --> src/main.rs:3:16
   |
 3 |     let h = s1[0];
@@ -13,5 +13,5 @@ $ cargo run
   = помощь: for that trait implementation, expected `[_]`, found `str`
   = примечание: required for `String` to implement `Index<{integer}>`
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0277`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
 ошибка: не могу собрать исходную рукопись в приложение `collections` (bin "collections") due to 1 предыдущая ошибка

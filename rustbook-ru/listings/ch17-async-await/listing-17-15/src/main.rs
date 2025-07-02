@@ -22,8 +22,8 @@ fn main() {
         };
 
         let rx_fut = async {
-            while let Some(value) = rx.recv().await {
-                println!("received '{value}'");
+            while let Some(значение) = rx.recv().await {
+                println!("received '{значение}'");
             }
         };
 

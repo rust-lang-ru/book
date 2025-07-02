@@ -45,7 +45,7 @@ impl ThreadPool {
 // ANCHOR_END: here
 
 struct Worker {
-    id: uразмер,
+    id: usize,
     thread: thread::JoinHandle<()>,
 }
 

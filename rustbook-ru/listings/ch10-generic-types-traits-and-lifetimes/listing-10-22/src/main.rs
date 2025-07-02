@@ -1,6 +1,6 @@
 // ANCHOR: here
 fn main() {
-    let строка1 = String::from("long string is long");
+    let строка1 = String::from("длинная строка действительно длинная");
 
     {
         let строка2 = String::from("xyz");

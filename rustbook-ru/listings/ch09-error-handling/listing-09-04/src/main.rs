@@ -5,6 +5,6 @@ fn main() {
 
     let greeting_file = match greeting_file_итог {
         Ok(file) => file,
-        Err(error) => panic!("Problem opening the file: {ошибка:?}"),
+        Err(error) => panic!("Сложности при открытии файла: {ошибка:?}"),
     };
 }

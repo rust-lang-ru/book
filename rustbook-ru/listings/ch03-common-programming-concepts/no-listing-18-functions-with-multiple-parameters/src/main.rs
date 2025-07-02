@@ -3,5 +3,5 @@ fn main() {
 }
 
 fn print_labeled_measurement(значение: i32, unit_label: char) {
-    println!("The measurement is: {value}{unit_label}");
+    println!("The measurement is: {значение}{unit_label}");
 }

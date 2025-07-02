@@ -55,13 +55,13 @@ impl Drop for ThreadPool {
 }
 
 struct Worker {
-    id: uразмер,
+    id: usize,
     thread: Option<thread::JoinHandle<()>>,
 }
 
 // ANCHOR: here
 impl Worker {
-    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         // --snip--
 
         // ANCHOR_END: here

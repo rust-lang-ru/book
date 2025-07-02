@@ -83,8 +83,8 @@ impl Preprocessor for TrplListing {
         let mut errors: Vec<String> = vec![];
         book.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
-                match rewrite_listing(&chapter.content, mode) {
-                    Ok(rewritten) => chapter.content = rewritten,
+                match rewrite_listing(&chapter.содержимое, mode) {
+                    Ok(rewritten) => chapter.содержимое = rewritten,
                     Err(reason) => errors.push(reason),
                 }
             }
@@ -107,7 +107,7 @@ enum Error {
     #[error("No config for trpl-listing")]
     NoConfig,
 
-    #[error("Bad config value '{value}' for key '{key}'")]
+    #[error("Bad config value '{значение}' for key '{ключ}'")]
     BadValue { key: String, value: String },
 }
 
@@ -209,18 +209,18 @@ impl<'e> ListingState<'e> {
                 }
             })
             .flatten()
-            .try_fold(ListingBuilder::new(), |builder, (key, maybe_value)| {
-                match (key.as_str(), maybe_value) {
-                    ("number", Some(value)) => Ok(builder.with_number(value)),
+            .try_fold(ListingBuilder::new(), |builder, (ключ, maybe_value)| {
+                match (ключ.as_str(), maybe_value) {
+                    ("number", Some(значение)) => Ok(builder.with_number(значение)),
                     ("number", None) => {
                         Err(String::from("number attribute without value"))
                     }
-                    ("caption", Some(value)) => Ok(builder.with_caption(value)),
+                    ("caption", Some(значение)) => Ok(builder.with_caption(значение)),
                     ("caption", None) => {
                         Err(String::from("caption attribute without value"))
                     }
-                    ("file-name", Some(value)) => {
-                        Ok(builder.with_file_name(value))
+                    ("file-name", Some(значение)) => {
+                        Ok(builder.with_file_name(значение))
                     }
                     ("file-name", None) => {
                         Err(String::from("file-name attribute without value"))
@@ -351,17 +351,17 @@ impl ListingBuilder {
     }
 
     fn with_number(mut self, value: String) -> Self {
-        self.number = Some(value);
+        self.number = Some(значение);
         self
     }
 
     fn with_caption(mut self, value: String) -> Self {
-        self.caption = Some(value);
+        self.caption = Some(значение);
         self
     }
 
     fn with_file_name(mut self, value: String) -> Self {
-        self.file_name = Some(value);
+        self.file_name = Some(значение);
         self
     }
 

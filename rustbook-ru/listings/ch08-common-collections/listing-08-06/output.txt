@@ -12,5 +12,5 @@ $ cargo run
 8 |     println!("The first element is: {первый}");
   |                                     ------- immutable borrow later used here
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0502`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0502`.
 ошибка: не могу собрать исходную рукопись в приложение `collections` (bin "collections") due to 1 предыдущая ошибка

@@ -3,8 +3,8 @@ $ cargo build
 ошибка[E0603]: раздел `hosting` является частным (закрытым) с ограниченным доступом
  --> src/lib.rs:9:28
   |
-9 |     crate::front_of_house::hosting::add_to_waitlist();
-  |                            ^^^^^^^  --------------- function `add_to_waitlist` is not publicly re-exported
+9 |     crate::перед_дома::hosting::добавить_в_ожидание();
+  |                            ^^^^^^^  --------------- function `добавить_в_ожидание` is not publicly re-exported
   |                            |
   |                            private module
   |
@@ -17,8 +17,8 @@ $ cargo build
 ошибка[E0603]: раздел `hosting` является частным (закрытым) с ограниченным доступом
   --> src/lib.rs:12:21
    |
-12 |     front_of_house::hosting::add_to_waitlist();
-   |                     ^^^^^^^  --------------- function `add_to_waitlist` is not publicly re-exported
+12 |     перед_дома::hosting::добавить_в_ожидание();
+   |                     ^^^^^^^  --------------- function `добавить_в_ожидание` is not publicly re-exported
    |                     |
    |                     private module
    |
@@ -28,5 +28,5 @@ $ cargo build
 2  |     mod hosting {
    |     ^^^^^^^^^^^
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0603`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0603`.
 ошибка: не могу собрать исходную рукопись в приложение `restaurant` (lib) due to 2 предыдущая ошибкаs

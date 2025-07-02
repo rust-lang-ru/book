@@ -3,12 +3,12 @@ use aggregator::{self, NewsArticle, Summary};
 fn main() {
     // ANCHOR: here
     let article = NewsArticle {
-        headline: String::from("Penguins win the Stanley Cup Championship!"),
-        location: String::from("Pittsburgh, PA, USA"),
+        заголовок: String::from("Penguins win the Stanley Cup Championship!"),
+        местонахождение: String::from("Pittsburgh, PA, USA"),
         author: String::from("Iceburgh"),
         содержимое: String::from(
             "The Pittsburgh Penguins once again are the best \
-             hockey team in the NHL.",
+             hockkey team in the NHL.",
         ),
     };
 

@@ -94,7 +94,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut archive = tar::Builder::new(encoder);
     archive.append_dir_all("listings", "tmp/listings")?;
 
-    // Assure whoever is running this that the script exiting successfully, and remind them
+    // Assure whoever is запщущен this that the script exiting successfully, and remind them
     // where the generated file ends up
     println!("Release tarball of listings in tmp/listings.tar.gz");
 

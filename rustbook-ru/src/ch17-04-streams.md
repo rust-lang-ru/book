@@ -50,7 +50,7 @@ copy only the error output
 ошибка[E0599]: no method named `next` found for struct `Iter` in the current scope
   --> src/main.rs:10:40
    |
-10 |         while let Some(value) = stream.next().await {
+10 |         while let Some(значение) = stream.next().await {
    |                                        ^^^^
    |
    = примечание: the full type name has been written to 'file:///projects/async-await/target/debug/deps/async_await-575db3dd3197d257.long-type-14490787947592691573.txt'
@@ -68,7 +68,7 @@ copy only the error output
    |
 помощь: there is a method `try_next` with a similar name
    |
-10 |         while let Some(value) = stream.try_next().await {
+10 |         while let Some(значение) = stream.try_next().await {
    |                                        ~~~~~~~~
 ```
 
@@ -142,7 +142,7 @@ copy only the error output
 Когда мы запускаем эта рукопись, мы получаем именно те итоги, которые и ожидали:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -196,7 +196,7 @@ changes in the compiler -->
 чтобы мы могли получить индекс каждого элемента, который мы отправляем вместе с самим элементом. Затем мы применяем задержку в 100 миллисекунд к элементам с четным индексом и задержку в 300 миллисекунд к элементам с нечетным индексом, чтобы смоделировать различные задержки, которые мы
 можем увидеть в потоке сообщений в реальном мире. Поскольку наш тайм-аут составляет 200 миллисекунд, это должно повлиять на половину сообщений.
 
-Чтобы заснуть между сообщениями в способы (функции) `get_messages` без блокировки, нам
+Чтобы заснуть между сообщениями в способе (функции) `get_messages` без блокировки, нам
 нужно использовать несогласованность. Однако мы не можем сделать сам `get_messages` несогласованной функцией, потому что тогда мы вернем `Future<Output = Stream<Предмет = String>>`
 вместо `Stream<Предмет = String>>`. Вызывающему пришлось бы ожидать
 `get_messages` сам, чтобы получить доступ к потоку. Но помните: все в
@@ -211,15 +211,15 @@ changes in the compiler -->
 
 > Примечание: Вызов `spawn_task` таким образом работает, потому что мы уже настроили нашу
 > среду выполнения; если бы мы этого не сделали, это вызвало бы панику. Другие реализации выбирают
-> другие компромиссы: они могут порождать новую среду выполнения и избегать паники, но
+> другие соглашения: они могут порождать новую среду выполнения и избегать паники, но
 > в конечном итоге имеют некоторые дополнительные накладные расходы, или они могут просто не предоставлять
 > отдельный способ порождать задачи без ссылки на среду выполнения. Убедитесь,
-> что вы знаете, какой компромисс выбрала ваша среда выполнения, и пишите свой код соответствующим образом!
+> что вы знаете, какое соглашение выбрала ваша среда выполнения, и пишите свой код соответствующим образом!
 
 Теперь наш код имеет гораздо более интересный итог. Между каждой парой сообщений ошибка `Problem: Elapsed(())`.
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -275,7 +275,7 @@ Problem: Elapsed(())
 неопределенно долго. В несогласованном режиме это не блокирует ничего другого, пока есть
 хотя бы одна точка ожидания в каждой итерации круговорота.
 
-Теперь, вернувшись в несогласованный раздел нашей основной способы (функции), мы можем попытаться объединить потоки `messages` и `intervals`, как показано в приложении 17-37.
+Теперь, вернувшись в несогласованный раздел нашей основном способе (функции), мы можем попытаться объединить потоки `messages` и `intervals`, как показано в приложении 17-37.
 
 <Listing number="17-37" caption="Попытка объединить потоки `messages` и `intervals`" file-name="src/main.rs">
 
@@ -317,7 +317,7 @@ String>>`, где `Timeout` — это вид, который используе
 <span class="keystroke">ctrl-c</span>. Во-вторых, сообщения из английского алфавита будут погребены среди всех сообщений счетчика интервалов:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the tasks running differently rather than
+the changes are likely to be due to the tasks запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -356,7 +356,7 @@ Interval: 43
 снова в действии, позволяя нам выбирать характеристики производительности.
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text

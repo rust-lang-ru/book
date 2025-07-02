@@ -127,40 +127,40 @@ mod tests {
         let string = r#"
         $ cargo run
                Compiling guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
-                 Running `target/guessing_game`
+                 Запщущен `target/guessing_game`
             Guess the number!
             The secret number is: 61
-            Please input your guess.
+            ,пожалуйста input your guess.
             10
             You guessed: 10
             Too small!
-            Please input your guess.
+            ,пожалуйста input your guess.
             99
             You guessed: 99
             Too big!
-            Please input your guess.
+            ,пожалуйста input your guess.
             foo
-            Please input your guess.
+            ,пожалуйста input your guess.
             61
             You guessed: 61
             You win!
             $ cargo run
                Compiling guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
-                 Running `target/debug/guessing_game`
+                 Запщущен `target/debug/guessing_game`
             Guess the number!
             The secret number is: 7
-            Please input your guess.
+            ,пожалуйста input your guess.
             4
             You guessed: 4
             $ cargo run
-                 Running `target/debug/guessing_game`
+                 Запщущен `target/debug/guessing_game`
             Guess the number!
             The secret number is: 83
-            Please input your guess.
+            ,пожалуйста input your guess.
             5
             $ cargo run
                Compiling guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
-                 Running `target/debug/guessing_game`
+                 Запщущен `target/debug/guessing_game`
             Hello, world!
         "#;
 
@@ -178,20 +178,20 @@ mod tests {
         let string = r#"
             $ cargo run
                Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
-                 Running `target/guessing_game`
+                 Запщущен `target/guessing_game`
             Guess the number!
             The secret number is: 61
-            Please input your guess.
+            ,пожалуйста input your guess.
             10
             You guessed: 10
             Too small!
-            Please input your guess.
+            ,пожалуйста input your guess.
             99
             You guessed: 99
             Too big!
-            Please input your guess.
+            ,пожалуйста input your guess.
             foo
-            Please input your guess.
+            ,пожалуйста input your guess.
             61
             You guessed: 61
             You win!

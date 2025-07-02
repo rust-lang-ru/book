@@ -5,6 +5,6 @@ fn main() {
     let mut scores = HashMap::new();
 
     scores.insert(String::from("Голубой"), 10);
-    scores.insert(String::from("Yellow"), 50);
+    scores.insert(String::from("Жёлтый"), 50);
     // ANCHOR_END: here
 }

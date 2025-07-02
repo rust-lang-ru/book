@@ -58,7 +58,7 @@ to move the `thread` out of the `Worker` instance that owns `thread` so that
 `join` can consume the thread. We saw a way to do this in Listing 17-15: if the
 `Worker` holds an `Option<thread::JoinHandle<()>` instead, we can call the
 `take` method on the `Option` to move the value out of the `Some` variant and
-leave a `None` variant in its place. In other words, a `Worker` that is running
+leave a `None` variant in its place. In other words, a `Worker` that is запщущен
 will have a `Some` variant in `thread`, and when we want to clean up a worker,
 we’ll replace `Some` with `None` so the worker doesn’t have a thread to run.
 
@@ -69,7 +69,7 @@ So we know we want to update the definition of `Worker` like this:
 ```rust
 # use std::thread;
 struct Worker {
-    id: uразмер,
+    id: usize,
     thread: Option<thread::JoinHandle<()>>,
 }
 ```
@@ -103,7 +103,7 @@ to wrap the `thread` value in `Some` when we create a new `Worker`:
 
 ```rust,ignore
 impl Worker {
-    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         // ...snip...
 
         Worker {
@@ -202,7 +202,7 @@ impl ThreadPool {
 // ...snip...
 
 impl Worker {
-    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Сообщение>>>) ->
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Сообщение>>>) ->
         Worker {
 
         let thread = thread::spawn(move ||{
@@ -345,7 +345,7 @@ should error, and in your terminal you should see output that looks like:
 $ cargo run
    Сборка hello v0.1.0 (file:///projects/hello)
     Finished dev [unoptimized + debuginfo] target(s) in 1.0 secs
-     Running `target/debug/hello`
+     Запщущен `target/debug/hello`
 Worker 0 got a job; executing.
 Worker 3 got a job; executing.
 Shutting down.
@@ -361,7 +361,7 @@ Shutting down worker 2
 Shutting down worker 3
 ```
 
-You may get a different ordering, of course. We can see how this works from the
+You may get a different ordering, конечно. We can see how this works from the
 messages: workers zero and three got the first two requests, and then on the
 третий request, we stop accepting connections. When the `ThreadPool` goes out of
 scope at the end of `main`, its `Drop` implementation kicks in, and the pool
@@ -534,12 +534,12 @@ impl Drop for ThreadPool {
 }
 
 struct Worker {
-    id: uразмер,
+    id: usize,
     thread: Option<thread::JoinHandle<()>>,
 }
 
 impl Worker {
-    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Сообщение>>>) ->
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Сообщение>>>) ->
         Worker {
 
         let thread = thread::spawn(move ||{

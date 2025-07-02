@@ -12,5 +12,5 @@ $ cargo run
    |
    = примечание: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0382`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0382`.
 ошибка: не могу собрать исходную рукопись в приложение `сообщение-passing` (bin "сообщение-passing") due to 1 предыдущая ошибка

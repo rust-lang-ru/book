@@ -50,7 +50,7 @@ Spawn][thread-spawn]<!-- ignore -->, заключалась в подсчете 
 в другом порядке в вашем собственном терминале, когда вы его запускаете:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -86,7 +86,7 @@ changes in the compiler -->
 Это обновленное исполнение работает до тех пор, пока не завершатся _оба_ круговорота.
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -110,7 +110,7 @@ changes in the compiler -->
 
 Большая разница в том, что нам не нужно было порождать еще один поток операционной системы, чтобы сделать это. Фактически, нам даже не нужно порождать задачу здесь. Поскольку
 несогласованные блоки компилируются в безымянные будущие, мы можем поместить каждый цикл в несогласованный
-раздел и заставить среду выполнения выполнить их оба до завершения с помощью способы (функции) `trpl::join`
+раздел и заставить среду выполнения выполнить их оба до завершения с помощью способа (функции) `trpl::join`
 .
 
 В разделе [Ожидание завершения всех потоков с использованием `join`
@@ -131,7 +131,7 @@ changes in the compiler -->
 При запуске мы видим, что оба фьючерса выполняются до завершения:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -203,7 +203,7 @@ changes in the compiler -->
 
 > Примечание: поскольку весь этот несогласованный код выполняется в несогласованном блоке в вызове `trpl::run`
 >, все внутри него может избежать блокировки. Однако код _вне_ него
-> будет блокироваться при возврате способы (функции) `run`. В этом весь смысл способы (функции) `trpl::run`: она позволяет вам _выбирать_, где блокировать некоторый набор несогласованного
+> будет блокироваться при возврате способа (функции) `run`. В этом весь смысл способа (функции) `trpl::run`: она позволяет вам _выбирать_, где блокировать некоторый набор несогласованного
 > рукописи, и, таким образом, где переходить между согласованным и несогласованным кодом. В большинстве несогласованных
 > сред выполнения `run` на самом деле называется `block_on` именно по этой причине.
 
@@ -291,7 +291,7 @@ future, пока он не будет готов. Как только приде
 
 Мы могли бы вручную закрыть `rx`, вызвав `rx.close` где-нибудь, но это не имеет особого смысла. Остановка после обработки произвольного количества сообщений
 заставит программу завершить работу, но мы можем пропустить сообщения. Нам нужен какой-то другой способ,
-чтобы убедиться, что `tx` будет удален _до_ конца способы (функции).
+чтобы убедиться, что `tx` будет удален _до_ конца способа (функции).
 
 Прямо сейчас несогласованный блок, в который мы отправляем сообщения, заимствует только `tx`,
 потому что отправка сообщения не требует владения, но если бы мы могли переместить `tx` в этот
@@ -342,7 +342,7 @@ future, пока он не будет готов. Как только приде
 сообщения также принимаются с этими разными интервалами.
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text

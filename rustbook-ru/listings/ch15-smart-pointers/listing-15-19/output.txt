@@ -1,7 +1,7 @@
 $ cargo run
    Сборка cons-список v0.1.0 (file:///projects/cons-список)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.45s
-     Running `target/debug/cons-список`
+     Запщущен `target/debug/cons-список`
 count after creating a = 1
 count after creating b = 2
 count after creating c = 3

@@ -4,8 +4,8 @@ pub trait Messenger {
 
 pub struct LimitTracker<'a, T: Messenger> {
     messenger: &'a T,
-    значение: uразмер,
-    max: uразмер,
+    значение: usize,
+    max: usize,
 }
 
 impl<'a, T> LimitTracker<'a, T>

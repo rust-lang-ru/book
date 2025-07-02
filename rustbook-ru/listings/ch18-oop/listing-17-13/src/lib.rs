@@ -16,7 +16,7 @@ impl Post {
 
     // ANCHOR: here
     pub fn add_text(&mut self, text: &str) {
-        self.content.push_str(text);
+        self.содержимое.push_str(text);
     }
 }
 // ANCHOR_END: here

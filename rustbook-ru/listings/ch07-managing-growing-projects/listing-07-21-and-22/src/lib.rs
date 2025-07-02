@@ -1,7 +1,7 @@
-mod front_of_house;
+mod перед_дома;
 
-pub use crate::front_of_house::hosting;
+pub use crate::перед_дома::hosting;
 
 pub fn eat_at_restaurant() {
-    hosting::add_to_waitlist();
+    hosting::добавить_в_ожидание();
 }

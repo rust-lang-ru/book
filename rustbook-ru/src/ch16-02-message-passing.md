@@ -55,7 +55,7 @@
 При запуске рукописи приложения 16-8, мы увидим значение, выведенное из основного потока:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -103,7 +103,7 @@ Got: hi
 При выполнении рукописи в приложении 16-10 вы должны увидеть следующий вывод с паузой в 1 секунду между каждой строкой:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -132,7 +132,7 @@ Got: thread
 Когда вы запустите рукопись, вывод должен выглядеть примерно так:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text

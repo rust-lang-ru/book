@@ -19,8 +19,8 @@ fn main() {
             trpl::sleep(Duration::from_millis(500)).await;
         }
 
-        while let Some(value) = rx.recv().await {
-            println!("received '{value}'");
+        while let Some(значение) = rx.recv().await {
+            println!("received '{значение}'");
         }
         // ANCHOR_END: many-messages
     });

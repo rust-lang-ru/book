@@ -2,7 +2,7 @@ fn main() {
     // ANCHOR: here
     use std::collections::HashMap;
 
-    let text = "здравствуй мир wonderful world";
+    let text = "здравствуй мир замечательный мир";
 
     let mut map = HashMap::new();
 

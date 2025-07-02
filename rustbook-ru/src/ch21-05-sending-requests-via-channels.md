@@ -20,7 +20,7 @@ closures when we create the `ThreadPool`.
 4. Способ `execute` стопки `ThreadPool` будет отправлять задание, которые мы хотим отослать.
 5. В потоке, образец данных `Worker` в круговороте получает из потока и использует замыкания.
 
-Приступим к созданию потока в способы (функции) `ThreadPool::new` и содержащуюся на отправляющей
+Приступим к созданию потока в способе (функции) `ThreadPool::new` и содержащуюся на отправляющей
 стороне образец данных `ThreadPool`, как показано в рукописи 201-16. `Job` является видом данных, который мы будем отправлять в поток. Это рукопись стопки, которая пока ничего не содержит:
 
 <span class="filename">Filename: src/lib.rs</span>
@@ -59,7 +59,7 @@ impl ThreadPool {
 }
 #
 # struct Worker {
-#     id: uразмер,
+#     id: usize,
 #     thread: thread::JoinHandle<()>,
 # }
 #
@@ -78,7 +78,7 @@ impl ThreadPool {
 <span class="caption">рукопись 20-16: изменение `ThreadPool`. Добавление возможности
 хранения отправленной сведений в поток, которая отправляет образцы `Job`</span>
 
-В способы (функции) `ThreadPool::new` мы создаём новый поток и затем отправляем данные. Эта рукопись собираются (хотя и c предупреждениями).
+В способе (функции) `ThreadPool::new` мы создаём новый поток и затем отправляем данные. Эта рукопись собираются (хотя и c предупреждениями).
 
 Попробуем передать принимающий конец потока каждому работнику (worker) в время их
 создания. Мы знаем, что хотим использовать принимающий поток в потоке, который
@@ -112,7 +112,7 @@ impl ThreadPool {
 // ...snip...
 
 impl Worker {
-    fn new(id: uразмер, receiver: mpsc::Receiver<Job>) -> Worker {
+    fn new(id: usize, receiver: mpsc::Receiver<Job>) -> Worker {
         let thread = thread::spawn(|| {
             receiver;
         });
@@ -194,12 +194,12 @@ impl ThreadPool {
     // ...snip...
 }
 # struct Worker {
-#     id: uразмер,
+#     id: usize,
 #     thread: thread::JoinHandle<()>,
 # }
 #
 impl Worker {
-    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         // ...snip...
 #         let thread = thread::spawn(|| {
 #            receiver;
@@ -264,7 +264,7 @@ impl ThreadPool {
 // ...snip...
 
 impl Worker {
-    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         let thread = thread::spawn(move || {
             loop {
                 let job = receiver.lock().unwrap().recv().unwrap();
@@ -355,7 +355,7 @@ type Job = Box<FnBox + Send + 'static>;
 // ...snip...
 
 impl Worker {
-    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         let thread = thread::spawn(move || {
             loop {
                 let job = receiver.lock().unwrap().recv().unwrap();
@@ -417,7 +417,7 @@ $ cargo run
 предупреждение: field is never used: `id`
   --> src/lib.rs:61:5
    |
-61 |     id: uразмер,
+61 |     id: usize,
    |     ^^^^^^^^^
    |
    = примечание: #[warn(dead_code)] on by default
@@ -431,7 +431,7 @@ $ cargo run
    = примечание: #[warn(dead_code)] on by default
 
     Finished dev [unoptimized + debuginfo] target(s) in 0.99 secs
-     Running `target/debug/hello`
+     Запщущен `target/debug/hello`
      Worker 0 got a job; executing.
 Worker 2 got a job; executing.
 Worker 1 got a job; executing.
@@ -452,7 +452,7 @@ will be able to serve other requests by having another thread run them.
 What about those warnings, though? Don’t we use the `workers`, `id`, and
 `thread` fields? Well, right now, we’re using all three of these fields to hold
 onto some data, but we don’t actually *do* anything with the data once we’ve
-set up the thread pool and started running the code that sends jobs down the
+set up the thread pool and started запщущен the code that sends jobs down the
 channel to the threads. If we didn’t hold onto these values, though, they’d go
 out of scope: for example, if we didn’t return the `Vec<Worker>` value as part
 of the `ThreadPool`, the vector would get cleaned up at the end of

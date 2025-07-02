@@ -1,13 +1,13 @@
-mod front_of_house {
+mod перед_дома {
     pub mod hosting {
-        fn add_to_waitlist() {}
+        fn добавить_в_ожидание() {}
     }
 }
 
 pub fn eat_at_restaurant() {
     // Безусловный путь
-    crate::front_of_house::hosting::add_to_waitlist();
+    crate::перед_дома::hosting::добавить_в_ожидание();
 
     // Относительный путь
-    front_of_house::hosting::add_to_waitlist();
+    перед_дома::hosting::добавить_в_ожидание();
 }

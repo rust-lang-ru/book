@@ -1,6 +1,6 @@
-mod front_of_house {
+mod перед_дома {
     mod hosting {
-        fn add_to_waitlist() {}
+        fn добавить_в_ожидание() {}
 
         fn seat_at_table() {}
     }

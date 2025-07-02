@@ -10,5 +10,5 @@ $ cargo run
    = примечание: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
    = примечание: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0277`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
 ошибка: не могу собрать исходную рукопись в приложение `прямоугольникs` (bin "прямоугольникs") due to 1 предыдущая ошибка

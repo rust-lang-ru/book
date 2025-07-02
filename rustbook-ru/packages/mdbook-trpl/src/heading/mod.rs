@@ -26,8 +26,8 @@ impl Preprocessor for TrplHeading {
         let mut errors = vec![];
         book.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
-                match rewrite_headings(&chapter.content, mode) {
-                    Ok(rewritten) => chapter.content = rewritten,
+                match rewrite_headings(&chapter.содержимое, mode) {
+                    Ok(rewritten) => chapter.содержимое = rewritten,
                     Err(reason) => errors.push(reason),
                 }
             }

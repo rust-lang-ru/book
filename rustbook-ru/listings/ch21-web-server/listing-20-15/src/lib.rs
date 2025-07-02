@@ -39,7 +39,7 @@ impl ThreadPool {
 }
 
 struct Worker {
-    id: uразмер,
+    id: usize,
     thread: thread::JoinHandle<()>,
 }
 

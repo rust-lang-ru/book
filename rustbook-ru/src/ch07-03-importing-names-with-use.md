@@ -84,19 +84,19 @@ fn main() {
 #[derive(Debug)]
 enum TrafficLight {
     Red,
-    Yellow,
+    Жёлтый,
     Green,
 }
 
-use TrafficLight::{Red, Yellow};
+use TrafficLight::{Red, Жёлтый};
 
 fn main() {
     let red = Red;
-    let yellow = Yellow;
+    let жёлтый = Жёлтый;
     let green = TrafficLight::Green;
 
     println!("{:?}", red);
-    println!("{:?}", yellow);
+    println!("{:?}", жёлтый);
     println!("{:?}", green);
 }
 ```
@@ -110,7 +110,7 @@ fn main() {
 ```rust
 enum TrafficLight {
     Red,
-    Yellow,
+    Жёлтый,
     Green,
 }
 
@@ -118,7 +118,7 @@ use TrafficLight::*;
 
 fn main() {
     let red = Red;
-    let yellow = Yellow;
+    let жёлтый = Жёлтый;
     let green = Green;
 }
 ```
@@ -275,9 +275,9 @@ mod tests {
 ```text
 $ cargo test
    Сборка communicator v0.1.0 (file:///projects/communicator)
-     Running target/debug/communicator-92007ddb5330fa5a
+     Запщущен target/debug/communicator-92007ddb5330fa5a
 
-running 1 test
+запщущен 1 test
 test tests::it_works ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured

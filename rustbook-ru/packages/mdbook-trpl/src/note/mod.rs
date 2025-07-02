@@ -37,7 +37,7 @@ impl Preprocessor for TrplNote {
     fn run(&self, _ctx: &PreprocessorContext, mut book: Book) -> Result<Book> {
         book.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
-                chapter.content = rewrite(&chapter.content);
+                chapter.содержимое = rewrite(&chapter.содержимое);
             }
         });
         Ok(book)

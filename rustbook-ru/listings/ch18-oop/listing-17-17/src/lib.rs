@@ -15,12 +15,12 @@ impl Post {
     }
 
     pub fn add_text(&mut self, text: &str) {
-        self.content.push_str(text);
+        self.содержимое.push_str(text);
     }
 
     // ANCHOR: here
     pub fn content(&self) -> &str {
-        self.state.as_ref().unwrap().content(self)
+        self.state.as_ref().unwrap().содержимое(self)
     }
     // --snip--
     // ANCHOR_END: here

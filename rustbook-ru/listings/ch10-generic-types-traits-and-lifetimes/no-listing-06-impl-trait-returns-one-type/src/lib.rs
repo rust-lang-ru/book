@@ -3,28 +3,28 @@ pub trait Summary {
 }
 
 pub struct NewsArticle {
-    pub headline: String,
-    pub location: String,
+    pub заголовок: String,
+    pub местонахождение: String,
     pub author: String,
     pub содержимое: String,
 }
 
 impl Summary for NewsArticle {
     fn summarize(&self) -> String {
-        format!("{}, by {} ({})", self.headline, self.author, self.location)
+        format!("{}, by {} ({})", self.заголовок, self.author, self.местонахождение)
     }
 }
 
 pub struct SocialPost {
     pub имя_пользователя: String,
     pub содержимое: String,
-    pub reply: bool,
+    pub ответ: bool,
     pub resocialpost: bool,
 }
 
 impl Summary for SocialPost {
     fn summarize(&self) -> String {
-        format!("{}: {}", self.имя_пользователя, self.content)
+        format!("{}: {}", self.имя_пользователя, self.содержимое)
     }
 }
 
@@ -32,23 +32,23 @@ impl Summary for SocialPost {
 fn returns_summarizable(switch: bool) -> impl Summary {
     if switch {
         NewsArticle {
-            headline: String::from(
+            заголовок: String::from(
                 "Penguins win the Stanley Cup Championship!",
             ),
-            location: String::from("Pittsburgh, PA, USA"),
+            местонахождение: String::from("Pittsburgh, PA, USA"),
             author: String::from("Iceburgh"),
             содержимое: String::from(
                 "The Pittsburgh Penguins once again are the best \
-                 hockey team in the NHL.",
+                 хоккейная команда в NHL.",
             ),
         }
     } else {
         SocialPost {
             имя_пользователя: String::from("horse_ebooks"),
             содержимое: String::from(
-                "of course, as you probably already know, people",
+                "конечно, как вы, вероятно, уже знаете, люди",
             ),
-            reply: false,
+            ответ: false,
             resocialpost: false,
         }
     }

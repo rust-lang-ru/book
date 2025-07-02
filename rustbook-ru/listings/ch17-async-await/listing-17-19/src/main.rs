@@ -36,8 +36,8 @@ fn main() {
         let rx_fut = pin!(async {
             // --snip--
             // ANCHOR_END: here
-            while let Some(value) = rx.recv().await {
-                println!("received '{value}'");
+            while let Some(значение) = rx.recv().await {
+                println!("received '{значение}'");
             }
             // ANCHOR: here
         });

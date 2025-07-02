@@ -1,9 +1,9 @@
 $ cargo test
    Сборка limit-tracker v0.1.0 (file:///projects/limit-tracker)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
-     Running unittests src/lib.rs (target/debug/deps/limit_tracker-e599811fa246dbde)
+     Запщущен unittests src/lib.rs (target/debug/deps/limit_tracker-e599811fa246dbde)
 
-running 1 test
+запщущен 1 test
 test tests::it_sends_an_over_75_percent_warning_message ... FAILED
 
 failures:

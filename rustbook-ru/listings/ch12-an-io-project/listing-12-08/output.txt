@@ -1,7 +1,7 @@
 $ cargo run
    Сборка minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
-     Running `target/debug/minigrep`
+     Запщущен `target/debug/minigrep`
 thread 'main' panicked at src/main.rs:26:13:
 не хватает переменных
 примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

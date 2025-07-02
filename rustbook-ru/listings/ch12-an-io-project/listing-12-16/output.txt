@@ -1,9 +1,9 @@
 $ cargo test
    Сборка minigrep v0.1.0 (file:///projects/minigrep)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.97s
-     Running unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+     Запщущен unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
 
-running 1 test
+запщущен 1 test
 test tests::one_итог ... FAILED
 
 failures:

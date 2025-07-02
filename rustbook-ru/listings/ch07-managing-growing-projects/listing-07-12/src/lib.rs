@@ -1,13 +1,13 @@
-mod front_of_house {
+mod перед_дома {
     pub mod hosting {
-        pub fn add_to_waitlist() {}
+        pub fn добавить_в_ожидание() {}
     }
 }
 
-use crate::front_of_house::hosting;
+use crate::перед_дома::hosting;
 
 mod customer {
     pub fn eat_at_restaurant() {
-        hosting::add_to_waitlist();
+        hosting::добавить_в_ожидание();
     }
 }

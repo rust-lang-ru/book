@@ -15,7 +15,7 @@ $ cargo run -- the poem.txt
 
 предупреждение: `minigrep` (bin "minigrep") generated 1 warning
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.71s
-     Running `target/debug/minigrep the poem.txt`
+     Запщущен `target/debug/minigrep the poem.txt`
 Поиск значения:the
 В файле poem.txt
 Содержимое:

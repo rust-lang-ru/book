@@ -27,7 +27,7 @@
 Обратите внимание, что когда основной поток `fn main` завершается, все порождённые потоки останавливаются, независимо от того, завершили они работу или нет. Вывод этой рукописи может каждый раз немного отличаться, но он будет выглядеть примерно так:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -63,7 +63,7 @@ changes in the compiler -->
 Вызов способа `join` запрещает исполнение текущему основному потоку, пока порожденный поток, представленный способом `join` не завершится. *Запрет* для потока означает, что потоку запрещено выполнять работу или завершить работу. Поскольку мы поместили вызов `join` после круговорота `for` основного потока, выполнение приложения 16-2 должно привести к выводу, примерно такому:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -95,7 +95,7 @@ changes in the compiler -->
 Основной поток будет ждать завершения порождённого потока, а затем запустит свой круговорот `for` , поэтому выходные данные больше не будут чередоваться, как показано ниже:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads running differently rather than
+the changes are likely to be due to the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text

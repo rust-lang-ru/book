@@ -3,27 +3,27 @@ pub trait Summary {
 }
 
 pub struct NewsArticle {
-    pub headline: String,
-    pub location: String,
+    pub заголовок: String,
+    pub местонахождение: String,
     pub author: String,
     pub содержимое: String,
 }
 
 impl Summary for NewsArticle {
     fn summarize(&self) -> String {
-        format!("{}, by {} ({})", self.headline, self.author, self.location)
+        format!("{}, by {} ({})", self.заголовок, self.author, self.местонахождение)
     }
 }
 
 pub struct SocialPost {
     pub имя_пользователя: String,
     pub содержимое: String,
-    pub reply: bool,
+    pub ответ: bool,
     pub resocialpost: bool,
 }
 
 impl Summary for SocialPost {
     fn summarize(&self) -> String {
-        format!("{}: {}", self.имя_пользователя, self.content)
+        format!("{}: {}", self.имя_пользователя, self.содержимое)
     }
 }

@@ -54,12 +54,12 @@ impl ThreadPool {
 // ANCHOR_END: here
 
 struct Worker {
-    id: uразмер,
+    id: usize,
     thread: thread::JoinHandle<()>,
 }
 
 impl Worker {
-    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         let thread = thread::spawn(|| {
             receiver;
         });

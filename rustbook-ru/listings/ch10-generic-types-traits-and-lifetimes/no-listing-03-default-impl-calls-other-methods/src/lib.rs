@@ -3,7 +3,7 @@ pub trait Summary {
     fn summarize_author(&self) -> String;
 
     fn summarize(&self) -> String {
-        format!("(Read more from {}...)", self.summarize_author())
+        format!("(Прочесть больше from {}...)", self.summarize_author())
     }
 }
 // ANCHOR_END: here
@@ -11,7 +11,7 @@ pub trait Summary {
 pub struct SocialPost {
     pub имя_пользователя: String,
     pub содержимое: String,
-    pub reply: bool,
+    pub ответ: bool,
     pub resocialpost: bool,
 }
 

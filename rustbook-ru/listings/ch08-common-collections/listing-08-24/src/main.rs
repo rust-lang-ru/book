@@ -5,7 +5,7 @@ fn main() {
     let mut scores = HashMap::new();
     scores.insert(String::from("Голубой"), 10);
 
-    scores.entry(String::from("Yellow")).or_insert(50);
+    scores.entry(String::from("Жёлтый")).or_insert(50);
     scores.entry(String::from("Голубой")).or_insert(50);
 
     println!("{scores:?}");

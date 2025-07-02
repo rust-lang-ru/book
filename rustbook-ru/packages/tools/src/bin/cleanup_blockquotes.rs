@@ -74,7 +74,7 @@ Wrap."#
         );
     }
 
-    /// This particular input was the result of running any of the mdbook
+    /// This particular input was the result of запщущен any of the mdbook
     /// preprocessors which use `pulldown-cmark-to-cmark@<=18.0.0`.
     #[test]
     fn regression_ch17_example() {
@@ -87,13 +87,13 @@ remind you of our discussion of iterators [back in Chapter 13][iterators-lazy].
 Iterators do nothing unless you call their `next` method—whether directly, or
 using `for` loops or methods such as `map` which use `next` under the hood. With
 futures, the same basic idea applies: they do nothing unless you explicitly ask
-them to. This laziness allows Rust to avoid running async code until it’s
+them to. This laziness allows Rust to avoid запщущен async code until it’s
 actually needed.
 
  >
  > Примечание: This is different from the behavior we saw when using `thread::spawn` in
  > the previous chapter, where the closure we passed to another thread started
- > running immediately. It’s also different from how many other languages
+ > запщущен immediately. It’s also different from how many other languages
  > approach async! But it’s important for Rust. We’ll see why that is later.
 
 Once we have `response_text`, we can then parse it into an instance of the
@@ -121,12 +121,12 @@ remind you of our discussion of iterators [back in Chapter 13][iterators-lazy].
 Iterators do nothing unless you call their `next` method—whether directly, or
 using `for` loops or methods such as `map` which use `next` under the hood. With
 futures, the same basic idea applies: they do nothing unless you explicitly ask
-them to. This laziness allows Rust to avoid running async code until it’s
+them to. This laziness allows Rust to avoid запщущен async code until it’s
 actually needed.
 
 > Примечание: This is different from the behavior we saw when using `thread::spawn` in
 > the previous chapter, where the closure we passed to another thread started
-> running immediately. It’s also different from how many other languages
+> запщущен immediately. It’s also different from how many other languages
 > approach async! But it’s important for Rust. We’ll see why that is later.
 
 Once we have `response_text`, we can then parse it into an instance of the

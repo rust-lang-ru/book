@@ -1,7 +1,7 @@
 $ cargo run
    Сборка cons-список v0.1.0 (file:///projects/cons-список)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.63s
-     Running `target/debug/cons-список`
+     Запщущен `target/debug/cons-список`
 a after = Cons(RefCell { значение: 15 }, Nil)
 b after = Cons(RefCell { значение: 3 }, Cons(RefCell { значение: 15 }, Nil))
 c after = Cons(RefCell { значение: 4 }, Cons(RefCell { значение: 15 }, Nil))

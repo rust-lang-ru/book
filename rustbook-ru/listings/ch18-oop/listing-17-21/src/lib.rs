@@ -14,18 +14,18 @@ impl Post {
     }
 
     pub fn content(&self) -> &str {
-        &self.content
+        &self.содержимое
     }
 }
 
 impl DraftPost {
     pub fn add_text(&mut self, text: &str) {
-        self.content.push_str(text);
+        self.содержимое.push_str(text);
     }
 
     pub fn request_review(self) -> PendingReviewPost {
         PendingReviewPost {
-            содержимое: self.content,
+            содержимое: self.содержимое,
         }
     }
 }
@@ -37,7 +37,7 @@ pub struct PendingReviewPost {
 impl PendingReviewPost {
     pub fn approve(self) -> Post {
         Post {
-            содержимое: self.content,
+            содержимое: self.содержимое,
         }
     }
 }

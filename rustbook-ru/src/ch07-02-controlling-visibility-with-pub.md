@@ -180,7 +180,7 @@ pub mod network;
 
 ### Примеры
 
-Создадим новое дело библиотеки secret 7-5 *src/lib.rs*:
+Создадим новый ящик библиотеки secret 7-5 *src/lib.rs*:
 
 <span class="filename">Filename: src/lib.rs</span>
 

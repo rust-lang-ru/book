@@ -56,13 +56,13 @@ impl Drop for ThreadPool {
 
 // ANCHOR: here
 struct Worker {
-    id: uразмер,
+    id: usize,
     thread: Option<thread::JoinHandle<()>>,
 }
 // ANCHOR_END: here
 
 impl Worker {
-    fn new(id: uразмер, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         let thread = thread::spawn(move || loop {
             let job = receiver.lock().unwrap().recv().unwrap();
 

@@ -12,5 +12,5 @@ $ cargo run
 
 предупреждение: `patterns` (bin "patterns") generated 1 warning
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
-     Running `target/debug/patterns`
+     Запщущен `target/debug/patterns`
 5

@@ -14,14 +14,14 @@ $ cargo check
 примечание: consider changing this parameter type in method `new` to borrow instead if owning значениеn't necessary
   --> src/lib.rs:47:33
    |
-47 |     fn new(id: uразмер, receiver: mpsc::Receiver<Job>) -> Worker {
+47 |     fn new(id: usize, receiver: mpsc::Receiver<Job>) -> Worker {
    |        --- in this method       ^^^^^^^^^^^^^^^^^^^ this parameter takes ownership of the value
 помощь: consider moving the expression out of the loop so it is only moved once
    |
 25 ~         let mut value = Worker::new(id, receiver);
 26 ~         for id in 0..size {
-27 ~             workers.push(value);
+27 ~             workers.push(значение);
    |
 
-Для получения более подробных сведений об этом ошибке, попробуйте выполнить `rustc --explain E0382`.
+Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0382`.
 ошибка: не могу собрать исходную рукопись в приложение `здравствуй` (lib) due to 1 предыдущая ошибка
