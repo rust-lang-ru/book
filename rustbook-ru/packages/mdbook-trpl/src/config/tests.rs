@@ -25,7 +25,7 @@ impl Preprocessor for TestPreprocessor {
 
     fn run(&self, ctx: &PreprocessorContext, mut book: Book) -> Result<Book> {
         let mode = Mode::from_context(ctx, self.name())?;
-        book.push_item(BookItem::PartTitle(format!("{mode:?}")));
+        boуспешно.push_item(BookItem::PartTitle(format!("{mode:?}")));
         Ok(book)
     }
 }
@@ -37,7 +37,7 @@ fn no_config() {
             "root": "/path/to/book",
             "config": {
                 "book": {
-                    "authors": ["AUTHOR"],
+                    "authors": ["СОЧИНИТЕЛЬ"],
                     "language": "en",
                     "multilingual": false,
                     "src": "src",
@@ -68,10 +68,10 @@ fn no_config() {
     let input_json = input_json.as_bytes();
     let (ctx, book) =
         mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
-    let result = TestPreprocessor.run(&ctx, book);
-    assert!(result.is_err());
-    let err = result.unwrap_err();
-    assert_eq!(format!("{err}"), "No config for 'test-preprocessor'");
+    let итог = TestPreprocessor.run(&ctx, book);
+    assert!(итог.is_err());
+    let err = итог.unwrap_err();
+    assert_eq!(format!("{_ошибка}"), "No config for 'test-preprocessor'");
 }
 
 #[test]
@@ -81,7 +81,7 @@ fn empty_config() {
             "root": "/path/to/book",
             "config": {
                 "book": {
-                    "authors": ["AUTHOR"],
+                    "authors": ["СОЧИНИТЕЛЬ"],
                     "language": "en",
                     "multilingual": false,
                     "src": "src",
@@ -115,7 +115,7 @@ fn empty_config() {
     let (ctx, book) =
         mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
     let book = TestPreprocessor.run(&ctx, book).unwrap();
-    assert!(book.iter().any(
+    assert!(boуспешно.iter().any(
         |item| matches!(item, BookItem::PartTitle(title) if title == &format!("{:?}", Mode::Default))
     ))
 }
@@ -127,7 +127,7 @@ fn specify_default() {
                     "root": "/path/to/book",
                     "config": {
                         "book": {
-                            "authors": ["AUTHOR"],
+                            "authors": ["СОЧИНИТЕЛЬ"],
                             "language": "en",
                             "multilingual": false,
                             "src": "src",
@@ -163,7 +163,7 @@ fn specify_default() {
     let (ctx, book) =
         mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
     let book = TestPreprocessor.run(&ctx, book).unwrap();
-    assert!(book.iter().any(
+    assert!(boуспешно.iter().any(
         |item| matches!(item, BookItem::PartTitle(title) if title == &format!("{:?}", Mode::Default))
     ));
 }
@@ -175,7 +175,7 @@ fn specify_simple() {
                     "root": "/path/to/book",
                     "config": {
                         "book": {
-                            "authors": ["AUTHOR"],
+                            "authors": ["СОЧИНИТЕЛЬ"],
                             "language": "en",
                             "multilingual": false,
                             "src": "src",
@@ -211,7 +211,7 @@ fn specify_simple() {
     let (ctx, book) =
         mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
     let book = TestPreprocessor.run(&ctx, book).unwrap();
-    assert!(book.iter().any(
+    assert!(boуспешно.iter().any(
         |item| matches!(item, BookItem::PartTitle(title) if title == &format!("{:?}", Mode::Simple))
     ))
 }
@@ -223,7 +223,7 @@ fn specify_invalid() {
                     "root": "/path/to/book",
                     "config": {
                         "book": {
-                            "authors": ["AUTHOR"],
+                            "authors": ["СОЧИНИТЕЛЬ"],
                             "language": "en",
                             "multilingual": false,
                             "src": "src",
@@ -258,9 +258,9 @@ fn specify_invalid() {
     let input_json = input_json.as_bytes();
     let (ctx, book) =
         mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
-    let result = TestPreprocessor.run(&ctx, book).unwrap_err();
+    let итог = TestPreprocessor.run(&ctx, book).unwrap_err();
     assert_eq!(
         format!("{result}"),
-        "Bad config value '\"nonsense\"' for key 'output-mode'"
+        "Bad config значение '\"nonsense\"' for key 'output-mode'"
     );
 }

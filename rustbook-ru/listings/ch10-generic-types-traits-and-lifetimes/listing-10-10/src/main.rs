@@ -11,7 +11,7 @@ impl<T> Point<T> {
 
 // ANCHOR: here
 impl Point<f32> {
-    fn distance_from_origin(&self) -> f32 {
+    fn расстояние_от_источника(&self) -> f32 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
     }
 }

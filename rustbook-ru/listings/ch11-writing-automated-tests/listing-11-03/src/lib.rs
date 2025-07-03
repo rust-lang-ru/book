@@ -1,15 +1,15 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+pub fn добавить(левое: usize, правое: usize) -> usize {
+    левое + правое
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
     fn exploration() {
-        let итог = add(2, 2);
-        assert_eq!(result, 4);
+        let итог = добавить(2, 2);
+        assert_eq!(итог, 4);
     }
 
     #[test]

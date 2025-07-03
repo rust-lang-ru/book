@@ -1,20 +1,20 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+pub fn добавить(левое: usize, правое: usize) -> usize {
+    левое + правое
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     // ANCHOR: here
     #[test]
-    fn it_works() -> Result<(), String> {
-        let итог = add(2, 2);
+    fn это_работет() -> Result<(), String> {
+        let итог = добавить(2, 2);
 
         if итог == 4 {
             Ok(())
         } else {
-            Err(String::from("two plus two does not equal four"))
+            Err(String::from("два плюс два не равно четырём"))
         }
     }
     // ANCHOR_END: here

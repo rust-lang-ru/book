@@ -45,7 +45,7 @@ $ cargo build
  --> src/main.rs:4:9
   |
 4 |     for i in 0..100 {
-  |         ^ помощь: consider using `_i` instead
+  |         ^ помощь: consider используйте `_i` instead
   |
   = примечание: #[warn(unused_variables)] on by default
 
@@ -110,14 +110,14 @@ fn main() {
 Запуск `cargo clippy` для этого приложения вызовет следующую ошибку:
 
 ```text
-ошибка: approximate value of `f{32, 64}::consts::PI` found
+ошибка: approximate значение of `f{32, 64}::consts::PI` found
  --> src/main.rs:2:13
   |
 2 |     let x = 3.1415;
   |             ^^^^^^
   |
   = примечание: `#[deny(clippy::approx_constant)]` on by default
-  = помощь: consider using the constant directly
+  = помощь: consider используйте the constant directly
   = помощь: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#approx_constant
 ```
 

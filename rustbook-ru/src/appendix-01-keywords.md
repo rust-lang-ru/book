@@ -81,11 +81,11 @@ fn match(needle: &str, haystack: &str) -> bool {
 вы получите ошибку:
 
 ```text
-ошибка: expected identifier, found keyword `match`
+ошибка: expected identifier, найдено keyword `match`
  --> src/main.rs:4:4
   |
 4 | fn match(needle: &str, haystack: &str) -> bool {
-  |    ^^^^^ expected identifier, found keyword
+  |    ^^^^^ expected identifier, найдено keyword
 ```
 
 Ошибка говорит о том, что вы не можете использовать ключевое слово `match` в качестве определителя способа (функции). Чтобы получить возможность использования слова `match` в качестве имени способа (функции), нужно использовать правила написания «сырых определителей», например так:

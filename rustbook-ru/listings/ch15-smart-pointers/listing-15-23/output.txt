@@ -4,19 +4,19 @@ $ cargo test
      Запщущен unittests src/lib.rs (target/debug/deps/limit_tracker-e599811fa246dbde)
 
 запщущен 1 test
-test tests::it_sends_an_over_75_percent_warning_message ... FAILED
+test tests::it_sends_an_over_75_percent_warning_message ... НЕУДАЧНО
 
 failures:
 
 ---- tests::it_sends_an_over_75_percent_warning_message stdout ----
-thread 'tests::it_sends_an_over_75_percent_warning_message' panicked at src/lib.rs:60:53:
+thread 'tests::it_sends_an_over_75_percent_warning_message' завершил работу из-за сбоя src/lib.rs:60:53:
 already borrowed: BorrowMutError
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта
 
 
 failures:
     tests::it_sends_an_over_75_percent_warning_message
 
-test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test итог: НЕУДАЧНО. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; выполнено за 0.00s
 
 ошибка: test failed, to rerun pass `--lib`

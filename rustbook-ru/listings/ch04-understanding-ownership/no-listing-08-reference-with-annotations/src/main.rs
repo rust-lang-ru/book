@@ -7,7 +7,7 @@ fn main() {
 }
 
 // ANCHOR: here
-fn подсчёт_длины(s: &String) -> usize { // s is a reference to a String
+fn подсчёт_длины(s: &String) -> usize { // s is ссылка to a String
     s.len()
 } // Here, s goes out of scope. But because it does not have ownership of what
   // it refers to, it is not dropped.

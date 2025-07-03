@@ -55,7 +55,7 @@
 При запуске рукописи приложения 16-8, мы увидим значение, выведенное из основного потока:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -98,12 +98,12 @@ Got: hi
 
 На этот раз порождённый поток имеет вектор строк, которые мы хотим отправить основному потоку. Мы перебираем их, отправляя каждую строку по отдельности и делаем паузу между ними, вызывая способ (функцию) `thread::sleep` со значением `Duration` равным 1 секунде.
 
-В основном потоке мы больше не вызываем способ (функцию) `recv` явно: вместо этого мы используем `rx` как повторитель . Для каждого полученного значения мы выводим его. Когда проток будет закрыт, повторение закончится.
+В основном потоке мы больше не вызываем способ (функцию) `recv` явно: вместо этого мы используем `rx` как повторитель . Для каждого полученного значения мы выводим его. Когда проток будет закрыт, повторение (перебор) закончится.
 
 При выполнении рукописи в приложении 16-10 вы должны увидеть следующий вывод с паузой в 1 секунду между каждой строкой:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -132,7 +132,7 @@ Got: thread
 Когда вы запустите рукопись, вывод должен выглядеть примерно так:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text

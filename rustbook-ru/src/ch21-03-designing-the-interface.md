@@ -87,14 +87,14 @@ fn main() {
 ```text
 $ cargo check
    Сборка hello v0.1.0 (file:///projects/hello)
-ошибка[E0433]: failed to resolve. Используется необъявленный ящик или раздел type or module `ThreadPool`
+ошибка[E0433]: неудачно to resolve. Используется необъявленный ящик или раздел type or module `ThreadPool`
   --> src\main.rs:10:16
    |
 10 |     let pool = ThreadPool::new(4);
    |                ^^^^^^^^^^^^^^^ Используется необъявленный ящик или раздел type or module
    `ThreadPool`
 
-ошибка: aborting due to предыдущая ошибка
+ошибка: aborting из-за предыдущая ошибка
 ```
 
 Отлично! Нам нужен `ThreadPool`. Давайте вернёмся к дополнению из исполняемого файла.
@@ -127,7 +127,7 @@ use hello::ThreadPool;
 ```text
 $ cargo check --bins
    Сборка hello v0.1.0 (file:///projects/hello)
-ошибка: no associated предмет named `new` found for type `здравствуй::ThreadPool` in the
+ошибка: no associated предмет named `new` найдено for type `здравствуй::ThreadPool` in the
 current scope
   --> src\main.rs:13:16
    |
@@ -162,7 +162,7 @@ $ cargo check
 4 |     pub fn new(размер: u32) -> ThreadPool {
   |                ^^^^
 
-ошибка: no method named `execute` found for type `здравствуй::ThreadPool` in the
+ошибка: no method named `execute` найдено for type `здравствуй::ThreadPool` in the
 current scope
   --> src/main.rs:18:14
    |
@@ -180,14 +180,14 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
         T: Send + 'static
 ```
 
-`F` is the parameter we care about here; `T` is related to the return value and
-we’re not concerned with that. Given that `spawn` uses `FnOnce` as the trait
+`F` is the parameter we care about here; `T` is related to the return значение and
+we’re not concerned with that. Given that `spawn` uses `FnOnce` as сущность
 bound on `F`, it’s probably what we want as well, since we’ll eventually be
 passing the argument we get in `execute` to `spawn`. We can be further
-confident that `FnOnce` is the trait that we want to use since the thread for
+confident that `FnOnce` is сущность that we want to use since the thread for
 запщущен a request is only going to execute that request’s closure one time.
 
-`F` also has the trait bound `Send` and the lifetime bound `static`, which
+`F` also has сущность bound `Send` and the lifetime bound `static`, which
 also make sense for our situation: we need `Send` to transfer the closure from
 one thread to another, and `static` because we don’t know how long the thread
 will execute. Let’s create an `execute` method on `ThreadPool` that will take a
@@ -210,7 +210,7 @@ impl ThreadPool {
 ```
 
 The `FnOnce` trait still needs the `()` after it since this `FnOnce` is
-representing a closure that takes no parameters and doesn’t return a value.
+representing a closure that takes no parameters and doesn’t return a значение.
 Just like function definitions, the return type can be omitted from the
 signature, but even if we have no parameters, we still need the parentheses.
 

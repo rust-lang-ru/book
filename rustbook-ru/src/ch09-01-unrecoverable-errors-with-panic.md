@@ -65,7 +65,7 @@ check the backtrace число mentioned in the text below the listing
 
 ```console
 $ RUST_BACKTRACE=1 cargo run
-thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 99', src/main.rs:4:5
+поток 'main' завершил работу из-за сбоя 'указатель вышел из-за границ: длина 3 ,но указатель 99', src/main.rs:4:5
 stack backtrace:
    0: rust_begin_unwind
              at /rustc/e092d0b6b43f2de967af0887873151bb1c0b18d3/library/std/src/panicking.rs:584:5
@@ -83,7 +83,7 @@ stack backtrace:
              at ./src/main.rs:4:5
    7: core::ops::function::FnOnce::call_once
              at /rustc/e092d0b6b43f2de967af0887873151bb1c0b18d3/library/core/src/ops/function.rs:248:5
-примечание: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+примечание: Некоторые подробности скрыты, запустите с режимом `RUST_BACKTRACE=full` для подробного обратного отсчёта.
 ```
 
 <span class="caption">Приложение 9-2: Обратный отсчёт, созданная вызовом <code>panic!</code>, когда установлена переменная окружения <code>RUST_BACKTRACE</code></span>

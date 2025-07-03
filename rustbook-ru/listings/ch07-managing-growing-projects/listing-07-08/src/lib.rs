@@ -1,10 +1,10 @@
-fn deliver_order() {}
+fn доставить_заказ() {}
 
-mod back_of_house {
-    fn fix_incorrect_order() {
-        cook_order();
-        super::deliver_order();
+mod тыл_дома {
+    fn исправить_неверный_заказr() {
+        заказ_повару();
+        super::доставить_заказ();
     }
 
-    fn cook_order() {}
+    fn заказ_повару() {}
 }

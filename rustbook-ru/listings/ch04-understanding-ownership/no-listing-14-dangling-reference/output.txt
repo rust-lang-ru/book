@@ -1,28 +1,28 @@
 $ cargo run
    Сборка ownership v0.1.0 (file:///projects/ownership)
-ошибка[E0106]: missing lifetime specifier
+ошибка[E0106]: отсутствует указание времени жизни
  --> src/main.rs:5:16
   |
 5 | fn dangle() -> &String {
-  |                ^ expected named lifetime parameter
+  |                ^ ожидался указатель имени времени жизни
   |
-  = помощь: this function's return type contains a borrowed value, but there is no value for it to be borrowed from
-помощь: consider using the `static` lifetime, but this is uncommon unless you're returning a borrowed value from a `const` or a `static`
+  = помощь: этот способ возвращает вид заимтсованного значения, but there is no значение for it to be borrowed from
+помощь: consider используйте the `static` lifetime, but this is uncommon unless you're returning a заимствованное значение from a `const` or a `static`
   |
 5 | fn dangle() -> &'static String {
   |                 +++++++
-помощь: instead, you are more likely to want to return an owned value
+помощь: instead, you are more likely to want to return an owned значение
   |
 5 - fn dangle() -> &String {
 5 + fn dangle() -> String {
   |
 
-ошибка[E0515]: cannot return reference to local variable `s`
+ошибка[E0515]: не могу вернуть reference to local variable `s`
  --> src/main.rs:8:5
   |
 8 |     &s
-  |     ^^ returns a reference to data owned by the current function
+  |     ^^ returns ссылка to data owned by the current function
 
 Some errors have detailed explanations: E0106, E0515.
-For more information about an error, try `rustc --explain E0106`.
-ошибка: не могу собрать исходную рукопись в приложение `ownership` (bin "ownership") due to 2 предыдущая ошибкаs
+For more information about an ошибка, try `rustc --explain E0106`.
+ошибка: не могу собрать исходную рукопись в приложение `ownership` (bin "ownership") из-за 2 предыдущая ошибкаs

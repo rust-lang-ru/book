@@ -1,14 +1,14 @@
-pub fn greeting(имя: &str) -> String {
+pub fn здравствуй(имя: &str) -> String {
     format!("Здравствуй {имя}!")
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
-    fn greeting_contains_name() {
-        let итог = greeting("Carol");
-        assert!(result.contains("Carol"));
+    fn здравствуй_с_содержанием_имени() {
+        let итог = здравствуй("Ольга");
+        assert!(итог.contains("Ольга"));
     }
 }

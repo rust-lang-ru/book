@@ -10,7 +10,7 @@ fn main() {
         let mut stream = trpl::stream_from_iter(iter);
 
         while let Some(значение) = stream.next().await {
-            println!("The value was: {значение}");
+            println!("The значение was: {значение}");
         }
     });
 }

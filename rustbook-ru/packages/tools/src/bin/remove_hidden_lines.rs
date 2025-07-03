@@ -9,7 +9,7 @@ fn read_md() -> String {
     let mut buffer = String::new();
     match io::stdin().read_to_string(&mut buffer) {
         Ok(_) => buffer,
-        Err(error) => panic!("{error}"),
+        Err(ошибка) => panic!("{ошибка}"),
     }
 }
 
@@ -22,11 +22,11 @@ fn remove_hidden_lines(input: &str) -> String {
     let mut within_codeblock = false;
 
     for line in input.lines() {
-        if line.starts_with("```") {
+        if строка.starts_with("```") {
             within_codeblock = !within_codeblock;
         }
 
-        if !within_codeblock || (!line.starts_with("# ") && line != "#") {
+        if !within_codeblock || (!строка.starts_with("# ") && line != "#") {
             resulting_lines.push(line)
         }
     }
@@ -35,7 +35,7 @@ fn remove_hidden_lines(input: &str) -> String {
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use crate::remove_hidden_lines;
 
     #[test]

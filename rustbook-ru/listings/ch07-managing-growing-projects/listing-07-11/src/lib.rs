@@ -6,6 +6,6 @@ mod перед_дома {
 
 use crate::перед_дома::hosting;
 
-pub fn eat_at_restaurant() {
+pub fn поесть_в_ресторане() {
     hosting::добавить_в_ожидание();
 }

@@ -2,7 +2,7 @@ use super::*;
 
 #[test]
 fn default_mode_is_unchanged() {
-    let result = rewrite_headings(
+    let итог = rewrite_headings(
         "# This is *emphasized* and **strong** and `code`
 ## Here is *another* and **strong** and `code`
 ### Third *level* **heading** with `code`
@@ -14,7 +14,7 @@ fn default_mode_is_unchanged() {
     );
 
     assert_eq!(
-        result.unwrap(),
+        итог.unwrap(),
         "# This is *emphasized* and **strong** and `code`
 ## Here is *another* and **strong** and `code`
 ### Third *level* **heading** with `code`
@@ -33,7 +33,7 @@ mod simple_mode {
 
     #[test]
     fn strips_em() {
-        let result = rewrite_headings(
+        let итог = rewrite_headings(
             "# This is *emphasized* and _this is too_
 ## Here is *another* and _emphasis style_
 ### Third *level* _heading_ here
@@ -55,23 +55,23 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(result.unwrap(), expected.unwrap());
+        assert_eq!(итог.unwrap(), expected.unwrap());
     }
 
     #[test]
     fn strips_nested_em() {
-        let result = rewrite_headings(
+        let итог = rewrite_headings(
             "# *This _is *extra* emphatic_ emphasis*.",
             Mode::Simple,
         );
         let expected = "# This is extra emphatic emphasis.";
 
-        assert_eq!(result.unwrap(), expected);
+        assert_eq!(итог.unwrap(), expected);
     }
 
     #[test]
     fn strips_strong() {
-        let result = rewrite_headings(
+        let итог = rewrite_headings(
             "# This is **strong** and __this is too__
 ## Here is **another** and __strong style__
 ### Third **level** __heading__ here
@@ -93,23 +93,23 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(result.unwrap(), expected.unwrap());
+        assert_eq!(итог.unwrap(), expected.unwrap());
     }
 
     #[test]
     fn strips_nested_strong() {
-        let result = rewrite_headings(
+        let итог = rewrite_headings(
             "# **This __is **extra** emphatic__ emphasis**.",
             Mode::Simple,
         );
         let expected = "# This is extra emphatic emphasis.";
 
-        assert_eq!(result.unwrap(), expected);
+        assert_eq!(итог.unwrap(), expected);
     }
 
     #[test]
     fn strips_code() {
-        let result = rewrite_headings(
+        let итог = rewrite_headings(
             "# This is `code`
 ## Here is `another`
 ### Third `level`
@@ -131,12 +131,12 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(result.unwrap(), expected.unwrap());
+        assert_eq!(итог.unwrap(), expected.unwrap());
     }
 
     #[test]
     fn strips_html() {
-        let result = rewrite_headings(
+        let итог = rewrite_headings(
             "# This is <span>html</span>
 ## Here is <span>another</span>
 ### Third <span>level</span>
@@ -158,12 +158,12 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(result.unwrap(), expected.unwrap());
+        assert_eq!(итог.unwrap(), expected.unwrap());
     }
 
     #[test]
     fn strips_strikethrough() {
-        let result = rewrite_headings(
+        let итог = rewrite_headings(
             "# This is ~~strikethrough~~
 ## Here is ~~another~~
 ### Third ~~level~~
@@ -185,12 +185,12 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(result.unwrap(), expected.unwrap());
+        assert_eq!(итог.unwrap(), expected.unwrap());
     }
 
     #[test]
     fn strips_nested_combinations() {
-        let result = rewrite_headings(
+        let итог = rewrite_headings(
             "# **Nested ~~strikethrough _emphasis_ fun~~ times**",
             Mode::Simple,
         );
@@ -200,6 +200,6 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(result.unwrap(), expected.unwrap())
+        assert_eq!(итог.unwrap(), expected.unwrap())
     }
 }

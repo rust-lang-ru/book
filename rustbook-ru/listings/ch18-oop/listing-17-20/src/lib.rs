@@ -22,7 +22,7 @@ impl Post {
 impl DraftPost {
     // --snip--
     // ANCHOR_END: here
-    pub fn add_text(&mut self, text: &str) {
+    pub fn add_text(&mut self, содержимое: &str) {
         self.содержимое.push_str(text);
     }
 

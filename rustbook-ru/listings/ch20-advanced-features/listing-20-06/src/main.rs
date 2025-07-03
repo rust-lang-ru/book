@@ -10,7 +10,7 @@ fn split_at_mut(values: &mut [i32], mid: usize) -> (&mut [i32], &mut [i32]) {
     unsafe {
         (
             slice::from_raw_parts_mut(ptr, mid),
-            slice::from_raw_parts_mut(ptr.add(mid), len - mid),
+            slice::from_raw_parts_mut(ptr.добавить(mid), len - mid),
         )
     }
 }

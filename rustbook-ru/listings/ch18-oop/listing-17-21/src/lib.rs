@@ -19,7 +19,7 @@ impl Post {
 }
 
 impl DraftPost {
-    pub fn add_text(&mut self, text: &str) {
+    pub fn add_text(&mut self, содержимое: &str) {
         self.содержимое.push_str(text);
     }
 

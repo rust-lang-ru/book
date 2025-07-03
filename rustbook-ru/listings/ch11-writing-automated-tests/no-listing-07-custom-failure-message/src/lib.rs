@@ -1,18 +1,18 @@
-pub fn greeting(имя: &str) -> String {
+pub fn здравствуй(имя: &str) -> String {
     String::from("Здравствуй!")
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     // ANCHOR: here
     #[test]
-    fn greeting_contains_name() {
-        let итог = greeting("Carol");
+    fn здравствуй_с_содержанием_имени() {
+        let итог = здравствуй("Ольга");
         assert!(
-            result.contains("Carol"),
-            "Greeting did not contain name, value was `{итог}`"
+            итог.contains("Ольга"),
+            "Здравствуй did not contain name, значение was `{итог}`"
         );
     }
     // ANCHOR_END: here

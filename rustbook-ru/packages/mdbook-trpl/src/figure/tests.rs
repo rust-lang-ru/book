@@ -2,8 +2,8 @@ use super::*;
 
 #[test]
 fn text_without_figures_is_ignored() {
-    let actual = rewrite_figure("This is some basic text.").unwrap();
-    assert_eq!(actual, "This is some basic text.");
+    let actual = rewrite_figure("This is some basic содержимое.").unwrap();
+    assert_eq!(actual, "This is some basic содержимое.");
 }
 
 #[test]
@@ -32,29 +32,29 @@ Figure 12-34: Look at this cool picture!
 
 #[test]
 fn unclosed_figure() {
-    let result = rewrite_figure("<figure>");
-    let actual = format!("{:?}", result.unwrap_err());
+    let итог = rewrite_figure("<figure>");
+    let actual = format!("{:?}", итог.unwrap_err());
     assert_eq!(actual, "Unclosed `<figure>`");
 }
 
 #[test]
 fn empty_caption() {
-    let result = rewrite_figure(
+    let итог = rewrite_figure(
         "<figure>
 <figcaption></figcaption>
 </figure>",
     );
-    let actual = format!("{:?}", result.unwrap_err());
+    let actual = format!("{:?}", итог.unwrap_err());
     assert_eq!(actual, "Missing caption in `<figcaption>`");
 }
 
 #[test]
 fn unclosed_caption() {
-    let result = rewrite_figure(
+    let итог = rewrite_figure(
         "<figure>
 <figcaption>
 </figure>",
     );
-    let actual = format!("{:?}", result.unwrap_err());
+    let actual = format!("{:?}", итог.unwrap_err());
     assert_eq!(actual, "Unclosed `<figcaption>`");
 }

@@ -2,14 +2,14 @@ mod перед_дома {
     mod hosting {
         fn добавить_в_ожидание() {}
 
-        fn seat_at_table() {}
+        fn сесть_за_стол() {}
     }
 
     mod serving {
-        fn take_order() {}
+        fn сделать_заказ() {}
 
-        fn serve_order() {}
+        fn подать_заказ() {}
 
-        fn take_payment() {}
+        fn оплатить() {}
     }
 }

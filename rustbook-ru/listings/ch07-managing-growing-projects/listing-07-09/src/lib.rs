@@ -1,12 +1,12 @@
-mod back_of_house {
-    pub struct Breakfast {
+mod тыл_дома {
+    pub struct Поесть {
         pub хлеб: String,
         сезонный_фрукт: String,
     }
 
-    impl Breakfast {
-        pub fn summer(хлеб: &str) -> Breakfast {
-            Breakfast {
+    impl Поесть {
+        pub fn лето(хлеб: &str) -> Поесть {
+            Поесть {
                 хлеб: String::from(хлеб),
                 сезонный_фрукт: String::from("персики"),
             }
@@ -14,9 +14,9 @@ mod back_of_house {
     }
 }
 
-pub fn eat_at_restaurant() {
-    // Order a breakfast in the summer with Rye хлеб
-    let mut meal = back_of_house::Breakfast::summer("Rye");
+pub fn поесть_в_ресторане() {
+    // Order a поесть in the лето with Rye хлеб
+    let mut meal = тыл_дома::Поесть::лето("Rye");
     // Change our mind about what bread we'd like
     meal.хлеб = String::from("Пшеница");
     println!("Я хочу {} хлеб ,пожалуйста", meal.хлеб);

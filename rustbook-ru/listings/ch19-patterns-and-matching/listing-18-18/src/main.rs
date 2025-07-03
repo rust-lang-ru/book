@@ -5,7 +5,7 @@ fn main() {
 
     match (setting_value, new_setting_value) {
         (Some(_), Some(_)) => {
-            println!("Can't overwrite an existing customized value");
+            println!("Can't overwrite an existing customized значение");
         }
         _ => {
             setting_value = new_setting_value;

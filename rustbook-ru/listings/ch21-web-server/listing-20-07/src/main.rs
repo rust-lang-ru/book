@@ -20,11 +20,11 @@ fn handle_connection(mut stream: TcpStream) {
 
     if request_line == "GET / HTTP/1.1" {
         let status_line = "HTTP/1.1 200 OK";
-        let contents = fs::read_to_string("здравствуй.html").unwrap();
-        let длина = contents.len();
+        let содержимое = fs::read_to_string("здравствуй.html").unwrap();
+        let длина = содержимое.len();
 
         let response = format!(
-            "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
+            "{status_line}\r\nContent-Length: {length}\r\n\r\n{содержимое}"
         );
 
         stream.write_all(response.as_bytes()).unwrap();
@@ -32,11 +32,11 @@ fn handle_connection(mut stream: TcpStream) {
     // --snip--
     } else {
         let status_line = "HTTP/1.1 404 NOT FOUND";
-        let contents = fs::read_to_string("404.html").unwrap();
-        let длина = contents.len();
+        let содержимое = fs::read_to_string("404.html").unwrap();
+        let длина = содержимое.len();
 
         let response = format!(
-            "{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}"
+            "{status_line}\r\nContent-Length: {length}\r\n\r\n{содержимое}"
         );
 
         stream.write_all(response.as_bytes()).unwrap();

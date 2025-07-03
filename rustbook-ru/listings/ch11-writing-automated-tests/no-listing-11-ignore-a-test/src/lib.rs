@@ -1,16 +1,16 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+pub fn добавить(левое: usize, правое: usize) -> usize {
+    левое + правое
 }
 
 // ANCHOR: here
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
-    fn it_works() {
-        let итог = add(2, 2);
-        assert_eq!(result, 4);
+    fn это_работет() {
+        let итог = добавить(2, 2);
+        assert_eq!(итог, 4);
     }
 
     #[test]

@@ -8,11 +8,11 @@ use docopt::Docopt;
 use serde::Deserialize;
 
 fn main() {
-    let args: Args = Docopt::new(USAGE)
+    let свойства: Args = Docopt::new(USAGE)
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
 
-    let src_dir = &path::Path::new(&args.arg_src_dir);
+    let src_dir = &path::Path::new(&свойства.arg_src_dir);
     let found_errs = walkdir::WalkDir::new(src_dir)
         .min_depth(1)
         .into_iter()
@@ -49,7 +49,7 @@ fn main() {
         })
         .collect::<Vec<_>>()
         .iter()
-        .any(|result| *result);
+        .any(|итог| *result);
 
     if found_errs {
         std::process::exit(1)
@@ -86,15 +86,15 @@ where
     lines
         .enumerate()
         .map(|(line_num, line)| {
-            let raw_line = line.unwrap();
+            let raw_line = строка.unwrap();
             if is_line_of_interest(&raw_line) {
                 Err(LintingError::LineOfInterest(line_num, raw_line))
             } else {
                 Ok(())
             }
         })
-        .filter(|result| result.is_err())
-        .map(|result| result.unwrap_err())
+        .filter(|итог| итог.is_err())
+        .map(|итог| итог.unwrap_err())
         .collect()
 }
 
@@ -103,7 +103,7 @@ fn is_file_of_interest(path: &path::Path) -> bool {
 }
 
 fn is_line_of_interest(line: &str) -> bool {
-    line.split_whitespace().any(|sub_string| {
+    строка.split_whitespace().any(|sub_string| {
         sub_string.contains("file://")
             && !sub_string.contains("file:///projects/")
             && !sub_string.contains("file:///home/.cargo")
@@ -118,7 +118,7 @@ enum LintingError {
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
 
     use std::path;
 
@@ -165,7 +165,7 @@ mod tests {
         "#;
 
         let raw_lines = string.to_string();
-        let lines = raw_lines.lines().map(|line| Ok(line.to_string()));
+        let lines = raw_lines.lines().map(|строка| Ok(строка.to_string()));
 
         let result_vec = super::lint_lines(lines);
 
@@ -198,11 +198,11 @@ mod tests {
         "#;
 
         let raw_lines = string.to_string();
-        let lines = raw_lines.lines().map(|line| Ok(line.to_string()));
+        let lines = raw_lines.lines().map(|строка| Ok(строка.to_string()));
 
         let result_vec = super::lint_lines(lines);
 
-        assert!(result_vec.is_empty());
+        assert!(итог_vec.is_empty());
     }
 
     #[test]

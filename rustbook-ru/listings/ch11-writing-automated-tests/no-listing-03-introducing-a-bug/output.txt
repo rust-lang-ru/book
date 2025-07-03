@@ -4,20 +4,20 @@ $ cargo test
      Запщущен unittests src/lib.rs (target/debug/deps/прямоугольник-6584c4561e48942e)
 
 запщущен 2 tests
-test tests::larger_can_hold_smaller ... FAILED
-test tests::smaller_cannot_hold_larger ... ok
+test tests::наибольщее_может_удержать_наименьшее ... НЕУДАЧНО
+test tests::наименьшее_может_удержать_наибольшее ... успешно
 
 failures:
 
----- tests::larger_can_hold_smaller stdout ----
-thread 'tests::larger_can_hold_smaller' panicked at src/lib.rs:28:9:
-assertion failed: larger.can_hold(&smaller)
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+---- tests::наибольщее_может_удержать_наименьшее stdout ----
+thread 'tests::наибольщее_может_удержать_наименьшее' завершил работу из-за сбоя src/lib.rs:28:9:
+assertion failed: наибольшее.может_удержать(&наименьшее)
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта
 
 
 failures:
-    tests::larger_can_hold_smaller
+    tests::наибольщее_может_удержать_наименьшее
 
-test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test итог: НЕУДАЧНО. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; выполнено за 0.00s
 
 ошибка: test failed, to rerun pass `--lib`

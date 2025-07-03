@@ -1,10 +1,10 @@
 fn main() {
     // ANCHOR: here
-    let numbers = (2, 4, 8, 16, 32);
+    let числа = (2, 4, 8, 16, 32);
 
-    match numbers {
-        (first, _, третий, _, fifth) => {
-            println!("Some numbers: {первый}, {третий}, {fifth}")
+    match числа {
+        (first, _, третье, _, fifth) => {
+            println!("Некоторые числа: {первый}, {третье}, {fifth}")
         }
     }
     // ANCHOR_END: here

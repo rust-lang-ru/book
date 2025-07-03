@@ -4,9 +4,9 @@ $ cargo run
  --> src/main.rs:6:32
   |
 6 |     let владение = thread::spawn(|| {
-  |                                ^^ may outlive borrowed value `v`
+  |                                ^^ may outlive заимствованное значение `v`
 7 |         println!("Это вектор: {v:?}");
-  |                                     - `v` is borrowed here
+  |                                     - `v` заимствовано здесь
   |
 примечание: function requires argument type to outlive `static`
  --> src/main.rs:6:18
@@ -21,5 +21,5 @@ $ cargo run
 6 |     let владение = thread::spawn(move || {
   |                                ++++
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0373`.
-ошибка: не могу собрать исходную рукопись в приложение `threads` (bin "threads") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0373`.
+ошибка: не могу собрать исходную рукопись в приложение `threads` (bin "threads") из-за 1 предыдущей ошибки

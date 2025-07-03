@@ -9,10 +9,10 @@ struct Point {
 impl Add for Point {
     type Output = Point;
 
-    fn add(self, other: Point) -> Point {
+    fn добавить(self, иной: Point) -> Point {
         Point {
-            x: self.x + other.x,
-            y: self.y + other.y,
+            x: self.x + иной.x,
+            y: self.y + иной.y,
         }
     }
 }

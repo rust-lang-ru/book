@@ -2,12 +2,12 @@ fn main() {
     // ANCHOR: here
     use std::collections::HashMap;
 
-    let mut scores = HashMap::new();
+    let mut очки = HashMap::new();
 
-    scores.insert(String::from("Голубой"), 10);
-    scores.insert(String::from("Жёлтый"), 50);
+    очки.insert(String::from("Синий"), 10);
+    очки.insert(String::from("Жёлтый"), 50);
 
-    let team_name = String::from("Голубой");
-    let score = scores.get(&team_name).copied().unwrap_or(0);
+    let имя_игрока = String::from("Синий");
+    let score = очки.get(&имя_игрока).copied().unwrap_or(0);
     // ANCHOR_END: here
 }

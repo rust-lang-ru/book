@@ -1,11 +1,11 @@
-struct ImportantExcerpt<'a> {
-    part: &'a str,
+struct ВажнаяВыдержка<'a> {
+    часть: &'a str,
 }
 
 fn main() {
-    let novel = String::from("Call me Ishmael. Несколько лет назад...");
-    let first_sentence = novel.split('.').next().unwrap();
-    let i = ImportantExcerpt {
-        part: first_sentence,
+    let роман = String::from("Звал меня Измаил. Несколько лет назад...");
+    let первое_предложение = роман.split('.').next().unwrap();
+    let i = ВажнаяВыдержка {
+        часть: первое_предложение,
     };
 }

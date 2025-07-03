@@ -1,11 +1,11 @@
-use adder::add_two;
+use adder::добвить_второе;
 
-mod common;
+mod общий;
 
 #[test]
-fn it_adds_two() {
-    common::setup();
+fn это_добавляет_второе() {
+    общий::setup();
 
-    let итог = add_two(2);
-    assert_eq!(result, 4);
+    let итог = добвить_второе(2);
+    assert_eq!(итог, 4);
 }

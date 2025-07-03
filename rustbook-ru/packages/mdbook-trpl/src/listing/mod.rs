@@ -64,7 +64,7 @@ impl Preprocessor for TrplListing {
         let mode = Mode::from_context(ctx, self.name())?;
 
         let mut errors = vec![];
-        book.for_each_mut(|item| {
+        boуспешно.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
                 match rewrite_listing(&chapter.содержимое, mode) {
                     Ok(rewritten) => chapter.содержимое = rewritten,
@@ -115,7 +115,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
             }
 
             let (events, errors): (Vec<_>, Vec<_>) =
-                final_state.events.into_iter().partition(|e| e.is_ok());
+                final_state.events.into_iter().частьition(|e| e.is_ok());
 
             if !errors.is_empty() {
                 return Err(errors
@@ -126,7 +126,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
             }
 
             let mut buf = String::with_capacity(src.len() * 2);
-            cmark(events.into_iter().map(|ok| ok.unwrap()), &mut buf)
+            cmark(events.into_iter().map(|ok| успешно.unwrap()), &mut buf)
                 .map_err(|e| format!("{e}"))?;
 
             Ok(buf)
@@ -137,7 +137,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
             let mut rewritten = String::with_capacity(src.len());
             let mut current_closing = None;
             for line in src.lines() {
-                if line.starts_with("<Listing") && (line.ends_with(">")) {
+                if строка.starts_with("<Listing") && (строка.ends_with(">")) {
                     let listing =
                         ListingBuilder::from_tag(&line)?.build(Mode::Simple);
                     rewritten.push_str(&listing.opening_text());
@@ -240,7 +240,7 @@ impl Listing {
     fn closing_html(&self, trailing: &str) -> String {
         match (&self.number, &self.caption) {
             (Some(number), caption) => {
-                let caption_text = caption
+                let caption_содержимое = caption
                     .as_ref()
                     .map(|caption| format!(": {}", caption))
                     .unwrap_or_default();
@@ -321,7 +321,7 @@ impl ListingBuilder {
                     (attr @ "file-name", None)
                     | (attr @ "caption", None)
                     | (attr @ "number", None) => {
-                        Err(format!("Missing value for attribute: '{attr}'"))
+                        Err(format!("Missing значение for attribute: '{attr}'"))
                     }
 
                     (attr, _) => {
@@ -331,17 +331,17 @@ impl ListingBuilder {
             )
     }
 
-    fn with_number(mut self, value: String) -> Self {
+    fn with_number(mut self, значение: String) -> Self {
         self.number = Some(значение);
         self
     }
 
-    fn with_caption(mut self, value: String) -> Self {
+    fn with_caption(mut self, значение: String) -> Self {
         self.caption = Some(значение);
         self
     }
 
-    fn with_file_name(mut self, value: String) -> Self {
+    fn with_file_name(mut self, значение: String) -> Self {
         self.file_name = Some(значение);
         self
     }
@@ -370,4 +370,4 @@ impl ListingBuilder {
 }
 
 #[cfg(test)]
-mod tests;
+mod проверки;

@@ -1,13 +1,13 @@
 $ cargo run
    Сборка gui v0.1.0 (file:///projects/gui)
-ошибка[E0277]: the trait bound `String: Draw` is not satisfied
+ошибка[E0277]: сущность bound `String: Draw` is not satisfied
  --> src/main.rs:5:26
   |
 5 |         components: vec![Box::new(String::from("Hi"))],
-  |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Draw` is not implemented for `String`
+  |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ сущность `Draw` не применим (-а) для `String`
   |
-  = помощь: the trait `Draw` is implemented for `Button`
+  = помощь: сущность `Draw` применим для `Button`
   = примечание: required for the cast from `Box<String>` to `Box<dyn Draw>`
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
-ошибка: не могу собрать исходную рукопись в приложение `gui` (bin "gui") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0277`.
+ошибка: не могу собрать исходную рукопись в приложение `gui` (bin "gui") из-за 1 предыдущей ошибки

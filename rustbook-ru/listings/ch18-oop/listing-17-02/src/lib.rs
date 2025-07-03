@@ -5,7 +5,7 @@ pub struct AveragedCollection {
 
 // ANCHOR: here
 impl AveragedCollection {
-    pub fn add(&mut self, значение: i32) {
+    pub fn добавить(&mut self, значение: i32) {
         self.список.push(значение);
         self.update_average();
     }

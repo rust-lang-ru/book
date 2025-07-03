@@ -16,7 +16,7 @@ fn main() {
         let mut stream = pin!(merged);
         // ANCHOR_END: throttle
 
-        while let Some(result) = stream.next().await {
+        while let Some(итог) = stream.next().await {
             match итог {
                 Ok(сообщение) => println!("{сообщение}"),
                 Err(reason) => eprintln!("Problem: {reason:?}"),

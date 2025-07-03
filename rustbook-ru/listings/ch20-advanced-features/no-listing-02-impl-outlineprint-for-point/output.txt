@@ -6,7 +6,7 @@ $ cargo run
 20 | impl OutlinePrint for Point {}
    |                       ^^^^^ `Point` cannot be formatted with the default formatter
    |
-   = помощь: the trait `std::fmt::Display` is not implemented for `Point`
+   = помощь: сущность `std::fmt::Display` не применим (-а) для `Point`
    = примечание: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
 примечание: required by a bound in `OutlinePrint`
   --> src/main.rs:3:21
@@ -20,7 +20,7 @@ $ cargo run
 24 |     p.outline_print();
    |       ^^^^^^^^^^^^^ `Point` cannot be formatted with the default formatter
    |
-   = помощь: the trait `std::fmt::Display` is not implemented for `Point`
+   = помощь: сущность `std::fmt::Display` не применим (-а) для `Point`
    = примечание: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
 примечание: required by a bound in `OutlinePrint::outline_print`
   --> src/main.rs:3:21
@@ -30,5 +30,5 @@ $ cargo run
 4  |     fn outline_print(&self) {
    |        ------------- required by a bound in this associated function
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
-ошибка: не могу собрать исходную рукопись в приложение `traits-example` (bin "traits-example") due to 2 предыдущая ошибкаs
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0277`.
+ошибка: не могу собрать исходную рукопись в приложение `traits-example` (bin "traits-example") из-за 2 предыдущая ошибкаs

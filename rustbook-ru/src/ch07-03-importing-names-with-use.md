@@ -83,21 +83,21 @@ fn main() {
 ```rust
 #[derive(Debug)]
 enum TrafficLight {
-    Red,
+    Красный,
     Жёлтый,
-    Green,
+    Зелёный,
 }
 
-use TrafficLight::{Red, Жёлтый};
+use TrafficLight::{Красный, Жёлтый};
 
 fn main() {
-    let red = Red;
+    let красный = Красный;
     let жёлтый = Жёлтый;
-    let green = TrafficLight::Green;
+    let зелёный = TrafficLight::Зелёный;
 
-    println!("{:?}", red);
+    println!("{:?}", красный);
     println!("{:?}", жёлтый);
-    println!("{:?}", green);
+    println!("{:?}", зелёный);
 }
 ```
 Так как мы не включили `TrafficLight` в список вставленных значений перечисления, то для его использования нам необходимо указать полный путь до этой переменной или способа.
@@ -109,17 +109,17 @@ fn main() {
 
 ```rust
 enum TrafficLight {
-    Red,
+    Красный,
     Жёлтый,
-    Green,
+    Зелёный,
 }
 
 use TrafficLight::*;
 
 fn main() {
-    let red = Red;
+    let красный = Красный;
     let жёлтый = Жёлтый;
-    let green = Green;
+    let зелёный = Зелёный;
 }
 ```
 Знак `*` называют *glob* и его способ (функция) - вставка всех переменных, видимых извне пространства имён. Обратите также внимание, что наряду с удобствами, существуют также недостатки использования полного подключения пространства имён, т.к. это может привести к спорным или неожиданным случаям, когда в разных  пространствах имён существуют одинаковые (по имени) способы (функции), которые будут вставляться.
@@ -182,9 +182,9 @@ pub mod client;
 pub mod network;
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     #[test]
-    fn it_works() {
+    fn это_работет() {
     }
 }
 ```
@@ -208,9 +208,9 @@ communicator
 
 ```rust
 #[cfg(test)]
-mod tests {
+mod проверки {
     #[test]
-    fn it_works() {
+    fn это_работет() {
         client::connect();
     }
 }
@@ -221,7 +221,7 @@ mod tests {
 ```text
 $ cargo test
    Сборка communicator v0.1.0 (file:///projects/communicator)
-ошибка[E0433]: failed to resolve. Используется необъявленный ящик или раздел type or module `client`
+ошибка[E0433]: неудачно to resolve. Используется необъявленный ящик или раздел type or module `client`
  --> src/lib.rs:9:9
   |
 9 |         client::connect();
@@ -260,11 +260,11 @@ super::client::connect();
 
 ```rust
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::client;
 
     #[test]
-    fn it_works() {
+    fn это_работет() {
         client::connect();
     }
 }
@@ -278,9 +278,9 @@ $ cargo test
      Запщущен target/debug/communicator-92007ddb5330fa5a
 
 запщущен 1 test
-test tests::it_works ... ok
+test tests::это_работает ... успешно
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
+test итог: успешно. 1 passed; 0 failed; 0 ignored; 0 measured
 ```
 
 ## Итоги

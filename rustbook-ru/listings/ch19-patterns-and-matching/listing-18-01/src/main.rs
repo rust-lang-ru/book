@@ -3,17 +3,17 @@ fn main() {
     let is_tuesday = false;
     let age: Result<u8, _> = "34".parse();
 
-    if let Some(color) = favorite_color {
-        println!("Using your любимый цвет, {color}, as the background");
+    if let Some(цвет) = favorite_color {
+        println!("Используйте ваш любимый цвет, {цвет}, as the background");
     } else if is_tuesday {
-        println!("Tuesday is green day!");
+        println!("Вторник - это зелёный день!");
     } else if let Ok(age) = age {
         if age > 30 {
-            println!("Using purple as the background color");
+            println!("Используйте фиолетовый как цвет заднего фона");
         } else {
-            println!("Using orange as the background color");
+            println!("Используйте оранжевый как цвет заднего фона");
         }
     } else {
-        println!("Using голубой as the background color");
+        println!("Используйте синий как цвет заднего фона");
     }
 }

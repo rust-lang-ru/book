@@ -6,11 +6,11 @@ $ cargo run
 8  |         let val = String::from("hi");
    |             --- move occurs because `val` has type `String`, which does not implement the `Copy` trait
 9  |         tx.send(val).unwrap();
-   |                 --- value moved here
+   |                 --- значение moved here
 10 |         println!("val is {val}");
-   |                          ^^^^^ value borrowed here after move
+   |                          ^^^^^ значение borrowed here after move
    |
-   = примечание: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = примечание: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, запустите с режимом -Z macro-backtrace for more info)
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0382`.
-ошибка: не могу собрать исходную рукопись в приложение `сообщение-passing` (bin "сообщение-passing") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0382`.
+ошибка: не могу собрать исходную рукопись в приложение `сообщение-passing` (bin "сообщение-passing") из-за 1 предыдущей ошибки

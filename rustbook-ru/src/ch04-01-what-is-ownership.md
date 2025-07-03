@@ -128,7 +128,7 @@ let s = String::from("здравствуй");
 
 Взгляните на рисунок 4-1, чтобы увидеть, что происходит со `String` под капотом. `String` состоит из трёх частей, показанных слева: указатель на память, в которой хранится содержимое строки, длина и ёмкость. Это объединение данных хранится в обойме. Справа — память в куче, которая хранит содержимое.
 
-<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="img/trpl04-01.svg" class="center" style="ширина: 150%;" />
+<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;значение in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="img/trpl04-01.svg" class="center" style="ширина: 150%;" />
 
 <span class="caption">Рисунок 4-1: представление в памяти <code>String</code>, содержащей значение <code>"здравствуй"</code>, привязанное к <code>s1</code></span>
 
@@ -142,7 +142,7 @@ let s = String::from("здравствуй");
 
 Представление *не* похоже на рисунок 4-3, как выглядела бы память, если бы вместо этого Ржавчина также воспроизвела данные кучи. Если бы Ржавчина сделала это, действие `s2 = s1` могла бы быть очень дорогой с точки зрения производительности во время выполнения, если бы данные в куче были большими.
 
-<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;value in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="img/trpl04-03.svg" class="center" style="ширина: 150%;" />
+<img alt="Two tables: the first table contains the representation of s1 on the&lt;br&gt;stack, consisting of its length (5), capacity (5), and a pointer to the first&lt;br&gt;значение in the second table. The second table contains the representation of the&lt;br&gt;string data on the heap, byte by byte." src="img/trpl04-03.svg" class="center" style="ширина: 150%;" />
 
 <span class="caption">Рисунок 4-3: другой исход того, что может сделать <code>s2 = s1</code>, если Ржавчина также воспроизведет данные кучи</span>
 

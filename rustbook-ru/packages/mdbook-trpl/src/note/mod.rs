@@ -35,7 +35,7 @@ impl Preprocessor for TrplNote {
     }
 
     fn run(&self, _ctx: &PreprocessorContext, mut book: Book) -> Result<Book> {
-        book.for_each_mut(|item| {
+        boуспешно.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
                 chapter.содержимое = rewrite(&chapter.содержимое);
             }
@@ -48,7 +48,7 @@ impl Preprocessor for TrplNote {
     }
 }
 
-pub fn rewrite(text: &str) -> String {
+pub fn rewrite(содержимое: &str) -> String {
     let parser = crate::parser(text);
 
     let mut events = Vec::new();
@@ -142,4 +142,4 @@ enum State<'e> {
 }
 
 #[cfg(test)]
-mod tests;
+mod проверки;

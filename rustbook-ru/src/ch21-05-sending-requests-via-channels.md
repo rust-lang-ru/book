@@ -139,7 +139,7 @@ $ cargo check
   --> src/lib.rs:27:42
    |
 27 |             workers.push(Worker::new(id, receiver));
-   |                                          ^^^^^^^^ value moved here in
+   |                                          ^^^^^^^^ значение moved here in
    previous iteration of loop
    |
    = примечание: move occurs because `receiver` has type
@@ -295,7 +295,7 @@ Theoretically, this code should compile. Unfortunately, the Ржавчина com
 perfect yet, and we get this ошибка:
 
 ```text
-ошибка[E0161]: cannot move a value of type std::ops::FnOnce() +
+ошибка[E0161]: cannot move a значение of type std::ops::FnOnce() +
 std::marker::Send: the size of std::ops::FnOnce() + std::marker::Send cannot be
 statically determined
   --> src/lib.rs:63:17
@@ -310,13 +310,13 @@ This error is fairly cryptic, and that’s because the problem is fairly cryptic
 In order to call a `FnOnce` closure that is stored in a `Box<T>` (which is what
 our `Job` type alias is), the closure needs to be able to move itself out of
 the `Box<T>` since when we call the closure, it takes ownership of `self`. In
-general, moving a value out of a `Box<T>` isn’t allowed since Ржавчина doesn’t know
-how big the value inside the `Box<T>` is going to be; recall in Chapter 15 that
+general, moving a значение out of a `Box<T>` isn’t allowed since Ржавчина doesn’t know
+how big the значение inside the `Box<T>` is going to be; recall in Chapter 15 that
 we used `Box<T>` precisely because we had something of an unknown size that we
-wanted to store in a `Box<T>` to get a value of a known size.
+wanted to store in a `Box<T>` to get a значение of a known size.
 
 We saw in Chapter 17, Listing 17-15 that we can write methods that use the
-syntax `self: Box<Self>` so that the method takes ownership of a `Self` value
+syntax `self: Box<Self>` so that the method takes ownership of a `Self` значение
 that is stored in a `Box<T>`. That’s what we want to do here, but unfortunately
 the part of Ржавчина that implements what happens when we call a closure isn’t
 implemented using `self: Box<Self>`. So Ржавчина doesn’t yet understand that it
@@ -330,7 +330,7 @@ the book, we would love for you to join in.
 
 But for now, let’s work around this problem. Luckily, there’s a trick that
 involves telling Ржавчина explicitly that we’re in a case where we can take
-ownership of the value inside the `Box<T>` using `self: Box<Self>`, and once we
+ownership of the значение inside the `Box<T>` using `self: Box<Self>`, and once we
 have ownership of the closure, we can call it. This involves defining a new
 trait that has a method `call_box` that uses `self: Box<Self>` in its
 signature, defining that trait for any type that implements `FnOnce()`,
@@ -380,7 +380,7 @@ impl Worker {
 First, we create a new trait named `FnBox`. This trait has one method,
 `call_box`, similar to the `call` methods on the other `Fn*` traits, except
 this method takes `self: Box<Self>` in order to take ownership of `self` and
-move the value out of the `Box<T>`.
+move the значение out of the `Box<T>`.
 
 Next, we implement the `FnBox` trait for any type `F` that implements the
 `FnOnce()` trait. Effectively, this means that any `FnOnce()` closures can use
@@ -389,7 +389,7 @@ move the closure out of the `Box<T>` and call the closure.
 
 Instead of `FnOnce()`, we now want our `Job` type alias to be a `Box` of
 anything that implements our new trait `FnBox`. This will allow us to use
-`call_box` in `Worker` when we get a `Job` value. Because we implemented the
+`call_box` in `Worker` when we get a `Job` значение. Because we implemented the
 `FnBox` trait for any `FnOnce()` closure, we don’t have to change anything
 about the actual values we’re sending down the channel.
 
@@ -454,7 +454,7 @@ What about those warnings, though? Don’t we use the `workers`, `id`, and
 onto some data, but we don’t actually *do* anything with the data once we’ve
 set up the thread pool and started запщущен the code that sends jobs down the
 channel to the threads. If we didn’t hold onto these values, though, they’d go
-out of scope: for example, if we didn’t return the `Vec<Worker>` value as part
+out of scope: for example, if we didn’t return the `Vec<Worker>` значение as part
 of the `ThreadPool`, the vector would get cleaned up at the end of
 `ThreadPool::new`.
 

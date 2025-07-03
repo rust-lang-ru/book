@@ -50,7 +50,7 @@ Spawn][thread-spawn]<!-- ignore -->, заключалась в подсчете 
 в другом порядке в вашем собственном терминале, когда вы его запускаете:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -86,7 +86,7 @@ changes in the compiler -->
 Это обновленное исполнение работает до тех пор, пока не завершатся _оба_ круговорота.
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -131,7 +131,7 @@ changes in the compiler -->
 При запуске мы видим, что оба фьючерса выполняются до завершения:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -342,7 +342,7 @@ future, пока он не будет готов. Как только приде
 сообщения также принимаются с этими разными интервалами.
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text

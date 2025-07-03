@@ -1,10 +1,10 @@
 use std::fs::File;
 
 fn main() {
-    let greeting_file_итог = File::open("здравствуй.txt");
+    let файл_приветствия_итог = File::open("здравствуй.txt");
 
-    let greeting_file = match greeting_file_итог {
+    let файл_приветствия = match файл_приветствия_итог {
         Ok(file) => file,
-        Err(error) => panic!("Сложности при открытии файла: {ошибка:?}"),
+        Err(ошибка) => panic!("Сложности при открытии файла: {ошибка:?}"),
     };
 }

@@ -2,5 +2,5 @@ $ cargo run
    Сборка variables v0.1.0 (file:///projects/variables)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
      Запщущен `target/debug/variables`
-The value of x in the inner scope is: 12
+The значение of x in the inner scope is: 12
 Значение переменной x: 6

@@ -3,18 +3,18 @@ use std::fs;
 
 // ANCHOR: here
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let свойства: Vec<String> = env::args().collect();
 
-    let config = Config::new(&args);
+    let config = Config::new(&свойства);
     // ANCHOR_END: here
 
-    println!("Поиск значения:{}", config.query);
-    println!("В файле {}", config.file_path);
+    println!("Поиск значения:{}", config.запрос);
+    println!("В файле {}", config.путь_до_файла);
 
-    let contents = fs::read_to_string(config.file_path)
+    let содержимое = fs::read_to_string(config.путь_до_файла)
         .expect("Файл не доступен для чтения");
 
-    println!("Содержимое:\n{contents}");
+    println!("Содержимое:\n{содержимое}");
     // ANCHOR: here
 
     // --snip--
@@ -24,17 +24,17 @@ fn main() {
 
 // ANCHOR_END: here
 struct Config {
-    query: String,
-    file_path: String,
+    запрос: String,
+    путь_до_файла: String,
 }
 
 // ANCHOR: here
 impl Config {
-    fn new(args: &[String]) -> Config {
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+    fn new(свойства: &[String]) -> Config {
+        let запрос = args[1].clone();
+        let путь_до_файла = args[2].clone();
 
-        Config { query, file_path }
+        Config { запрос, путь_до_файла }
     }
 }
 // ANCHOR_END: here

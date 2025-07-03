@@ -1,7 +1,7 @@
 fn main() {
     // ANCHOR: here
     enum Status {
-        Value(u32),
+        Значение(u32),
         Stop,
     }
 

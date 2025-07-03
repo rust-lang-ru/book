@@ -1,3 +1,3 @@
-pub trait Summary {
-    fn summarize(&self) -> String;
+pub trait КраткоеСодержание {
+    fn подвести_итог(&self) -> String;
 }

@@ -3,11 +3,11 @@ pub fn add_one(x: i32) -> i32 {
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
-    fn it_works() {
+    fn это_работет() {
         assert_eq!(3, add_one(2));
     }
 }

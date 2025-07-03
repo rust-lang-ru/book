@@ -7,6 +7,6 @@ pub fn здравствуй_macro_derive(input: TokenStream) -> TokenStream {
     // that we can manipulate
     let ast = syn::parse(input).unwrap();
 
-    // Build the trait implementation
+    // Build сущность implementation
     impl_здравствуй_macro(&ast)
 }

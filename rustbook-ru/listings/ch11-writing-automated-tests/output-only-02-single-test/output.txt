@@ -4,7 +4,7 @@ $ cargo test one_hundred
      Запщущен unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
 
 запщущен 1 test
-test tests::one_hundred ... ok
+test tests::one_hundred ... успешно
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+test итог: успешно. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; выполнено за 0.00s
 

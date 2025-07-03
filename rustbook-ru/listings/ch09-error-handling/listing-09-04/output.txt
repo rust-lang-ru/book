@@ -2,6 +2,6 @@ $ cargo run
    Сборка error-handling v0.1.0 (file:///projects/error-handling)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
      Запщущен `target/debug/error-handling`
-thread 'main' panicked at src/main.rs:8:23:
-Сложности при открытии файла: Os { code: 2, kind: NotFound, сообщение: "No such file or directory" }
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+поток 'main' завершил работу из-за сбоя src/main.rs:8:23:
+Сложности при открытии файла: Os { code: 2, kind: Не найдено, сообщение: "Нет такого файла или папки" }
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта

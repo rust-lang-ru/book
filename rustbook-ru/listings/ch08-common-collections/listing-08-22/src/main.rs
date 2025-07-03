@@ -3,11 +3,11 @@ fn main() {
     use std::collections::HashMap;
 
     let имя_поля = String::from("Любимый цвет");
-    let значение_поля = String::from("Голубой");
+    let значение_поля = String::from("Синий");
 
-    let mut map = HashMap::new();
+    let mut карта = HashMap::new();
     map.insert(имя_поля, значение_поля);
-    // имя_поля and значение_поля are invalid at this point, try using them and
-    // see what compiler error you get!
+    // имя_поля и значение_поля недоступны в данном месте, попробуйте использовать их и
+    // увидите какую ошибку вам выдаст сборщик!
     // ANCHOR_END: here
 }

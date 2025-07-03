@@ -9,19 +9,19 @@ $ cargo check
 25 |         for id in 0..size {
    |         ----------------- inside of this loop
 26 |             workers.push(Worker::new(id, receiver));
-   |                                          ^^^^^^^^ value moved here, in previous iteration of loop
+   |                                          ^^^^^^^^ значение moved here, in previous iteration of loop
    |
 примечание: consider changing this parameter type in method `new` to borrow instead if owning значениеn't necessary
   --> src/lib.rs:47:33
    |
 47 |     fn new(id: usize, receiver: mpsc::Receiver<Job>) -> Worker {
-   |        --- in this method       ^^^^^^^^^^^^^^^^^^^ this parameter takes ownership of the value
+   |        --- in this method       ^^^^^^^^^^^^^^^^^^^ this parameter takes ownership of the значение
 помощь: consider moving the expression out of the loop so it is only moved once
    |
-25 ~         let mut value = Worker::new(id, receiver);
+25 ~         let mut значение = Worker::new(id, receiver);
 26 ~         for id in 0..size {
 27 ~             workers.push(значение);
    |
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0382`.
-ошибка: не могу собрать исходную рукопись в приложение `здравствуй` (lib) due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0382`.
+ошибка: не могу собрать исходную рукопись в приложение `здравствуй` (lib) из-за 1 предыдущей ошибки

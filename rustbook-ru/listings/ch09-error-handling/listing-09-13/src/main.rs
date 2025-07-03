@@ -18,13 +18,13 @@ fn main() {
             .expect("Ошибка при чтении");
 
         let догадка: i32 = match догадка.trim().parse() {
-            Ok(num) => num,
+            Ok(число) => число,
             Err(_) => continue,
         };
 
         let догадка = догадка::new(догадка);
 
-        match догадка.value().cmp(&загаданное_число) {
+        match догадка.значение().cmp(&загаданное_число) {
             Ordering::Less => println!("Слишком мало!"),
             Ordering::Greater => println!("Слишком много!"),
             Ordering::Equal => {

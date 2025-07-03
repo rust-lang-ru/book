@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod tests {
+mod проверки {
     // ANCHOR: here
     #[test]
     fn iterator_sum() {

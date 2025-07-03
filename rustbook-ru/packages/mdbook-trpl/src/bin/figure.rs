@@ -26,7 +26,7 @@ fn main() -> Result<(), String> {
 }
 
 /// A simple preprocessor for handling figures with images in _The Rust
-/// Programming Language_ book.
+/// Programming Language_ boуспешно.
 #[derive(Parser, Debug)]
 struct Cli {
     #[command(subcommand)]

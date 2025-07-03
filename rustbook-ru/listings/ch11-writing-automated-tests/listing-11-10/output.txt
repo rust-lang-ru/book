@@ -4,23 +4,23 @@ $ cargo test
      Запщущен unittests src/lib.rs (target/debug/deps/silly_function-160869f38cff9166)
 
 запщущен 2 tests
-test tests::this_test_will_fail ... FAILED
-test tests::this_test_will_pass ... ok
+test tests::this_test_will_fail ... НЕУДАЧНО
+test tests::this_test_will_pass ... успешно
 
 failures:
 
 ---- tests::this_test_will_fail stdout ----
-I got the value 8
-thread 'tests::this_test_will_fail' panicked at src/lib.rs:19:9:
+I got the значение 8
+thread 'tests::this_test_will_fail' завершил работу из-за сбоя src/lib.rs:19:9:
 assertion `left == right` failed
-  left: 10
- right: 5
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+  левое: 10
+ правое: 5
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта
 
 
 failures:
     tests::this_test_will_fail
 
-test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test итог: НЕУДАЧНО. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; выполнено за 0.00s
 
 ошибка: test failed, to rerun pass `--lib`

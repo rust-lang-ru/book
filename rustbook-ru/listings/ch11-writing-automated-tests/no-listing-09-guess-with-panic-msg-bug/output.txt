@@ -4,21 +4,21 @@ $ cargo test
      Запщущен unittests src/lib.rs (target/debug/deps/guessing_game-57d70c3acb738f4d)
 
 запщущен 1 test
-test tests::greater_than_100 - should panic ... FAILED
+test tests::больше_чем_100 - should panic ... НЕУДАЧНО
 
 failures:
 
----- tests::greater_than_100 stdout ----
-thread 'tests::greater_than_100' panicked at src/lib.rs:12:13:
-Догадка value must be greater than or equal to 1, got 200.
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+---- tests::больше_чем_100 stdout ----
+thread 'tests::больше_чем_100' завершил работу из-за сбоя src/lib.rs:12:13:
+Догадка значение должно быть больше или равно to 1, got 200.
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта
 примечание: panic did not contain expected string
-      panic сообщение: `"Догадка value must be greater than or equal to 1, got 200."`,
+      panic сообщение: `"Догадка значение должно быть больше или равно to 1, got 200."`,
  expected substring: `"less than or equal to 100"`
 
 failures:
-    tests::greater_than_100
+    tests::больше_чем_100
 
-test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test итог: НЕУДАЧНО. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; выполнено за 0.00s
 
 ошибка: test failed, to rerun pass `--lib`

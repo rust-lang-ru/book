@@ -56,7 +56,7 @@
 `>=` | `expr >= expr` | Сравнение "больше или равно" | `PartialOrd`
 `>>` | `expr >> expr` | Битовый сдвиг вправо | `Shr`
 `>>=` | `var >>= expr` | Битовый сдвиг вправо и присваивание | `ShrAssign`
-`@` | `ident @ pat` | Pattern binding |
+`@` | `ident @ pat` | Pattern обязательная переменная |
 `^` | `expr ^ expr` | Побитовое исключающее ИЛИ | `BitXor`
 `^=` | `var ^= expr` | Побитовое исключающее ИЛИ и присваивание | `BitXorAssign`
 <code>&amp;vert;</code> | <code>pat &amp;vert; pat</code> | Иные образцы |

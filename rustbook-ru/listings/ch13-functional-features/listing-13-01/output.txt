@@ -2,5 +2,5 @@ $ cargo run
    Сборка shirt-company v0.1.0 (file:///projects/shirt-company)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
      Запщущен `target/debug/shirt-company`
-Пользователь выбрал Some(Red) получил Красную
+Пользователь выбрал Some(Красный) получил Красную
 Пользователь выбрал None получил Голубую

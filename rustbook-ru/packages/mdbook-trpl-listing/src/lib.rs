@@ -67,21 +67,21 @@ impl Preprocessor for TrplListing {
         let key = String::from("output-mode");
         let mode = config
             .get(&key)
-            .map(|value| match value.as_str() {
+            .map(|значение| match значение.as_str() {
                 Some(s) => Mode::try_from(s).map_err(|_| Error::BadValue {
                     key,
-                    value: value.to_string(),
+                    значение: значение.to_string(),
                 }),
-                None => Err(Error::BadValue {
+                None => Err(ошибка::BadValue {
                     key,
-                    value: value.to_string(),
+                    значение: значение.to_string(),
                 }),
             })
             .transpose()?
             .unwrap_or(Mode::Default);
 
         let mut errors: Vec<String> = vec![];
-        book.for_each_mut(|item| {
+        boуспешно.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
                 match rewrite_listing(&chapter.содержимое, mode) {
                     Ok(rewritten) => chapter.содержимое = rewritten,
@@ -107,8 +107,8 @@ enum Error {
     #[error("No config for trpl-listing")]
     NoConfig,
 
-    #[error("Bad config value '{значение}' for key '{ключ}'")]
-    BadValue { key: String, value: String },
+    #[error("Bad config значение '{значение}' for key '{ключ}'")]
+    BadValue { key: String, значение: String },
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -129,8 +129,8 @@ struct ParseErr;
 impl TryFrom<&str> for Mode {
     type Error = ParseErr;
 
-    fn try_from(value: &str) -> std::prelude::v1::Result<Self, Self::Error> {
-        match value {
+    fn try_from(значение: &str) -> std::prelude::v1::Result<Self, Self::Error> {
+        match значение {
             "default" => Ok(Mode::Default),
             "simple" => Ok(Mode::Simple),
             _ => Err(ParseErr),
@@ -166,7 +166,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
     }
 
     let (events, errors): (Vec<_>, Vec<_>) =
-        final_state.events.into_iter().partition(|e| e.is_ok());
+        final_state.events.into_iter().частьition(|e| e.is_ok());
 
     if !errors.is_empty() {
         return Err(errors
@@ -177,7 +177,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
     }
 
     let mut buf = String::with_capacity(src.len() * 2);
-    cmark(events.into_iter().map(|ok| ok.unwrap()), &mut buf)
+    cmark(events.into_iter().map(|ok| успешно.unwrap()), &mut buf)
         .map_err(|e| format!("{e}"))?;
     Ok(buf)
 }
@@ -213,17 +213,17 @@ impl<'e> ListingState<'e> {
                 match (ключ.as_str(), maybe_value) {
                     ("number", Some(значение)) => Ok(builder.with_number(значение)),
                     ("number", None) => {
-                        Err(String::from("number attribute without value"))
+                        Err(String::from("number attribute without значение"))
                     }
                     ("caption", Some(значение)) => Ok(builder.with_caption(значение)),
                     ("caption", None) => {
-                        Err(String::from("caption attribute without value"))
+                        Err(String::from("caption attribute without значение"))
                     }
                     ("file-name", Some(значение)) => {
                         Ok(builder.with_file_name(значение))
                     }
                     ("file-name", None) => {
-                        Err(String::from("file-name attribute without value"))
+                        Err(String::from("file-name attribute without значение"))
                     }
 
                     _ => Ok(builder), // TODO: error on extra attrs?
@@ -237,7 +237,7 @@ impl<'e> ListingState<'e> {
                 Event::Html(opening_html.into())
             }
             Mode::Simple => {
-                let opening_text = listing.opening_text();
+                let opening_содержимое = listing.opening_text();
                 Event::Text(opening_text.into())
             }
         };
@@ -262,7 +262,7 @@ impl<'e> ListingState<'e> {
                         Event::Html(closing_html.into())
                     }
                     Mode::Simple => {
-                        let closing_text = listing.closing_text(&trailing);
+                        let closing_содержимое = listing.closing_text(&trailing);
                         Event::Text(closing_text.into())
                     }
                 };
@@ -350,17 +350,17 @@ impl ListingBuilder {
         }
     }
 
-    fn with_number(mut self, value: String) -> Self {
+    fn with_number(mut self, значение: String) -> Self {
         self.number = Some(значение);
         self
     }
 
-    fn with_caption(mut self, value: String) -> Self {
+    fn with_caption(mut self, значение: String) -> Self {
         self.caption = Some(значение);
         self
     }
 
-    fn with_file_name(mut self, value: String) -> Self {
+    fn with_file_name(mut self, значение: String) -> Self {
         self.file_name = Some(значение);
         self
     }
@@ -386,4 +386,4 @@ impl ListingBuilder {
 }
 
 #[cfg(test)]
-mod tests;
+mod проверки;

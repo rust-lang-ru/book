@@ -2,6 +2,6 @@ $ cargo run
    Сборка panic v0.1.0 (file:///projects/panic)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s
      Запщущен `target/debug/panic`
-thread 'main' panicked at src/main.rs:2:5:
-crash and burn
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+поток 'main' завершил работу из-за сбоя src/main.rs:2:5:
+провались и сгори
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта

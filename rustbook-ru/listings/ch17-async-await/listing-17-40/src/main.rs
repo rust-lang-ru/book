@@ -14,7 +14,7 @@ fn main() {
         let merged = messages.merge(intervals).take(20);
         let mut stream = pin!(merged);
 
-        while let Some(result) = stream.next().await {
+        while let Some(итог) = stream.next().await {
             match итог {
                 Ok(предмет) => println!("{предмет}"),
                 Err(reason) => eprintln!("Problem: {reason:?}"),

@@ -2,6 +2,6 @@ $ cargo run
    Сборка minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
      Запщущен `target/debug/minigrep`
-thread 'main' panicked at src/main.rs:27:21:
-index out of bounds: the len is 1 but the index is 1
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+поток 'main' завершил работу из-за сбоя src/main.rs:27:21:
+указатель вышел из-за границ: длина 1 ,но указатель 1
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта

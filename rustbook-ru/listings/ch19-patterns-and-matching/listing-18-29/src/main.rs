@@ -9,11 +9,11 @@ fn main() {
     match msg {
         Сообщение::Здравствуй {
             id: id_variable @ 3..=7,
-        } => println!("Found an id in range: {id_variable}"),
+        } => println!("Найдено an id in range: {id_variable}"),
         Сообщение::Здравствуй { id: 10..=12 } => {
-            println!("Found an id in another range")
+            println!("Найдено an id in another range")
         }
-        Сообщение::Здравствуй { id } => println!("Found some other id: {id}"),
+        Сообщение::Здравствуй { id } => println!("Найдено some other id: {id}"),
     }
     // ANCHOR_END: here
 }

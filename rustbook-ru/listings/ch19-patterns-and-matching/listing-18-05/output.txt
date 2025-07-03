@@ -6,10 +6,10 @@ $ cargo run
 2 |     let (x, y) = (1, 2, 3);
   |         ^^^^^^   --------- this expression has type `({integer}, {integer}, {integer})`
   |         |
-  |         expected a tuple with 3 elements, found one with 2 elements
+  |         expected a tuple with 3 elements, найдено one with 2 elements
   |
   = примечание: expected tuple `({integer}, {integer}, {integer})`
-             found tuple `(_, _)`
+             найдено tuple `(_, _)`
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0308`.
-ошибка: не могу собрать исходную рукопись в приложение `patterns` (bin "patterns") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0308`.
+ошибка: не могу собрать исходную рукопись в приложение `patterns` (bin "patterns") из-за 1 предыдущей ошибки

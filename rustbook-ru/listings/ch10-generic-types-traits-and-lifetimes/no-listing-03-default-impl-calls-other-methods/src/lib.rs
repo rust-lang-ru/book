@@ -1,23 +1,23 @@
 // ANCHOR: here
-pub trait Summary {
-    fn summarize_author(&self) -> String;
+pub trait КраткоеСодержание {
+    fn подвести_итог_сочинителя(&self) -> String;
 
-    fn summarize(&self) -> String {
-        format!("(Прочесть больше from {}...)", self.summarize_author())
+    fn подвести_итог(&self) -> String {
+        format!("(Прочесть больше from {}...)", self.подвести_итог_сочинителя())
     }
 }
 // ANCHOR_END: here
 
-pub struct SocialPost {
+pub struct Общественная_новость {
     pub имя_пользователя: String,
     pub содержимое: String,
     pub ответ: bool,
-    pub resocialpost: bool,
+    pub ответ_на_общественную_новость: bool,
 }
 
 // ANCHOR: impl
-impl Summary for SocialPost {
-    fn summarize_author(&self) -> String {
+impl КраткоеСодержание for Общественная_новость {
+    fn подвести_итог_сочинителя(&self) -> String {
         format!("@{}", self.имя_пользователя)
     }
 }

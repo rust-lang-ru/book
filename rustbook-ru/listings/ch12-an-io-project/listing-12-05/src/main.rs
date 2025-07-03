@@ -3,27 +3,27 @@ use std::fs;
 
 // ANCHOR: here
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let свойства: Vec<String> = env::args().collect();
 
-    let (query, file_path) = parse_config(&args);
+    let (запрос, путь_до_файла) = получить_настройки(&свойства);
 
     // --snip--
     // ANCHOR_END: here
 
-    println!("Поиск значения:{query}");
-    println!("В файле {file_path}");
+    println!("Поиск значения:{запрос}");
+    println!("В файле {путь_до_файла}");
 
-    let contents = fs::read_to_string(file_path)
+    let содержимое = fs::read_to_string(путь_до_файла)
         .expect("Файл не доступен для чтения");
 
-    println!("Содержимое:\n{contents}");
+    println!("Содержимое:\n{содержимое}");
     // ANCHOR: here
 }
 
-fn parse_config(args: &[String]) -> (&str, &str) {
-    let query = &args[1];
-    let file_path = &args[2];
+fn получить_настройки(свойства: &[String]) -> (&str, &str) {
+    let запрос = &свойства[1];
+    let путь_до_файла = &свойства[2];
 
-    (query, file_path)
+    (запрос, путь_до_файла)
 }
 // ANCHOR_END: here

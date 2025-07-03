@@ -1,5 +1,5 @@
 // ANCHOR: here
-fn some_function<T, U>(t: &T, u: &U) -> i32
+fn некоторый_способ<T, U>(t: &T, u: &U) -> i32
 where
     T: Display + Clone,
     U: Clone + Debug,

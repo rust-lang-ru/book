@@ -21,9 +21,9 @@ where
     }
 
     pub fn set_value(&mut self, значение: usize) {
-        self.value = value;
+        self.значение = значение;
 
-        let percentage_of_max = self.value as f64 / self.max as f64;
+        let percentage_of_max = self.значение as f64 / self.max as f64;
 
         if percentage_of_max >= 1.0 {
             self.messenger.send("Ошибка: You are over your quota!");

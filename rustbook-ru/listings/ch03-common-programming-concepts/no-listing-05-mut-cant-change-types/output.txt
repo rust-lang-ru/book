@@ -4,9 +4,9 @@ $ cargo run
  --> src/main.rs:3:14
   |
 2 |     let mut spaces = "   ";
-  |                      ----- expected due to this value
+  |                      ----- expected из-за this значение
 3 |     spaces = spaces.len();
-  |              ^^^^^^^^^^^^ expected `&str`, found `usize`
+  |              ^^^^^^^^^^^^ expected `&str`, найдено `usize`
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0308`.
-ошибка: не могу собрать исходную рукопись в приложение `variables` (bin "variables") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0308`.
+ошибка: не могу собрать исходную рукопись в приложение `variables` (bin "variables") из-за 1 предыдущей ошибки

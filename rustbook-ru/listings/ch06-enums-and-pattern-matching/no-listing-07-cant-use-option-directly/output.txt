@@ -6,12 +6,12 @@ $ cargo run
 5 |     let сложение = x + y;
   |                 ^ no implementation for `i8 + Option<i8>`
   |
-  = помощь: the trait `Add<Option<i8>>` is not implemented for `i8`
+  = помощь: сущность `Add<Option<i8>>` не применим (-а) для `i8`
   = помощь: the following other types implement trait `Add<Rhs>`:
             `&'a i8` implements `Add<i8>`
             `&i8` implements `Add<&i8>`
             `i8` implements `Add<&i8>`
             `i8` implements `Add`
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
-ошибка: не могу собрать исходную рукопись в приложение `enums` (bin "enums") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0277`.
+ошибка: не могу собрать исходную рукопись в приложение `enums` (bin "enums") из-за 1 предыдущей ошибки

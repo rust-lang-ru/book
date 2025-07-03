@@ -3,23 +3,23 @@ use std::error::Error;
 use std::fs;
 
 pub struct Config {
-    pub query: String,
-    pub file_path: String,
+    pub запрос: String,
+    pub путь_до_файла: String,
     pub ignore_case: bool,
 }
 
 impl Config {
     pub fn build(
-        mut args: impl Iterator<Предмет = String>,
+        mut свойства: impl Iterator<Предмет = String>,
     ) -> Result<Config, &'static str> {
         args.next();
 
-        let query = match args.next() {
+        let запрос = match args.next() {
             Some(arg) => arg,
-            None => return Err("Didn't get a query string"),
+            None => return Err("Didn't get a запрос string"),
         };
 
-        let file_path = match args.next() {
+        let путь_до_файла = match args.next() {
             Some(arg) => arg,
             None => return Err("Didn't get a file path"),
         };
@@ -27,20 +27,20 @@ impl Config {
         let ignore_case = env::var("IGNORE_CASE").is_ok();
 
         Ok(Config {
-            query,
-            file_path,
+            запрос,
+            путь_до_файла,
             ignore_case,
         })
     }
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let contents = fs::read_to_string(config.file_path)?;
+    let содержимое = fs::read_to_string(config.путь_до_файла)?;
 
     let results = if config.ignore_case {
-        search_case_insensitive(&config.query, &contents)
+        search_case_insensitive(&config.запрос, &contents)
     } else {
-        search(&config.query, &contents)
+        search(&config.запрос, &contents)
     };
 
     for line in results {
@@ -51,23 +51,23 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 }
 
 // ANCHOR: here
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+pub fn search<'a>(запрос: &str, contents: &'a str) -> Vec<&'a str> {
     contents
         .lines()
-        .filter(|line| line.contains(query))
+        .filter(|строка| строка.contains(запрос))
         .collect()
 }
 // ANCHOR_END: here
 
 pub fn search_case_insensitive<'a>(
-    query: &str,
+    запрос: &str,
     contents: &'a str,
 ) -> Vec<&'a str> {
-    let query = query.to_lowercase();
+    let запрос = запрос.to_lowercase();
     let mut results = Vec::new();
 
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
+    for line in содержимое.lines() {
+        if строка.to_lowercase().contains(&запрос) {
             results.push(line);
         }
     }
@@ -76,33 +76,33 @@ pub fn search_case_insensitive<'a>(
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
     fn case_sensitive() {
-        let query = "duct";
-        let contents = "\
+        let запрос = "duct";
+        let содержимое = "\
 Rust:
-safe, fast, productive.
-Pick three.
+безопасность, скорость, производительность.
+Выберите три.
 Duct tape.";
 
-        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, contents));
     }
 
     #[test]
     fn case_insensitive() {
-        let query = "rUsT";
-        let contents = "\
+        let запрос = "rUsT";
+        let содержимое = "\
 Rust:
-safe, fast, productive.
-Pick three.
+безопасность, скорость, производительность.
+Выберите три.
 Trust me.";
 
         assert_eq!(
             vec!["Rust:", "Trust me."],
-            search_case_insensitive(query, contents)
+            search_case_insensitive(запрос, contents)
         );
     }
 }

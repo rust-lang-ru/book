@@ -63,15 +63,15 @@ fn parse_context(context: Context) -> Result<(), &str> {
 При попытке сборки мы получаем две хорошо описанные ошибки:
 
 ```text
-ошибка: borrowed value does not live long enough
+ошибка: заимствованное значение время жизни истекло к данному мгновению
   --> <anon>:16:5
    |
 16 |     Parser { context: &context }.parse()
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ does not live long enough
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ время жизни истекло к данному мгновению
 17 | }
-   | - temporary value only lives until here
+   | - temporary значение only lives until here
    |
-примечание: borrowed value must be valid for the anonymous lifetime #1 defined on the
+примечание: заимствованное значение must be valid for the anonymous lifetime #1 defined on the
 body at 15:55...
   --> <anon>:15:56
    |
@@ -81,15 +81,15 @@ body at 15:55...
 17 | | }
    | |_^
 
-ошибка: `context` does not live long enough
+ошибка: `context` время жизни истекло к данному мгновению
   --> <anon>:16:24
    |
 16 |     Parser { context: &context }.parse()
-   |                        ^^^^^^^ does not live long enough
+   |                        ^^^^^^^ время жизни истекло к данному мгновению
 17 | }
-   | - borrowed value only lives until here
+   | - заимствованное значение only lives until here
    |
-примечание: borrowed value must be valid for the anonymous lifetime #1 defined on the
+примечание: заимствованное значение must be valid for the anonymous lifetime #1 defined on the
 body at 15:55...
   --> <anon>:15:56
    |
@@ -154,7 +154,7 @@ fn parse_context(context: Context) -> Result<(), &str> {
 We’ve annotated the lifetimes of the references in all the same places that we
 annotated them in Listing 20-13, but used different parameters depending on
 whether the reference goes with the string slice or with `Context`. We’ve also
-added an annotation to the string slice part of the return value of `parse` to
+added an annotation to the string slice part of the return значение of `parse` to
 indicate that it goes with the lifetime of the string slice in `Context`.
 
 Here’s the error we get now:

@@ -1,6 +1,6 @@
 // ANCHOR: here
-fn last_char_of_first_line(text: &str) -> Option<char> {
-    text.lines().next()?.chars().last()
+fn last_char_of_first_line(содержимое: &str) -> Option<char> {
+    содержимое.lines().next()?.chars().last()
 }
 // ANCHOR_END: here
 

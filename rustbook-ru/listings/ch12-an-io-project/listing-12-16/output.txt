@@ -4,21 +4,21 @@ $ cargo test
      Запщущен unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
 
 запщущен 1 test
-test tests::one_итог ... FAILED
+test tests::one_итог ... НЕУДАЧНО
 
 failures:
 
 ---- tests::one_итог stdout ----
-thread 'tests::one_result' panicked at src/lib.rs:44:9:
+thread 'tests::one_result' завершил работу из-за сбоя src/lib.rs:44:9:
 assertion `left == right` failed
-  left: ["safe, fast, productive."]
- right: []
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+  левое: ["безопасность, скорость, производительность."]
+ правое: []
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта
 
 
 failures:
     tests::one_result
 
-test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test итог: НЕУДАЧНО. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; выполнено за 0.00s
 
 ошибка: test failed, to rerun pass `--lib`

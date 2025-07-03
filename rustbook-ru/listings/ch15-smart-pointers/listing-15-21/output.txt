@@ -6,7 +6,7 @@ $ cargo test
 58 |             self.sent_messages.push(String::from(сообщение));
    |             ^^^^^^^^^^^^^^^^^^ `self` is a `&` reference, so the data it refers to cannot be borrowed as mutable
    |
-помощь: consider changing this to be a mutable reference in the `impl` method and the `trait` definition
+помощь: consider changing this to be изменяемая ссылка in the `impl` method and the `trait` definition
    |
 2  ~     fn send(&mut self, msg: &str);
 3  | }
@@ -15,5 +15,5 @@ $ cargo test
 57 ~         fn send(&mut self, сообщение: &str) {
    |
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0596`.
-ошибка: не могу собрать исходную рукопись в приложение `limit-tracker` (lib test) due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0596`.
+ошибка: не могу собрать исходную рукопись в приложение `limit-tracker` (lib test) из-за 1 предыдущей ошибки

@@ -1,6 +1,6 @@
 // ANCHOR: here
 #[test]
-fn it_works() {
+fn это_работет() {
     assert_eq!(2 + 2, 4);
 }
 

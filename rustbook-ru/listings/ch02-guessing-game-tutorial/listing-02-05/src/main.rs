@@ -23,7 +23,7 @@ fn main() {
 
         // ANCHOR: ch19
         let догадка: u32 = match догадка.trim().parse() {
-            Ok(num) => num,
+            Ok(число) => число,
             Err(_) => continue,
         };
         // ANCHOR_END: ch19

@@ -34,11 +34,11 @@ fn handle_connection(mut stream: TcpStream) {
         _ => ("HTTP/1.1 404 NOT FOUND", "404.html"),
     };
 
-    let contents = fs::read_to_string(filename).unwrap();
-    let длина = contents.len();
+    let содержимое = fs::read_to_string(filename).unwrap();
+    let длина = содержимое.len();
 
     let response =
-        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{содержимое}");
 
     stream.write_all(response.as_bytes()).unwrap();
 }

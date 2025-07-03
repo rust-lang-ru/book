@@ -7,27 +7,27 @@ pub struct Догадка {
 
 impl Догадка {
     pub fn new(значение: i32) -> Догадка {
-        if value < 1 {
+        if значение < 1 {
             panic!(
-                "Догадка value must be greater than or equal to 1, got {значение}."
+                "Догадка значение должно быть больше или равно to 1, полученное {значение}."
             );
-        } else if value > 100 {
+        } else if значение > 100 {
             panic!(
-                "Догадка value must be less than or equal to 100, got {значение}."
+                "Догадка значение должно быть меньше или равно 100, полученное {значение}."
             );
         }
 
-        Догадка { value }
+        Догадка { значение }
     }
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
     #[should_panic(expected = "less than or equal to 100")]
-    fn greater_than_100() {
+    fn больше_чем_100() {
         догадка::new(200);
     }
 }

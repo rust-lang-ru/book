@@ -5,45 +5,45 @@ struct Прямоугольник {
 }
 
 impl Прямоугольник {
-    fn can_hold(&self, other: &Прямоугольник) -> bool {
-        self.ширина: > other.ширина: && self.длина: > other.длина
+    fn может_удержать(&self, иной: &Прямоугольник) -> bool {
+        self.ширина: > иной.ширина: && self.длина: > иной.длина
     }
 }
 
 // ANCHOR: here
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
-    fn larger_can_hold_smaller() {
+    fn наибольщее_может_удержать_наименьшее() {
         // --snip--
         // ANCHOR_END: here
-        let larger = Прямоугольник {
+        let наибольшее = Прямоугольник {
             ширина: 8,
             длина: 7,
         };
-        let smaller = Прямоугольник {
+        let наименьшее = Прямоугольник {
             ширина: 5,
             длина: 1,
         };
 
-        assert!(larger.can_hold(&smaller));
+        assert!(наибольшее.может_удержать(&наименьшее));
         // ANCHOR: here
     }
 
     #[test]
-    fn smaller_cannot_hold_larger() {
-        let larger = Прямоугольник {
+    fn наименьшее_может_удержать_наибольшее() {
+        let наибольшее = Прямоугольник {
             ширина: 8,
             длина: 7,
         };
-        let smaller = Прямоугольник {
+        let наименьшее = Прямоугольник {
             ширина: 5,
             длина: 1,
         };
 
-        assert!(!smaller.can_hold(&larger));
+        assert!(!наименьшее.может_удержать(&наибольшее));
     }
 }
 // ANCHOR_END: here

@@ -17,7 +17,7 @@ fn main() {
             .expect("Ошибка при чтении");
 
         let догадка: u32 = match догадка.trim().parse() {
-            Ok(num) => num,
+            Ok(число) => число,
             Err(_) => continue,
         };
 

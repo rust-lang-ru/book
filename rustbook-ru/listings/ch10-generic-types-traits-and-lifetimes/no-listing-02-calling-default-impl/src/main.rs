@@ -1,17 +1,17 @@
-use aggregator::{self, NewsArticle, Summary};
+use электронная_площадка::{self, НовостнаяСтатья, КраткоеСодержание};
 
 fn main() {
     // ANCHOR: here
-    let article = NewsArticle {
+    let статья = НовостнаяСтатья {
         заголовок: String::from("Penguins win the Stanley Cup Championship!"),
         местонахождение: String::from("Pittsburgh, PA, USA"),
-        author: String::from("Iceburgh"),
+        сочинитель: String::from("Iceburgh"),
         содержимое: String::from(
             "The Pittsburgh Penguins once again are the best \
-             hockkey team in the NHL.",
+             хоккейная команда в НХЛ.",
         ),
     };
 
-    println!("New article available! {}", article.summarize());
+    println!("Новая статья доступна! {}", статья.подвести_итог());
     // ANCHOR_END: here
 }

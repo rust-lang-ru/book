@@ -4,20 +4,20 @@ $ cargo test
      Запщущен unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
 
 запщущен 2 tests
-test tests::another ... FAILED
-test tests::exploration ... ok
+test tests::another ... НЕУДАЧНО
+test tests::exploration ... успешно
 
 failures:
 
 ---- tests::another stdout ----
-thread 'tests::another' panicked at src/lib.rs:17:9:
+thread 'tests::another' завершил работу из-за сбоя src/lib.rs:17:9:
 Make this test fail
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта
 
 
 failures:
     tests::another
 
-test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test итог: НЕУДАЧНО. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; выполнено за 0.00s
 
 ошибка: test failed, to rerun pass `--lib`

@@ -2,4 +2,4 @@ $ cargo run
    Сборка minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
      Запщущен `target/debug/minigrep`
-Problem parsing arguments: не хватает переменных
+Неполадка при получении свойств: не хватает переменных

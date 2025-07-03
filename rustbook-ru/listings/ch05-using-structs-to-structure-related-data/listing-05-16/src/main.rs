@@ -12,8 +12,8 @@ impl Прямоугольник {
 }
 
 impl Прямоугольник {
-    fn can_hold(&self, other: &Прямоугольник) -> bool {
-        self.ширина: > other.ширина: && self.длина: > other.длина
+    fn может_удержать(&self, иной: &Прямоугольник) -> bool {
+        self.ширина: > иной.ширина: && self.длина: > иной.длина
     }
 }
 // ANCHOR_END: here
@@ -32,6 +32,6 @@ fn main() {
         длина: 45,
     };
 
-    println!("Can прямоугольник1 hold rect2? {}", прямоугольник1.can_hold(&rect2));
-    println!("Can прямоугольник1 hold rect3? {}", прямоугольник1.can_hold(&rect3));
+    println!("Can прямоугольник1 hold rect2? {}", прямоугольник1.может_удержать(&rect2));
+    println!("Can прямоугольник1 hold rect3? {}", прямоугольник1.может_удержать(&rect3));
 }

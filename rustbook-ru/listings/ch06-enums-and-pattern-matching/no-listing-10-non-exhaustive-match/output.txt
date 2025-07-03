@@ -11,12 +11,12 @@ $ cargo run
  ::: /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:578:5
   |
   = примечание: not covered
-  = примечание: the matched value is of type `Option<i32>`
+  = примечание: the matched значение is of type `Option<i32>`
 помощь: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
   |
 4 ~             Some(i) => Some(i + 1),
 5 ~             None => todo!(),
   |
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0004`.
-ошибка: не могу собрать исходную рукопись в приложение `enums` (bin "enums") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0004`.
+ошибка: не могу собрать исходную рукопись в приложение `enums` (bin "enums") из-за 1 предыдущей ошибки

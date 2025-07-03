@@ -48,13 +48,13 @@ copy just the compiler error
    |                       ---------- the expected `async` block
 ...
 24 |         let rx_fut = async {
-   |                      ----- the found `async` block
+   |                      ----- the найдено `async` block
 ...
 45 |         let futures = vec![tx1_fut, rx_fut, tx_fut];
-   |                                     ^^^^^^ expected `async` block, found a different `async` block
+   |                                     ^^^^^^ expected `async` block, найдено a different `async` block
    |
    = примечание: expected `async` block `{async block@src/main.rs:10:23: 10:33}`
-              found `async` block `{async block@src/main.rs:24:22: 24:27}`
+              найдено `async` block `{async block@src/main.rs:24:22: 24:27}`
    = примечание: no two async blocks, even if identical, have the same type
    = помощь: consider pinning your async block and casting it to a trait object
 ```
@@ -129,12 +129,12 @@ cargo build
    --> src/main.rs:49:24
     |
 49  |         trpl::join_all(futures).await;
-    |         -------------- ^^^^^^^ the trait `Unpin` is not implemented for `dyn Future<Output = ()>`
+    |         -------------- ^^^^^^^ сущность `Unpin` не применим (-а) для `dyn Future<Output = ()>`
     |         |
     |         required by a bound introduced by this call
     |
     = примечание: consider using the `pin!` macro
-            consider using `Box::pin` if you need to access the pinned value outside of the current scope
+            consider using `Box::pin` if you need to access the pinned значение outside of the current scope
     = примечание: required for `Box<dyn Future<Output = ()>>` to implement `Future`
 примечание: required by a bound in `join_all`
    --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:105:14
@@ -149,10 +149,10 @@ cargo build
   --> src/main.rs:49:9
    |
 49 |         trpl::join_all(futures).await;
-   |         ^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unpin` is not implemented for `dyn Future<Output = ()>`
+   |         ^^^^^^^^^^^^^^^^^^^^^^^ сущность `Unpin` не применим (-а) для `dyn Future<Output = ()>`
    |
    = примечание: consider using the `pin!` macro
-           consider using `Box::pin` if you need to access the pinned value outside of the current scope
+           consider using `Box::pin` if you need to access the pinned значение outside of the current scope
    = примечание: required for `Box<dyn Future<Output = ()>>` to implement `Future`
 примечание: required by a bound in `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
@@ -167,10 +167,10 @@ cargo build
   --> src/main.rs:49:33
    |
 49 |         trpl::join_all(futures).await;
-   |                                 ^^^^^ the trait `Unpin` is not implemented for `dyn Future<Output = ()>`
+   |                                 ^^^^^ сущность `Unpin` не применим (-а) для `dyn Future<Output = ()>`
    |
    = примечание: consider using the `pin!` macro
-           consider using `Box::pin` if you need to access the pinned value outside of the current scope
+           consider using `Box::pin` if you need to access the pinned значение outside of the current scope
    = примечание: required for `Box<dyn Future<Output = ()>>` to implement `Future`
 примечание: required by a bound in `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
@@ -181,8 +181,8 @@ cargo build
 29 |     F: Future,
    |        ^^^^^^ required by this bound in `JoinAll`
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
-ошибка: не могу собрать исходную рукопись в приложение `async_await` (bin "async_await") due to 3 предыдущая ошибкаs
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0277`.
+ошибка: не могу собрать исходную рукопись в приложение `async_await` (bin "async_await") из-за 3 предыдущая ошибкаs
 ```
 
 Это _много_ для усвоения, поэтому давайте разберем это. Первая часть сообщения
@@ -205,7 +205,7 @@ cargo build
 If we compile and run this, we finally get the output we hoped for:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text

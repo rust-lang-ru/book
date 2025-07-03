@@ -1,16 +1,16 @@
-use aggregator::{self, Summary, SocialPost};
+use электронная_площадка::{self, КраткоеСодержание, Общественная_новость};
 
 fn main() {
     // ANCHOR: here
-    let socialpost = SocialPost {
-        имя_пользователя: String::from("horse_ebooks"),
+    let общественная_новость = Общественная_новость {
+        имя_пользователя: String::from("электронные_книги_о_лошадях"),
         содержимое: String::from(
             "конечно, как вы, вероятно, уже знаете, люди",
         ),
         ответ: false,
-        resocialpost: false,
+        ответ_на_общественную_новость: false,
     };
 
-    println!("1 new socialpost: {}", socialpost.summarize());
+    println!("1 новая общественная_новость: {}", общественная_новость.подвести_итог());
     // ANCHOR_END: here
 }

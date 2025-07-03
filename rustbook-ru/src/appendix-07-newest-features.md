@@ -16,13 +16,13 @@ fn main() {
     let name = String::from("Peter");
     let age = 27;
 
-    // Using full syntax:
+    // Используйте full syntax:
     let peter = Person { name: name, age: age };
 
     let name = String::from("Portia");
     let age = 27;
 
-    // Using field init shorthand:
+    // Используйте field init shorthand:
     let portia = Person { name, age };
 
     println!("{:?}", portia);
@@ -50,6 +50,6 @@ fn main() {
         }
     };
 
-    assert_eq!(result, 20);
+    assert_eq!(итог, 20);
 }
 ```

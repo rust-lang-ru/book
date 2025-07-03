@@ -4,21 +4,21 @@ $ cargo test
      Запщущен unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
 
 запщущен 1 test
-test tests::it_adds_two ... FAILED
+test tests::это_добавляет_второе ... НЕУДАЧНО
 
 failures:
 
----- tests::it_adds_two stdout ----
-thread 'tests::it_adds_two' panicked at src/lib.rs:12:9:
+---- tests::это_добавляет_второе stdout ----
+thread 'tests::это_добавляет_второе' завершил работу из-за сбоя src/lib.rs:12:9:
 assertion `left == right` failed
-  left: 5
- right: 4
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+  левое: 5
+ правое: 4
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта
 
 
 failures:
-    tests::it_adds_two
+    tests::это_добавляет_второе
 
-test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test итог: НЕУДАЧНО. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; выполнено за 0.00s
 
 ошибка: test failed, to rerun pass `--lib`

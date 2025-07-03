@@ -2,6 +2,6 @@ $ cargo run
    Сборка panic v0.1.0 (file:///projects/panic)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
      Запщущен `target/debug/panic`
-thread 'main' panicked at src/main.rs:4:6:
-index out of bounds: the len is 3 but the index is 99
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+поток 'main' завершил работу из-за сбоя src/main.rs:4:6:
+указатель вышел из-за границ: длина 3 ,но указатель 99
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта

@@ -11,7 +11,7 @@ fn read_md() -> String {
     let mut buffer = String::new();
     match io::stdin().read_to_string(&mut buffer) {
         Ok(_) => buffer,
-        Err(error) => panic!("{error}"),
+        Err(ошибка) => panic!("{ошибка}"),
     }
 }
 
@@ -30,21 +30,21 @@ fn remove_markup(input: String) -> String {
 
     let lines: Vec<_> = input
         .lines()
-        .flat_map(|line| {
+        .flat_map(|строка| {
             // Remove our syntax highlighting and rustdoc markers.
-            if line.starts_with("```") {
+            if строка.starts_with("```") {
                 Some(String::from("```"))
             // Remove the span around filenames and captions.
             } else {
-                let result =
-                    regexen.iter().fold(line.to_string(), |result, regex| {
+                let итог =
+                    regexen.iter().fold(строка.to_string(), |result, regex| {
                         regex
                             .replace_all(&result, |caps: &Captures<'_>| {
                                 caps.get(1).unwrap().as_str().to_string()
                             })
                             .to_string()
                     });
-                Some(result)
+                Some(итог)
             }
         })
         .collect();

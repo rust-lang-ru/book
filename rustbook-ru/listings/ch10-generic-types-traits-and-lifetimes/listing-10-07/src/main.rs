@@ -4,5 +4,5 @@ struct Point<T> {
 }
 
 fn main() {
-    let wont_work = Point { x: 5, y: 4.0 };
+    let не_работает = Point { x: 5, y: 4.0 };
 }

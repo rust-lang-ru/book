@@ -1,11 +1,11 @@
 use std::env;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let свойства: Vec<String> = env::args().collect();
 
-    let query = &args[1];
-    let file_path = &args[2];
+    let запрос = &свойства[1];
+    let путь_до_файла = &свойства[2];
 
-    println!("Поиск значения:{query}");
-    println!("В файле {file_path}");
+    println!("Поиск значения:{запрос}");
+    println!("В файле {путь_до_файла}");
 }

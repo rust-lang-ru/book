@@ -2,10 +2,10 @@
 use std::fs::File;
 use std::io::{self, Read};
 
-fn read_имя_пользователя_from_file() -> Result<String, io::Error> {
-    let имя_пользователя_file_итог = File::open("здравствуй.txt");
+fn получить_имя_пользователя_из_файла() -> Result<String, io::Error> {
+    let имя_пользователя_из_файла_итог = File::open("здравствуй.txt");
 
-    let mut имя_пользователя_file = match имя_пользователя_file_итог {
+    let mut имя_пользователя_file = match имя_пользователя_из_файла_итог {
         Ok(file) => file,
         Err(e) => return Err(e),
     };
@@ -20,5 +20,5 @@ fn read_имя_пользователя_from_file() -> Result<String, io::Error>
 // ANCHOR_END: here
 
 fn main() {
-    let имя_пользователя = read_имя_пользователя_from_file().expect("Unable to get имя_пользователя");
+    let имя_пользователя = получить_имя_пользователя_из_файла().expect("Unable to get имя_пользователя");
 }

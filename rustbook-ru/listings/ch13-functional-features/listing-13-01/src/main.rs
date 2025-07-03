@@ -1,42 +1,42 @@
 #[derive(Debug, PartialEq, Copy, Clone)]
-enum ShirtColor {
-    Red,
-    Голубой,
+enum ЦветРубашки {
+    Красный,
+    Синий,
 }
 
 struct Inventory {
-    shirts: Vec<ShirtColor>,
+    рубашки: Vec<ЦветРубашки>,
 }
 
 impl Inventory {
-    fn giveaway(&self, user_preference: Option<ShirtColor>) -> ShirtColor {
+    fn giveaway(&self, user_preference: Option<ЦветРубашки>) -> ЦветРубашки {
         user_preference.unwrap_or_else(|| self.most_stocked())
     }
 
-    fn most_stocked(&self) -> ShirtColor {
+    fn most_stocked(&self) -> ЦветРубашки {
         let mut num_red = 0;
         let mut num_голубой = 0;
 
-        for color in &self.shirts {
-            match color {
-                ShirtColor::Red => num_red += 1,
-                ShirtColor::Голубой => num_голубой += 1,
+        for цвет in &self.рубашки {
+            match цвет {
+                ЦветРубашки::Красный => num_red += 1,
+                ЦветРубашки::Синий => num_голубой += 1,
             }
         }
         if num_red > num_голубой {
-            ShirtColor::Red
+            ЦветРубашки::Красный
         } else {
-            ShirtColor::Голубой
+            ЦветРубашки::Синий
         }
     }
 }
 
 fn main() {
     let store = Inventory {
-        shirts: vec![ShirtColor::Голубой, ShirtColor::Red, ShirtColor::Голубой],
+        рубашки: vec![ЦветРубашки::Синий, ЦветРубашки::Красный, ЦветРубашки::Синий],
     };
 
-    let user_pref1 = Some(ShirtColor::Red);
+    let user_pref1 = Some(ЦветРубашки::Красный);
     let giveaway1 = store.giveaway(user_pref1);
     println!(
         "Пользователь выбрал {:?} получил {:?}",

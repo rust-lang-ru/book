@@ -2,11 +2,11 @@ use std::fs::File;
 use std::io::ErrorKind;
 
 fn main() {
-    let greeting_file_итог = File::open("здравствуй.txt");
+    let файл_приветствия_итог = File::open("здравствуй.txt");
 
-    let greeting_file = match greeting_file_итог {
+    let файл_приветствия = match файл_приветствия_итог {
         Ok(file) => file,
-        Err(error) => match error.kind() {
+        Err(ошибка) => match ошибка.kind() {
             ErrorKind::NotFound => match File::create("здравствуй.txt") {
                 Ok(fc) => fc,
                 Err(e) => panic!("Сложности при создании файла: {e:?}"),

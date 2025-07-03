@@ -12,6 +12,6 @@ fn main() {
         длина: 45,
     };
 
-    println!("Can прямоугольник1 hold rect2? {}", прямоугольник1.can_hold(&rect2));
-    println!("Can прямоугольник1 hold rect3? {}", прямоугольник1.can_hold(&rect3));
+    println!("Can прямоугольник1 hold rect2? {}", прямоугольник1.может_удержать(&rect2));
+    println!("Can прямоугольник1 hold rect3? {}", прямоугольник1.может_удержать(&rect3));
 }

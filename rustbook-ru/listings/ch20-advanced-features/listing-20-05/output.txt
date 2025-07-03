@@ -11,9 +11,9 @@ $ cargo run
   |     |     |                   |
   |     |     |                   second mutable borrow occurs here
   |     |     first mutable borrow occurs here
-  |     returning this value requires that `*values` is borrowed for `'1`
+  |     returning this значение requires that `*values` is borrowed for `'1`
   |
   = помощь: use `.split_at_mut(position)` to obtain two mutable non-overlapping sub-slices
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0499`.
-ошибка: не могу собрать исходную рукопись в приложение `unsafe-example` (bin "unsafe-example") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0499`.
+ошибка: не могу собрать исходную рукопись в приложение `unsafe-example` (bin "unsafe-example") из-за 1 предыдущей ошибки

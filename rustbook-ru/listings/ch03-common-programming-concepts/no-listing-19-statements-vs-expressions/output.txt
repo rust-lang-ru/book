@@ -1,6 +1,6 @@
 $ cargo run
    Сборка functions v0.1.0 (file:///projects/functions)
-ошибка: expected expression, found `let` statement
+ошибка: expected expression, найдено `let` statement
  --> src/main.rs:2:14
   |
 2 |     let x = (let y = 6);
@@ -8,7 +8,7 @@ $ cargo run
   |
   = примечание: only supported directly in conditions of `if` and `while` expressions
 
-предупреждение: unnecessary parentheses around assigned value
+предупреждение: unnecessary parentheses around assigned значение
  --> src/main.rs:2:13
   |
 2 |     let x = (let y = 6);
@@ -22,4 +22,4 @@ $ cargo run
   |
 
 предупреждение: `functions` (bin "functions") generated 1 warning
-ошибка: не могу собрать исходную рукопись в приложение `functions` (bin "functions") due to 1 предыдущая ошибка; 1 warning emitted
+ошибка: не могу собрать исходную рукопись в приложение `functions` (bin "functions") из-за 1 предыдущей ошибки; 1 warning emitted

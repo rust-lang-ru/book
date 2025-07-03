@@ -6,22 +6,22 @@ pub struct Догадка {
 // --snip--
 impl Догадка {
     pub fn new(значение: i32) -> Догадка {
-        if value < 1 {
-            panic!("Догадка value must be between 1 и 100, got {значение}.");
+        if значение < 1 {
+            panic!("Догадка значение между 1 и 100, полученное {значение}.");
         }
 
-        Догадка { value }
+        Догадка { значение }
     }
 }
 // ANCHOR_END: here
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
     #[should_panic]
-    fn greater_than_100() {
+    fn больше_чем_100() {
         догадка::new(200);
     }
 }

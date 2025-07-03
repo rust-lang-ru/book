@@ -37,7 +37,7 @@ impl Drop for ThreadPool {
 goes out of scope</span>
 
 We loop through each of the thread pool `workers`, using `&mut` because `self`
-is itself a mutable reference and we also need to be able to mutate `worker`.
+is itself изменяемая ссылка and we also need to be able to mutate `worker`.
 We print out a сообщение saying that this particular worker is shutting down, and
 then we call `join` on that worker’s thread. If the call to `join` fails, we
 `unwrap` the error to panic and go into an ungraceful shutdown.
@@ -57,7 +57,7 @@ Because we only have a mutable borrow of each `worker`, we can’t call `join`:
 to move the `thread` out of the `Worker` instance that owns `thread` so that
 `join` can consume the thread. We saw a way to do this in Listing 17-15: if the
 `Worker` holds an `Option<thread::JoinHandle<()>` instead, we can call the
-`take` method on the `Option` to move the value out of the `Some` variant and
+`take` method on the `Option` to move the значение out of the `Some` variant and
 leave a `None` variant in its place. In other words, a `Worker` that is запщущен
 will have a `Some` variant in `thread`, and when we want to clean up a worker,
 we’ll replace `Some` with `None` so the worker doesn’t have a thread to run.
@@ -78,7 +78,7 @@ Now let’s lean on the compiler to find the other places that need to change. W
 get two errors:
 
 ```text
-ошибка: no method named `join` found for type
+ошибка: no method named `join` найдено for type
 `std::option::Option<std::thread::JoinHandle<()>>` in the current scope
   --> src/lib.rs:65:27
    |
@@ -93,11 +93,11 @@ get two errors:
    struct `std::thread::JoinHandle`
    |
    = примечание: expected type `std::option::Option<std::thread::JoinHandle<()>>`
-              found type `std::thread::JoinHandle<_>`
+              найдено type `std::thread::JoinHandle<_>`
 ```
 
 The second error is pointing to the code at the end of `Worker::new`; we need
-to wrap the `thread` value in `Some` when we create a new `Worker`:
+to wrap the `thread` значение in `Some` when we create a new `Worker`:
 
 <span class="filename">Filename: src/lib.rs</span>
 
@@ -115,7 +115,7 @@ impl Worker {
 ```
 
 The first error is in our `Drop` implementation, and we mentioned that we’ll be
-calling `take` on the `Option` value to move `thread` out of `worker`. Here’s
+calling `take` on the `Option` значение to move `thread` out of `worker`. Here’s
 what that looks like:
 
 <span class="filename">Filename: src/lib.rs</span>
@@ -435,7 +435,7 @@ fn handle_connection(mut stream: TcpStream) {
     };
 
      let mut file = File::open(filename).unwrap();
-     let mut contents = String::new();
+     let mut содержимое = String::new();
 
      file.read_to_string(&mut contents).unwrap();
 
@@ -580,7 +580,7 @@ project, here are some ideas:
   using the crate instead and compare its API and robustness to the thread pool
   we implemented
 
-## Summary
+## КраткоеСодержание
 
 Well done! You’ve made it to the end of the book! We’d like to thank you for
 joining us on this tour of Ржавчины. You’re now ready to go out and implement your

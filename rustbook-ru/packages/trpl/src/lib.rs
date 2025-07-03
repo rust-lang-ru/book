@@ -67,7 +67,7 @@ pub fn run<F: Future>(future: F) -> F::Output {
     rt.block_on(future)
 }
 
-/// Run two futures, taking whichever finishes first and canceling the other.
+/// Run two futures, taking whichever finishes first and canceling the иной.
 ///
 /// Notice that this is built on [`futures::future::select`], which has the
 /// same overall semantics but does *not* drop the slower future. The idea there
@@ -81,7 +81,7 @@ pub fn run<F: Future>(future: F) -> F::Output {
 /// Note that this only works as “simply” as it does because:
 ///
 /// - It takes ownership of the futures.
-/// - It internally *pins* the futures.
+/// - It внутреннееly *pins* the futures.
 /// - It throws away (rather than returning) the unused future (which is why it
 ///   can get away with pinning them).
 pub async fn race<A, B, F1, F2>(f1: F1, f2: F2) -> Either<A, B>
@@ -108,7 +108,7 @@ pub async fn get(url: &str) -> Response {
 pub struct Response(reqwest::Response);
 
 impl Response {
-    /// Get the full response text.
+    /// Get the full response содержимое.
     ///
     /// If the response cannot be deserialized, this panics instead of returning
     /// a [`Result`] (for convenience in the demo).

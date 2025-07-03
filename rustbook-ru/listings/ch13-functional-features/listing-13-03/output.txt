@@ -4,9 +4,9 @@ $ cargo run
  --> src/main.rs:5:29
   |
 5 |     let n = example_closure(5);
-  |             --------------- ^- помощь: try using a conversion method: `.to_string()`
+  |             --------------- ^- помощь: try используйте a conversion method: `.to_string()`
   |             |               |
-  |             |               expected `String`, found integer
+  |             |               expected `String`, найдено integer
   |             arguments to this function are incorrect
   |
 примечание: expected because the closure was earlier called with an argument of type `String`
@@ -22,5 +22,5 @@ $ cargo run
 2 |     let example_closure = |x| x;
   |                            ^
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0308`.
-ошибка: не могу собрать исходную рукопись в приложение `closure-example` (bin "closure-example") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0308`.
+ошибка: не могу собрать исходную рукопись в приложение `closure-example` (bin "closure-example") из-за 1 предыдущей ошибки

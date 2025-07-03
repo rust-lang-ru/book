@@ -1,9 +1,9 @@
 fn main() {
-    let numbers = (2, 4, 8, 16, 32);
+    let числа = (2, 4, 8, 16, 32);
 
-    match numbers {
+    match числа {
         (first, .., last) => {
-            println!("Some numbers: {первый}, {last}");
+            println!("Некоторые числа: {первый}, {last}");
         }
     }
 }

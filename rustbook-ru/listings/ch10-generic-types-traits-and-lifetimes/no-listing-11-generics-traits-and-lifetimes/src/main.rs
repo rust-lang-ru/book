@@ -2,7 +2,7 @@ fn main() {
     let строка1 = String::from("abcd");
     let строка2 = "xyz";
 
-    let итог = наибольшее_with_an_announcement(
+    let итог = наибольшее_с_объявлением(
         строка1.as_str(),
         строка2,
         "Today is someone's birthday!",
@@ -13,15 +13,15 @@ fn main() {
 // ANCHOR: here
 use std::fmt::Display;
 
-fn наибольшее_with_an_announcement<'a, T>(
+fn наибольшее_с_объявлением<'a, T>(
     x: &'a str,
     y: &'a str,
-    ann: T,
+    анна: T,
 ) -> &'a str
 where
     T: Display,
 {
-    println!("Announcement! {ann}");
+    println!("Объявление! {анна}");
     if x.len() > y.len() {
         x
     } else {

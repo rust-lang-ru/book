@@ -9,7 +9,7 @@ fn main() {
         let mut messages =
             pin!(get_messages().timeout(Duration::from_millis(200)));
 
-        while let Some(result) = messages.next().await {
+        while let Some(итог) = messages.next().await {
             match итог {
                 Ok(сообщение) => println!("{сообщение}"),
                 Err(reason) => eprintln!("Problem: {reason:?}"),

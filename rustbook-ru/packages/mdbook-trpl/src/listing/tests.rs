@@ -5,7 +5,7 @@ use super::*;
 /// done by the `pulldown_cmark_to_cmark` crate.
 #[test]
 fn default_mode_works() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"<Listing number="1-2" caption="A write-up which *might* include inline Markdown like `code` etc." file-name="src/main.rs">
 
 ```rust
@@ -17,7 +17,7 @@ fn main() {}
     );
 
     assert_eq!(
-        &result.unwrap(),
+        &итог.unwrap(),
         r##"<figure class="listing" id="listing-1-2">
 <span class="file-name">Filename: src/main.rs</span>
 
@@ -32,8 +32,8 @@ fn main() {}
 
 #[test]
 fn simple_mode_works() {
-    let result = rewrite_listing(
-        r#"Leading text.
+    let итог = rewrite_listing(
+        r#"Leading содержимое.
 
 <Listing number="1-2" caption="A write-up which *might* include inline Markdown like `code` etc." file-name="src/main.rs">
 
@@ -43,13 +43,13 @@ fn main() {}
 
 </Listing>
 
-Trailing text."#,
+Trailing содержимое."#,
         Mode::Simple,
     );
 
     assert_eq!(
-        &result.unwrap(),
-        r#"Leading text.
+        &итог.unwrap(),
+        r#"Leading содержимое.
 
 src/main.rs
 
@@ -59,13 +59,13 @@ fn main() {}
 
 Listing 1-2: A write-up which *might* include inline Markdown like `code` etc.
 
-Trailing text."#
+Trailing содержимое."#
     );
 }
 
 #[test]
 fn listing_with_embedded_angle_brackets() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"<Listing number="34-5" caption="This has a `Box<T>` in it.">
 
 ```rust
@@ -79,7 +79,7 @@ fn get_a_box_of<T>(t: T) -> Box<T> {
     );
 
     assert_eq!(
-        &result.unwrap(),
+        &итог.unwrap(),
         r##"<figure class="listing" id="listing-34-5">
 
 ````rust
@@ -95,7 +95,7 @@ fn get_a_box_of<T>(t: T) -> Box<T> {
 
 #[test]
 fn actual_listing() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"Now open the *main.rs* file you just created and enter the code in Listing 1-1.
 
 <Listing number="1-1" file-name="main.rs" caption="A program that prints `Hello, world!`">
@@ -112,9 +112,9 @@ Save the file and go back to your terminal window"#,
         Mode::Default,
     );
 
-    assert!(result.is_ok());
+    assert!(итог.is_ok());
     assert_eq!(
-        result.unwrap(),
+        итог.unwrap(),
         r##"Now open the *main.rs* file you just created and enter the code in Listing 1-1.
 
 <figure class="listing" id="listing-1-1">
@@ -135,7 +135,7 @@ Save the file and go back to your terminal window"##
 
 #[test]
 fn no_filename() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"This is the opening.
 
 <Listing number="1-1" caption="This is the caption">
@@ -150,9 +150,9 @@ This is the closing."#,
         Mode::Default,
     );
 
-    assert!(result.is_ok());
+    assert!(итог.is_ok());
     assert_eq!(
-        result.unwrap(),
+        итог.unwrap(),
         r##"This is the opening.
 
 <figure class="listing" id="listing-1-1">
@@ -170,7 +170,7 @@ This is the closing."##
 
 #[test]
 fn without_number() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"<Listing file-name="src/main.rs">
 
 ```rust
@@ -181,9 +181,9 @@ fn main() {}
         Mode::Default,
     );
 
-    assert!(result.is_ok());
+    assert!(итог.is_ok());
     assert_eq!(
-        result.unwrap(),
+        итог.unwrap(),
         r#"<figure class="listing">
 <span class="file-name">Filename: src/main.rs</span>
 
@@ -197,7 +197,7 @@ fn main() {}
 
 #[test]
 fn with_unsupported_attr_name() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         "<Listing invalid-attr>
 
 ```rust
@@ -216,7 +216,7 @@ fn main() {}
 
 #[test]
 fn with_unsupported_attr_name_with_arg() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"<Listing invalid-attr="123">
 
 ```rust
@@ -239,7 +239,7 @@ mod missing_value {
 
     #[test]
     fn for_number() {
-        let result = rewrite_listing(
+        let итог = rewrite_listing(
             r#"<Listing number>
 
 ```rust
@@ -252,13 +252,13 @@ fn main() {}
 
         assert_eq!(
             result,
-            Err(String::from("Missing value for attribute: 'number'"))
+            Err(String::from("Missing значение for attribute: 'number'"))
         )
     }
 
     #[test]
     fn for_caption() {
-        let result = rewrite_listing(
+        let итог = rewrite_listing(
             r#"<Listing caption>
 
 ```rust
@@ -271,13 +271,13 @@ fn main() {}
 
         assert_eq!(
             result,
-            Err(String::from("Missing value for attribute: 'caption'"))
+            Err(String::from("Missing значение for attribute: 'caption'"))
         )
     }
 
     #[test]
     fn for_file_name() {
-        let result = rewrite_listing(
+        let итог = rewrite_listing(
             r#"<Listing file-name>
 
 ```rust
@@ -290,7 +290,7 @@ fn main() {}
 
         assert_eq!(
             result,
-            Err(String::from("Missing value for attribute: 'file-name'"))
+            Err(String::from("Missing значение for attribute: 'file-name'"))
         )
     }
 }

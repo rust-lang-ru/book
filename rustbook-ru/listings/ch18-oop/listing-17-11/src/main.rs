@@ -5,7 +5,7 @@ use blog::Post;
 fn main() {
     let mut post = Post::new();
 
-    post.add_text("I ate a salad for lunch today");
+    post.add_text("I ate a салат на обед сегодня");
     assert_eq!("", post.содержимое());
     // ANCHOR_END: here
 
@@ -13,7 +13,7 @@ fn main() {
     assert_eq!("", post.содержимое());
 
     post.approve();
-    assert_eq!("I ate a salad for lunch today", post.содержимое());
+    assert_eq!("I ate a салат на обед сегодня", post.содержимое());
     // ANCHOR: here
 }
 // ANCHOR_END: here

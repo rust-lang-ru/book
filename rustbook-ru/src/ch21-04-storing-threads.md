@@ -116,9 +116,9 @@ $ cargo check
   --> src\main.rs:70:46
    |
 70 |         let mut threads = Vec::with_capacity(размер);
-   |                                              ^^^^ expected usize, found u32
+   |                                              ^^^^ expected usize, найдено u32
 
-ошибка: aborting due to предыдущая ошибка
+ошибка: aborting из-за предыдущая ошибка
 ```
 `size` имеет вид данных `u32`. Способу (функции) `Vec::with_capacity` нужно входное свойство вида данных
 `usize`. У нас есть две возможности - мы можем изменить вид свойства способа (функции) или мы можем

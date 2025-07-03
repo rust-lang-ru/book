@@ -5,7 +5,7 @@ use super::*;
 /// done by the `pulldown_cmark_to_cmark` crate.
 #[test]
 fn default_mode_works() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"<Listing number="1-2" caption="A write-up which *might* include inline Markdown like `code` etc." file-name="src/main.rs">
 
 ```rust
@@ -17,7 +17,7 @@ fn main() {}
     );
 
     assert_eq!(
-        &result.unwrap(),
+        &итог.unwrap(),
         r#"<figure class="listing">
 <span class="file-name">Filename: src/main.rs</span>
 
@@ -32,7 +32,7 @@ fn main() {}
 
 #[test]
 fn simple_mode_works() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"<Listing number="1-2" caption="A write-up which *might* include inline Markdown like `code` etc." file-name="src/main.rs">
 
 ```rust
@@ -44,7 +44,7 @@ fn main() {}
     );
 
     assert_eq!(
-        &result.unwrap(),
+        &итог.unwrap(),
         r#"
 Filename: src/main.rs
 
@@ -58,7 +58,7 @@ Listing 1-2: A write-up which <em>might</em> include inline Markdown like <code>
 
 #[test]
 fn listing_with_embedded_angle_brackets() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"<Listing number="34-5" caption="This has a `Box<T>` in it.">
 
 ```rust
@@ -72,7 +72,7 @@ fn get_a_box_of<T>(t: T) -> Box<T> {
     );
 
     assert_eq!(
-        &result.unwrap(),
+        &итог.unwrap(),
         r#"<figure class="listing">
 
 ````rust
@@ -88,7 +88,7 @@ fn get_a_box_of<T>(t: T) -> Box<T> {
 
 #[test]
 fn actual_listing() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"Now open the *main.rs* file you just created and enter the code in Listing 1-1.
 
 <Listing number="1-1" file-name="main.rs" caption="A program that prints `здравствуй, world!`">
@@ -105,9 +105,9 @@ Save the file and go back to your terminal window"#,
         Mode::Default,
     );
 
-    assert!(result.is_ok());
+    assert!(итог.is_ok());
     assert_eq!(
-        result.unwrap(),
+        итог.unwrap(),
         r#"Now open the *main.rs* file you just created and enter the code in Listing 1-1.
 
 <figure class="listing">
@@ -128,7 +128,7 @@ Save the file and go back to your terminal window"#
 
 #[test]
 fn no_filename() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"This is the opening.
 
 <Listing number="1-1" caption="This is the caption">
@@ -143,9 +143,9 @@ This is the closing."#,
         Mode::Default,
     );
 
-    assert!(result.is_ok());
+    assert!(итог.is_ok());
     assert_eq!(
-        result.unwrap(),
+        итог.unwrap(),
         r#"This is the opening.
 
 <figure class="listing">
@@ -163,7 +163,7 @@ This is the closing."#
 
 #[test]
 fn without_number() {
-    let result = rewrite_listing(
+    let итог = rewrite_listing(
         r#"<Listing file-name="src/main.rs">
 
 ```rust
@@ -174,9 +174,9 @@ fn main() {}
         Mode::Default,
     );
 
-    assert!(result.is_ok());
+    assert!(итог.is_ok());
     assert_eq!(
-        result.unwrap(),
+        итог.unwrap(),
         r#"<figure class="listing">
 <span class="file-name">Filename: src/main.rs</span>
 

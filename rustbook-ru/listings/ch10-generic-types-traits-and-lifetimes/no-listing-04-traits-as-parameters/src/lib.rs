@@ -1,35 +1,35 @@
-pub trait Summary {
-    fn summarize(&self) -> String;
+pub trait КраткоеСодержание {
+    fn подвести_итог(&self) -> String;
 }
 
-pub struct NewsArticle {
+pub struct НовостнаяСтатья {
     pub заголовок: String,
     pub местонахождение: String,
-    pub author: String,
+    pub сочинитель: String,
     pub содержимое: String,
 }
 
-impl Summary for NewsArticle {
-    fn summarize(&self) -> String {
-        format!("{}, by {} ({})", self.заголовок, self.author, self.местонахождение)
+impl КраткоеСодержание for НовостнаяСтатья {
+    fn подвести_итог(&self) -> String {
+        format!("{}, by {} ({})", self.заголовок, self.сочинитель, self.местонахождение)
     }
 }
 
-pub struct SocialPost {
+pub struct Общественная_новость {
     pub имя_пользователя: String,
     pub содержимое: String,
     pub ответ: bool,
-    pub resocialpost: bool,
+    pub ответ_на_общественную_новость: bool,
 }
 
-impl Summary for SocialPost {
-    fn summarize(&self) -> String {
+impl КраткоеСодержание for Общественная_новость {
+    fn подвести_итог(&self) -> String {
         format!("{}: {}", self.имя_пользователя, self.содержимое)
     }
 }
 
 // ANCHOR: here
-pub fn notify(предмет: &impl Summary) {
-    println!("Взрывные новости! {}", item.summarize());
+pub fn уведомление(предмет: &impl КраткоеСодержание) {
+    println!("Взрывные новости! {}", предмет.подвести_итог());
 }
 // ANCHOR_END: here

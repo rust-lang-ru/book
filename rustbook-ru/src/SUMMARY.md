@@ -57,7 +57,7 @@
 - [Обработка ошибок](ch09-00-error-handling.md)
 
     - [Неустранимые ошибки с `panic!`](ch09-01-unrecoverable-errors-with-panic.md)
-    - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-result.md)
+    - [Устранимые ошибки с `Result`](ch09-02-recoverable-errors-with-итог.md)
     - [`panic!` или Не `panic!`](ch09-03-to-panic-or-not-to-panic.md)
 
 - [Общие виды данных, сущности (свойства) и время жизни](ch10-00-generics.md)
@@ -69,7 +69,7 @@
 - [Написание самостоятельно х проверок](ch11-00-testing.md)
 
     - [Как писать проверки](ch11-01-writing-tests.md)
-    - [Управление выполнением проверок](ch11-02-запщущен-tests.md)
+    - [Управление выполнением проверок](ch11-02-running-tests.md)
     - [Создание проверок](ch11-03-test-organization.md)
 
 - [Дело с вводом-выводом: создание приложения приказной строки](ch12-00-an-io-project.md)

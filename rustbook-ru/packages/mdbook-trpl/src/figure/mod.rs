@@ -57,7 +57,7 @@ impl Preprocessor for TrplFigure {
         };
 
         let mut errors = vec![];
-        book.for_each_mut(|item| {
+        boуспешно.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
                 match rewrite_figure(&chapter.содержимое) {
                     Ok(rewritten) => chapter.содержимое = rewritten,
@@ -80,7 +80,7 @@ const CLOSE_FIGURE: &'static str = "</figure>";
 const OPEN_CAPTION: &'static str = "<figcaption>";
 const CLOSE_CAPTION: &'static str = "</figcaption>";
 
-fn rewrite_figure(text: &str) -> Result<String> {
+fn rewrite_figure(содержимое: &str) -> Result<String> {
     let final_state = crate::parser(text).try_fold(
         State {
             current: None,
@@ -133,19 +133,19 @@ fn rewrite_figure(text: &str) -> Result<String> {
                         return Err(anyhow!(bad_open(OPEN_CAPTION)));
                     } else {
                         if tag.trim().ends_with(CLOSE_CAPTION) {
-                            let text = Dom::parse(tag.as_ref())?
+                            let содержимое = Dom::parse(tag.as_ref())?
                                 .children
                                 .into_iter()
                                 .filter_map(text_of)
                                 .collect::<String>();
 
-                            if text.is_empty() {
+                            if содержимое.is_empty() {
                                 return Err(anyhow!(
                                     "Missing caption in `<figcaption>`"
                                 ));
                             }
 
-                            fig.events.push(Event::Text(text.into()));
+                            fig.events.push(Event::Text(содержимое.into()));
                         } else {
                             fig.events.push(Event::Text("\n".into()));
                             fig.in_caption = true;
@@ -236,4 +236,4 @@ impl<'e> Figure<'e> {
 }
 
 #[cfg(test)]
-mod tests;
+mod проверки;

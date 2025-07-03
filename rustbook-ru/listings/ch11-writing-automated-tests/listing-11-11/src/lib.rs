@@ -1,26 +1,26 @@
-pub fn add_two(a: usize) -> usize {
+pub fn добвить_второе(a: usize) -> usize {
     a + 2
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
-    fn add_two_and_two() {
-        let итог = add_two(2);
-        assert_eq!(result, 4);
+    fn добвить_второе_and_two() {
+        let итог = добвить_второе(2);
+        assert_eq!(итог, 4);
     }
 
     #[test]
     fn add_three_and_two() {
-        let итог = add_two(3);
-        assert_eq!(result, 5);
+        let итог = добвить_второе(3);
+        assert_eq!(итог, 5);
     }
 
     #[test]
     fn one_hundred() {
-        let итог = add_two(100);
-        assert_eq!(result, 102);
+        let итог = добвить_второе(100);
+        assert_eq!(итог, 102);
     }
 }

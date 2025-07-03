@@ -12,7 +12,7 @@ fn main() {
         let merged = messages.merge(intervals);
         // ANCHOR_END: main
 
-        while let Some(result) = merged.next().await {
+        while let Some(итог) = merged.next().await {
             match итог {
                 Ok(сообщение) => println!("{сообщение}"),
                 Err(reason) => eprintln!("Problem: {reason:?}"),

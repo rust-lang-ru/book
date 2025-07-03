@@ -6,6 +6,6 @@ fn main() {
 
     v.push(6);
 
-    println!("The first element is: {первый}");
+    println!("Первая переменная: {первый}");
     // ANCHOR_END: here
 }

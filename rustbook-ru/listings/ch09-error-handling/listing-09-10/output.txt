@@ -1,22 +1,22 @@
 $ cargo run
    Сборка error-handling v0.1.0 (file:///projects/error-handling)
-ошибка[E0277]: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
+ошибка[E0277]: приказчик `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
  --> src/main.rs:4:48
   |
 3 | fn main() {
-  | --------- this function should return `Result` or `Option` to accept `?`
-4 |     let greeting_file = File::open("здравствуй.txt")?;
-  |                                                ^ cannot use the `?` operator in a function that returns `()`
+  | --------- способ (функция) должна возвращать `Result` or `Option` to accept `?`
+4 |     let файл_приветствия = File::open("здравствуй.txt")?;
+  |                                                ^ нельзя использовать `?` приказчик в способе (функции) который возвращает `()`
   |
-  = помощь: the trait `FromResidual<Result<Infallible, std::io::Error>>` is not implemented for `()`
+  = помощь: сущность `FromResidual<Result<Infallible, std::io::Error>>` не применим (-а) для `()`
 помощь: consider adding return type
   |
-3 ~ fn main() -> Result<(), Box<dyn std::ошибка::Error>> {
-4 |     let greeting_file = File::open("здравствуй.txt")?;
+3 ~ fn main() -> Result<(), Box<dyn std::ошибка::Ошибка>> {
+4 |     let файл_приветствия = File::open("здравствуй.txt")?;
 5 + 
 6 +     Ok(())
 7 + }
   |
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
-ошибка: не могу собрать исходную рукопись в приложение `error-handling` (bin "error-handling") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0277`.
+ошибка: не могу собрать исходную рукопись в приложение `error-handling` (bin "error-handling") из-за 1 предыдущей ошибки

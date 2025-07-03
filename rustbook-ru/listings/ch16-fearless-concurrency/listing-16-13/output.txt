@@ -9,18 +9,18 @@ $ cargo run
 8  |     for _ in 0..10 {
    |     -------------- inside of this loop
 9  |         let владение = thread::spawn(move || {
-   |                                    ------- value moved into closure here, in previous iteration of loop
+   |                                    ------- значение moved into closure here, in previous iteration of loop
 ...
 21 |     println!("Итог: {}", *счётчик.lock().unwrap());
-   |                             ^^^^^^^ value borrowed here after move
+   |                             ^^^^^^^ значение borrowed here after move
    |
 помощь: consider moving the expression out of the loop so it is only moved once
    |
-8  ~     let mut value = счётчик.lock();
+8  ~     let mut значение = счётчик.lock();
 9  ~     for _ in 0..10 {
 10 |         let владение = thread::spawn(move || {
-11 ~             let mut num = value.unwrap();
+11 ~             let mut num = значение.unwrap();
    |
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0382`.
-ошибка: не могу собрать исходную рукопись в приложение `shared-state` (bin "shared-state") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0382`.
+ошибка: не могу собрать исходную рукопись в приложение `shared-state` (bin "shared-state") из-за 1 предыдущей ошибки

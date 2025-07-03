@@ -2,6 +2,6 @@ $ cargo run
    Сборка collections v0.1.0 (file:///projects/collections)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
      Запщущен `target/debug/collections`
-thread 'main' panicked at src/main.rs:4:19:
+поток 'main' завершил работу из-за сбоя src/main.rs:4:19:
 byte index 1 is not a char boundary; it is inside 'З' (bytes 0..2) of `Здравствуйте`
-примечание: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+примечание: запустите с режимом `RUST_BACKTRACE=1` это режим для отображения обратного отсчёта

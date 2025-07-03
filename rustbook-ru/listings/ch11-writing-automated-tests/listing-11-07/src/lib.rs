@@ -1,14 +1,14 @@
-pub fn add_two(a: usize) -> usize {
+pub fn добвить_второе(a: usize) -> usize {
     a + 2
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
-    fn it_adds_two() {
-        let итог = add_two(2);
-        assert_eq!(result, 4);
+    fn это_добавляет_второе() {
+        let итог = добвить_второе(2);
+        assert_eq!(итог, 4);
     }
 }

@@ -1,6 +1,6 @@
 $ cargo build
    Сборка restaurant v0.1.0 (file:///projects/restaurant)
-ошибка[E0433]: failed to resolve: используется необъявленный ящик или раздел crate or module `hosting`
+ошибка[E0433]: неудачно to resolve: используется необъявленный ящик или раздел crate or module `hosting`
   --> src/lib.rs:11:9
    |
 11 |         hosting::добавить_в_ожидание();
@@ -19,6 +19,6 @@ $ cargo build
   |
   = примечание: `#[warn(unused_imports)]` on by default
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0433`.
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0433`.
 предупреждение: `restaurant` (lib) generated 1 warning
-ошибка: не могу собрать исходную рукопись в приложение `restaurant` (lib) due to 1 предыдущая ошибка; 1 warning emitted
+ошибка: не могу собрать исходную рукопись в приложение `restaurant` (lib) из-за 1 предыдущей ошибки; 1 warning emitted

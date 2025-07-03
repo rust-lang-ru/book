@@ -1,14 +1,14 @@
 $ cargo check
     Checking hello v0.1.0 (file:///projects/hello)
-ошибка[E0599]: no method named `join` found for enum `Option` in the current scope
+ошибка[E0599]: no method named `join` найдено for enum `Option` in the current scope
   --> src/lib.rs:52:27
    |
 52 |             worker.thread.join().unwrap();
-   |                           ^^^^ method not found in `Option<JoinHandle<()>>`
+   |                           ^^^^ method not найдено in `Option<JoinHandle<()>>`
    |
 примечание: the method `join` exists on вид данных `JoinHandle<()>`
   --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/mod.rs:1778:5
-помощь: consider using `Option::expect` to unwrap the `JoinHandle<()>` value, panicking if значение an `Option::None`
+помощь: consider используйте `Option::expect` to unwrap the `JoinHandle<()>` значение, panicking if значение an `Option::None`
    |
 52 |             worker.thread.expect("REASON").join().unwrap();
    |                          +++++++++++++++++
@@ -17,10 +17,10 @@ $ cargo check
   --> src/lib.rs:72:22
    |
 72 |         Worker { id, thread }
-   |                      ^^^^^^ expected `Option<JoinHandle<()>>`, found `JoinHandle<_>`
+   |                      ^^^^^^ expected `Option<JoinHandle<()>>`, найдено `JoinHandle<_>`
    |
    = примечание: expected enum `Option<JoinHandle<()>>`
-            found struct `JoinHandle<_>`
+            найдено struct `JoinHandle<_>`
 помощь: try wrapping the expression in `Some`
    |
 72 |         Worker { id, thread: Some(thread) }
@@ -28,4 +28,4 @@ $ cargo check
 
 Some errors have detailed explanations: E0308, E0599.
 For more information about an error, try `rustc --explain E0308`.
-ошибка: не могу собрать исходную рукопись в приложение `здравствуй` (lib) due to 2 предыдущая ошибкаs
+ошибка: не могу собрать исходную рукопись в приложение `здравствуй` (lib) из-за 2 предыдущая ошибкаs

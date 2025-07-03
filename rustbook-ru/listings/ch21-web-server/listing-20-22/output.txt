@@ -1,15 +1,15 @@
 $ cargo check
     Checking hello v0.1.0 (file:///projects/hello)
-ошибка[E0507]: cannot move out of `worker.thread` which is behind a mutable reference
+ошибка[E0507]: cannot move out of `worker.thread` which is behind изменяемая ссылка
   --> src/lib.rs:52:13
    |
 52 |             worker.thread.join().unwrap();
-   |             ^^^^^^^^^^^^^ ------ `worker.thread` moved due to this method call
+   |             ^^^^^^^^^^^^^ ------ `worker.thread` moved из-за this method call
    |             |
    |             move occurs because `worker.thread` has type `JoinHandle<()>`, which does not implement the `Copy` trait
    |
 примечание: `JoinHandle::<T>::join` takes ownership of the receiver `self`, which moves `worker.thread`
   --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/mod.rs:1778:17
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0507`.
-ошибка: не могу собрать исходную рукопись в приложение `здравствуй` (lib) due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0507`.
+ошибка: не могу собрать исходную рукопись в приложение `здравствуй` (lib) из-за 1 предыдущей ошибки

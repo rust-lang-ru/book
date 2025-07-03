@@ -4,16 +4,16 @@ $ cargo run
   --> src/main.rs:12:31
    |
 12 |     println!("прямоугольник1 is {:?}", прямоугольник1);
-   |                               ^^^^^ `Прямоугольник` cannot be formatted using `{:?}`
+   |                               ^^^^^ `Прямоугольник` cannot be formatted используйте `{:?}`
    |
-   = помощь: the trait `Debug` is not implemented for `Прямоугольник`
+   = помощь: сущность `Debug` не применим (-а) для `Прямоугольник`
    = примечание: add `#[derive(Debug)]` to `Прямоугольник` or manually `impl Debug for Прямоугольник`
-   = примечание: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = примечание: this ошибка originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, запустите с режимом -Z macro-backtrace for more info)
 помощь: consider annotating `Прямоугольник` with `#[derive(Debug)]`
    |
 1  + #[derive(Debug)]
 2  | struct Прямоугольник {
    |
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
-ошибка: не могу собрать исходную рукопись в приложение `прямоугольникs` (bin "прямоугольникs") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0277`.
+ошибка: не могу собрать исходную рукопись в приложение `прямоугольникs` (bin "прямоугольникs") из-за 1 предыдущей ошибки

@@ -15,7 +15,7 @@ $ cargo run
 15 | |         });
    | |_________^ `Rc<Mutex<i32>>` cannot be sent between threads safely
    |
-   = помощь: within `{closure@src/main.rs:11:36: 11:43}`, the trait `Send` is not implemented for `Rc<Mutex<i32>>`, which is required by `{closure@src/main.rs:11:36: 11:43}: Send`
+   = помощь: within `{closure@src/main.rs:11:36: 11:43}`, сущность `Send` не применим (-а) для `Rc<Mutex<i32>>`, which is required by `{closure@src/main.rs:11:36: 11:43}: Send`
 примечание: required because it's used within this closure
   --> src/main.rs:11:36
    |
@@ -24,5 +24,5 @@ $ cargo run
 примечание: required by a bound in `spawn`
   --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/mod.rs:688:1
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0277`.
-ошибка: не могу собрать исходную рукопись в приложение `shared-state` (bin "shared-state") due to 1 предыдущая ошибка
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0277`.
+ошибка: не могу собрать исходную рукопись в приложение `shared-state` (bin "shared-state") из-за 1 предыдущей ошибки

@@ -47,7 +47,7 @@ copy only the error output
 -->
 
 ```console
-ошибка[E0599]: no method named `next` found for struct `Iter` in the current scope
+ошибка[E0599]: no method named `next` найдено for struct `Iter` in the current scope
   --> src/main.rs:10:40
    |
 10 |         while let Some(значение) = stream.next().await {
@@ -55,7 +55,7 @@ copy only the error output
    |
    = примечание: the full type name has been written to 'file:///projects/async-await/target/debug/deps/async_await-575db3dd3197d257.long-type-14490787947592691573.txt'
    = примечание: consider using `--verbose` to print the full type name to the console
-   = помощь: items from traits can only be used if the trait is in scope
+   = помощь: items from traits can only be used if сущность is in scope
 помощь: the following traits which provide `next` are implemented but not in scope; perhaps you want to import one of them
    |
 1  + use crate::trpl::StreamExt;
@@ -142,7 +142,7 @@ copy only the error output
 Когда мы запускаем эта рукопись, мы получаем именно те итоги, которые и ожидали:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -219,7 +219,7 @@ changes in the compiler -->
 Теперь наш код имеет гораздо более интересный итог. Между каждой парой сообщений ошибка `Problem: Elapsed(())`.
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -263,7 +263,7 @@ Problem: Elapsed(())
 
 </Listing>
 
-Мы начинаем с определения `count` в задаче. (Мы могли бы определить его и вне
+Мы начинаем с определения `счётчик` в задаче. (Мы могли бы определить его и вне
 задачи, но понятнее ограничить область действия любой заданной переменной.) Затем мы
 создаем бесконечный цикл. Каждая итерация круговорота несогласованно спит
 одну миллисекунду, увеличивает счетчик, а затем отправляет его по каналу.
@@ -317,7 +317,7 @@ String>>`, где `Timeout` — это вид, который используе
 <span class="keystroke">ctrl-c</span>. Во-вторых, сообщения из английского алфавита будут погребены среди всех сообщений счетчика интервалов:
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the tasks запщущен differently rather than
+the changes are likely to be из-за the tasks запщущен differently rather than
 changes in the compiler -->
 
 ```text
@@ -356,7 +356,7 @@ Interval: 43
 снова в действии, позволяя нам выбирать характеристики производительности.
 
 <!-- Not extracting output because changes to this output aren't significant;
-the changes are likely to be due to the threads запщущен differently rather than
+the changes are likely to be из-за the threads запщущен differently rather than
 changes in the compiler -->
 
 ```text

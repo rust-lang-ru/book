@@ -24,15 +24,15 @@ lazy_static! {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let свойства: Vec<String> = env::args().collect();
 
     if args.len() < 3 {
         println!("Usage: {} <src-dir> <target-dir>", args[0]);
         exit(1);
     }
 
-    let source_dir = ensure_dir_exists(&args[1]).unwrap();
-    let target_dir = ensure_dir_exists(&args[2]).unwrap();
+    let source_dir = ensure_dir_exists(&свойства[1]).unwrap();
+    let target_dir = ensure_dir_exists(&свойства[2]).unwrap();
 
     let mut matched_files = match_files(source_dir, target_dir);
     matched_files.sort();

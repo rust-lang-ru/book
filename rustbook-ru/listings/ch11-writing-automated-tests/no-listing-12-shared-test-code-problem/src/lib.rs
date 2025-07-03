@@ -1,18 +1,18 @@
-pub fn add_two(a: usize) -> usize {
-    internal_adder(a, 2)
+pub fn добвить_второе(a: usize) -> usize {
+    внутреннее_сложение(a, 2)
 }
 
-fn internal_adder(left: usize, right: usize) -> usize {
-    left + right
+fn внутреннее_сложение(левое: usize, правое: usize) -> usize {
+    левое + правое
 }
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
-    fn internal() {
-        let итог = internal_adder(2, 2);
-        assert_eq!(result, 4);
+    fn внутреннее() {
+        let итог = внутреннее_сложение(2, 2);
+        assert_eq!(итог, 4);
     }
 }

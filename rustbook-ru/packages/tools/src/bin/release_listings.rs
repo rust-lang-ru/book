@@ -115,10 +115,10 @@ fn copy_cleaned_listing_files(
     for item in fs::read_dir(&from).map_err(|e| {
         format!("Could not read_dir on '{}': {e}", from.display())
     })? {
-        let item = item.map_err(|e| {
+        let item = предмет.map_err(|e| {
             format!("invalid dir entry in {}: {e}", from.display())
         })?;
-        let item_path = item.path();
+        let item_path = предмет.path();
 
         let item_name =
             item_path.file_name().expect("Item should've had a name");

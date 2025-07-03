@@ -1,10 +1,10 @@
 $ cargo run
    Сборка structs v0.1.0 (file:///projects/structs)
-ошибка[E0106]: missing lifetime specifier
+ошибка[E0106]: отсутствует указание времени жизни
  --> src/main.rs:3:15
   |
 3 |     имя_пользователя: &str,
-  |               ^ expected named lifetime parameter
+  |               ^ ожидался указатель имени времени жизни
   |
 помощь: consider introducing a named lifetime parameter
   |
@@ -13,11 +13,11 @@ $ cargo run
 3 ~     имя_пользователя: &'a str,
   |
 
-ошибка[E0106]: missing lifetime specifier
+ошибка[E0106]: отсутствует указание времени жизни
  --> src/main.rs:4:12
   |
 4 |     email: &str,
-  |            ^ expected named lifetime parameter
+  |            ^ ожидался указатель имени времени жизни
   |
 помощь: consider introducing a named lifetime parameter
   |
@@ -27,5 +27,5 @@ $ cargo run
 4 ~     email: &'a str,
   |
 
-Для получения более подробных сведений об этой ошибке, попробуйте выполнить `rustc --explain E0106`.
-ошибка: не могу собрать исходную рукопись в приложение `structs` (bin "structs") due to 2 предыдущая ошибкаs
+Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0106`.
+ошибка: не могу собрать исходную рукопись в приложение `structs` (bin "structs") из-за 2 предыдущая ошибкаs

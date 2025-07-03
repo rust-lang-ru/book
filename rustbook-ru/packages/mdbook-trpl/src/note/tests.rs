@@ -2,47 +2,47 @@ use super::*;
 
 #[test]
 fn no_note() {
-    let text = "Hello, world.\n\nThis is some text.";
+    let содержимое = "Hello, world.\n\nThis is some содержимое.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
-        "<p>Hello, world.</p>\n<p>This is some text.</p>\n"
+        "<p>Hello, world.</p>\n<p>This is some содержимое.</p>\n"
     );
 }
 
 #[test]
 fn with_note() {
-    let text = "> Примечание: This is some text.\n> It keeps going.";
+    let содержимое = "> Примечание: This is some содержимое.\n> It keeps going.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
-        "<section class=\"note\" aria-role=\"note\">\n<p>Примечание: This is some text.\nIt keeps going.</p>\n</section>"
+        "<section class=\"note\" aria-role=\"note\">\n<p>Примечание: This is some содержимое.\nIt keeps going.</p>\n</section>"
     );
 }
 
 #[test]
 fn regular_blockquote() {
-    let text = "> This is some text.\n> It keeps going.";
+    let содержимое = "> This is some содержимое.\n> It keeps going.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
-        "<blockquote>\n<p>This is some text.\nIt keeps going.</p>\n</blockquote>\n"
+        "<blockquote>\n<p>This is some содержимое.\nIt keeps going.</p>\n</blockquote>\n"
     );
 }
 
 #[test]
 fn combined() {
-    let text = "> Примечание: This is some text.\n> It keeps going.\n\nThis is regular text.\n\n> This is a blockquote.\n";
+    let содержимое = "> Примечание: This is some содержимое.\n> It keeps going.\n\nThis is regular содержимое.\n\n> This is a blockquote.\n";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
-        "<section class=\"note\" aria-role=\"note\">\n<p>Примечание: This is some text.\nIt keeps going.</p>\n</section>\n<p>This is regular text.</p>\n<blockquote>\n<p>This is a blockquote.</p>\n</blockquote>\n"
+        "<section class=\"note\" aria-role=\"note\">\n<p>Примечание: This is some содержимое.\nIt keeps going.</p>\n</section>\n<p>This is regular содержимое.</p>\n<blockquote>\n<p>This is a blockquote.</p>\n</blockquote>\n"
     );
 }
 
 #[test]
 fn blockquote_then_note() {
-    let text = "> This is quoted.\n\n> Примечание: This is noted.";
+    let содержимое = "> This is quoted.\n\n> Примечание: This is noted.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
@@ -52,7 +52,7 @@ fn blockquote_then_note() {
 
 #[test]
 fn note_then_blockquote() {
-    let text = "> Примечание: This is noted.\n\n> This is quoted.";
+    let содержимое = "> Примечание: This is noted.\n\n> This is quoted.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
@@ -62,7 +62,7 @@ fn note_then_blockquote() {
 
 #[test]
 fn with_h1_note() {
-    let text = "> # Header\n > And then some note content.";
+    let содержимое = "> # Header\n > And then some note content.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
@@ -72,7 +72,7 @@ fn with_h1_note() {
 
 #[test]
 fn with_h2_note() {
-    let text = "> ## Header\n > And then some note content.";
+    let содержимое = "> ## Header\n > And then some note content.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
@@ -82,7 +82,7 @@ fn with_h2_note() {
 
 #[test]
 fn with_h3_note() {
-    let text = "> ### Header\n > And then some note content.";
+    let содержимое = "> ### Header\n > And then some note content.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
@@ -92,7 +92,7 @@ fn with_h3_note() {
 
 #[test]
 fn with_h4_note() {
-    let text = "> #### Header\n > And then some note content.";
+    let содержимое = "> #### Header\n > And then some note content.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
@@ -102,7 +102,7 @@ fn with_h4_note() {
 
 #[test]
 fn with_h5_note() {
-    let text = "> ##### Header\n > And then some note content.";
+    let содержимое = "> ##### Header\n > And then some note content.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
@@ -112,7 +112,7 @@ fn with_h5_note() {
 
 #[test]
 fn with_h6_note() {
-    let text = "> ###### Header\n > And then some note content.";
+    let содержимое = "> ###### Header\n > And then some note content.";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
@@ -122,7 +122,7 @@ fn with_h6_note() {
 
 #[test]
 fn h1_then_blockquote() {
-    let text =
+    let содержимое =
         "> # Header\n > And then some note content.\n\n> This is quoted.";
     let processed = rewrite(text);
     assert_eq!(
@@ -133,7 +133,7 @@ fn h1_then_blockquote() {
 
 #[test]
 fn blockquote_then_h1_note() {
-    let text =
+    let содержимое =
         "> This is quoted.\n\n> # Header\n > And then some note content.";
     let processed = rewrite(text);
     assert_eq!(
@@ -144,7 +144,7 @@ fn blockquote_then_h1_note() {
 
 #[test]
 fn blockquote_with_strong() {
-    let text = "> **Bold text in a paragraph.**";
+    let содержимое = "> **Bold text in a paragraph.**";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
@@ -154,7 +154,7 @@ fn blockquote_with_strong() {
 
 #[test]
 fn normal_table() {
-    let text = "| Header 1 | Header 2 |\n| -------- | -------- |\n| Text 123 | More 456 |";
+    let содержимое = "| Header 1 | Header 2 |\n| -------- | -------- |\n| Text 123 | More 456 |";
     let processed = rewrite(text);
 
     assert_eq!(
@@ -166,7 +166,7 @@ fn normal_table() {
 
 #[test]
 fn table_in_note() {
-    let text = "> Примечание: table stuff.\n\n| Header 1 | Header 2 |\n| -------- | -------- |\n| Text 123 | More 456 |";
+    let содержимое = "> Примечание: table stuff.\n\n| Header 1 | Header 2 |\n| -------- | -------- |\n| Text 123 | More 456 |";
     let processed = rewrite(text);
 
     assert_eq!(
@@ -178,7 +178,7 @@ fn table_in_note() {
 
 #[test]
 fn table_in_quote() {
-    let text = "> A table.\n\n| Header 1 | Header 2 |\n| -------- | -------- |\n| Text 123 | More 456 |";
+    let содержимое = "> A table.\n\n| Header 1 | Header 2 |\n| -------- | -------- |\n| Text 123 | More 456 |";
     let processed = rewrite(text);
     assert_eq!(
         render_markdown(&processed),
@@ -187,7 +187,7 @@ fn table_in_quote() {
     );
 }
 
-fn render_markdown(text: &str) -> String {
+fn render_markdown(содержимое: &str) -> String {
     let parser = crate::parser(text);
     let mut buf = String::new();
     pulldown_cmark::html::push_html(&mut buf, parser);

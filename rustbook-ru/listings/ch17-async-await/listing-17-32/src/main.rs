@@ -10,10 +10,10 @@ fn main() {
         let stream = trpl::stream_from_iter(iter);
 
         let mut filtered =
-            stream.filter(|value| value % 3 == 0 || value % 5 == 0);
+            stream.filter(|значение| значение % 3 == 0 || значение % 5 == 0);
 
         while let Some(значение) = filtered.next().await {
-            println!("The value was: {значение}");
+            println!("The значение was: {значение}");
         }
     });
 }

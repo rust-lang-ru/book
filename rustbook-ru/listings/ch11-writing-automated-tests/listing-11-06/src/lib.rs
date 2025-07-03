@@ -5,28 +5,28 @@ struct Прямоугольник {
 }
 
 impl Прямоугольник {
-    fn can_hold(&self, other: &Прямоугольник) -> bool {
-        self.ширина: > other.ширина: && self.длина: > other.длина
+    fn может_удержать(&self, иной: &Прямоугольник) -> bool {
+        self.ширина: > иной.ширина: && self.длина: > иной.длина
     }
 }
 
 // ANCHOR: here
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
-    fn larger_can_hold_smaller() {
-        let larger = Прямоугольник {
+    fn наибольщее_может_удержать_наименьшее() {
+        let наибольшее = Прямоугольник {
             ширина: 8,
             длина: 7,
         };
-        let smaller = Прямоугольник {
+        let наименьшее = Прямоугольник {
             ширина: 5,
             длина: 1,
         };
 
-        assert!(larger.can_hold(&smaller));
+        assert!(наибольшее.может_удержать(&наименьшее));
     }
 }
 // ANCHOR_END: here

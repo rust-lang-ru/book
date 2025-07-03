@@ -2,47 +2,47 @@ use std::error::Error;
 use std::fs;
 
 pub struct Config {
-    pub query: String,
-    pub file_path: String,
+    pub запрос: String,
+    pub путь_до_файла: String,
 }
 
 impl Config {
-    pub fn build(args: &[String]) -> Result<Config, &'static str> {
+    pub fn build(свойства: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
             return Err("не хватает переменных");
         }
 
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+        let запрос = args[1].clone();
+        let путь_до_файла = args[2].clone();
 
-        Ok(Config { query, file_path })
+        Ok(Config { запрос, путь_до_файла })
     }
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let contents = fs::read_to_string(config.file_path)?;
+    let содержимое = fs::read_to_string(config.путь_до_файла)?;
 
     Ok(())
 }
 
 // ANCHOR: here
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+pub fn search<'a>(запрос: &str, contents: &'a str) -> Vec<&'a str> {
     vec![]
 }
 // ANCHOR_END: here
 
 #[cfg(test)]
-mod tests {
+mod проверки {
     use super::*;
 
     #[test]
-    fn one_result() {
-        let query = "duct";
-        let contents = "\
+    fn один_итог() {
+        let запрос = "duct";
+        let содержимое = "\
 Rust:
-safe, fast, productive.
-Pick three.";
+безопасность, скорость, производительность.
+Выберите три.";
 
-        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, contents));
     }
 }
