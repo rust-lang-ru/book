@@ -36,15 +36,15 @@ happen.
 
 ### Cases in Which You Have More Information Than the Compiler
 
-It would also be appropriate to call `unwrap` or `expect` when you have some
-other logic that ensures the `Result` will have an `Ok` value, but the logic
-isn’t something the compiler understands. You’ll still have a `Result` value
-that you need to handle: whatever operation you’re calling still has the
-possibility of failing in general, even though it’s logically impossible in
-your particular situation. If you can ensure by manually inspecting the code
-that you’ll never have an `Err` variant, it’s perfectly acceptable to call
-`unwrap`, and even better to document the reason you think you’ll never have an
-`Err` variant in the `expect` text. Here’s an example:
+It would also be appropriate to call `expect` when you have some other logic
+that ensures the `Result` will have an `Ok` value, but the logic isn’t
+something the compiler understands. You’ll still have a `Result` value that you
+need to handle: whatever operation you’re calling still has the possibility of
+failing in general, even though it’s logically impossible in your particular
+situation. If you can ensure by manually inspecting the code that you’ll never
+have an `Err` variant, it’s perfectly acceptable to call `expect` and document
+the reason you think you’ll never have an `Err` variant in the argument text.
+Here’s an example:
 
 ```rust
 {{#rustdoc_include ../listings/ch09-error-handling/no-listing-08-unwrap-that-cant-fail/src/main.rs:here}}
@@ -174,9 +174,11 @@ the `new` function receives a value between 1 and 100.
 
 </Listing>
 
-First we create a new module named `guessing_game`. Next we define a struct in
-that module named `Guess` that has a field named `value` that holds an `i32`.
-This is where the number will be stored.
+Note that this code in *src/guessing_game.rs* depends on adding a module
+declaration `mod guessing_game;` in *src/lib.rs* that we haven’t shown here.
+Within this new module’s file, we define a struct in that module named `Guess`
+that has a field named `value` that holds an `i32`. This is where the number
+will be stored.
 
 Then we implement an associated function named `new` on `Guess` that creates
 instances of `Guess` values. The `new` function is defined to have one

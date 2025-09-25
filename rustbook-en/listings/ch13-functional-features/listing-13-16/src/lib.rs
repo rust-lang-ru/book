@@ -1,10 +1,10 @@
 #[derive(PartialEq, Debug)]
 struct Shoe {
-    размер: u32,
+    size: u32,
     style: String,
 }
 
-fn shoes_in_size(shoes: Vec<Shoe>, shoe_размер: u32) -> Vec<Shoe> {
+fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
     shoes.into_iter().filter(|s| s.size == shoe_size).collect()
 }
 
@@ -16,15 +16,15 @@ mod tests {
     fn filters_by_size() {
         let shoes = vec![
             Shoe {
-                размер: 10,
+                size: 10,
                 style: String::from("sneaker"),
             },
             Shoe {
-                размер: 13,
+                size: 13,
                 style: String::from("sandal"),
             },
             Shoe {
-                размер: 10,
+                size: 10,
                 style: String::from("boot"),
             },
         ];
@@ -35,11 +35,11 @@ mod tests {
             in_my_size,
             vec![
                 Shoe {
-                    размер: 10,
+                    size: 10,
                     style: String::from("sneaker")
                 },
                 Shoe {
-                    размер: 10,
+                    size: 10,
                     style: String::from("boot")
                 },
             ]

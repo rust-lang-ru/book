@@ -53,7 +53,7 @@ backyard
 Раздел `pub mod овощи;` указывает на подключаемый подраздел в *src/сад/овощи.rs*. Содержимое данного подраздела:
 
 ```rust,noplayground,ignore
-{{#rustdoc_include ../listings/ch07-managing-growing-projects/quick-reference-example/src/garden/garden.rs}}
+{{#rustdoc_include ../listings/ch07-managing-growing-projects/quick-reference-example/src/garden.rs}}
 ```
 
 Теперь давайте рассмотрим подробности этих правил и проверим их в действии!

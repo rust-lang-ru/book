@@ -18,8 +18,8 @@ exclude = [
 [workspace.dependencies]
 walkdir = "2.5.0"
 docopt = "1.1.1"
-serde = "1.0.219"
-regex = "1.11.1"
+serde = "1.0.223"
+regex = "1.11.2"
 lazy_static = "1.5.0"
 flate2 = "1.1.2"
 tar = "0.4.44"

@@ -1,1 +1,1 @@
-pub mod овощи;
+pub mod vegetables;

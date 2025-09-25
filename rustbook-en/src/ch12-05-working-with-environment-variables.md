@@ -1,6 +1,6 @@
 ## Working with Environment Variables
 
-We’ll improve `minigrep` by adding an extra feature: an option for
+We’ll improve the `minigrep` binary by adding an extra feature: an option for
 case-insensitive searching that the user can turn on via an environment
 variable. We could make this feature a command line option and require that
 users enter it each time they want it to apply, but by instead making it an
@@ -9,12 +9,12 @@ and have all their searches be case insensitive in that terminal session.
 
 ### Writing a Failing Test for the Case-Insensitive `search` Function
 
-We first add a new `search_case_insensitive` function that will be called when
-the environment variable has a value. We’ll continue to follow the TDD process,
-so the first step is again to write a failing test. We’ll add a new test for
-the new `search_case_insensitive` function and rename our old test from
-`one_result` to `case_sensitive` to clarify the differences between the two
-tests, as shown in Listing 12-20.
+We first add a new `search_case_insensitive` function to the `minigrep` library
+that will be called when the environment variable has a value. We’ll continue
+to follow the TDD process, so the first step is again to write a failing test.
+We’ll add a new test for the new `search_case_insensitive` function and rename
+our old test from `one_result` to `case_sensitive` to clarify the differences
+between the two tests, as shown in Listing 12-20.
 
 <Listing number="12-20" file-name="src/lib.rs" caption="Adding a new failing test for the case-insensitive function we’re about to add">
 
@@ -58,11 +58,11 @@ they’ll be the same case when we check whether the line contains the query.
 First we lowercase the `query` string and store it in a new variable with the
 same name, shadowing the original `query`. Calling `to_lowercase` on the query
 is necessary so that no matter whether the user’s query is `"rust"`, `"RUST"`,
-`"Rust"`, or `"rUsT"`, we’ll treat the query as if it were `"rust"` and be
+`"Rust"`, or `"``rUsT``"`, we’ll treat the query as if it were `"rust"` and be
 insensitive to the case. While `to_lowercase` will handle basic Unicode, it
-won’t be 100% accurate. If we were writing a real application, we’d want to do a
-bit more work here, but this section is about environment variables, not
-Unicode, so we’ll leave it at that here.
+won’t be 100 percent accurate. If we were writing a real application, we’d want
+to do a bit more work here, but this section is about environment variables,
+not Unicode, so we’ll leave it at that here.
 
 Note that `query` is now a `String` rather than a string slice because calling
 `to_lowercase` creates new data rather than referencing existing data. Say the
@@ -88,10 +88,10 @@ struct to switch between case-sensitive and case-insensitive search. Adding
 this field will cause compiler errors because we aren’t initializing this field
 anywhere yet:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Filename: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-22/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-22/src/main.rs:here}}
 ```
 
 We added the `ignore_case` field that holds a Boolean. Next, we need the `run`
@@ -99,25 +99,24 @@ function to check the `ignore_case` field’s value and use that to decide
 whether to call the `search` function or the `search_case_insensitive`
 function, as shown in Listing 12-22. This still won’t compile yet.
 
-<Listing number="12-22" file-name="src/lib.rs" caption="Calling either `search` or `search_case_insensitive` based on the value in `config.ignore_case`">
+<Listing number="12-22" file-name="src/main.rs" caption="Calling either `search` or `search_case_insensitive` based on the value in `config.ignore_case`">
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-22/src/lib.rs:there}}
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-22/src/main.rs:there}}
 ```
 
 </Listing>
 
 Finally, we need to check for the environment variable. The functions for
 working with environment variables are in the `env` module in the standard
-library, so we bring that module into scope at the top of _src/lib.rs_. Then
-we’ll use the `var` function from the `env` module to check to see if any value
-has been set for an environment variable named `IGNORE_CASE`, as shown in
-Listing 12-23.
+library, which is already in scope at the top of _src/main.rs_. We’ll use the
+`var` function from the `env` module to check to see if any value has been set
+for an environment variable named `IGNORE_CASE`, as shown in Listing 12-23.
 
-<Listing number="12-23" file-name="src/lib.rs" caption="Checking for any value in an environment variable named `IGNORE_CASE`">
+<Listing number="12-23" file-name="src/main.rs" caption="Checking for any value in an environment variable named `IGNORE_CASE`">
 
-```rust,noplayground
-{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-23/src/lib.rs:here}}
+```rust,ignore,noplayground
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-23/src/main.rs:here}}
 ```
 
 </Listing>
