@@ -8,7 +8,7 @@ pub use config::Mode;
 pub use figure::TrplFigure as Figure;
 pub use heading::TrplHeading as Heading;
 pub use listing::TrplListing as Listing;
-pub use примечание::TrplNote as Note;
+pub use note::TrplNote as Note;
 use pulldown_cmark::{Options, Parser};
 
 /// Convenience function to get a parser matching `mdbook::new_cmark_parser`.
@@ -24,7 +24,7 @@ use pulldown_cmark::{Options, Parser};
 /// - We do not use footnotes in the text at present, but this goes out of its
 ///   way to match this up to the old footnotes behavior just to make sure the
 ///   parsing etc. is all the same.
-pub fn parser(содержимое: &str) -> Parser<'_> {
+pub fn parser(text: &str) -> Parser<'_> {
     let mut opts = Options::empty();
     opts.insert(Options::ENABLE_TABLES);
     opts.insert(Options::ENABLE_FOOTNOTES);
@@ -43,7 +43,7 @@ impl std::fmt::Display for CompositeError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "Ошибка(s) rewriting input: {}",
+            "Error(s) rewriting input: {}",
             self.0.iter().map(|e| format!("{e:?}")).collect::<String>()
         )
     }

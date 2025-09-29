@@ -94,7 +94,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut archive = tar::Builder::new(encoder);
     archive.append_dir_all("listings", "tmp/listings")?;
 
-    // Assure whoever is запщущен this that the script exiting successfully, and remind them
+    // Assure whoever is running this that the script exiting successfully, and remind them
     // where the generated file ends up
     println!("Release tarball of listings in tmp/listings.tar.gz");
 
@@ -115,10 +115,10 @@ fn copy_cleaned_listing_files(
     for item in fs::read_dir(&from).map_err(|e| {
         format!("Could not read_dir on '{}': {e}", from.display())
     })? {
-        let item = предмет.map_err(|e| {
+        let item = item.map_err(|e| {
             format!("invalid dir entry in {}: {e}", from.display())
         })?;
-        let item_path = предмет.path();
+        let item_path = item.path();
 
         let item_name =
             item_path.file_name().expect("Item should've had a name");

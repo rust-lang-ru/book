@@ -57,10 +57,10 @@ impl Preprocessor for TrplFigure {
         };
 
         let mut errors = vec![];
-        boуспешно.for_each_mut(|item| {
+        book.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
-                match rewrite_figure(&chapter.содержимое) {
-                    Ok(rewritten) => chapter.содержимое = rewritten,
+                match rewrite_figure(&chapter.content) {
+                    Ok(rewritten) => chapter.content = rewritten,
                     Err(reason) => errors.push(reason),
                 }
             }
@@ -80,7 +80,7 @@ const CLOSE_FIGURE: &'static str = "</figure>";
 const OPEN_CAPTION: &'static str = "<figcaption>";
 const CLOSE_CAPTION: &'static str = "</figcaption>";
 
-fn rewrite_figure(содержимое: &str) -> Result<String> {
+fn rewrite_figure(text: &str) -> Result<String> {
     let final_state = crate::parser(text).try_fold(
         State {
             current: None,
@@ -125,7 +125,7 @@ fn rewrite_figure(содержимое: &str) -> Result<String> {
                 // that we have started a caption. We will push the body of the
                 // caption into the figure’s events when we hit them.
                 //
-                // Примечание: this does not support `<figcaption class="...">`.
+                // Note: this does not support `<figcaption class="...">`.
                 (Event::Html(tag), Some(fig))
                     if tag.starts_with(OPEN_CAPTION) =>
                 {
@@ -133,19 +133,19 @@ fn rewrite_figure(содержимое: &str) -> Result<String> {
                         return Err(anyhow!(bad_open(OPEN_CAPTION)));
                     } else {
                         if tag.trim().ends_with(CLOSE_CAPTION) {
-                            let содержимое = Dom::parse(tag.as_ref())?
+                            let text = Dom::parse(tag.as_ref())?
                                 .children
                                 .into_iter()
                                 .filter_map(text_of)
                                 .collect::<String>();
 
-                            if содержимое.is_empty() {
+                            if text.is_empty() {
                                 return Err(anyhow!(
                                     "Missing caption in `<figcaption>`"
                                 ));
                             }
 
-                            fig.events.push(Event::Text(содержимое.into()));
+                            fig.events.push(Event::Text(text.into()));
                         } else {
                             fig.events.push(Event::Text("\n".into()));
                             fig.in_caption = true;
@@ -236,4 +236,4 @@ impl<'e> Figure<'e> {
 }
 
 #[cfg(test)]
-mod проверки;
+mod tests;

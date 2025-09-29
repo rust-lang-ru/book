@@ -8,11 +8,11 @@ use docopt::Docopt;
 use serde::Deserialize;
 
 fn main() {
-    let свойства: Args = Docopt::new(USAGE)
+    let args: Args = Docopt::new(USAGE)
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
 
-    let src_dir = &path::Path::new(&свойства.arg_src_dir);
+    let src_dir = &path::Path::new(&args.arg_src_dir);
     let found_errs = walkdir::WalkDir::new(src_dir)
         .min_depth(1)
         .into_iter()
@@ -49,7 +49,7 @@ fn main() {
         })
         .collect::<Vec<_>>()
         .iter()
-        .any(|итог| *result);
+        .any(|result| *result);
 
     if found_errs {
         std::process::exit(1)
@@ -86,15 +86,15 @@ where
     lines
         .enumerate()
         .map(|(line_num, line)| {
-            let raw_line = строка.unwrap();
+            let raw_line = line.unwrap();
             if is_line_of_interest(&raw_line) {
                 Err(LintingError::LineOfInterest(line_num, raw_line))
             } else {
                 Ok(())
             }
         })
-        .filter(|итог| итог.is_err())
-        .map(|итог| итог.unwrap_err())
+        .filter(|result| result.is_err())
+        .map(|result| result.unwrap_err())
         .collect()
 }
 
@@ -103,7 +103,7 @@ fn is_file_of_interest(path: &path::Path) -> bool {
 }
 
 fn is_line_of_interest(line: &str) -> bool {
-    строка.split_whitespace().any(|sub_string| {
+    line.split_whitespace().any(|sub_string| {
         sub_string.contains("file://")
             && !sub_string.contains("file:///projects/")
             && !sub_string.contains("file:///home/.cargo")
@@ -118,7 +118,7 @@ enum LintingError {
 }
 
 #[cfg(test)]
-mod проверки {
+mod tests {
 
     use std::path;
 
@@ -127,45 +127,45 @@ mod проверки {
         let string = r#"
         $ cargo run
                Compiling guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
-                 Запщущен `target/guessing_game`
+                 Running `target/guessing_game`
             Guess the number!
             The secret number is: 61
-            ,пожалуйста input your guess.
+            Please input your guess.
             10
             You guessed: 10
             Too small!
-            ,пожалуйста input your guess.
+            Please input your guess.
             99
             You guessed: 99
             Too big!
-            ,пожалуйста input your guess.
+            Please input your guess.
             foo
-            ,пожалуйста input your guess.
+            Please input your guess.
             61
             You guessed: 61
             You win!
             $ cargo run
                Compiling guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
-                 Запщущен `target/debug/guessing_game`
+                 Running `target/debug/guessing_game`
             Guess the number!
             The secret number is: 7
-            ,пожалуйста input your guess.
+            Please input your guess.
             4
             You guessed: 4
             $ cargo run
-                 Запщущен `target/debug/guessing_game`
+                 Running `target/debug/guessing_game`
             Guess the number!
             The secret number is: 83
-            ,пожалуйста input your guess.
+            Please input your guess.
             5
             $ cargo run
                Compiling guessing_game v0.1.0 (file:///home/you/projects/guessing_game)
-                 Запщущен `target/debug/guessing_game`
+                 Running `target/debug/guessing_game`
             Hello, world!
         "#;
 
         let raw_lines = string.to_string();
-        let lines = raw_lines.lines().map(|строка| Ok(строка.to_string()));
+        let lines = raw_lines.lines().map(|line| Ok(line.to_string()));
 
         let result_vec = super::lint_lines(lines);
 
@@ -178,31 +178,31 @@ mod проверки {
         let string = r#"
             $ cargo run
                Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
-                 Запщущен `target/guessing_game`
+                 Running `target/guessing_game`
             Guess the number!
             The secret number is: 61
-            ,пожалуйста input your guess.
+            Please input your guess.
             10
             You guessed: 10
             Too small!
-            ,пожалуйста input your guess.
+            Please input your guess.
             99
             You guessed: 99
             Too big!
-            ,пожалуйста input your guess.
+            Please input your guess.
             foo
-            ,пожалуйста input your guess.
+            Please input your guess.
             61
             You guessed: 61
             You win!
         "#;
 
         let raw_lines = string.to_string();
-        let lines = raw_lines.lines().map(|строка| Ok(строка.to_string()));
+        let lines = raw_lines.lines().map(|line| Ok(line.to_string()));
 
         let result_vec = super::lint_lines(lines);
 
-        assert!(итог_vec.is_empty());
+        assert!(result_vec.is_empty());
     }
 
     #[test]

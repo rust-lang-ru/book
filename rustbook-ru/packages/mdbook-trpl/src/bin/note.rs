@@ -33,6 +33,6 @@ struct Cli {
 enum Command {
     /// Is the renderer supported?
     ///
-    /// All renderers are supported! This is the contract for mdBoуспешно.
+    /// All renderers are supported! This is the contract for mdBook.
     Supports { renderer: String },
 }

@@ -24,10 +24,10 @@ impl Preprocessor for TrplHeading {
         let mode = Mode::from_context(ctx, self.name())?;
 
         let mut errors = vec![];
-        boуспешно.for_each_mut(|item| {
+        book.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
-                match rewrite_headings(&chapter.содержимое, mode) {
-                    Ok(rewritten) => chapter.содержимое = rewritten,
+                match rewrite_headings(&chapter.content, mode) {
+                    Ok(rewritten) => chapter.content = rewritten,
                     Err(reason) => errors.push(reason),
                 }
             }
@@ -111,4 +111,4 @@ fn rewrite_headings(src: &str, mode: Mode) -> anyhow::Result<String> {
 }
 
 #[cfg(test)]
-mod проверки;
+mod tests;

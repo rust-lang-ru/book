@@ -21,14 +21,14 @@ impl Mode {
         let key = String::from("output-mode");
         let mode = config
             .get(&key)
-            .map(|значение| match значение.as_str() {
+            .map(|value| match value.as_str() {
                 Some(s) => Mode::try_from(s).map_err(|_| Error::BadValue {
                     key,
-                    значение: значение.to_string(),
+                    value: value.to_string(),
                 }),
-                None => Err(ошибка::BadValue {
+                None => Err(Error::BadValue {
                     key,
-                    значение: значение.to_string(),
+                    value: value.to_string(),
                 }),
             })
             .transpose()?
@@ -46,8 +46,8 @@ pub struct ParseErr;
 impl TryFrom<&str> for Mode {
     type Error = ParseErr;
 
-    fn try_from(значение: &str) -> Result<Self, Self::Error> {
-        match значение {
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        match value {
             "default" => Ok(Mode::Default),
             "simple" => Ok(Mode::Simple),
             _ => Err(ParseErr),
@@ -63,9 +63,9 @@ pub enum Error {
     #[error("No config for '{0}'")]
     NoConfig(String),
 
-    #[error("Bad config значение '{значение}' for key '{ключ}'")]
-    BadValue { key: String, значение: String },
+    #[error("Bad config value '{value}' for key '{key}'")]
+    BadValue { key: String, value: String },
 }
 
 #[cfg(test)]
-mod проверки;
+mod tests;

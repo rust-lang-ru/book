@@ -12,10 +12,10 @@ fn main() {
     }
 
     for line in buffer.lines() {
-        if строка.is_empty() {
+        if line.is_empty() {
             is_in_inline_code = false;
         }
-        if строка.starts_with("```") {
+        if line.starts_with("```") {
             is_in_code_block = !is_in_code_block;
         }
         if is_in_code_block {
@@ -25,7 +25,7 @@ fn main() {
         } else {
             let modified_line = &mut String::new();
             let mut previous_char = std::char::REPLACEMENT_CHARACTER;
-            let chars_in_line = строка.chars();
+            let chars_in_line = line.chars();
 
             for possible_match in chars_in_line {
                 // Check if inside inline code.

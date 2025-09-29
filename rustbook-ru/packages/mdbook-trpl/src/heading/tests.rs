@@ -2,7 +2,7 @@ use super::*;
 
 #[test]
 fn default_mode_is_unchanged() {
-    let итог = rewrite_headings(
+    let result = rewrite_headings(
         "# This is *emphasized* and **strong** and `code`
 ## Here is *another* and **strong** and `code`
 ### Third *level* **heading** with `code`
@@ -14,7 +14,7 @@ fn default_mode_is_unchanged() {
     );
 
     assert_eq!(
-        итог.unwrap(),
+        result.unwrap(),
         "# This is *emphasized* and **strong** and `code`
 ## Here is *another* and **strong** and `code`
 ### Third *level* **heading** with `code`
@@ -25,7 +25,7 @@ fn default_mode_is_unchanged() {
     );
 }
 
-// Примечание: these tests all check that the result of rewriting a header *with* and
+// Note: these tests all check that the result of rewriting a header *with* and
 // *without* the markup is the same, so that other “normalization” that happens
 // along the way (inserting or removing newlines, e.g.) is ignored.
 mod simple_mode {
@@ -33,7 +33,7 @@ mod simple_mode {
 
     #[test]
     fn strips_em() {
-        let итог = rewrite_headings(
+        let result = rewrite_headings(
             "# This is *emphasized* and _this is too_
 ## Here is *another* and _emphasis style_
 ### Third *level* _heading_ here
@@ -55,23 +55,23 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(итог.unwrap(), expected.unwrap());
+        assert_eq!(result.unwrap(), expected.unwrap());
     }
 
     #[test]
     fn strips_nested_em() {
-        let итог = rewrite_headings(
+        let result = rewrite_headings(
             "# *This _is *extra* emphatic_ emphasis*.",
             Mode::Simple,
         );
         let expected = "# This is extra emphatic emphasis.";
 
-        assert_eq!(итог.unwrap(), expected);
+        assert_eq!(result.unwrap(), expected);
     }
 
     #[test]
     fn strips_strong() {
-        let итог = rewrite_headings(
+        let result = rewrite_headings(
             "# This is **strong** and __this is too__
 ## Here is **another** and __strong style__
 ### Third **level** __heading__ here
@@ -93,23 +93,23 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(итог.unwrap(), expected.unwrap());
+        assert_eq!(result.unwrap(), expected.unwrap());
     }
 
     #[test]
     fn strips_nested_strong() {
-        let итог = rewrite_headings(
+        let result = rewrite_headings(
             "# **This __is **extra** emphatic__ emphasis**.",
             Mode::Simple,
         );
         let expected = "# This is extra emphatic emphasis.";
 
-        assert_eq!(итог.unwrap(), expected);
+        assert_eq!(result.unwrap(), expected);
     }
 
     #[test]
     fn strips_code() {
-        let итог = rewrite_headings(
+        let result = rewrite_headings(
             "# This is `code`
 ## Here is `another`
 ### Third `level`
@@ -131,12 +131,12 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(итог.unwrap(), expected.unwrap());
+        assert_eq!(result.unwrap(), expected.unwrap());
     }
 
     #[test]
     fn strips_html() {
-        let итог = rewrite_headings(
+        let result = rewrite_headings(
             "# This is <span>html</span>
 ## Here is <span>another</span>
 ### Third <span>level</span>
@@ -158,12 +158,12 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(итог.unwrap(), expected.unwrap());
+        assert_eq!(result.unwrap(), expected.unwrap());
     }
 
     #[test]
     fn strips_strikethrough() {
-        let итог = rewrite_headings(
+        let result = rewrite_headings(
             "# This is ~~strikethrough~~
 ## Here is ~~another~~
 ### Third ~~level~~
@@ -185,12 +185,12 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(итог.unwrap(), expected.unwrap());
+        assert_eq!(result.unwrap(), expected.unwrap());
     }
 
     #[test]
     fn strips_nested_combinations() {
-        let итог = rewrite_headings(
+        let result = rewrite_headings(
             "# **Nested ~~strikethrough _emphasis_ fun~~ times**",
             Mode::Simple,
         );
@@ -200,6 +200,6 @@ mod simple_mode {
             Mode::Simple,
         );
 
-        assert_eq!(итог.unwrap(), expected.unwrap())
+        assert_eq!(result.unwrap(), expected.unwrap())
     }
 }

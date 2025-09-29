@@ -64,10 +64,10 @@ impl Preprocessor for TrplListing {
         let mode = Mode::from_context(ctx, self.name())?;
 
         let mut errors = vec![];
-        boуспешно.for_each_mut(|item| {
+        book.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
-                match rewrite_listing(&chapter.содержимое, mode) {
-                    Ok(rewritten) => chapter.содержимое = rewritten,
+                match rewrite_listing(&chapter.content, mode) {
+                    Ok(rewritten) => chapter.content = rewritten,
                     Err(reason) => errors.push(anyhow!(reason)),
                 }
             }
@@ -115,7 +115,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
             }
 
             let (events, errors): (Vec<_>, Vec<_>) =
-                final_state.events.into_iter().частьition(|e| e.is_ok());
+                final_state.events.into_iter().partition(|e| e.is_ok());
 
             if !errors.is_empty() {
                 return Err(errors
@@ -126,7 +126,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
             }
 
             let mut buf = String::with_capacity(src.len() * 2);
-            cmark(events.into_iter().map(|ok| успешно.unwrap()), &mut buf)
+            cmark(events.into_iter().map(|ok| ok.unwrap()), &mut buf)
                 .map_err(|e| format!("{e}"))?;
 
             Ok(buf)
@@ -137,7 +137,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
             let mut rewritten = String::with_capacity(src.len());
             let mut current_closing = None;
             for line in src.lines() {
-                if строка.starts_with("<Listing") && (строка.ends_with(">")) {
+                if line.starts_with("<Listing") && (line.ends_with(">")) {
                     let listing =
                         ListingBuilder::from_tag(&line)?.build(Mode::Simple);
                     rewritten.push_str(&listing.opening_text());
@@ -240,7 +240,7 @@ impl Listing {
     fn closing_html(&self, trailing: &str) -> String {
         match (&self.number, &self.caption) {
             (Some(number), caption) => {
-                let caption_содержимое = caption
+                let caption_text = caption
                     .as_ref()
                     .map(|caption| format!(": {}", caption))
                     .unwrap_or_default();
@@ -279,7 +279,7 @@ impl Listing {
     }
 }
 
-/// Примечание: Although this has the same structure as [`Listing`], it does not have
+/// Note: Although this has the same structure as [`Listing`], it does not have
 /// the same *semantics*. In particular, this has the *source* for the `caption`
 /// while `Listing` has the *rendered* version.
 struct ListingBuilder {
@@ -308,20 +308,20 @@ impl ListingBuilder {
                     caption: None,
                     file_name: None,
                 },
-                |builder, (ключ, maybe_value)| match (ключ.as_str(), maybe_value)
+                |builder, (key, maybe_value)| match (key.as_str(), maybe_value)
                 {
-                    ("number", Some(значение)) => Ok(builder.with_number(значение)),
+                    ("number", Some(value)) => Ok(builder.with_number(value)),
 
-                    ("caption", Some(значение)) => Ok(builder.with_caption(значение)),
+                    ("caption", Some(value)) => Ok(builder.with_caption(value)),
 
-                    ("file-name", Some(значение)) => {
-                        Ok(builder.with_file_name(значение))
+                    ("file-name", Some(value)) => {
+                        Ok(builder.with_file_name(value))
                     }
 
                     (attr @ "file-name", None)
                     | (attr @ "caption", None)
                     | (attr @ "number", None) => {
-                        Err(format!("Missing значение for attribute: '{attr}'"))
+                        Err(format!("Missing value for attribute: '{attr}'"))
                     }
 
                     (attr, _) => {
@@ -331,18 +331,18 @@ impl ListingBuilder {
             )
     }
 
-    fn with_number(mut self, значение: String) -> Self {
-        self.number = Some(значение);
+    fn with_number(mut self, value: String) -> Self {
+        self.number = Some(value);
         self
     }
 
-    fn with_caption(mut self, значение: String) -> Self {
-        self.caption = Some(значение);
+    fn with_caption(mut self, value: String) -> Self {
+        self.caption = Some(value);
         self
     }
 
-    fn with_file_name(mut self, значение: String) -> Self {
-        self.file_name = Some(значение);
+    fn with_file_name(mut self, value: String) -> Self {
+        self.file_name = Some(value);
         self
     }
 
@@ -370,4 +370,4 @@ impl ListingBuilder {
 }
 
 #[cfg(test)]
-mod проверки;
+mod tests;

@@ -1,2 +1,0 @@
-$ cargo run
-error: a bin target must be available for `cargo run`

@@ -15,7 +15,7 @@ use pulldown_cmark_to_cmark::cmark;
 /// Takes in Markdown like this:
 ///
 /// ```markdown
-/// > Примечание: This is a note.
+/// > Note: This is a note.
 /// ```
 ///
 /// Spits out Markdown like this:
@@ -35,9 +35,9 @@ impl Preprocessor for TrplNote {
     }
 
     fn run(&self, _ctx: &PreprocessorContext, mut book: Book) -> Result<Book> {
-        boуспешно.for_each_mut(|item| {
+        book.for_each_mut(|item| {
             if let BookItem::Chapter(ref mut chapter) = item {
-                chapter.содержимое = rewrite(&chapter.содержимое);
+                chapter.content = rewrite(&chapter.content);
             }
         });
         Ok(book)
@@ -48,7 +48,7 @@ impl Preprocessor for TrplNote {
     }
 }
 
-pub fn rewrite(содержимое: &str) -> String {
+pub fn rewrite(text: &str) -> String {
     let parser = crate::parser(text);
 
     let mut events = Vec::new();
@@ -61,7 +61,7 @@ pub fn rewrite(содержимое: &str) -> String {
             }
 
             (StartingBlockquote(blockquote_events), Text(content)) => {
-                if content.starts_with("Примечание: ") {
+                if content.starts_with("Note: ") {
                     // This needs the "extra" `SoftBreak`s so that when the final rendering pass
                     // happens, it does not end up treating the internal content as inline *or*
                     // treating the HTML tags as inline tags:
@@ -142,4 +142,4 @@ enum State<'e> {
 }
 
 #[cfg(test)]
-mod проверки;
+mod tests;

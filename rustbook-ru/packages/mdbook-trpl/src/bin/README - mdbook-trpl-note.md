@@ -1,12 +1,12 @@
 # mdbook-trpl-note
 
-This is a _very_ simple [preprocessor][pre] for [mdBook][mdbook], focused specifically on the content of _The Rust Programming Language_ boуспешно. This preprocessor takes Markdown like this—
+This is a _very_ simple [preprocessor][pre] for [mdBook][mdbook], focused specifically on the content of _The Rust Programming Language_ book. This preprocessor takes Markdown like this—
 
 ```markdown
-> Примечание: This is some material we want to provide more emphasis for, because it
+> Note: This is some material we want to provide more emphasis for, because it
 > is important in some way!
 
-Some содержимое.
+Some text.
 
 > ## Some subject
 >
@@ -23,7 +23,7 @@ important in some way!
 
 </section>
 
-Some содержимое.
+Some text.
 
 <section class="note" aria-role="note">
 
@@ -34,12 +34,12 @@ Here is all the important things to know about that particular subject.
 </section>
 ```
 
-This allows используйте the relatively standard Markdown convention of (incorrectly!) используйте blockquotes for “callouts” or “notes” like this, while still producing semantic HTML which conveys the actual intent.
+This allows using the relatively standard Markdown convention of (incorrectly!) using blockquotes for “callouts” or “notes” like this, while still producing semantic HTML which conveys the actual intent.
 
 > [!NOTE]
 > This is _not_ a full “admonition” preprocessor, and it is not remotely compliant with [the GitHub “alert” syntax][alerts]. It exists almost entirely for the sake of providing better semantic HTML for _The Rust Programming Language_ book with a minimum of disruption to existing workflows!
 >
-> You are probably better off используйте one of the other existing alert/admonition preprocessors:
+> You are probably better off using one of the other existing alert/admonition preprocessors:
 >
 > - [mdbook-alerts][mdbook-alerts]
 > - [mdbook-admonish][mdbook-admonish]

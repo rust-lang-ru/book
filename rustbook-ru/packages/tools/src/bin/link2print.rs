@@ -15,7 +15,7 @@ fn read_md() -> String {
     let mut buffer = String::new();
     match io::stdin().read_to_string(&mut buffer) {
         Ok(_) => buffer,
-        Err(ошибка) => panic!("{ошибка}"),
+        Err(error) => panic!("{error}"),
     }
 }
 
@@ -24,8 +24,8 @@ fn write_md(output: String) {
 }
 
 fn parse_references(buffer: String) -> (String, HashMap<String, String>) {
-    let mut ref_карта = HashMap::new();
-    // FIXME: currently doesn't handle "title" in following строка.
+    let mut ref_map = HashMap::new();
+    // FIXME: currently doesn't handle "title" in following line.
     let re = Regex::new(r###"(?m)\n?^ {0,3}\[([^]]+)\]:[[:blank:]]*(.*)$"###)
         .unwrap();
     let output = re
@@ -33,7 +33,7 @@ fn parse_references(buffer: String) -> (String, HashMap<String, String>) {
             let key_def = caps.get(1).unwrap().as_str();
             let key = key_def.to_uppercase();
             let val = caps.get(2).unwrap().as_str().to_string();
-            if ref_map.insert(ключ, val).is_some() {
+            if ref_map.insert(key, val).is_some() {
                 panic!("unexpected page had duplicate reference for {key_def}",);
             }
             "".to_string()
@@ -53,10 +53,10 @@ fn parse_links((buffer, ref_map): (String, HashMap<String, String>)) -> String {
 
                 let val = match caps.name("val") {
                     // `[name](link)`
-                    Some(значение) => значение.as_str().to_string(),
+                    Some(value) => value.as_str().to_string(),
                     None => {
                         match caps.name("key") {
-                            Some(ключ) => {
+                            Some(key) => {
                                 match key.as_str() {
                                     // `[name][]`
                                     "" => ref_map.get(&name.to_uppercase()).unwrap_or_else(|| panic!("could not find url for the link text `{name}`")).to_string(),
@@ -79,7 +79,7 @@ fn parse_links((buffer, ref_map): (String, HashMap<String, String>)) -> String {
 }
 
 #[cfg(test)]
-mod проверки {
+mod tests {
     fn parse(source: String) -> String {
         super::parse_links(super::parse_references(source))
     }
@@ -98,10 +98,10 @@ mod проверки {
     #[test]
     fn parses_multiline_links() {
         let source = r"This is a [link](http://google.com) that
-should appear expanded. Another [местонахождение](/here/) and [another](http://gogogo)"
+should appear expanded. Another [location](/here/) and [another](http://gogogo)"
             .to_string();
         let target = r"This is a link at *http://google.com* that
-should appear expanded. Another местонахождение at */here/* and another at *http://gogogo*"
+should appear expanded. Another location at */here/* and another at *http://gogogo*"
             .to_string();
         assert_eq!(parse(source), target);
     }
@@ -306,9 +306,9 @@ src/main.rs:23:21: 23:35 error: mismatched types [E0308]
 src/main.rs:23     match guess.cmp(&secret_number) {
                                    ^~~~~~~~~~~~~~
 src/main.rs:23:21: 23:35 help: run `rustc --explain E0308` to see a detailed explanation
-src/main.rs:23:21: 23:35 примечание: expected type `&std::string::String`
-src/main.rs:23:21: 23:35 примечание:    найдено type `&_`
-error: aborting из-за previous error
+src/main.rs:23:21: 23:35 note: expected type `&std::string::String`
+src/main.rs:23:21: 23:35 note:    found type `&_`
+error: aborting due to previous error
 Could not compile `guessing_game`.
 ```
 "###
@@ -327,30 +327,30 @@ Could not compile `guessing_game`.
         let source = r###"```bash
 $ cargo run
    Compiling points v0.1.0 (file:///projects/points)
-error: сущность bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
+error: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
  --> src/main.rs:8:29
 8 |>     println!("Point 1: {}", p1);
   |>                             ^^
-<std macros>:2:27: 2:58: примечание: in this expansion of format_args!
-<std macros>:3:1: 3:54: примечание: in this expansion of print! (defined in <std macros>)
-src/main.rs:8:5: 8:33: примечание: in this expansion of println! (defined in <std macros>)
-примечание: `Point` cannot be formatted with the default formatter; try используйте `:?` instead if you are используйте a format string
-примечание: required by `std::fmt::Display::fmt`
+<std macros>:2:27: 2:58: note: in this expansion of format_args!
+<std macros>:3:1: 3:54: note: in this expansion of print! (defined in <std macros>)
+src/main.rs:8:5: 8:33: note: in this expansion of println! (defined in <std macros>)
+note: `Point` cannot be formatted with the default formatter; try using `:?` instead if you are using a format string
+note: required by `std::fmt::Display::fmt`
 ```
 `here` is another [link](the ref)
 "###.to_string();
         let target = r###"```bash
 $ cargo run
    Compiling points v0.1.0 (file:///projects/points)
-error: сущность bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
+error: the trait bound `Point: std::fmt::Display` is not satisfied [--explain E0277]
  --> src/main.rs:8:29
 8 |>     println!("Point 1: {}", p1);
   |>                             ^^
-<std macros>:2:27: 2:58: примечание: in this expansion of format_args!
-<std macros>:3:1: 3:54: примечание: in this expansion of print! (defined in <std macros>)
-src/main.rs:8:5: 8:33: примечание: in this expansion of println! (defined in <std macros>)
-примечание: `Point` cannot be formatted with the default formatter; try используйте `:?` instead if you are используйте a format string
-примечание: required by `std::fmt::Display::fmt`
+<std macros>:2:27: 2:58: note: in this expansion of format_args!
+<std macros>:3:1: 3:54: note: in this expansion of print! (defined in <std macros>)
+src/main.rs:8:5: 8:33: note: in this expansion of println! (defined in <std macros>)
+note: `Point` cannot be formatted with the default formatter; try using `:?` instead if you are using a format string
+note: required by `std::fmt::Display::fmt`
 ```
 `here` is another link at *the ref*
 "###.to_string();
@@ -362,11 +362,11 @@ src/main.rs:8:5: 8:33: примечание: in this expansion of println! (defi
 
 [I'm an inline-style link with title](https://www.google.com "Google's Homepage")
 
-[I'm ссылка-style link][Arbitrary case-insensitive reference text]
+[I'm a reference-style link][Arbitrary case-insensitive reference text]
 
 [I'm a relative reference to a repository file](../blob/master/LICENSE)
 
-[You can use числа for reference-style link definitions][1]
+[You can use numbers for reference-style link definitions][1]
 
 Or leave it empty and use the [link text itself][].
 
@@ -385,11 +385,11 @@ Some text to show that the reference links can follow later.
 
 I'm an inline-style link with title at *https://www.google.com*
 
-I'm ссылка-style link at *https://www.mozilla.org*
+I'm a reference-style link at *https://www.mozilla.org*
 
 I'm a relative reference to a repository file at *../blob/master/LICENSE*
 
-You can use числа for reference-style link definitions at *http://slashdot.org*
+You can use numbers for reference-style link definitions at *http://slashdot.org*
 
 Or leave it empty and use the link text itself at *http://www.reddit.com*.
 
