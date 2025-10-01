@@ -430,3 +430,4 @@ rustbook-ru/src/черновик
 **/target/
 */target
 *\target
+*.lock
