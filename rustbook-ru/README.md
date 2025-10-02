@@ -1,21 +1,30 @@
-# Язык программирования Ржавчина
+# The Rust Programming Language
 
-Данное хранилище содержит перевод второго издания “Язык программирования Ржавчина”. 
+![Build Status](https://github.com/rust-lang/book/workflows/CI/badge.svg)
 
-Второе издание - это переработанная книга "The Ржавчина язык программирования", которая будет напечатана издательством "No Starch Press" примерно в мае 2018 года. Последнюю сведения о дате выхода книги и о способе ее заказа вы можете узнать на сайте самого издательства [No Starch Press][nostarch].
+This repository contains the source of "The Rust Programming Language" book.
 
-[nostarch]: https://nostarch.com/rust
+[The book is available in dead-tree form from No Starch Press][nostarch].
 
-Книгу можно [Прочесть в сети](https://rustycrate.ru/book).
+[nostarch]: https://nostarch.com/rust-programming-language-2nd-edition
 
-Подлинник книги вы можете прочесть [в сети][html]; несколько последних глав еще не закончены, но готовая часть книги заметно улучшена по сравнению с первым изданием. Составители изначальной книги советуют начать чтение со второго издания.
+You can also read the book for free online. Please see the book as shipped with
+the latest [stable], [beta], or [nightly] Rust releases. Be aware that issues
+in those versions may have been fixed in this repository already, as those
+releases are updated less frequently.
 
-[html]: http://rust-lang.github.io/book/
+[stable]: https://doc.rust-lang.org/stable/book/
+[beta]: https://doc.rust-lang.org/beta/book/
+[nightly]: https://doc.rust-lang.org/nightly/book/
 
-## Требования
+See the [releases] to download just the code of all the code listings that appear in the book.
 
-Сборка книги требует библиотеку [mdBook], лучше всего - когда это будет то же исполнение, которое
-rust-lang/rust использует [этом файле][rust-mdbook]. Чтобы получить её:
+[releases]: https://github.com/rust-lang/book/releases
+
+## Requirements
+
+Building the book requires [mdBook], ideally the same version that
+rust-lang/rust uses in [this file][rust-mdbook]. To get it:
 
 [mdBook]: https://github.com/rust-lang/mdBook
 [rust-mdbook]: https://github.com/rust-lang/rust/blob/master/src/tools/rustbook/Cargo.toml
@@ -24,25 +33,28 @@ rust-lang/rust использует [этом файле][rust-mdbook]. Чтоб
 $ cargo install mdbook --locked --version <version_num>
 ```
 
-Книга также использует два расширения mdbook, которые являются частью этого репозитория. Если вы их не установите, вы увидите предупреждения при сборке, и вывод будет выглядеть неправильно и искаженно, но вы *все равно* сможете собрать книгу. Чтобы использовать расширения,вы должны запустить:
+The book also uses two mdbook plugins which are part of this repository. If you
+do not install them, you will see warnings when building and the output will not
+look right, but you _will_ still be able to build the book. To use the plugins,
+you should run:
 
 ```bash
-$ cargo install --locked --path packages/mdbook-trpl-listing
-$ cargo install --locked --path packages/mdbook-trpl-note
+$ cargo install --locked --path packages/mdbook-trpl --force
 ```
 
-## Сборка
+## Building
 
-Для того, чтобы собрать книгу, перейдите в нужную папку с помощью приказов cd - first-edition для первого, либо second-edition для второго издания.
-Далее введите следующий приказ:
+To build the book, type:
 
 ```bash
 $ mdbook build
 ```
 
-Итогом сборки книги будет являться созданная подпапка `book`и все ее содержимое. Для проверки откройте книгу в любом обозревателе.
+The output will be in the `book` subdirectory. To check it out, open it in
+your web browser.
 
 _Firefox:_
+
 ```bash
 $ firefox book/index.html                       # Linux
 $ open -a "Firefox" book/index.html             # OS X
@@ -51,6 +63,7 @@ $ start firefox.exe .\book\index.html           # Windows (Cmd)
 ```
 
 _Chrome:_
+
 ```bash
 $ google-chrome book/index.html                 # Linux
 $ open -a "Google Chrome" book/index.html       # OS X
@@ -58,39 +71,46 @@ $ Start-Process "chrome.exe" .\book\index.html  # Windows (PowerShell)
 $ start chrome.exe .\book\index.html            # Windows (Cmd)
 ```
 
-Для запуска проверок:
+To run the tests:
 
 ```bash
-$ mdbook test
+$ cd packages/trpl
+$ mdbook test --library-path packages/trpl/target/debug/deps
 ```
 
+## Contributing
 
-# Полезные ссылки
+We'd love your help! Please see [CONTRIBUTING.md][contrib] to learn about the
+kinds of contributions we're looking for.
 
-Чаты                                   | Ссылки
----------------------------------------|--------
-для обсуждения языка, получения помощи | [![Join the chat at https://gitter.im/ruRust/general](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ruRust/general?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-для обсуждения самой книги и вопросов перевода | [![Join the chat at https://gitter.im/ruRust/rust_book_ru](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ruRust/rust_book_ru?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[contrib]: https://github.com/rust-lang/book/blob/main/CONTRIBUTING.md
 
-[![ruRust/rust_book_ru](http://issuestats.com/github/ruRust/rust_book_ru/badge/pr?style=flat)](http://issuestats.com/github/ruRust/rust_book_ru)
-[![ruRust/rust_book_ru](http://issuestats.com/github/ruRust/rust_book_ru/badge/issue?style=flat)](http://issuestats.com/github/ruRust/rust_book_ru)
+Because the book is [printed][nostarch], and because we want
+to keep the online version of the book close to the print version when
+possible, it may take longer than you're used to for us to address your issue
+or pull request.
 
+So far, we've been doing a larger revision to coincide with [Rust Editions](https://doc.rust-lang.org/edition-guide/). Between those larger
+revisions, we will only be correcting errors. If your issue or pull request
+isn't strictly fixing an error, it might sit until the next time that we're
+working on a large revision: expect on the order of months or years. Thank you
+for your patience!
 
-# Сосоставителям
+### Translations
 
-## С чего начать
+We'd love help translating the book! See the [Translations] label to join in
+efforts that are currently in progress. Open a new issue to start working on
+a new language! We're waiting on [mdbook support] for multiple languages
+before we merge any in, but feel free to start!
 
-При желании помочь с переводом - для этого пишите в объединение, указанное выше. Вам ответят на любые вопросы по теме.
-Нам особенно важна помощь именно со вторым изданием! 
-Не бойтесь code review, у нас не принято наезжать на новичков. :smile:
+[Translations]: https://github.com/rust-lang/book/issues?q=is%3Aopen+is%3Aissue+label%3ATranslations
+[mdbook support]: https://github.com/rust-lang/mdBook/issues/5
 
-## Для опытных
+## Spellchecking
 
-[Правила перевода](https://github.com/ruRust/rust_book_ru/wiki/Правила).
-
-## Источники
-* первое издание пособия по Ржавчине расположено [здесь][original]
-* перевод первого издания расположен [здесь][rustbook]
-
-[rustbook]: http://ruRust.github.io/rust_book_ru
-[original]: https://doc.rust-lang.org/book/first-edition/
+To scan source files for spelling errors, you can use the `spellcheck.sh`
+script available in the `ci` directory. It needs a dictionary of valid words,
+which is provided in `ci/dictionary.txt`. If the script produces a false
+positive (say, you used the word `BTreeMap` which the script considers invalid),
+you need to add this word to `ci/dictionary.txt` (keep the sorted order for
+consistency).
