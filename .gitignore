@@ -436,3 +436,4 @@ rustbook-ru/src/черновик
 /logs
 rustbook-ru/listings/ch20-advanced-features/no-listing-21-pancakes/hello_macro/Cargo.lock
 /rustbook-ru/logs
+rustbook-ru/Cargo.lock
