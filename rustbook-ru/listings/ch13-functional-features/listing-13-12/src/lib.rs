@@ -3,14 +3,14 @@ mod проверки {
     // ANCHOR: here
     #[test]
     fn iterator_demonstration() {
-        let v1 = vec![1, 2, 3];
+        let ряд_1 = vec![1, 2, 3];
 
-        let mut v1_iter = v1.iter();
+        let mut ряд_1_перебор = ряд_1.iter();
 
-        assert_eq!(v1_iter.next(), Some(&1));
-        assert_eq!(v1_iter.next(), Some(&2));
-        assert_eq!(v1_iter.next(), Some(&3));
-        assert_eq!(v1_iter.next(), None);
+        assert_eq!(ряд_1_перебор.next(), Some(&1));
+        assert_eq!(ряд_1_перебор.next(), Some(&2));
+        assert_eq!(ряд_1_перебор.next(), Some(&3));
+        assert_eq!(ряд_1_перебор.next(), None);
     }
     // ANCHOR_END: here
 }

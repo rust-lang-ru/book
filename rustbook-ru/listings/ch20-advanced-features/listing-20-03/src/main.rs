@@ -1,9 +1,9 @@
 fn main() {
     // ANCHOR: here
-    let mut num = 5;
+    let mut число = 5;
 
-    let r1 = &num as *const i32;
-    let r2 = &mut num as *mut i32;
+    let r1 = &число as *const i32;
+    let r2 = &mut число as *mut i32;
 
     unsafe {
         println!("r1 is: {}", *r1);

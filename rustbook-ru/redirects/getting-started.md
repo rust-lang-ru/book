@@ -9,5 +9,5 @@ If you're trying to learn Rust, checking out [the second edition][2] might be a 
 * <small>[In the first edition: Getting Started][1]</small>
 
 
-[1]: https://doc.rust-lang.org/1.30.0/book/first-edition/getting-started.html
-[2]: ch01-00-getting-started.html
+[1]: https://doc.rust-lang.org/1.30.0/book/first-edition/getting-запущено.html
+[2]: ch01-00-getting-запущено.html

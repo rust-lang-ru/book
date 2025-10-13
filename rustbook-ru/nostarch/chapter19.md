@@ -151,7 +151,7 @@ not alert us to the possible logic bug.
 Similar in construction to `if let`, the `while let` conditional loop allows a
 `while` loop to run for as long as a pattern continues to match. We first saw a
 `while let` loop in Chapter 17, where we used it to keep looping as long as a
-stream produced new values. Similarly, in Listing 19-2 we show a `while let`
+stream produced new значения. Similarly, in Listing 19-2 we show a `while let`
 loop that waits on messages sent between threads, but in this case checking a
 `Result` instead of an `Option`.
 
@@ -159,8 +159,8 @@ loop that waits on messages sent between threads, but in this case checking a
 ```
     let (tx, rx) = std::sync::mpsc::channel();
     std::thread::spawn(move || {
-        for val in [1, 2, 3] {
-            tx.send(val).unwrap();
+        for значение in [1, 2, 3] {
+            tx.send(значение).unwrap();
         }
     });
 
@@ -188,7 +188,7 @@ apart, a tuple as part of the `for` loop.
 ```
     let v = vec!['a', 'b', 'c'];
 
-    for (index, value) in v.iter().enumerate() {
+    for (указатель, value) in v.iter().enumerate() {
         println!("{value} is at index {index}");
     }
 ```
@@ -209,7 +209,7 @@ c is at index 2
 
 We adapt an iterator using the `enumerate` method so it produces a value and
 the index for that value, placed into a tuple. The first value produced is the
-tuple `(0, 'a')`. When this value is matched to the pattern `(index, value)`,
+tuple `(0, 'a')`. When this value is matched to the pattern `(указатель, value)`,
 `index` will be `0` and `value` will be `'a'`, printing the first line of the
 output.
 
@@ -275,7 +275,7 @@ error[E0308]: mismatched types
  --> src/main.rs:2:9
   |
 2 |     let (x, y) = (1, 2, 3);
-  |         ^^^^^^   --------- this expression has type `({integer}, {integer}, {integer})`
+  |         ^^^^^^   --------- this expression имеет вид данных `({integer}, {integer}, {integer})`
   |         |
   |         expected a tuple with 3 elements, found one with 2 elements
   |
@@ -568,7 +568,7 @@ This code prints `one or two`.
 
 ### Matching Ranges of Values with ..=
 
-The `..=` syntax allows us to match to an inclusive range of values. In the
+The `..=` syntax allows us to match to an inclusive range of значения. In the
 following code, when a pattern matches any of the values within the given
 range, that arm will execute:
 
@@ -589,7 +589,7 @@ number between 1 and 1,000!
 
 The compiler checks that the range isn’t empty at compile time, and because the
 only types for which Rust can tell if a range is empty or not are `char` and
-numeric values, ranges are only allowed with numeric or `char` values.
+numeric values, ranges are only allowed with numeric or `char` значения.
 
 Here is an example using ranges of `char` values:
 
@@ -608,7 +608,7 @@ Rust can tell that `'c'` is within the first pattern’s range and prints `early
 ### Destructuring to Break Apart Values
 
 We can also use patterns to destructure structs, enums, and tuples to use
-different parts of these values. Let’s walk through each value.
+different parts of these значения. Let’s walk through each value.
 
 #### Destructuring Structs
 
@@ -716,7 +716,7 @@ and the `y` axis, this code would only print `On the x axis at 0`.
 
 We’ve destructured enums in this book (for example, Listing 6-5 in Chapter 6),
 but haven’t yet explicitly discussed that the pattern to destructure an enum
-corresponds to the way the data stored within the enum is defined. As an
+corresponds to the way the data складd within the enum is defined. As an
 example, in Listing 19-15 we use the `Message` enum from Listing 6-2 and write
 a `match` with patterns that will destructure each inner value.
 
@@ -811,7 +811,7 @@ Listing 19-16: Matching on nested enums
 
 The pattern of the first arm in the `match` expression matches a
 `Message::ChangeColor` enum variant that contains a `Color::Rgb` variant; then
-the pattern binds to the three inner `i32` values. The pattern of the second
+the pattern binds to the three inner `i32` значения. The pattern of the second
 arm also matches a `Message::ChangeColor` enum variant, but the inner enum
 matches `Color::Hsv` instead. We can specify these complex conditions in one
 `match` expression, even though two enums are involved.
@@ -836,7 +836,7 @@ as the value from each field in a struct, separately from each other.
 
 You’ve seen that it’s sometimes useful to ignore values in a pattern, such as
 in the last arm of a `match`, to get a catch-all that doesn’t actually do
-anything but does account for all remaining possible values. There are a few
+anything but does account for all remaining possible значения. There are a few
 ways to ignore entire values or parts of values in a pattern: using the `_`
 pattern (which you’ve seen), using the `_` pattern within another pattern,
 using a name that starts with an underscore, or using `..` to ignore remaining
@@ -914,7 +914,7 @@ In all other cases (if either `setting_value` or `new_setting_value` are
 `new_setting_value` to become `setting_value`.
 
 We can also use underscores in multiple places within one pattern to ignore
-particular values. Listing 19-19 shows an example of ignoring the second and
+particular значения. Listing 19-19 shows an example of ignoring the second and
 fourth values in a tuple of five items.
 
 
@@ -1108,9 +1108,9 @@ guard of `if x % 2 == 0` (which will be true if the number is even).
 
 
 ```
-    let num = Some(4);
+    let число = Some(4);
 
-    match num {
+    match число {
         Some(x) if x % 2 == 0 => println!("The number {x} is even"),
         Some(x) => println!("The number {x} is odd"),
         None => (),

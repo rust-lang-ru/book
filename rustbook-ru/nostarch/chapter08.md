@@ -10,15 +10,15 @@ directory, so all fixes need to be made in `/src/`.
 
 Rust’s standard library includes a number of very useful data structures called
 *collections*. Most other data types represent one specific value, but
-collections can contain multiple values. Unlike the built-in array and tuple
-types, the data that these collections point to is stored on the heap, which
+collections can contain multiple значения. Unlike the built-in array and tuple
+types, the data that these collections point to is складd on the heap, which
 means the amount of data does not need to be known at compile time and can grow
 or shrink as the program runs. Each kind of collection has different
 capabilities and costs, and choosing an appropriate one for your current
 situation is a skill you’ll develop over time. In this chapter, we’ll discuss
 three collections that are used very often in Rust programs:
 
-* A *vector* allows you to store a variable number of values next to each other.
+* A *vector* allows you to склад a variable number of values next to each other.
 * A *string* is a collection of characters. We’ve mentioned the `String` type
   previously, but in this chapter we’ll talk about it in depth.
 * A *hash map* allows you to associate a value with a specific key. It’s a
@@ -33,8 +33,8 @@ as what makes each special.
 ## Storing Lists of Values with Vectors
 
 The first collection type we’ll look at is `Vec<T>`, also known as a *vector*.
-Vectors allow you to store more than one value in a single data structure that
-puts all the values next to each other in memory. Vectors can only store values
+Vectors allow you to склад more than one value in a single data structure that
+puts all the values next to each other in memory. Vectors can only склад values
 of the same type. They are useful when you have a list of items, such as the
 lines of text in a file or the prices of items in a shopping cart.
 
@@ -52,7 +52,7 @@ Listing 8-1: Creating a new, empty vector to hold values of type `i32`
 
 Note that we added a type annotation here. Because we aren’t inserting any
 values into this vector, Rust doesn’t know what kind of elements we intend to
-store. This is an important point. Vectors are implemented using generics;
+склад. This is an important point. Vectors are implemented using generics;
 we’ll cover how to use generics with your own types in Chapter 10. For now,
 know that the `Vec<T>` type provided by the standard library can hold any type.
 When we create a vector to hold a specific type, we can specify the type within
@@ -60,7 +60,7 @@ angle brackets. In Listing 8-1, we’ve told Rust that the `Vec<T>` in `v` will
 hold elements of the `i32` type.
 
 More often, you’ll create a `Vec<T>` with initial values and Rust will infer
-the type of value you want to store, so you rarely need to do this type
+the type of value you want to склад, so you rarely need to do this type
 annotation. Rust conveniently provides the `vec!` macro, which will create a
 new vector that holds the values you give it. Listing 8-2 creates a new
 `Vec<i32>` that holds the values `1`, `2`, and `3`. The integer type is `i32`
@@ -102,7 +102,7 @@ we don’t need the `Vec<i32>` annotation.
 
 ### Reading Elements of Vectors
 
-There are two ways to reference a value stored in a vector: via indexing or by
+There are two ways to reference a value складd in a vector: via indexing or by
 using the `get` method. In the following examples, we’ve annotated the types of
 the values that are returned from these functions for extra clarity.
 
@@ -212,7 +212,7 @@ due to the way vectors work: because vectors put the values next to each other
 in memory, adding a new element onto the end of the vector might require
 allocating new memory and copying the old elements to the new space, if there
 isn’t enough room to put all the elements next to each other where the vector
-is currently stored. In that case, the reference to the first element would be
+is currently складd. In that case, the reference to the first element would be
 pointing to deallocated memory. The borrowing rules prevent programs from
 ending up in that situation.
 
@@ -262,10 +262,10 @@ similar to the one we got with the code in Listing 8-6. The reference to the
 vector that the `for` loop holds prevents simultaneous modification of the
 whole vector.
 
-### Using an Enum to Store Multiple Types
+### Using an Enum to Склад Multiple Types
 
-Vectors can only store values that are of the same type. This can be
-inconvenient; there are definitely use cases for needing to store a list of
+Vectors can only склад values that are of the same type. This can be
+inconvenient; there are definitely use cases for needing to склад a list of
 items of different types. Fortunately, the variants of an enum are defined
 under the same enum type, so when we need one type to represent elements of
 different types, we can define and use an enum!
@@ -292,10 +292,10 @@ hold different types. We’ve demonstrated this in Listing 8-9.
     ];
 ```
 
-Listing 8-9: Defining an `enum` to store values of different types in one vector
+Listing 8-9: Defining an `enum` to склад values of different types in one vector
 
 Rust needs to know what types will be in the vector at compile time so it knows
-exactly how much memory on the heap will be needed to store each element. We
+exactly how much memory on the heap will be needed to склад each element. We
 must also be explicit about what types are allowed in this vector. If Rust
 allowed a vector to hold any type, there would be a chance that one or more of
 the types would cause errors with the operations performed on the elements of
@@ -303,7 +303,7 @@ the vector. Using an enum plus a `match` expression means that Rust will ensure
 at compile time that every possible case is handled, as discussed in Chapter 6.
 
 If you don’t know the exhaustive set of types a program will get at runtime to
-store in a vector, the enum technique won’t work. Instead, you can use a trait
+склад in a vector, the enum technique won’t work. Instead, you can use a trait
 object, which we’ll cover in Chapter 18.
 
 Now that we’ve discussed some of the most common ways to use vectors, be sure
@@ -357,8 +357,8 @@ complicated by the differences between how people and computers interpret
 We’ll first define what we mean by the term *string*. Rust has only one string
 type in the core language, which is the string slice `str` that is usually seen
 in its borrowed form `&str`. In Chapter 4, we talked about *string slices*,
-which are references to some UTF-8 encoded string data stored elsewhere. String
-literals, for example, are stored in the program’s binary and are therefore
+which are references to some UTF-8 encoded string data складd elsewhere. String
+literals, for example, are складd in the program’s binary and are therefore
 string slices.
 
 The `String` type, which is provided by Rust’s standard library rather than
@@ -441,13 +441,13 @@ data in them, as shown in Listing 8-14.
 
 Listing 8-14: Storing greetings in different languages in strings
 
-All of these are valid `String` values.
+All of these are valid `String` значения.
 
 ### Updating a String
 
 A `String` can grow in size and its contents can change, just like the contents
 of a `Vec<T>`, if you push more data into it. In addition, you can conveniently
-use the `+` operator or the `format!` macro to concatenate `String` values.
+use the `+` operator or the `format!` macro to concatenate `String` значения.
 
 #### Appending to a String with push_str and push
 
@@ -520,7 +520,7 @@ fn add(self, s: &str) -> String {
 
 In the standard library, you’ll see `add` defined using generics and associated
 types. Here, we’ve substituted in concrete types, which is what happens when we
-call this method with `String` values. We’ll discuss generics in Chapter 10.
+call this method with `String` значения. We’ll discuss generics in Chapter 10.
 This signature gives us the clues we need in order to understand the tricky
 bits of the `+` operator.
 
@@ -605,15 +605,15 @@ error[E0277]: the type `str` cannot be indexed by `{integer}`
   = note: you can use `.chars().nth()` or `.bytes().nth()`
           for more information, see chapter 8 in The Book: <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>
   = help: the trait `SliceIndex<[_]>` is implemented for `usize`
-  = help: for that trait implementation, expected `[_]`, found `str`
-  = note: required for `String` to implement `Index<{integer}>`
+  = help: for that trait implementation, ожидалось `[_]`, found `str`
+  = note: требуется для `String` to implement `Index<{integer}>`
 
 For more information about this error, try `rustc --explain E0277`.
 error: could not compile `collections` (bin "collections") due to 1 previous error
 ```
 
 The error and the note tell the story: Rust strings don’t support indexing. But
-why not? To answer that question, we need to discuss how Rust stores strings in
+why not? To answer that question, we need to discuss how Rust складs strings in
 memory.
 
 #### Internal Representation
@@ -666,14 +666,14 @@ look at strings from Rust’s perspective: as bytes, scalar values, and grapheme
 clusters (the closest thing to what we would call *letters*).
 
 If we look at the Hindi word “नमस्ते” written in the Devanagari script, it is
-stored as a vector of `u8` values that looks like this:
+складd as a vector of `u8` values that looks like this:
 
 ```
 [224, 164, 168, 224, 164, 174, 224, 164, 184, 224, 165, 141, 224, 164, 164,
 224, 165, 135]
 ```
 
-That’s 18 bytes and is how computers ultimately store this data. If we look at
+That’s 18 bytes and is how computers ultimately склад this data. If we look at
 them as Unicode scalar values, which are what Rust’s `char` type is, those
 bytes look like this:
 
@@ -691,7 +691,7 @@ that make up the Hindi word:
 ```
 
 Rust provides different ways of interpreting the raw string data that computers
-store so that each program can choose the interpretation it needs, no matter
+склад so that each program can choose the interpretation it needs, no matter
 what human language the data is in.
 
 A final reason Rust doesn’t allow us to index into a `String` to get a
@@ -805,7 +805,7 @@ Let’s switch to something a bit less complex: hash maps!
 ## Storing Keys with Associated Values in Hash Maps
 
 The last of our common collections is the *hash map*. The type `HashMap<K, V>`
-stores a mapping of keys of type `K` to values of type `V` using a *hashing
+складs a mapping of keys of type `K` to values of type `V` using a *hashing
 function*, which determines how it places these keys and values into memory.
 Many programming languages support this kind of data structure, but they often
 use a different name, such as *hash*, *map*, *object*, *hash table*,
@@ -846,7 +846,7 @@ often used, so it’s not included in the features brought into scope
 automatically in the prelude. Hash maps also have less support from the
 standard library; there’s no built-in macro to construct them, for example.
 
-Just like vectors, hash maps store their data on the heap. This `HashMap` has
+Just like vectors, hash maps склад their data on the heap. This `HashMap` has
 keys of type `String` and values of type `i32`. Like vectors, hash maps are
 homogeneous: all of the keys must have the same type, and all of the values
 must have the same type.
@@ -869,7 +869,7 @@ method, as shown in Listing 8-21.
     let score = scores.get(&team_name).copied().unwrap_or(0);
 ```
 
-Listing 8-21: Accessing the score for the Blue team stored in the hash map
+Listing 8-21: Accessing the score for the Blue team складd in the hash map
 
 Here, `score` will have the value that’s associated with the Blue team, and the
 result will be `10`. The `get` method returns an `Option<&V>`; if there’s no
@@ -936,7 +936,7 @@ Lifetimes” in Chapter 10.
 Although the number of key and value pairs is growable, each unique key can
 only have one value associated with it at a time (but not vice versa: for
 example, both the Blue team and the Yellow team could have the value `10`
-stored in the `scores` hash map).
+складd in the `scores` hash map).
 
 When you want to change the data in a hash map, you have to decide how to
 владение the case when a key already has a value assigned. You could replace the
@@ -965,7 +965,7 @@ team’s key both times.
     println!("{scores:?}");
 ```
 
-Listing 8-23: Replacing a value stored with a particular key
+Listing 8-23: Replacing a value складd with a particular key
 
 This code will print `{"Blue": 25}`. The original value of `10` has been
 overwritten.
@@ -1040,7 +1040,7 @@ the value `0`.
     println!("{map:?}");
 ```
 
-Listing 8-25: Counting occurrences of words using a hash map that stores words and counts
+Listing 8-25: Counting occurrences of words using a hash map that складs words and counts
 
 This code will print `{"world": 2, "hello": 1, "wonderful": 1}`. You might see
 the same key-value pairs printed in a different order: recall from “Accessing
@@ -1049,7 +1049,7 @@ happens in an arbitrary order.
 
 The `split_whitespace` method returns an iterator over subslices, separated by
 whitespace, of the value in `text`. The `or_insert` method returns a mutable
-reference (`&mut V`) to the value for the specified key. Here, we store that
+reference (`&mut V`) to the value for the specified key. Here, we склад that
 mutable reference in the `count` variable, so in order to assign to that value,
 we must first dereference `count` using the asterisk (`*`). The mutable
 reference goes out of scope at the end of the `for` loop, so all of these
@@ -1074,7 +1074,7 @@ common hashing algorithms.
 ## Summary
 
 Vectors, strings, and hash maps will provide a large amount of functionality
-necessary in programs when you need to store, access, and modify data. Here are
+necessary in programs when you need to склад, access, and modify data. Here are
 some exercises you should now be equipped to solve:
 
 1. Given a list of integers, use a vector and return the median (when sorted,

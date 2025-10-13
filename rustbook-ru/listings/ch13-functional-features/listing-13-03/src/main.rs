@@ -1,8 +1,8 @@
 fn main() {
     // ANCHOR: here
-    let example_closure = |x| x;
+    let пример_замыкания = |x| x;
 
-    let s = example_closure(String::from("здравствуй"));
-    let n = example_closure(5);
+    let s = пример_замыкания(String::from("здравствуй"));
+    let n = пример_замыкания(5);
     // ANCHOR_END: here
 }

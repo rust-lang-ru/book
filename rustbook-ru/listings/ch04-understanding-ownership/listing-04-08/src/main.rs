@@ -14,11 +14,11 @@ fn первое_слово(s: &String) -> usize {
 fn main() {
     let mut s = String::from("здравствуй мир");
 
-    let слово = первое_слово(&s); // слово will get the значение 5
+    let слово = первое_слово(&s); // слово will get значение 5
 
     s.clear(); // this empties the String, making it equal to ""
 
-    // слово still has the значение 5 here, but there's no more string that
-    // we could meaningfully use the значение 5 with. слово is now totally invalid!
+    // слово still has значение 5 here, but there's no more string that
+    // we could meaningfully use значение 5 with. слово is now totally invalid!
 }
 // ANCHOR_END: here

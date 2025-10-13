@@ -62,8 +62,8 @@ API операционной системы для взаимодействия 
 в блокирующем коде, например так:
 
 ```Rust,ignore,does_not_compile
-let данные = fetch_data_from(url).await;
-println!("{data}");
+let данные = fetch_data_from(ссылка).await;
+println!("{данные}");
 ```
 
 то именно то, что дает нам абстракция Ржавчина _async_ (сокращение от _asynchronous_). 

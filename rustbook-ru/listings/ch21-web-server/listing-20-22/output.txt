@@ -6,7 +6,7 @@ $ cargo check
 52 |             worker.thread.join().unwrap();
    |             ^^^^^^^^^^^^^ ------ `worker.thread` moved из-за this method call
    |             |
-   |             move occurs because `worker.thread` has type `JoinHandle<()>`, which does not implement the `Copy` trait
+   |             передача права владения происходит потому что `worker.thread` имеет вид данных `JoinHandle<()>`, для которого отсутствует сущность `Copy` trait
    |
 примечание: `JoinHandle::<T>::join` takes ownership of the receiver `self`, which moves `worker.thread`
   --> /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/std/src/thread/mod.rs:1778:17

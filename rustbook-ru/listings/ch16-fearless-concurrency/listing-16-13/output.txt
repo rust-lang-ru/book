@@ -4,22 +4,22 @@ $ cargo run
   --> src/main.rs:21:29
    |
 5  |     let счётчик = Mutex::new(0);
-   |         ------- move occurs because `счётчик` has type `Mutex<i32>`, which does not implement the `Copy` trait
+   |         ------- передача права владения происходит потому что `счётчик` имеет вид данных `Mutex<i32>`, для которого отсутствует сущность `Copy` trait
 ...
 8  |     for _ in 0..10 {
    |     -------------- inside of this loop
 9  |         let владение = thread::spawn(move || {
-   |                                    ------- значение moved into closure here, in previous iteration of loop
+   |                                    ------- значение передано в замыкание здесь, in previous iteration of loop
 ...
 21 |     println!("Итог: {}", *счётчик.lock().unwrap());
-   |                             ^^^^^^^ значение borrowed here after move
+   |                             ^^^^^^^ значение заимствуется после передачи права владения
    |
 помощь: consider moving the expression out of the loop so it is only moved once
    |
 8  ~     let mut значение = счётчик.lock();
 9  ~     for _ in 0..10 {
 10 |         let владение = thread::spawn(move || {
-11 ~             let mut num = значение.unwrap();
+11 ~             let mut число = значение.unwrap();
    |
 
 Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0382`.

@@ -156,7 +156,7 @@ from the user.
 
 ### Storing Values with Variables
 
-Next, we’ll create a *variable* to store the user input, like this:
+Next, we’ll create a *variable* to склад the user input, like this:
 
 ```
     let mut guess = String::new();
@@ -222,9 +222,9 @@ the program, we could still use the function by writing this function call as
 
 Next, the line `.read_line(&mut guess)` calls the `read_line` method on the standard input владение to get input from the user.
 We’re also passing `&mut guess` as the argument to `read_line` to tell it what
-string to store the user input in. The full job of `read_line` is to take
+string to склад the user input in. The full job of `read_line` is to take
 whatever the user types into standard input and append that into a string
-(without overwriting its contents), so we therefore pass that string as an
+(without overwriting its содержимое), so we therefore pass that string as an
 argument. The string argument needs to be mutable so the method can change the
 string’s content.
 
@@ -433,14 +433,14 @@ $ cargo build
   Updating crates.io index
    Locking 15 packages to latest Rust 1.85.0 compatible versions
     Adding rand v0.8.5 (available: v0.9.0)
- Compiling proc-macro2 v1.0.93
- Compiling unicode-ident v1.0.17
+ Compiling proc-macro2 ряд_1.0.93
+ Compiling unicode-ident ряд_1.0.17
  Compiling libc v0.2.170
- Compiling cfg-if v1.0.0
- Compiling byteorder v1.5.0
+ Compiling cfg-if ряд_1.0.0
+ Compiling byteorder ряд_1.5.0
  Compiling getrandom v0.2.15
  Compiling rand_core v0.6.4
- Compiling quote v1.0.38
+ Compiling quote ряд_1.0.38
  Compiling syn v2.0.98
  Compiling zerocopy-derive v0.7.35
  Compiling zerocopy v0.7.35
@@ -681,7 +681,7 @@ Listing 2-4: Handling the possible return values of comparing two numbers
 First we add another `use` statement, bringing a type called
 `std::cmp::Ordering` into scope from the standard library. The `Ordering` type
 is another enum and has the variants `Less`, `Greater`, and `Equal`. These are
-the three outcomes that are possible when you compare two values.
+the three outcomes that are possible when you compare two значения.
 
 Then we add five new lines at the bottom that use the `Ordering` type. The
 `cmp` method compares two values and can be called on anything that can be
@@ -726,7 +726,7 @@ anchor or snip comments
 $ cargo build
    Compiling libc v0.2.86
    Compiling getrandom v0.2.2
-   Compiling cfg-if v1.0.0
+   Compiling cfg-if ряд_1.0.0
    Compiling ppv-lite86 v0.2.10
    Compiling rand_core v0.6.2
    Compiling rand_chacha v0.3.0
@@ -736,7 +736,7 @@ error[E0308]: mismatched types
    --> src/main.rs:22:21
     |
 22  |     match guess.cmp(&secret_number) {
-    |                 --- ^^^^^^^^^^^^^^ expected `&String`, found `&{integer}`
+    |                 --- ^^^^^^^^^^^^^^ ожидалось `&String`, found `&{integer}`
     |                 |
     |                 arguments to this method are incorrect
     |
@@ -753,7 +753,7 @@ error: could not compile `guessing_game` (bin "guessing_game") due to 1 previous
 ```
 
 The core of the error states that there are *mismatched types*. Rust has a
-strong, static type system. However, it also has type inference. When we wrote
+strong, static type system. However, it also имеет вид данных inference. When we wrote
 `let mut guess = String::new()`, Rust was able to infer that `guess` should be
 a `String` and didn’t make us write the type. The `secret_number`, on the other
 hand, is a number type. A few of Rust’s number types can have a value between 1

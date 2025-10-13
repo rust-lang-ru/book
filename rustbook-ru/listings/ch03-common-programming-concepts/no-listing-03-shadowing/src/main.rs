@@ -5,7 +5,7 @@ fn main() {
 
     {
         let x = x * 2;
-        println!("The значение of x in the inner scope is: {x}");
+        println!("Значение of x in the inner scope is: {x}");
     }
 
     println!("Значение переменной x: {x}");

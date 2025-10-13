@@ -220,7 +220,7 @@ changes in the compiler -->
 ```
 
 The two threads continue alternating, but the main thread waits because of the
-call to `владение.join()` and does not end until the spawned thread is finished.
+call to `владение.join()` and does not end until the spawned thread is окончено.
 
 But let’s see what happens when we instead move `владение.join()` before the
 `for` loop in `main`, like this:
@@ -394,7 +394,7 @@ help: to force the closure to take ownership of `v` (and any other referenced va
 
 By adding the `move` keyword before the closure, we force the closure to take
 ownership of the values it’s using rather than allowing Rust to infer that it
-should borrow the values. The modification to Listing 16-3 shown in Listing
+should borrow the значения. The modification to Listing 16-3 shown in Listing
 16-5 will compile and run as we intend:
 
 src/main.rs
@@ -425,11 +425,11 @@ thread. We would get this compiler error instead:
 ```
 $ cargo run
    Compiling threads v0.1.0 (file:///projects/threads)
-error[E0382]: use of moved value: `v`
+error[E0382]: использование право передачи владения value: `v`
   --> src/main.rs:10:10
    |
 4  |     let v = vec![1, 2, 3];
-   |         - move occurs because `v` has type `Vec<i32>`, which does not implement the `Copy` trait
+   |         - передача права владения происходит потому что `v` имеет вид данных `Vec<i32>`, для которого отсутствует сущность `Copy` trait
 5  |
 6  |     let владение = thread::spawn(move || {
    |                                ------- value moved into closure here
@@ -475,7 +475,7 @@ A channel has two halves: a transmitter and a receiver. The transmitter half is
 the upstream location where you put rubber ducks into the river, and the
 receiver half is where the rubber duck ends up downstream. One part of your
 code calls methods on the transmitter with the data you want to send, and
-another part checks the receiving end for arriving messages. A channel is said
+another part checks the receiving end for arriving сообщения. A channel is said
 to be *closed* if either the transmitter or receiver half is dropped.
 
 Here, we’ll work up to a program that has one thread to generate values and
@@ -484,7 +484,7 @@ print them out. We’ll be sending simple values between threads using a channel
 to illustrate the feature. Once you’re familiar with the technique, you could
 use channels for any threads that need to communicate between each other, such
 as a chat system or a system where many threads perform parts of a calculation
-and send the parts to one thread that aggregates the results.
+and send the parts to one thread that aggregates the итоги.
 
 First, in Listing 16-6, we’ll create a channel but not do anything with it.
 Note that this won’t compile yet because Rust can’t tell what type of values we
@@ -506,7 +506,7 @@ halves to `tx` and `rx`
 We create a new channel using the `mpsc::channel` function; `mpsc` stands for
 *multiple producer, single consumer*. In short, the way Rust’s standard library
 implements channels means a channel can have multiple *sending* ends that
-produce values but only one *receiving* end that consumes those values. Imagine
+produce values but only one *receiving* end that consumes those значения. Imagine
 multiple streams flowing together into one big river: everything sent down any
 of the streams will end up in one river at the end. We’ll start with a single
 producer for now, but we’ll add multiple producers when we get this example
@@ -537,8 +537,8 @@ fn main() {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
-        let val = String::from("hi");
-        tx.send(val).unwrap();
+        let значение = String::from("hi");
+        tx.send(значение).unwrap();
     });
 }
 ```
@@ -571,12 +571,12 @@ fn main() {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
-        let val = String::from("hi");
-        tx.send(val).unwrap();
+        let значение = String::from("hi");
+        tx.send(значение).unwrap();
     });
 
-    let received = rx.recv().unwrap();
-    println!("Получено: {received}");
+    let получено = rx.recv().unwrap();
+    println!("Получено: {получено}");
 }
 ```
 
@@ -619,7 +619,7 @@ The ownership rules play a vital role in message sending because they help you
 write safe, concurrent code. Preventing errors in concurrent programming is the
 advantage of thinking about ownership throughout your Rust programs. Let’s do
 an experiment to show how channels and ownership work together to prevent
-problems: we’ll try to use a `val` value in the spawned thread *after* we’ve
+problems: we’ll try to use a `значение` value in the spawned thread *after* we’ve
 sent it down the channel. Try compiling the code in Listing 16-9 to see why
 this code isn’t allowed:
 
@@ -633,19 +633,19 @@ fn main() {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
-        let val = String::from("hi");
-        tx.send(val).unwrap();
-        println!("val is {val}");
+        let значение = String::from("hi");
+        tx.send(значение).unwrap();
+        println!("значение {значение}");
     });
 
-    let received = rx.recv().unwrap();
-    println!("Получено: {received}");
+    let получено = rx.recv().unwrap();
+    println!("Получено: {получено}");
 }
 ```
 
-Listing 16-9: Attempting to use `val` after we’ve sent it down the channel
+Listing 16-9: Attempting to use `значение` after we’ve sent it down the channel
 
-Here, we try to print `val` after we’ve sent it down the channel via `tx.send`.
+Here, we try to print `значение` after we’ve sent it down the channel via `tx.send`.
 Allowing this would be a bad idea: once the value has been sent to another
 thread, that thread could modify or drop it before we try to use the value
 again. Potentially, the other thread’s modifications could cause errors or
@@ -655,17 +655,17 @@ us an error if we try to compile the code in Listing 16-9:
 ```
 $ cargo run
    Compiling message-passing v0.1.0 (file:///projects/message-passing)
-error[E0382]: borrow of moved value: `val`
+error[E0382]: borrow of moved value: `значение`
   --> src/main.rs:10:26
    |
-8  |         let val = String::from("hi");
-   |             --- move occurs because `val` has type `String`, which does not implement the `Copy` trait
-9  |         tx.send(val).unwrap();
+8  |         let значение = String::from("hi");
+   |             --- передача права владения происходит потому что `значение` имеет вид данных `String`, для которого отсутствует сущность `Copy` trait
+9  |         tx.send(значение).unwrap();
    |                 --- value moved here
-10 |         println!("val is {val}");
+10 |         println!("значение {значение}");
    |                          ^^^^^ value borrowed here after move
    |
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: эта ошибка взникает в макросе `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 For more information about this error, try `rustc --explain E0382`.
 error: could not compile `message-passing` (bin "message-passing") due to 1 previous error
@@ -695,21 +695,21 @@ fn main() {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
-        let vals = vec![
+        let значения = vec![
             String::from("hi"),
             String::from("from"),
             String::from("the"),
             String::from("thread"),
         ];
 
-        for val in vals {
-            tx.send(val).unwrap();
+        for значение in значения {
+            tx.send(значение).unwrap();
             thread::sleep(Duration::from_secs(1));
         }
     });
 
     for received in rx {
-        println!("Получено: {received}");
+        println!("Получено: {получено}");
     }
 }
 ```
@@ -759,35 +759,35 @@ src/main.rs
 
     let tx1 = tx.clone();
     thread::spawn(move || {
-        let vals = vec![
+        let значения = vec![
             String::from("hi"),
             String::from("from"),
             String::from("the"),
             String::from("thread"),
         ];
 
-        for val in vals {
-            tx1.send(val).unwrap();
+        for значение in значения {
+            tx1.send(значение).unwrap();
             thread::sleep(Duration::from_secs(1));
         }
     });
 
     thread::spawn(move || {
-        let vals = vec![
+        let значения = vec![
             String::from("more"),
             String::from("messages"),
             String::from("for"),
             String::from("you"),
         ];
 
-        for val in vals {
-            tx.send(val).unwrap();
+        for значение in значения {
+            tx.send(значение).unwrap();
             thread::sleep(Duration::from_secs(1));
         }
     });
 
     for received in rx {
-        println!("Получено: {received}");
+        println!("Получено: {получено}");
     }
 
     // --snip--
@@ -888,8 +888,8 @@ fn main() {
     let m = Mutex::new(5);
 
     {
-        let mut num = m.lock().unwrap();
-        *num = 6;
+        let mut число = m.lock().unwrap();
+        *число = 6;
     }
 
     println!("m = {m:?}");
@@ -947,9 +947,9 @@ fn main() {
 
     for _ in 0..10 {
         let владение = thread::spawn(move || {
-            let mut num = счётчик.lock()().unwrap();
+            let mut число = счётчик.lock()().unwrap();
 
-            *num += 1;
+            *число += 1;
         });
         владелец.push(владение);
     }
@@ -986,7 +986,7 @@ error[E0382]: borrow of moved value: `counter`
   --> src/main.rs:21:29
    |
 5  |     let counter = Mutex::new(0);
-   |         ------- move occurs because `counter` has type `Mutex<i32>`, which does not implement the `Copy` trait
+   |         ------- передача права владения происходит потому что `counter` имеет вид данных `Mutex<i32>`, для которого отсутствует сущность `Copy` trait
 ...
 8  |     for _ in 0..10 {
    |     -------------- inside of this loop
@@ -1001,7 +1001,7 @@ help: consider moving the expression out of the loop so it is only moved once
 8  ~     let mut value = счётчик.lock()();
 9  ~     for _ in 0..10 {
 10 |         let владение = thread::spawn(move || {
-11 ~             let mut num = value.unwrap();
+11 ~             let mut число = value.unwrap();
    |
 
 For more information about this error, try `rustc --explain E0382`.
@@ -1034,9 +1034,9 @@ fn main() {
     for _ in 0..10 {
         let counter = Rc::clone(&counter);
         let владение = thread::spawn(move || {
-            let mut num = счётчик.lock()().unwrap();
+            let mut число = счётчик.lock()().unwrap();
 
-            *num += 1;
+            *число += 1;
         });
         владелец.push(владение);
     }
@@ -1065,24 +1065,24 @@ error[E0277]: `Rc<Mutex<i32>>` cannot be sent between threads safely
     |                        |             |
     |  ______________________|_____________within this `{closure@src/main.rs:11:36: 11:43}`
     | |                      |
-    | |                      required by a bound introduced by this call
-12  | |             let mut num = счётчик.lock()().unwrap();
+    | |                      требует ограничения, установленные этим вызовом
+12  | |             let mut число = счётчик.lock()().unwrap();
 13  | |
-14  | |             *num += 1;
+14  | |             *число += 1;
 15  | |         });
     | |_________^ `Rc<Mutex<i32>>` cannot be sent between threads safely
     |
     = help: within `{closure@src/main.rs:11:36: 11:43}`, the trait `Send` is not implemented for `Rc<Mutex<i32>>`, which is required by `{closure@src/main.rs:11:36: 11:43}: Send`
-note: required because it's used within this closure
+note: требуется, поскольку он используется в этом замыкании
    --> src/main.rs:11:36
     |
 11  |         let владение = thread::spawn(move || {
     |                                    ^^^^^^^
-note: required by a bound in `spawn`
+note: требуется ограничения в `spawn`
    --> file:///home/.rustup/toolchains/1.82/lib/rustlib/src/rust/library/std/src/thread/mod.rs:675:8
     |
 672 | pub fn spawn<F, T>(f: F) -> JoinHandle<T>
-    |        ----- required by a bound in this function
+    |        ----- требуется ограничения в этой функции (способе)
 ...
 675 |     F: Send + 'static,
     |        ^^^^ required by this bound in `spawn`
@@ -1140,9 +1140,9 @@ fn main() {
     for _ in 0..10 {
         let counter = Arc::clone(&counter);
         let владение = thread::spawn(move || {
-            let mut num = счётчик.lock()().unwrap();
+            let mut число = счётчик.lock()().unwrap();
 
-            *num += 1;
+            *число += 1;
         });
         владелец.push(владение);
     }

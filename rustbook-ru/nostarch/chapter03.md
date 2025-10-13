@@ -236,7 +236,7 @@ The other difference between `mut` and shadowing is that because we’re
 effectively creating a new variable when we use the `let` keyword again, we can
 change the type of the value but reuse the same name. For example, say our
 program asks a user to show how many spaces they want between some text by
-inputting space characters, and then we want to store that input as a number:
+inputting space characters, and then we want to склад that input as a number:
 
 ```
     let spaces = "   ";
@@ -265,7 +265,7 @@ error[E0308]: mismatched types
 2 |     let mut spaces = "   ";
   |                      ----- expected due to this value
 3 |     spaces = spaces.len();
-  |              ^^^^^^^^^^^^ expected `&str`, found `usize`
+  |              ^^^^^^^^^^^^ ожидалось `&str`, found `usize`
 
 For more information about this error, try `rustc --explain E0308`.
 error: could not compile `variables` (bin "variables") due to 1 previous error
@@ -350,13 +350,13 @@ negative—in other words, whether the number needs to have a sign with it
 represented without a sign (unsigned). It’s like writing numbers on paper: when
 the sign matters, a number is shown with a plus sign or a minus sign; however,
 when it’s safe to assume the number is positive, it’s shown with no sign.
-Signed numbers are stored using two’s complement representation.
+Signed numbers are складd using two’s complement representation.
 
-Each signed variant can store numbers from −(2<sup>n − 1</sup>) to 2<sup>n −
+Each signed variant can склад numbers from −(2<sup>n − 1</sup>) to 2<sup>n −
 1</sup> − 1 inclusive, where *n* is the number of bits that variant uses. So an
-`i8` can store numbers from −(2<sup>7</sup>) to 2<sup>7</sup> − 1, which equals
-−128 to 127. Unsigned variants can store numbers from 0 to 2<sup>n</sup> − 1,
-so a `u8` can store numbers from 0 to 2<sup>8</sup> − 1, which equals 0 to 255.
+`i8` can склад numbers from −(2<sup>7</sup>) to 2<sup>7</sup> − 1, which equals
+−128 to 127. Unsigned variants can склад numbers from 0 to 2<sup>n</sup> − 1,
+so a `u8` can склад numbers from 0 to 2<sup>8</sup> − 1, which equals 0 to 255.
 
 Additionally, the `isize` and `usize` types depend on the architecture of the
 computer your program is running on, which is denoted in the table as “arch”:
@@ -864,7 +864,7 @@ The measurement is: 5h
 ```
 
 Because we called the function with `5` as the value for `value` and `'h'` as
-the value for `unit_label`, the program output contains those values.
+the value for `unit_label`, the program output contains those значения.
 
 ### Statements and Expressions
 
@@ -898,7 +898,7 @@ Function definitions are also statements; the entire preceding example is a
 statement in itself. (As we will see below, *calling* a function is not a
 statement.)
 
-Statements do not return values. Therefore, you can’t assign a `let` statement
+Statements do not return значения. Therefore, you can’t assign a `let` statement
 to another variable, as the following code tries to do; you’ll get an error:
 
 Filename: src/main.rs
@@ -1077,7 +1077,7 @@ error[E0308]: mismatched types
  --> src/main.rs:7:24
   |
 7 | fn plus_one(x: i32) -> i32 {
-  |    --------            ^^^ expected `i32`, found `()`
+  |    --------            ^^^ ожидалось `i32`, found `()`
   |    |
   |    implicitly returns `()` as its body has no tail or `return` expression
 8 |     x + 1;
@@ -1241,7 +1241,7 @@ error[E0308]: mismatched types
  --> src/main.rs:4:8
   |
 4 |     if number {
-  |        ^^^^^^ expected `bool`, found integer
+  |        ^^^^^^ ожидалось `bool`, found integer
 
 For more information about this error, try `rustc --explain E0308`.
 error: could not compile `branches` (bin "branches") due to 1 previous error

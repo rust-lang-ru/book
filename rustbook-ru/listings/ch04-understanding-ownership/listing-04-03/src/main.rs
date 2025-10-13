@@ -10,7 +10,7 @@ fn main() {
                                     // but i32 is Copy, so it's okay to still
                                     // use x afterward
 
-} // Here, x goes out of scope, then s. But because s's значение was moved, nothing
+} // Here, x goes out of scope, then s. But because s's значение получено moved, nothing
   // special happens.
 
 fn takes_ownership(некоторая_строка: String) { // некоторая_строка comes into scope

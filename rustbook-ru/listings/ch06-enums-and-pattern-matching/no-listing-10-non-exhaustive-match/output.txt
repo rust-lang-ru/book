@@ -11,7 +11,7 @@ $ cargo run
  ::: /rustc/eeb90cda1969383f56a2637cbd3037bdf598841c/library/core/src/option.rs:578:5
   |
   = примечание: not covered
-  = примечание: the matched значение is of type `Option<i32>`
+  = примечание: the matched значение of type `Option<i32>`
 помощь: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
   |
 4 ~             Some(i) => Some(i + 1),

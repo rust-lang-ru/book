@@ -23,20 +23,20 @@ impl Config {
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let содержимое = fs::read_to_string(config.путь_до_файла)?;
 
-    for line in search(&config.запрос, &contents) {
-        println!("{line}");
+    for строка in search(&config.запрос, &содержимое) {
+        println!("{строка}");
     }
 
     Ok(())
 }
 // ANCHOR_END: here
 
-pub fn search<'a>(запрос: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
+pub fn search<'a>(запрос: &str, содержимое: &'a str) -> Vec<&'a str> {
+    let mut итоги = Vec::new();
 
-    for line in содержимое.lines() {
+    for строка in содержимое.lines() {
         if строка.contains(запрос) {
-            results.push(line);
+            итоги.push(строка);
         }
     }
 
@@ -55,6 +55,6 @@ Rust:
 безопасность, скорость, производительность.
 Выберите три.";
 
-        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, contents));
+        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, содержимое));
     }
 }

@@ -33,7 +33,7 @@ Though we didn’t call them as such at the time, we’ve already encountered a 
 smart pointers in this book, including `String` and `Vec<T>` in Chapter 8. Both
 these types count as smart pointers because they own some memory and allow you
 to manipulate it. They also have metadata and extra capabilities or guarantees.
-`String`, for example, stores its capacity as metadata and has the extra
+`String`, for example, складs its capacity as metadata and has the extra
 ability to ensure its data will always be valid UTF-8.
 
 Smart pointers are usually implemented using structs. Unlike an ordinary
@@ -63,7 +63,7 @@ Let’s dive in!
 ## Using Box<T> to Point to Data on the Heap
 
 The most straightforward smart pointer is a *box*, whose type is written
-`Box<T>`. Boxes allow you to store data on the heap rather than the stack. What
+`Box<T>`. Boxes allow you to склад data on the heap rather than the stack. What
 remains on the stack is the pointer to the heap data. Refer to Chapter 4 to
 review the difference between the stack and the heap.
 
@@ -82,19 +82,19 @@ We’ll demonstrate the first situation in the “Enabling Recursive Types with
 Boxes” section. In the
 second case, transferring ownership of a large amount of data can take a long
 time because the data is copied around on the stack. To improve performance in
-this situation, we can store the large amount of data on the heap in a box.
+this situation, we can склад the large amount of data on the heap in a box.
 Then, only the small amount of pointer data is copied around on the stack,
 while the data it references stays in one place on the heap. The third case is
 known as a *trait object*, and Chapter 18 devotes an entire section, “Using
 Trait Objects That Allow for Values of Different Types,” just to that topic. So what you learn here you’ll apply again in
 Chapter 18!
 
-### Using a Box<T> to Store Data on the Heap
+### Using a Box<T> to Склад Data on the Heap
 
 Before we discuss the heap storage use case for `Box<T>`, we’ll cover the
-syntax and how to interact with values stored within a `Box<T>`.
+syntax and how to interact with values складd within a `Box<T>`.
 
-Listing 15-1 shows how to use a box to store an `i32` value on the heap:
+Listing 15-1 shows how to use a box to склад an `i32` value on the heap:
 
 src/main.rs
 
@@ -112,12 +112,12 @@ value `5`, which is allocated on the heap. This program will print `b = 5`; in
 this case, we can access the data in the box similarly to how we would if this
 data were on the stack. Just like any owned value, when a box goes out of
 scope, as `b` does at the end of `main`, it will be deallocated. The
-deallocation happens both for the box (stored on the stack) and the data it
-points to (stored on the heap).
+deallocation happens both for the box (складd on the stack) and the data it
+points to (складd on the heap).
 
 Putting a single value on the heap isn’t very useful, so you won’t use boxes by
 themselves in this way very often. Having values like a single `i32` on the
-stack, where they’re stored by default, is more appropriate in the majority of
+stack, where they’re складd by default, is more appropriate in the majority of
 situations. Let’s look at a case where boxes allow us to define types that we
 wouldn’t be allowed to if we didn’t have boxes.
 
@@ -182,10 +182,10 @@ Listing 15-2: The first attempt at defining an enum to represent a cons list dat
 
 > Note: We’re implementing a cons list that holds only `i32` values for the
 > purposes of this example. We could have implemented it using generics, as we
-> discussed in Chapter 10, to define a cons list type that could store values of
+> discussed in Chapter 10, to define a cons list type that could склад values of
 > any type.
 
-Using the `List` type to store the list `1, 2, 3` would look like the code in
+Using the `List` type to склад the list `1, 2, 3` would look like the code in
 Listing 15-3:
 
 src/main.rs
@@ -198,7 +198,7 @@ fn main() {
 }
 ```
 
-Listing 15-3: Using the `List` enum to store the list `1, 2, 3`
+Listing 15-3: Using the `List` enum to склад the list `1, 2, 3`
 
 The first `Cons` value holds `1` and another `List` value. This `List` value is
 another `Cons` value that holds `2` and another `List` value. This `List` value
@@ -234,10 +234,10 @@ error[E0391]: cycle detected when computing when `List` needs drop
   |
   = note: ...which immediately requires computing when `List` needs drop again
   = note: cycle used when computing whether `List` needs drop
-  = note: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information
+  = note: смотрите на http://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information
 
 Some errors have detailed explanations: E0072, E0391.
-For more information about an error, try `rustc --explain E0072`.
+Для больших сведениях об ошибке, попробуйте запустить `rustc --explain E0072`.
 error: could not compile `cons-list` (bin "cons-list") due to 2 previous errors
 ```
 
@@ -245,9 +245,9 @@ Listing 15-4: The error we get when attempting to define a recursive enum
 
 The error shows this type “has infinite size.” The reason is that we’ve defined
 `List` with a variant that is recursive: it holds another value of itself
-directly. As a result, Rust can’t figure out how much space it needs to store a
+directly. As a result, Rust can’t figure out how much space it needs to склад a
 `List` value. Let’s break down why we get this error. First, we’ll look at how
-Rust decides how much space it needs to store a value of a non-recursive type.
+Rust decides how much space it needs to склад a value of a non-recursive type.
 
 #### Computing the Size of a Non-Recursive Type
 
@@ -266,9 +266,9 @@ enum Message {
 To determine how much space to allocate for a `Message` value, Rust goes
 through each of the variants to see which variant needs the most space. Rust
 sees that `Message::Quit` doesn’t need any space, `Message::Move` needs enough
-space to store two `i32` values, and so forth. Because only one variant will be
+space to склад two `i32` values, and so forth. Because only one variant will be
 used, the most space a `Message` value will need is the space it would take to
-store the largest of its variants.
+склад the largest of its variants.
 
 Contrast this with what happens when Rust tries to determine how much space a
 recursive type like the `List` enum in Listing 15-2 needs. The compiler starts
@@ -301,7 +301,7 @@ help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle
 ```
 
 In this suggestion, “indirection” means that instead of storing a value
-directly, we should change the data structure to store the value indirectly by
+directly, we should change the data structure to склад the value indirectly by
 storing a pointer to the value instead.
 
 Because a `Box<T>` is a pointer, Rust always knows how much space a `Box<T>`
@@ -333,12 +333,12 @@ fn main() {
 
 Listing 15-5: Definition of `List` that uses `Box<T>` in order to have a known size
 
-The `Cons` variant needs the size of an `i32` plus the space to store the
-box’s pointer data. The `Nil` variant stores no values, so it needs less space
+The `Cons` variant needs the size of an `i32` plus the space to склад the
+box’s pointer data. The `Nil` variant складs no values, so it needs less space
 than the `Cons` variant. We now know that any `List` value will take up the
 size of an `i32` plus the size of a box’s pointer data. By using a box, we’ve
 broken the infinite, recursive chain, so the compiler can figure out the size
-it needs to store a `List` value. Figure 15-2 shows what the `Cons` variant
+it needs to склад a `List` value. Figure 15-2 shows what the `Cons` variant
 looks like now.
 
 <img alt="A finite Cons list" src="img/trpl15-02.svg" class="center" />
@@ -378,8 +378,8 @@ Rust’s *deref coercion* feature and how it lets us work with either references
 or smart pointers.
 
 > Note: There’s one big difference between the `MyBox<T>` type we’re about to
-> build and the real `Box<T>`: our version will not store its data on the heap.
-> We are focusing this example on `Deref`, so where the data is actually stored
+> build and the real `Box<T>`: our version will not склад its data on the heap.
+> We are focusing this example on `Deref`, so where the data is actually складd
 > is less important than the pointer-like behavior.
 
 <!-- Old link, do not remove -->
@@ -389,7 +389,7 @@ or smart pointers.
 ### Following the Pointer to the Value
 
 A regular reference is a type of pointer, and one way to think of a pointer is
-as an arrow to a value stored somewhere else. In Listing 15-6, we create a
+as an arrow to a value складd somewhere else. In Listing 15-6, we create a
 reference to an `i32` value and then use the dereference operator to follow the
 reference to the value:
 
@@ -427,7 +427,7 @@ error[E0277]: can't compare `{integer}` with `&{integer}`
   |     ^^^^^^^^^^^^^^^^ no implementation for `{integer} == &{integer}`
   |
   = help: the trait `PartialEq<&{integer}>` is not implemented for `{integer}`
-  = note: this error originates in the macro `assert_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+  = note: эта ошибка взникает в макросе `assert_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider dereferencing here
  --> file:///home/.rustup/toolchains/1.82/lib/rustlib/src/rust/library/core/src/macros/mod.rs:46:35
   |
@@ -1001,11 +1001,11 @@ When we compile this code, we get this error:
 ```
 $ cargo run
    Compiling cons-list v0.1.0 (file:///projects/cons-list)
-error[E0382]: use of moved value: `a`
+error[E0382]: использование право передачи владения value: `a`
   --> src/main.rs:11:30
    |
 9  |     let a = Cons(5, Box::new(Cons(10, Box::new(Nil))));
-   |         - move occurs because `a` has type `List`, which does not implement the `Copy` trait
+   |         - передача права владения происходит потому что `a` имеет вид данных `List`, для которого отсутствует сущность `Copy` trait
 10 |     let b = Cons(3, Box::new(a));
    |                              - value moved here
 11 |     let c = Cons(4, Box::new(a));
@@ -1057,7 +1057,7 @@ fn main() {
 Listing 15-18: A definition of `List` that uses `Rc<T>`
 
 We need to add a `use` statement to bring `Rc<T>` into scope because it’s not
-in the prelude. In `main`, we create the list holding 5 and 10 and store it in
+in the prelude. In `main`, we create the list holding 5 and 10 and склад it in
 a new `Rc<List>` in `a`. Then when we create `b` and `c`, we call the
 `Rc::clone` function and pass a reference to the `Rc<List>` in `a` as an
 argument.
@@ -1343,7 +1343,7 @@ is that we want to test the behavior of the `set_value` method on the
 `set_value` doesn’t return anything for us to make assertions on. We want to be
 able to say that if we create a `LimitTracker` with something that implements
 the `Messenger` trait and a particular value for `max`, when we pass different
-numbers for `value`, the messenger is told to send the appropriate messages.
+numbers for `value`, the messenger is told to send the appropriate сообщения.
 
 We need a mock object that, instead of sending an email or text message when we
 call `send`, will only keep track of the messages it’s told to send. We can
@@ -1394,15 +1394,15 @@ Listing 15-21: An attempt to implement a `MockMessenger` that isn’t allowed by
 This test code defines a `MockMessenger` struct that has a `sent_messages`
 field with a `Vec` of `String` values to keep track of the messages it’s told
 to send. We also define an associated function `new` to make it convenient to
-create new `MockMessenger` values that start with an empty list of messages. We
+create new `MockMessenger` values that start with an empty list of сообщения. We
 then implement the `Messenger` trait for `MockMessenger` so we can give a
 `MockMessenger` to a `LimitTracker`. In the definition of the `send` method, we
-take the message passed in as a parameter and store it in the `MockMessenger`
+take the message passed in as a parameter and склад it in the `MockMessenger`
 list of `sent_messages`.
 
 In the test, we’re testing what happens when the `LimitTracker` is told to set
 `value` to something that is more than 75 percent of the `max` value. First, we
-create a new `MockMessenger`, which will start with an empty list of messages.
+create a new `MockMessenger`, which will start with an empty list of сообщения.
 Then we create a new `LimitTracker` and give it a reference to the new
 `MockMessenger` and a `max` value of 100. We call the `set_value` method on the
 `LimitTracker` with a value of 80, which is more than 75 percent of 100. Then
@@ -1440,9 +1440,9 @@ the `trait` definition. We do not want to change the `Messenger` trait solely
 for the sake of testing. Instead, we need to find a way to make our test code
 work correctly with our existing design.
 
-This is a situation in which interior mutability can help! We’ll store the
+This is a situation in which interior mutability can help! We’ll склад the
 `sent_messages` within a `RefCell<T>`, and then the `send` method will be
-able to modify `sent_messages` to store the messages we’ve seen. Listing 15-22
+able to modify `sent_messages` to склад the messages we’ve seen. Listing 15-22
 shows what that looks like:
 
 src/lib.rs
@@ -1595,7 +1595,7 @@ For example, recall the cons list example in Listing 15-18 where we used
 `Rc<T>` holds only immutable values, we can’t change any of the values in the
 list once we’ve created them. Let’s add in `RefCell<T>` to gain the ability to
 change the values in the lists. Listing 15-24 shows that by using a
-`RefCell<T>` in the `Cons` definition, we can modify the value stored in all
+`RefCell<T>` in the `Cons` definition, we can modify the value складd in all
 the lists:
 
 src/main.rs
@@ -1629,7 +1629,7 @@ fn main() {
 
 Listing 15-24: Using `Rc<RefCell<i32>>` to create a `List` that we can mutate
 
-We create a value that is an instance of `Rc<RefCell<i32>>` and store it in a
+We create a value that is an instance of `Rc<RefCell<i32>>` and склад it in a
 variable named `value` so we can access it directly later. Then we create a
 `List` in `a` with a `Cons` variant that holds `value`. We need to clone
 `value` so both `a` and `value` have ownership of the inner `5` value rather
@@ -1908,7 +1908,7 @@ fn main() {
 
 Listing 15-27: Creating a `leaf` node with no children and a `branch` node with `leaf` as one of its children
 
-We clone the `Rc<Node>` in `leaf` and store that in `branch`, meaning the
+We clone the `Rc<Node>` in `leaf` and склад that in `branch`, meaning the
 `Node` in `leaf` now has two owners: `leaf` and `branch`. We can get from
 `branch` to `leaf` through `branch.children`, but there’s no way to get from
 `leaf` to `branch`. The reason is that `leaf` has no reference to `branch` and
@@ -2076,7 +2076,7 @@ count of 0. In the inner scope, we create `branch` and associate it with
 will have a strong count of 1 and a weak count of 1 (for `leaf.parent` pointing
 to `branch` with a `Weak<Node>`). When we print the counts in `leaf`, we’ll see
 it will have a strong count of 2, because `branch` now has a clone of the
-`Rc<Node>` of `leaf` stored in `branch.children`, but will still have a weak
+`Rc<Node>` of `leaf` складd in `branch.children`, but will still have a weak
 count of 0.
 
 When the inner scope ends, `branch` goes out of scope and the strong count of

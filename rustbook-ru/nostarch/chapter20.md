@@ -121,7 +121,7 @@ Listing 20-1 shows how to create an immutable and a mutable raw pointer.
 
 
 ```
-    let mut num = 5;
+    let mut число = 5;
 
     let r1 = &raw const num;
     let r2 = &raw mut num;
@@ -161,7 +161,7 @@ dereference operator `*` on a raw pointer that requires an `unsafe` block.
 
 
 ```
-    let mut num = 5;
+    let mut число = 5;
 
     let r1 = &raw const num;
     let r2 = &raw mut num;
@@ -179,7 +179,7 @@ it points at that we might end up dealing with an invalid value.
 
 Note also that in Listing 20-1 and 20-3, we created `*const i32` and `*mut i32`
 raw pointers that both pointed to the same memory location, where `num` is
-stored. If we instead tried to create an immutable and a mutable reference to
+складd. If we instead tried to create an immutable and a mutable reference to
 `num`, the code would not have compiled because Rust’s ownership rules don’t
 allow a mutable reference at the same time as any immutable references. With
 raw pointers, we can create a mutable pointer and an immutable pointer to the
@@ -276,7 +276,7 @@ of `i32` values rather than for a generic type `T`.
 
 ```
 fn split_at_mut(values: &mut [i32], mid: usize) -> (&mut [i32], &mut [i32]) {
-    let len = values.len();
+    let len = значения.len();
 
     assert!(mid <= len);
 
@@ -334,8 +334,8 @@ to unsafe functions to make the implementation of `split_at_mut` work.
 use std::slice;
 
 fn split_at_mut(values: &mut [i32], mid: usize) -> (&mut [i32], &mut [i32]) {
-    let len = values.len();
-    let ptr = values.as_mut_ptr();
+    let len = значения.len();
+    let ptr = значения.as_mut_ptr();
 
     assert!(mid <= len);
 
@@ -355,7 +355,7 @@ slices are a pointer to some data and the length of the slice. We use the `len`
 method to get the length of a slice and the `as_mut_ptr` method to access the
 raw pointer of a slice. In this case, because we have a mutable slice to `i32`
 values, `as_mut_ptr` returns a raw pointer with the type `*mut i32`, which we’ve
-stored in the variable `ptr`.
+складd in the variable `ptr`.
 
 We keep the assertion that the `mid` index is within the slice. Then we get to
 the unsafe code: the `slice::from_raw_parts_mut` function takes a raw pointer
@@ -392,13 +392,13 @@ location and creates a slice 10,000 items long.
     let address = 0x01234usize;
     let r = address as *mut i32;
 
-    let values: &[i32] = unsafe { slice::from_raw_parts_mut(r, 10000) };
+    let значения: &[i32] = unsafe { slice::from_raw_parts_mut(r, 10000) };
 ```
 
 Listing 20-7: Creating a slice from an arbitrary memory location
 
 We don’t own the memory at this arbitrary location, and there is no guarantee
-that the slice this code creates contains valid `i32` values. Attempting to use
+that the slice this code creates contains valid `i32` значения. Attempting to use
 `values` as though it’s a valid slice results in undefined behavior.
 
 #### Using extern Functions to Call External Code
@@ -515,7 +515,7 @@ Listing 20-10: Defining and using an immutable static variable
 Static variables are similar to constants, which we discussed in
 “Constants” in
 Chapter 3. The names of static variables are in `SCREAMING_SNAKE_CASE` by
-convention. Static variables can only store references with the `'static`
+convention. Static variables can only склад references with the `'static`
 lifetime, which means the Rust compiler can figure out the lifetime and we
 aren’t required to annotate it explicitly. Accessing an immutable static
 variable is safe.
@@ -624,7 +624,7 @@ The final action that works only with `unsafe` is accessing fields of a
 *union*. A `union` is similar to a `struct`, but only one declared field is
 used in a particular instance at one time. Unions are primarily used to
 interface with unions in C code. Accessing union fields is unsafe because Rust
-can’t guarantee the type of the data currently being stored in the union
+can’t guarantee the type of the data currently being складd in the union
 instance. You can learn more about unions in the Rust Reference at *../reference/items/unions.html*.
 
 ### Using Miri to check unsafe code
@@ -1239,7 +1239,7 @@ error[E0277]: `Point` doesn't implement `std::fmt::Display`
    |
    = help: the trait `std::fmt::Display` is not implemented for `Point`
    = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
-note: required by a bound in `OutlinePrint`
+note: требуется ограничения в `OutlinePrint`
   --> src/main.rs:3:21
    |
 3  | trait OutlinePrint: fmt::Display {
@@ -1253,13 +1253,13 @@ error[E0277]: `Point` doesn't implement `std::fmt::Display`
    |
    = help: the trait `std::fmt::Display` is not implemented for `Point`
    = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
-note: required by a bound in `OutlinePrint::outline_print`
+note: требуется ограничения в `OutlinePrint::outline_print`
   --> src/main.rs:3:21
    |
 3  | trait OutlinePrint: fmt::Display {
    |                     ^^^^^^^^^^^^ required by this bound in `OutlinePrint::outline_print`
 4  |     fn outline_print(&self) {
-   |        ------------- required by a bound in this associated function
+   |        ------------- требуется ограничения в this associated function
 
 For more information about this error, try `rustc --explain E0277`.
 error: could not compile `traits-example` (bin "traits-example") due to 2 previous errors
@@ -1370,7 +1370,7 @@ details of a type: the new type can expose a public API that is different from
 the API of the private inner type.
 
 Newtypes can also hide internal implementation. For example, we could provide a
-`People` type to wrap a `HashMap<i32, String>` that stores a person’s ID
+`People` type to wrap a `HashMap<i32, String>` that складs a person’s ID
 associated with their name. Code using `People` would only interact with the
 public API we provide, such as a method to add a name string to the `People`
 collection; that code wouldn’t need to know that we assign an `i32` ID to names
@@ -1459,7 +1459,7 @@ Listing 20-26: Introducing a type alias, `Thunk`, to reduce repetition
 This code is much easier to read and write! Choosing a meaningful name for a
 type alias can help communicate your intent as well (*thunk* is a word for code
 to be evaluated at a later time, so it’s an appropriate name for a closure that
-gets stored).
+gets складd).
 
 Type aliases are also commonly used with the `Result<T, E>` type for reducing
 repetition. Consider the `std::io` module in the standard library. I/O
@@ -1512,7 +1512,7 @@ just another `Result<T, E>`, which means we can use any methods that work on
 ### The Never Type that Never Returns
 
 Rust has a special type named `!` that’s known in type theory lingo as the
-*empty type* because it has no values. We prefer to call it the *never type*
+*empty type* because it has no значения. We prefer to call it the *never type*
 because it stands in the place of the return type when a function will never
 return. Here is an example:
 
@@ -1576,7 +1576,7 @@ this definition:
 impl<T> Option<T> {
     pub fn unwrap(self) -> T {
         match self {
-            Some(val) => val,
+            Some(значение) => val,
             None => panic!("called `Option::unwrap()` on a `None` value"),
         }
     }
@@ -1584,7 +1584,7 @@ impl<T> Option<T> {
 ```
 
 In this code, the same thing happens as in the `match` in Listing 20-27: Rust
-sees that `val` has the type `T` and `panic!` has the type `!`, so the result
+sees that `значение` has the type `T` and `panic!` has the type `!`, so the result
 of the overall `match` expression is `T`. This code works because `panic!`
 doesn’t produce a value; it ends the program. In the `None` case, we won’t be
 returning a value from `unwrap`, so this code is valid.
@@ -1632,14 +1632,14 @@ holding a dynamically sized type.
 So what do we do? In this case, you already know the answer: we make the types
 of `s1` and `s2` a `&str` rather than a `str`. Recall from “String
 Slices” in Chapter 4 that the slice data
-structure just stores the starting position and the length of the slice. So
-although a `&T` is a single value that stores the memory address of where the
+structure just складs the starting position and the length of the slice. So
+although a `&T` is a single value that складs the memory address of where the
 `T` is located, a `&str` is *two* values: the address of the `str` and its
 length. As such, we can know the size of a `&str` value at compile time: it’s
 twice the length of a `usize`. That is, we always know the size of a `&str`, no
 matter how long the string it refers to is. In general, this is the way in which
 dynamically sized types are used in Rust: they have an extra bit of metadata
-that stores the size of the dynamic information. The golden rule of dynamically
+that складs the size of the dynamic information. The golden rule of dynamically
 sized types is that we must always put values of dynamically sized types behind
 a pointer of some kind.
 
@@ -1916,7 +1916,7 @@ compilation.
 To define a macro, you use the `macro_rules!` construct. Let’s explore how to
 use `macro_rules!` by looking at how the `vec!` macro is defined. Chapter 8
 covered how we can use the `vec!` macro to create a new vector with particular
-values. For example, the following macro creates a new vector containing three
+значения. For example, the following macro creates a new vector containing three
 integers:
 
 ```
@@ -1970,7 +1970,7 @@ one arm.
 
 Valid pattern syntax in macro definitions is different than the pattern syntax
 covered in Chapter 19 because macro patterns are matched against Rust code
-structure rather than values. Let’s walk through what the pattern pieces in
+structure rather than значения. Let’s walk through what the pattern pieces in
 Listing 20-29 mean; for the full macro pattern syntax, see the Rust
 Reference at *../reference/macros-by-example.html*.
 

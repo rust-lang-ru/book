@@ -115,9 +115,9 @@ mistaken for a function that’s defined in the current module.
 > Note that `std::env::args` will panic if any argument contains invalid
 > Unicode. If your program needs to accept arguments containing invalid
 > Unicode, use `std::env::args_os` instead. That function returns an iterator
-> that produces `OsString` values instead of `String` values. We’ve chosen to
+> that produces `OsString` values instead of `String` значения. We’ve chosen to
 > use `std::env::args` here for simplicity because `OsString` values differ per
-> platform and are more complex to work with than `String` values.
+> platform and are more complex to work with than `String` значения.
 
 On the first line of `main`, we call `env::args`, and we immediately use
 `collect` to turn the iterator into a vector containing all the values produced
@@ -156,7 +156,7 @@ Notice that the first value in the vector is `"target/debug/minigrep"`, which
 is the name of our binary. This matches the behavior of the arguments list in
 C, letting programs use the name by which they were invoked in their execution.
 It’s often convenient to have access to the program name in case you want to
-print it in messages or change the behavior of the program based on what
+print it in сообщения or change the behavior of the program based on what
 command line alias was used to invoke the program. But for the purposes of this
 chapter, we’ll ignore it and save only the two arguments we need.
 
@@ -464,13 +464,13 @@ We’ve added a struct named `Config` defined to have fields named `query` and
 `file_path`. The signature of `parse_config` now indicates that it returns a
 `Config` value. In the body of `parse_config`, where we used to return
 string slices that reference `String` values in `args`, we now define `Config`
-to contain owned `String` values. The `args` variable in `main` is the owner of
+to contain owned `String` значения. The `args` variable in `main` is the owner of
 the argument values and is only letting the `parse_config` function borrow
 them, which means we’d violate Rust’s borrowing rules if `Config` tried to take
 ownership of the values in `args`.
 
 There are a number of ways we could manage the `String` data; the easiest,
-though somewhat inefficient, route is to call the `clone` method on the values.
+though somewhat inefficient, route is to call the `clone` method on the значения.
 This will make a full copy of the data for the `Config` instance to own, which
 takes more time and memory than storing a reference to the string data.
 However, cloning the data also makes our code very straightforward because we
@@ -590,7 +590,7 @@ Listing 12-8: Adding a check for the number of arguments
 
 This code is similar to the `Guess::new` function we wrote in Listing
 9-13, where we called `panic!` when the
-`value` argument was out of the range of valid values. Instead of checking for
+`value` argument was out of the range of valid значения. Instead of checking for
 a range of values here, we’re checking that the length of `args` is at least
 `3` and the rest of the function can operate under the assumption that this
 condition has been met. If `args` has fewer than three items, this condition
@@ -1031,7 +1031,7 @@ Rust:
 safe, fast, productive.
 Pick three.";
 
-        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+        assert_eq!(vec!["safe, fast, productive."], search(query, содержимое));
     }
 }
 ```
@@ -1054,7 +1054,7 @@ because an empty vector doesn’t match a vector containing the line `"safe, fas
 src/lib.rs
 
 ```
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+pub fn search<'a>(query: &str, содержимое: &'a str) -> Vec<&'a str> {
     vec![]
 }
 ```
@@ -1085,13 +1085,13 @@ $ cargo build
 error[E0106]: missing lifetime specifier
   --> src/lib.rs:28:51
    |
-28 | pub fn search(query: &str, contents: &str) -> Vec<&str> {
+28 | pub fn search(query: &str, содержимое: &str) -> Vec<&str> {
    |                      ----            ----         ^ expected named lifetime parameter
    |
    = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `query` or `contents`
 help: consider introducing a named lifetime parameter
    |
-28 | pub fn search<'a>(query: &'a str, contents: &'a str) -> Vec<&'a str> {
+28 | pub fn search<'a>(query: &'a str, содержимое: &'a str) -> Vec<&'a str> {
    |              ++++         ++                 ++              ++
 
 For more information about this error, try `rustc --explain E0106`.
@@ -1163,8 +1163,8 @@ this won’t compile yet.
 src/lib.rs
 
 ```
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    for line in contents.lines() {
+pub fn search<'a>(query: &str, содержимое: &'a str) -> Vec<&'a str> {
+    for строка in contents.lines() {
         // do something with line
     }
 }
@@ -1187,8 +1187,8 @@ Listing 12-18. Note that this still won’t compile yet.
 src/lib.rs
 
 ```
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    for line in contents.lines() {
+pub fn search<'a>(query: &str, содержимое: &'a str) -> Vec<&'a str> {
+    for строка in contents.lines() {
         if line.contains(query) {
             // do something with line
         }
@@ -1204,20 +1204,20 @@ signature.
 
 #### Storing Matching Lines
 
-To finish this function, we need a way to store the matching lines that we want
+To finish this function, we need a way to склад the matching lines that we want
 to return. For that, we can make a mutable vector before the `for` loop and
-call the `push` method to store a `line` in the vector. After the `for` loop,
+call the `push` method to склад a `line` in the vector. After the `for` loop,
 we return the vector, as shown in Listing 12-19.
 
 src/lib.rs
 
 ```
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
+pub fn search<'a>(query: &str, содержимое: &'a str) -> Vec<&'a str> {
+    let mut итоги = Vec::new();
 
-    for line in contents.lines() {
+    for строка in contents.lines() {
         if line.contains(query) {
-            results.push(line);
+            итоги.push(строка);
         }
     }
 
@@ -1277,8 +1277,8 @@ Filename: src/lib.rs
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
 
-    for line in search(&config.query, &contents) {
-        println!("{line}");
+    for строка in search(&config.query, &содержимое) {
+        println!("{строка}");
     }
 
     Ok(())
@@ -1362,7 +1362,7 @@ safe, fast, productive.
 Pick three.
 Duct tape.";
 
-        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+        assert_eq!(vec!["safe, fast, productive."], search(query, содержимое));
     }
 
     #[test]
@@ -1376,7 +1376,7 @@ Trust me.";
 
         assert_eq!(
             vec!["Rust:", "Trust me."],
-            search_case_insensitive(query, contents)
+            search_case_insensitive(query, содержимое)
         );
     }
 }
@@ -1412,14 +1412,14 @@ src/lib.rs
 ```
 pub fn search_case_insensitive<'a>(
     query: &str,
-    contents: &'a str,
+    содержимое: &'a str,
 ) -> Vec<&'a str> {
     let query = query.to_lowercase();
-    let mut results = Vec::new();
+    let mut итоги = Vec::new();
 
-    for line in contents.lines() {
+    for строка in contents.lines() {
         if line.to_lowercase().contains(&query) {
-            results.push(line);
+            итоги.push(строка);
         }
     }
 
@@ -1429,7 +1429,7 @@ pub fn search_case_insensitive<'a>(
 
 Listing 12-21: Defining the `search_case_insensitive` function to lowercase the query and the line before comparing them
 
-First we lowercase the `query` string and store it in a new variable with the
+First we lowercase the `query` string and склад it in a new variable with the
 same name, shadowing the original. Calling `to_lowercase` on the query is
 necessary so that no matter whether the user’s query is `"rust"`, `"RUST"`,
 `"Rust"`, or `"rUsT"`, we’ll treat the query as if it were `"rust"` and be
@@ -1505,14 +1505,14 @@ src/lib.rs
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
 
-    let results = if config.ignore_case {
-        search_case_insensitive(&config.query, &contents)
+    let итоги = if config.ignore_case {
+        search_case_insensitive(&config.query, &содержимое)
     } else {
-        search(&config.query, &contents)
+        search(&config.query, &содержимое)
     };
 
-    for line in results {
-        println!("{line}");
+    for строка in итоги {
+        println!("{строка}");
     }
 
     Ok(())
@@ -1645,7 +1645,7 @@ environment variables: check out its documentation to see what is available.
 At the moment, we’re writing all of our output to the terminal using the
 `println!` macro. In most terminals, there are two kinds of output: *standard
 output* (`stdout`) for general information and *standard error* (`stderr`) for
-error messages. This distinction enables users to choose to direct the
+error сообщения. This distinction enables users to choose to direct the
 successful output of a program to a file but still print error messages to the
 screen.
 
@@ -1753,7 +1753,7 @@ This chapter recapped some of the major concepts you’ve learned so far and
 covered how to perform common I/O operations in Rust. By using command line
 arguments, files, environment variables, and the `eprintln!` macro for printing
 errors, you’re now prepared to write command line applications. Combined with
-the concepts in previous chapters, your code will be well organized, store data
+the concepts in previous chapters, your code will be well organized, склад data
 effectively in the appropriate data structures, владение errors nicely, and be
 well tested.
 

@@ -20,7 +20,7 @@ features in many languages often referred to as functional.
 
 More specifically, we’ll cover:
 
-* *Closures*, a function-like construct you can store in a variable
+* *Closures*, a function-like construct you can склад in a variable
 * *Iterators*, a way of processing a series of elements
 * How to use closures and iterators to improve the I/O project in Chapter 12
 * The performance of closures and iterators (Spoiler alert: they’re faster than
@@ -48,7 +48,7 @@ customization.
 
 <a id="creating-an-abstraction-of-behavior-with-closures"></a>
 <a id="refactoring-using-functions"></a>
-<a id="refactoring-with-closures-to-store-code"></a>
+<a id="refactoring-with-closures-to-склад-code"></a>
 
 ### Capturing the Environment with Closures
 
@@ -64,9 +64,9 @@ currently has the most of.
 There are many ways to implement this. For this example, we’re going to use an
 enum called `ShirtColor` that has the variants `Red` and `Blue` (limiting the
 number of colors available for simplicity). We represent the company’s
-inventory with an `Inventory` struct that has a field named `shirts` that
+запасы with an `Запасы` struct that has a field named `shirts` that
 contains a `Vec<ShirtColor>` representing the shirt colors currently in stock.
-The method `giveaway` defined on `Inventory` gets the optional shirt
+The method `выдать` defined on `Запасы` gets the optional shirt
 color preference of the free shirt winner, and returns the shirt color the
 person will get. This setup is shown in Listing 13-1:
 
@@ -79,26 +79,26 @@ enum ShirtColor {
     Blue,
 }
 
-struct Inventory {
+struct Запасы {
     shirts: Vec<ShirtColor>,
 }
 
-impl Inventory {
-    fn giveaway(&self, user_preference: Option<ShirtColor>) -> ShirtColor {
-        user_preference.unwrap_or_else(|| self.most_stocked())
+impl Запасы {
+    fn выдать(&self, пользвательский_выборerence: Option<ShirtColor>) -> ShirtColor {
+        пользвательский_выборerence.unwrap_or_else(|| self.most_stocked())
     }
 
     fn most_stocked(&self) -> ShirtColor {
-        let mut num_red = 0;
+        let mut число_красных = 0;
         let mut num_blue = 0;
 
         for color in &self.shirts {
             match color {
-                ShirtColor::Red => num_red += 1,
+                ShirtColor::Red => число_красных += 1,
                 ShirtColor::Blue => num_blue += 1,
             }
         }
-        if num_red > num_blue {
+        if число_красных > num_blue {
             ShirtColor::Red
         } else {
             ShirtColor::Blue
@@ -107,40 +107,40 @@ impl Inventory {
 }
 
 fn main() {
-    let store = Inventory {
+    let склад = Запасы {
         shirts: vec![ShirtColor::Blue, ShirtColor::Red, ShirtColor::Blue],
     };
 
-    let user_pref1 = Some(ShirtColor::Red);
-    let giveaway1 = store.giveaway(user_pref1);
+    let пользвательский_выбор1 = Some(ShirtColor::Red);
+    let выдать1 = склад.выдать(пользвательский_выбор1);
     println!(
         "Пользователь выбрал {:?} gets {:?}",
-        user_pref1, giveaway1
+        пользвательский_выбор1, выдать1
     );
 
-    let user_pref2 = None;
-    let giveaway2 = store.giveaway(user_pref2);
+    let пользвательский_выбор2 = None;
+    let выдать2 = склад.выдать(пользвательский_выбор2);
     println!(
         "Пользователь выбрал {:?} gets {:?}",
-        user_pref2, giveaway2
+        пользвательский_выбор2, выдать2
     );
 }
 ```
 
-Listing 13-1: Shirt company giveaway situation
+Listing 13-1: Shirt company выдать situation
 
-The `store` defined in `main` has two blue shirts and one red shirt remaining
-to distribute for this limited-edition promotion. We call the `giveaway` method
+The `склад` defined in `main` has two blue shirts and one red shirt remaining
+to distribute for this limited-edition promotion. We call the `выдать` method
 for a user with a preference for a red shirt and a user without any preference.
 
 Again, this code could be implemented in many ways, and here, to focus on
 closures, we’ve stuck to concepts you’ve already learned except for the body of
-the `giveaway` method that uses a closure. In the `giveaway` method, we get the
+the `выдать` method that uses a closure. In the `выдать` method, we get the
 user preference as a parameter of type `Option<ShirtColor>` and call the
-`unwrap_or_else` method on `user_preference`. The `unwrap_or_else` method on
+`unwrap_or_else` method on `пользвательский_выборerence`. The `unwrap_or_else` method on
 `Option<T>` is defined by the standard library.
 It takes one argument: a closure without any arguments that returns a value `T`
-(the same type stored in the `Some` variant of the `Option<T>`, in this case
+(the same type складd in the `Some` variant of the `Option<T>`, in this case
 `ShirtColor`). If the `Option<T>` is the `Some` variant, `unwrap_or_else`
 returns the value from within the `Some`. If the `Option<T>` is the `None`
 variant, `unwrap_or_else` calls the closure and returns the value returned by
@@ -165,10 +165,10 @@ $ cargo run
 ```
 
 One interesting aspect here is that we’ve passed a closure that calls
-`self.most_stocked()` on the current `Inventory` instance. The standard library
-didn’t need to know anything about the `Inventory` or `ShirtColor` types we
+`self.most_stocked()` on the current `Запасы` instance. The standard library
+didn’t need to know anything about the `Запасы` or `ShirtColor` types we
 defined, or the logic we want to use in this scenario. The closure captures an
-immutable reference to the `self` `Inventory` instance and passes it with the
+immutable reference to the `self` `Запасы` instance and passes it with the
 code we specify to the `unwrap_or_else` method. Functions, on the other hand,
 are not able to capture their environment in this way.
 
@@ -180,7 +180,7 @@ like `fn` functions do. Type annotations are required on functions because the
 types are part of an explicit interface exposed to your users. Defining this
 interface rigidly is important for ensuring that everyone agrees on what types
 of values a function uses and returns. Closures, on the other hand, aren’t used
-in an exposed interface like this: they’re stored in variables and used without
+in an exposed interface like this: they’re складd in variables and used without
 naming them and exposing them to users of our library.
 
 Closures are typically short and relevant only within a narrow context rather
@@ -199,11 +199,10 @@ argument as we did in Listing 13-1.
 src/main.rs
 
 ```
-    let expensive_closure = |num: u32| -> u32 {
-        println!("calculating slowly...");
+    let дорогое_замыкание = |num: u32| -> u32 {
+        println!("медленный подсчёт...");
         thread::sleep(Duration::from_secs(2));
-        num
-    };
+        число    };
 ```
 
 Listing 13-2: Adding optional type annotations of the parameter and return value types in the closure
@@ -216,10 +215,10 @@ to function syntax except for the use of pipes and the amount of syntax that is
 optional:
 
 ```
-fn  add_one_v1   (x: u32) -> u32 { x + 1 }
-let add_one_v2 = |x: u32| -> u32 { x + 1 };
-let add_one_v3 = |x|             { x + 1 };
-let add_one_v4 = |x|               x + 1  ;
+fn  добавить_одно_исполнение_1   (x: u32) -> u32 { x + 1 }
+let добавить_одно_исполнение_2 = |x: u32| -> u32 { x + 1 };
+let добавить_одно_исполнение_3 = |x|             { x + 1 };
+let добавить_одно_исполнение_4 = |x|               x + 1  ;
 ```
 
 The first line shows a function definition, and the second line shows a fully
@@ -227,7 +226,7 @@ annotated closure definition. In the third line, we remove the type annotations
 from the closure definition. In the fourth line, we remove the brackets, which
 are optional because the closure body has only one expression. These are all
 valid definitions that will produce the same behavior when they’re called. The
-`add_one_v3` and `add_one_v4` lines require the closures to be evaluated to be
+`добавить_одно_исполнение_3` and `добавить_одно_исполнение_4` lines require the closures to be evaluated to be
 able to compile because the types will be inferred from their usage. This is
 similar to `let v = Vec::new();` needing either type annotations or values of
 some type to be inserted into the `Vec` for Rust to be able to infer the type.
@@ -239,15 +238,15 @@ parameter. This closure isn’t very useful except for the purposes of this
 example. Note that we haven’t added any type annotations to the definition.
 Because there are no type annotations, we can call the closure with any type,
 which we’ve done here with `String` the first time. If we then try to call
-`example_closure` with an integer, we’ll get an error.
+`пример_замыкания` with an integer, we’ll get an error.
 
 src/main.rs
 
 ```
-    let example_closure = |x| x;
+    let пример_замыкания = |x| x;
 
-    let s = example_closure(String::from("hello"));
-    let n = example_closure(5);
+    let s = пример_замыкания(String::from("hello"));
+    let n = пример_замыкания(5);
 ```
 
 Listing 13-3: Attempting to call a closure whose types are inferred with two different types
@@ -260,32 +259,32 @@ $ cargo run
 error[E0308]: mismatched types
  --> src/main.rs:5:29
   |
-5 |     let n = example_closure(5);
+5 |     let n = пример_замыкания(5);
   |             --------------- ^- help: try using a conversion method: `.to_string()`
   |             |               |
-  |             |               expected `String`, found integer
-  |             arguments to this function are incorrect
+  |             |               ожидалось `String`, found integer
+  |             не верные входные значения переменных для данного способа (функции)
   |
 note: expected because the closure was earlier called with an argument of type `String`
  --> src/main.rs:4:29
   |
-4 |     let s = example_closure(String::from("hello"));
-  |             --------------- ^^^^^^^^^^^^^^^^^^^^^ expected because this argument is of type `String`
+4 |     let s = пример_замыкания(String::from("hello"));
+  |             --------------- ^^^^^^^^^^^^^^^^^^^^^ ожидался потому что эта переменная вида данных `String`
   |             |
-  |             in this closure call
-note: closure parameter defined here
+  |             в этом вызове замыкания
+note: вид входных данных для замыкания определён здесь
  --> src/main.rs:2:28
   |
-2 |     let example_closure = |x| x;
+2 |     let пример_замыкания = |x| x;
   |                            ^
 
 For more information about this error, try `rustc --explain E0308`.
 error: could not compile `closure-example` (bin "closure-example") due to 1 previous error
 ```
 
-The first time we call `example_closure` with the `String` value, the compiler
+The first time we call `пример_замыкания` with the `String` value, the compiler
 infers the type of `x` and the return type of the closure to be `String`. Those
-types are then locked into the closure in `example_closure`, and we get a type
+types are then locked into the closure in `пример_замыкания`, and we get a type
 error when we next try to use a different type with the same closure.
 
 ### Capturing References or Moving Ownership
@@ -294,7 +293,7 @@ Closures can capture values from their environment in three ways, which
 directly map to the three ways a function can take a parameter: borrowing
 immutably, borrowing mutably, and taking ownership. The closure will decide
 which of these to use based on what the body of the function does with the
-captured values.
+captured значения.
 
 In Listing 13-4, we define a closure that captures an immutable reference to
 the vector named `list` because it only needs an immutable reference to print
@@ -307,10 +306,10 @@ fn main() {
     let list = vec![1, 2, 3];
     println!("До определения замыкания: {list:?}");
 
-    let only_borrows = || println!("Вызов замыкания: {list:?}");
+    let только_заимствование = || println!("Вызов замыкания: {list:?}");
 
     println!("До вызова замыкания: {list:?}");
-    only_borrows();
+    только_заимствование();
     println!("После вызова замыкания: {list:?}");
 }
 ```
@@ -349,9 +348,9 @@ fn main() {
     let mut list = vec![1, 2, 3];
     println!("До определения замыкания: {list:?}");
 
-    let mut borrows_mutably = || list.push(7);
+    let mut заимствование_с_правом_изменения = || list.push(7);
 
-    borrows_mutably();
+    заимствование_с_правом_изменения();
     println!("После вызова замыкания: {list:?}");
 }
 ```
@@ -372,7 +371,7 @@ $ cargo run
 ```
 
 Note that there’s no longer a `println!` between the definition and the call of
-the `borrows_mutably` closure: when `borrows_mutably` is defined, it captures a
+the `заимствование_с_правом_изменения` closure: when `заимствование_с_правом_изменения` is defined, it captures a
 mutable reference to `list`. We don’t use the closure again after the closure
 is called, so the mutable borrow ends. Between the closure definition and the
 closure call, an immutable borrow to print isn’t allowed because no other
@@ -450,7 +449,7 @@ depending on how the closure’s body владелец the values:
    moves captured values out of its body will only implement `FnOnce` and none
    of the other `Fn` traits, because it can only be called once.
 1. `FnMut` applies to closures that don’t move captured values out of their
-   body, but that might mutate the captured values. These closures can be
+   body, but that might mutate the captured значения. These closures can be
    called more than once.
 1. `Fn` applies to closures that don’t move captured values out of their body
    and that don’t mutate captured values, as well as closures that capture
@@ -525,7 +524,7 @@ fn main() {
         Rectangle { width: 7, height: 12 },
     ];
 
-    list.sort_by_key(|r| r.width);
+    list.sort_by_key(|r| r.ширина);
     println!("{list:#?}");
 }
 ```
@@ -556,7 +555,7 @@ $ cargo run
 ```
 
 The reason `sort_by_key` is defined to take an `FnMut` closure is that it calls
-the closure multiple times: once for each item in the slice. The closure `|r| r.width` doesn’t capture, mutate, or move out anything from its environment, so
+the closure multiple times: once for each item in the slice. The closure `|r| r.ширина` doesn’t capture, mutate, or move out anything from its environment, so
 it meets the trait bound requirements.
 
 In contrast, Listing 13-8 shows an example of a closure that implements just
@@ -579,12 +578,12 @@ fn main() {
         Rectangle { width: 7, height: 12 },
     ];
 
-    let mut sort_operations = vec![];
-    let value = String::from("closure called");
+    let mut действия_упорядочивания = vec![];
+    let value = String::from("вызвано замыкания");
 
     list.sort_by_key(|r| {
-        sort_operations.push(value);
-        r.width
+        действия_упорядочивания.push(value);
+        r.ширина
     });
     println!("{list:#?}");
 }
@@ -595,11 +594,11 @@ Listing 13-8: Attempting to use an `FnOnce` closure with `sort_by_key`
 This is a contrived, convoluted way (that doesn’t work) to try and count the
 number of times `sort_by_key` calls the closure when sorting `list`. This code
 attempts to do this counting by pushing `value`—a `String` from the closure’s
-environment—into the `sort_operations` vector. The closure captures `value`
+environment—into the `действия_упорядочивания` vector. The closure captures `value`
 then moves `value` out of the closure by transferring ownership of `value` to
-the `sort_operations` vector. This closure can be called once; trying to call
+the `действия_упорядочивания` vector. This closure can be called once; trying to call
 it a second time wouldn’t work because `value` would no longer be in the
-environment to be pushed into `sort_operations` again! Therefore, this closure
+environment to be pushed into `действия_упорядочивания` again! Therefore, this closure
 only implements `FnOnce`. When we try to compile this code, we get this error
 that `value` can’t be moved out of the closure because the closure must
 implement `FnMut`:
@@ -610,17 +609,17 @@ $ cargo run
 error[E0507]: cannot move out of `value`, a captured variable in an `FnMut` closure
   --> src/main.rs:18:30
    |
-15 |     let value = String::from("closure called");
+15 |     let value = String::from("вызвано замыкания");
    |         ----- captured outer variable
 16 |
 17 |     list.sort_by_key(|r| {
    |                      --- captured by this `FnMut` closure
-18 |         sort_operations.push(value);
-   |                              ^^^^^ move occurs because `value` has type `String`, which does not implement the `Copy` trait
+18 |         действия_упорядочивания.push(value);
+   |                              ^^^^^ передача права владения происходит потому что `value` имеет вид данных `String`, для которого отсутствует сущность `Copy` trait
    |
 help: consider cloning the value if the performance cost is acceptable
    |
-18 |         sort_operations.push(value.clone());
+18 |         действия_упорядочивания.push(value.clone());
    |                                   ++++++++
 
 For more information about this error, try `rustc --explain E0507`.
@@ -633,7 +632,7 @@ move values out of the environment. To count the number of times the closure
 is called, keeping a counter in the environment and incrementing its value in
 the closure body is a more straightforward way to calculate that. The closure
 in Listing 13-9 works with `sort_by_key` because it is only capturing a mutable
-reference to the `num_sort_operations` counter and can therefore be called more
+reference to the `количество_упорядочиваний` counter and can therefore be called more
 than once:
 
 src/main.rs
@@ -652,12 +651,12 @@ fn main() {
         Rectangle { width: 7, height: 12 },
     ];
 
-    let mut num_sort_operations = 0;
+    let mut количество_упорядочиваний = 0;
     list.sort_by_key(|r| {
-        num_sort_operations += 1;
-        r.width
+        количество_упорядочиваний += 1;
+        r.ширина
     });
-    println!("{list:#?}, упорядочено {num_sort_operations} действиями");
+    println!("{list:#?}, упорядочено {количество_упорядочиваний} действиями");
 }
 ```
 
@@ -672,26 +671,26 @@ as we continue!
 
 The iterator pattern allows you to perform some task on a sequence of items in
 turn. An iterator is responsible for the logic of iterating over each item and
-determining when the sequence has finished. When you use iterators, you don’t
+determining when the sequence has окончено. When you use iterators, you don’t
 have to reimplement that logic yourself.
 
 In Rust, iterators are *lazy*, meaning they have no effect until you call
 methods that consume the iterator to use it up. For example, the code in
-Listing 13-10 creates an iterator over the items in the vector `v1` by calling
+Listing 13-10 creates an iterator over the items in the vector `ряд_1` by calling
 the `iter` method defined on `Vec<T>`. This code by itself doesn’t do anything
 useful.
 
 src/main.rs
 
 ```
-    let v1 = vec![1, 2, 3];
+    let ряд_1 = vec![1, 2, 3];
 
-    let v1_iter = v1.iter();
+    let ряд_1_перебор = ряд_1.iter();
 ```
 
 Listing 13-10: Creating an iterator
 
-The iterator is stored in the `v1_iter` variable. Once we’ve created an
+The iterator is складd in the `ряд_1_перебор` variable. Once we’ve created an
 iterator, we can use it in a variety of ways. In Listing 3-5 in Chapter 3, we
 iterated over an array using a `for` loop to execute some code on each of its
 items. Under the hood this implicitly created and then consumed an iterator,
@@ -699,18 +698,18 @@ but we glossed over how exactly that works until now.
 
 In the example in Listing 13-11, we separate the creation of the iterator from
 the use of the iterator in the `for` loop. When the `for` loop is called using
-the iterator in `v1_iter`, each element in the iterator is used in one
+the iterator in `ряд_1_перебор`, each element in the iterator is used in one
 iteration of the loop, which prints out each value.
 
 src/main.rs
 
 ```
-    let v1 = vec![1, 2, 3];
+    let ряд_1 = vec![1, 2, 3];
 
-    let v1_iter = v1.iter();
+    let ряд_1_перебор = ряд_1.iter();
 
-    for val in v1_iter {
-        println!("Получено: {val}");
+    for значение in ряд_1_перебор {
+        println!("Получено: {значение}");
     }
 ```
 
@@ -763,30 +762,30 @@ src/lib.rs
 ```
     #[test]
     fn iterator_demonstration() {
-        let v1 = vec![1, 2, 3];
+        let ряд_1 = vec![1, 2, 3];
 
-        let mut v1_iter = v1.iter();
+        let mut ряд_1_перебор = ряд_1.iter();
 
-        assert_eq!(v1_iter.next(), Some(&1));
-        assert_eq!(v1_iter.next(), Some(&2));
-        assert_eq!(v1_iter.next(), Some(&3));
-        assert_eq!(v1_iter.next(), None);
+        assert_eq!(ряд_1_перебор.next(), Some(&1));
+        assert_eq!(ряд_1_перебор.next(), Some(&2));
+        assert_eq!(ряд_1_перебор.next(), Some(&3));
+        assert_eq!(ряд_1_перебор.next(), None);
     }
 ```
 
 Listing 13-12: Calling the `next` method on an iterator
 
-Note that we needed to make `v1_iter` mutable: calling the `next` method on an
+Note that we needed to make `ряд_1_перебор` mutable: calling the `next` method on an
 iterator changes internal state that the iterator uses to keep track of where
 it is in the sequence. In other words, this code *consumes*, or uses up, the
 iterator. Each call to `next` eats up an item from the iterator. We didn’t need
-to make `v1_iter` mutable when we used a `for` loop because the loop took
-ownership of `v1_iter` and made it mutable behind the scenes.
+to make `ряд_1_перебор` mutable when we used a `for` loop because the loop took
+ownership of `ряд_1_перебор` and made it mutable behind the scenes.
 
 Also note that the values we get from the calls to `next` are immutable
 references to the values in the vector. The `iter` method produces an iterator
 over immutable references. If we want to create an iterator that takes
-ownership of `v1` and returns owned values, we can call `into_iter` instead of
+ownership of `ряд_1` and returns owned values, we can call `into_iter` instead of
 `iter`. Similarly, if we want to iterate over mutable references, we can call
 `iter_mut` instead of `iter`.
 
@@ -811,19 +810,19 @@ src/lib.rs
 ```
     #[test]
     fn iterator_sum() {
-        let v1 = vec![1, 2, 3];
+        let ряд_1 = vec![1, 2, 3];
 
-        let v1_iter = v1.iter();
+        let ряд_1_перебор = ряд_1.iter();
 
-        let total: i32 = v1_iter.sum();
+        let всего: i32 = ряд_1_перебор.sum();
 
-        assert_eq!(total, 6);
+        assert_eq!(всего, 6);
     }
 ```
 
 Listing 13-13: Calling the `sum` method to get the total of all items in the iterator
 
-We aren’t allowed to use `v1_iter` after the call to `sum` because `sum` takes
+We aren’t allowed to use `ряд_1_перебор` after the call to `sum` because `sum` takes
 ownership of the iterator we call it on.
 
 ### Methods that Produce Other Iterators
@@ -841,9 +840,9 @@ incremented by 1:
 src/main.rs
 
 ```
-    let v1: Vec<i32> = vec![1, 2, 3];
+    let ряд_1: Vec<i32> = vec![1, 2, 3];
 
-    v1.iter().map(|x| x + 1);
+    ряд_1.iter().map(|x| x + 1);
 ```
 
 Listing 13-14: Calling the iterator adapter `map` to create a new iterator
@@ -856,14 +855,14 @@ $ cargo run
 warning: unused `Map` that must be used
  --> src/main.rs:4:5
   |
-4 |     v1.iter().map(|x| x + 1);
+4 |     ряд_1.iter().map(|x| x + 1);
   |     ^^^^^^^^^^^^^^^^^^^^^^^^
   |
   = note: iterators are lazy and do nothing unless consumed
   = note: `#[warn(unused_must_use)]` on by default
 help: use `let _ = ...` to ignore the resulting value
   |
-4 |     let _ = v1.iter().map(|x| x + 1);
+4 |     let _ = ряд_1.iter().map(|x| x + 1);
   |     +++++++
 
 warning: `iterators` (bin "iterators") generated 1 warning
@@ -887,9 +886,9 @@ containing each item from the original vector incremented by 1.
 src/main.rs
 
 ```
-    let v1: Vec<i32> = vec![1, 2, 3];
+    let ряд_1: Vec<i32> = vec![1, 2, 3];
 
-    let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
+    let v2: Vec<_> = ряд_1.iter().map(|x| x + 1).collect();
 
     assert_eq!(v2, vec![2, 3, 4]);
 ```
@@ -916,7 +915,7 @@ closure gets an item from the iterator and returns a `bool`. If the closure
 returns `true`, the value will be included in the iteration produced by
 `filter`. If the closure returns `false`, the value won’t be included.
 
-In Listing 13-16, we use `filter` with a closure that captures the `shoe_size`
+In Listing 13-16, we use `filter` with a closure that captures the `размер_обуви`
 variable from its environment to iterate over a collection of `Shoe` struct
 instances. It will return only shoes that are the specified size.
 
@@ -925,12 +924,12 @@ src/lib.rs
 ```
 #[derive(PartialEq, Debug)]
 struct Shoe {
-    size: u32,
-    style: String,
+    размер: u32,
+    вид: String,
 }
 
-fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
-    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+fn shoes_in_size(shoes: Vec<Shoe>, размер_обуви: u32) -> Vec<Shoe> {
+    shoes.into_iter().filter(|s| s.size == размер_обуви).collect()
 }
 
 #[cfg(test)]
@@ -941,31 +940,31 @@ mod tests {
     fn filters_by_size() {
         let shoes = vec![
             Shoe {
-                size: 10,
-                style: String::from("sneaker"),
+                размер: 10,
+                вид: String::from("sneaker"),
             },
             Shoe {
-                size: 13,
-                style: String::from("sandal"),
+                размер: 13,
+                вид: String::from("sandal"),
             },
             Shoe {
-                size: 10,
-                style: String::from("boot"),
+                размер: 10,
+                вид: String::from("boot"),
             },
         ];
 
-        let in_my_size = shoes_in_size(shoes, 10);
+        let мой_размер = shoes_in_size(shoes, 10);
 
         assert_eq!(
-            in_my_size,
+            мой_размер,
             vec![
                 Shoe {
-                    size: 10,
-                    style: String::from("sneaker")
+                    размер: 10,
+                    вид: String::from("sneaker")
                 },
                 Shoe {
-                    size: 10,
-                    style: String::from("boot")
+                    размер: 10,
+                    вид: String::from("boot")
                 },
             ]
         );
@@ -973,7 +972,7 @@ mod tests {
 }
 ```
 
-Listing 13-16: Using the `filter` method with a closure that captures `shoe_size`
+Listing 13-16: Using the `filter` method with a closure that captures `размер_обуви`
 
 The `shoes_in_size` function takes ownership of a vector of shoes and a shoe
 size as parameters. It returns a vector containing only shoes of the specified
@@ -984,7 +983,7 @@ that takes ownership of the vector. Then we call `filter` to adapt that
 iterator into a new iterator that only contains elements for which the closure
 returns `true`.
 
-The closure captures the `shoe_size` parameter from the environment and
+The closure captures the `размер_обуви` parameter from the environment and
 compares the value with each shoe’s size, keeping only shoes of the size
 specified. Finally, calling `collect` gathers the values returned by the
 adapted iterator into a vector that’s returned by the function.
@@ -1003,7 +1002,7 @@ concise. Let’s look at how iterators can improve our implementation of the
 
 In Listing 12-6, we added code that took a slice of `String` values and created
 an instance of the `Config` struct by indexing into the slice and cloning the
-values, allowing the `Config` struct to own those values. In Listing 13-17,
+values, allowing the `Config` struct to own those значения. In Listing 13-17,
 we’ve reproduced the implementation of the `Config::build` function as it was
 in Listing 12-23:
 
@@ -1038,13 +1037,13 @@ we would remove them in the future. Well, that time is now!
 We needed `clone` here because we have a slice with `String` elements in the
 parameter `args`, but the `build` function doesn’t own `args`. To return
 ownership of a `Config` instance, we had to clone the values from the `query`
-and `file_path` fields of `Config` so the `Config` instance can own its values.
+and `file_path` fields of `Config` so the `Config` instance can own its значения.
 
 With our new knowledge about iterators, we can change the `build` function to
 take ownership of an iterator as its argument instead of borrowing a slice.
 We’ll use the iterator functionality instead of the code that checks the length
 of the slice and indexes into specific locations. This will clarify what the
-`Config::build` function is doing because the iterator will access the values.
+`Config::build` function is doing because the iterator will access the значения.
 
 Once `Config::build` takes ownership of the iterator and stops using indexing
 operations that borrow, we can move the `String` values from the iterator into
@@ -1112,7 +1111,7 @@ Listing 13-19: Updating the signature of `Config::build` to expect an iterator
 
 The standard library documentation for the `env::args` function shows that the
 type of the iterator it returns is `std::env::Args`, and that type implements
-the `Iterator` trait and returns `String` values.
+the `Iterator` trait and returns `String` значения.
 
 We’ve updated the signature of the `Config::build` function so the parameter
 `args` has a generic type with the trait bounds `impl Iterator<Item = String>`
@@ -1179,12 +1178,12 @@ project, which is reproduced here in Listing 13-21 as it was in Listing 12-19:
 src/lib.rs
 
 ```
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
+pub fn search<'a>(query: &str, содержимое: &'a str) -> Vec<&'a str> {
+    let mut итоги = Vec::new();
 
-    for line in contents.lines() {
+    for строка in contents.lines() {
         if line.contains(query) {
-            results.push(line);
+            итоги.push(строка);
         }
     }
 
@@ -1204,7 +1203,7 @@ concurrent access to the `results` vector. Listing 13-22 shows this change:
 src/lib.rs
 
 ```
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+pub fn search<'a>(query: &str, содержимое: &'a str) -> Vec<&'a str> {
     contents
         .lines()
         .filter(|line| line.contains(query))
@@ -1278,7 +1277,7 @@ As another example, the following code is taken from an audio decoder. The
 decoding algorithm uses the linear prediction mathematical operation to
 estimate future values based on a linear function of the previous samples. This
 code uses an iterator chain to do some math on three variables in scope: a
-`buffer` slice of data, an array of 12 `coefficients`, and an amount by which
+`buffer` slice of data, an array of 12 `множители`, and an amount by which
 to shift data in `qlp_shift`. We’ve declared the variables within this example
 but not given them any values; although this code doesn’t have much meaning
 outside of its context, it’s still a concise, real-world example of how Rust
@@ -1286,11 +1285,11 @@ translates high-level ideas to low-level code.
 
 ```
 let buffer: &mut [i32];
-let coefficients: [i64; 12];
+let множители: [i64; 12];
 let qlp_shift: i16;
 
 for i in 12..buffer.len() {
-    let prediction = coefficients.iter()
+    let prediction = множители.iter()
                                  .zip(&buffer[i - 12..i])
                                  .map(|(&c, &s)| c * s as i64)
                                  .sum::<i64>() >> qlp_shift;
@@ -1300,7 +1299,7 @@ for i in 12..buffer.len() {
 ```
 
 To calculate the value of `prediction`, this code iterates through each of the
-12 values in `coefficients` and uses the `zip` method to pair the coefficient
+12 values in `множители` and uses the `zip` method to pair the coefficient
 values with the previous 12 values in `buffer`. Then, for each pair, we
 multiply the values together, sum all the results, and shift the bits in the
 sum `qlp_shift` bits to the right.
@@ -1310,12 +1309,12 @@ most highly. Here, we’re creating an iterator, using two adapters, and then
 consuming the value. What assembly code would this Rust code compile to? Well,
 as of this writing, it compiles down to the same assembly you’d write by hand.
 There’s no loop at all corresponding to the iteration over the values in
-`coefficients`: Rust knows that there are 12 iterations, so it “unrolls” the
+`множители`: Rust knows that there are 12 iterations, so it “unrolls” the
 loop. *Unrolling* is an optimization that removes the overhead of the loop
 controlling code and instead generates repetitive code for each iteration of
 the loop.
 
-All of the coefficients get stored in registers, which means accessing the
+All of the множители get складd in registers, which means accessing the
 values is very fast. There are no bounds checks on the array access at runtime.
 All these optimizations that Rust is able to apply make the resulting code
 extremely efficient. Now that you know this, you can use iterators and closures

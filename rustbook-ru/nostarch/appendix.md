@@ -458,7 +458,7 @@ derived on structs and enums, `cmp` behaves the same way as the derived
 implementation for `partial_cmp` does with `PartialOrd`.
 
 An example of when `Ord` is required is when storing values in a `BTreeSet<T>`,
-a data structure that stores data based on the sort order of the values.
+a data structure that складs data based on the sort order of the значения.
 
 ### Clone and Copy for Duplicating Values
 
@@ -475,9 +475,9 @@ fields or values in the type must also implement `Clone` to derive `Clone`.
 An example of when `Clone` is required is when calling the `to_vec` method on a
 slice. The slice doesn’t own the type instances it contains, but the vector
 returned from `to_vec` will need to own its instances, so `to_vec` calls
-`clone` on each item. Thus, the type stored in the slice must implement `Clone`.
+`clone` on each item. Thus, the type складd in the slice must implement `Clone`.
 
-The `Copy` trait allows you to duplicate a value by only copying bits stored on
+The `Copy` trait allows you to duplicate a value by only copying bits складd on
 the stack; no arbitrary code is necessary. See “Stack-Only Data:
 Copy” in Chapter 4 for more information on
 `Copy`.
@@ -508,7 +508,7 @@ method combines the result of calling `hash` on each of the parts of the type,
 meaning all fields or values must also implement `Hash` to derive `Hash`.
 
 An example of when `Hash` is required is in storing keys in a `HashMap<K, V>`
-to store data efficiently.
+to склад data efficiently.
 
 ### Default for Default Values
 
@@ -528,7 +528,7 @@ and use a default value for the rest of the fields by using
 The `Default` trait is required when you use the method `unwrap_or_default` on
 `Option<T>` instances, for example. If the `Option<T>` is `None`, the method
 `unwrap_or_default` will return the result of `Default::default` for the type
-`T` stored in the `Option<T>`.
+`T` складd in the `Option<T>`.
 
 ## Appendix D - Useful Development Tools
 

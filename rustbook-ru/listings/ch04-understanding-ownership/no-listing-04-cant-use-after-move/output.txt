@@ -4,15 +4,15 @@ $ cargo run
  --> src/main.rs:5:15
   |
 2 |     let s1 = String::from("здравствуй");
-  |         -- move occurs because `s1` has type `String`, which does not implement the `Copy` trait
+  |         -- передача права владения происходит потому что `s1` имеет вид данных `String`, для которого отсутствует сущность `Copy` trait
 3 |     let s2 = s1;
-  |              -- значение moved here
+  |              -- право владения значения было передано здесь
 4 |
 5 |     println!("{s1}, мир!");
-  |               ^^^^ значение borrowed here after move
+  |               ^^^^ значение заимствуется после передачи права владения
   |
   = примечание: this ошибка originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, запустите с режимом -Z macro-backtrace for more info)
-помощь: consider cloning the значение if the performance cost is acceptable
+помощь: consider cloning значение if the performance cost is acceptable
   |
 3 |     let s2 = s1.clone();
   |                ++++++++

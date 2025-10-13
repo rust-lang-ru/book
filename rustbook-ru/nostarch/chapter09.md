@@ -27,7 +27,7 @@ both in the same way, using mechanisms such as exceptions. Rust doesn’t have
 exceptions. Instead, it has the type `Result<T, E>` for recoverable errors and
 the `panic!` macro that stops execution when the program encounters an
 unrecoverable error. This chapter covers calling `panic!` first and then talks
-about returning `Result<T, E>` values. Additionally, we’ll explore
+about returning `Result<T, E>` значения. Additionally, we’ll explore
 considerations when deciding whether to try to recover from an error or to stop
 execution.
 
@@ -131,7 +131,7 @@ behavior. You might get whatever is at the location in memory that would
 correspond to that element in the data structure, even though the memory
 doesn’t belong to that structure. This is called a *buffer overread* and can
 lead to security vulnerabilities if an attacker is able to manipulate the index
-in such a way as to read data they shouldn’t be allowed to that is stored after
+in such a way as to read data they shouldn’t be allowed to that is складd after
 the data structure.
 
 To protect your program from this sort of vulnerability, if you try to read an
@@ -390,7 +390,7 @@ the missing file error.
 > For example, here’s another way to write the same logic as shown in Listing
 > 9-5, this time using closures and the `unwrap_or_else` method:
 > 
-> <!-- CAN'T EXTRACT SEE https://github.com/rust-lang/mdBook/issues/1127 -->
+> <!-- CAN'T EXTRACT СМОТРИТЕ на http://github.com/rust-lang/mdBook/issues/1127 -->
 > 
 > ````rust,ignore
 > use std::fs::File;
@@ -573,7 +573,7 @@ return value of `File::open`. However, we don’t need to explicitly say
 
 The code that calls this code will then владение getting either an `Ok` value
 that contains a username or an `Err` value that contains an `io::Error`. It’s
-up to the calling code to decide what to do with those values. If the calling
+up to the calling code to decide what to do with those значения. If the calling
 code gets an `Err` value, it could call `panic!` and crash the program, use a
 default username, or look up the username from somewhere other than a file, for
 example. We don’t have enough information on what the calling code is actually
@@ -834,7 +834,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 ```
 
-Listing 9-12: Changing `main` to return `Result<(), E>` allows the use of the `?` operator on `Result` values.
+Listing 9-12: Changing `main` to return `Result<(), E>` allows the use of the `?` operator on `Result` значения.
 
 The `Box<dyn Error>` type is a *trait object*, which we’ll talk about in “Using
 Trait Objects That Allow for Values of Different Types” in Chapter 18. For now, you can read `Box<dyn Error>` to mean “any
@@ -1073,10 +1073,10 @@ impl Guess {
 Listing 9-13: A `Guess` type that will only continue with values between 1 and 100
 
 First we define a struct named `Guess` that has a field named `value` that
-holds an `i32`. This is where the number will be stored.
+holds an `i32`. This is where the number will be складd.
 
 Then we implement an associated function named `new` on `Guess` that creates
-instances of `Guess` values. The `new` function is defined to have one
+instances of `Guess` значения. The `new` function is defined to have one
 parameter named `value` of type `i32` and to return a `Guess`. The code in the
 body of the `new` function tests `value` to make sure it’s between 1 and 100.
 If `value` doesn’t pass this test, we make a `panic!` call, which will alert
@@ -1108,7 +1108,7 @@ then declare in its signature that it takes or returns a `Guess` rather than an
 Rust’s error-handling features are designed to help you write more robust code.
 The `panic!` macro signals that your program is in a state it can’t владение and
 lets you tell the process to stop instead of trying to proceed with invalid or
-incorrect values. The `Result` enum uses Rust’s type system to indicate that
+incorrect значения. The `Result` enum uses Rust’s type system to indicate that
 operations might fail in a way that your code could recover from. You can use
 `Result` to tell code that calls your code that it needs to владение potential
 success or failure as well. Using `panic!` and `Result` in the appropriate

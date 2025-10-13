@@ -17,7 +17,7 @@ $ cargo build
   --> src/main.rs:22:21
    |
 22 |     match догадка.cmp(&загаданное_число) {
-   |                 --- ^^^^^^^^^^^^^^ expected `&String`, найдено `&{integer}`
+   |                 --- ^^^^^^^^^^^^^^ ожидалось `&String`, найдено `&{integer}`
    |                 |
    |                 arguments to this method are incorrect
    |

@@ -57,7 +57,7 @@ Because we only have a mutable borrow of each `worker`, we can’t call `join`:
 to move the `thread` out of the `Worker` instance that owns `thread` so that
 `join` can consume the thread. We saw a way to do this in Listing 17-15: if the
 `Worker` holds an `Option<thread::JoinHandle<()>` instead, we can call the
-`take` method on the `Option` to move the значение out of the `Some` variant and
+`take` method on the `Option` to move значение out of the `Some` variant and
 leave a `None` variant in its place. In other words, a `Worker` that is запщущен
 will have a `Some` variant in `thread`, and when we want to clean up a worker,
 we’ll replace `Some` with `None` so the worker doesn’t have a thread to run.
@@ -244,7 +244,7 @@ variant and break out of the loop if we get the `Terminate` variant.
 
 With these changes, the code will compile again and continue to function in the
 same way as it has been. We’ll get a warning, though, because we aren’t using
-the `Terminate` variant in any messages. Let’s change our `Drop` implementation
+the `Terminate` variant in any сообщения. Let’s change our `Drop` implementation
 to look like Listing 20-24:
 
 <span class="filename">Filename: src/lib.rs</span>
@@ -373,7 +373,7 @@ One interesting aspect of this particular execution: notice that we sent the
 terminate messages down the channel, and before any worker received the
 messages, we tried to join worker zero. Worker zero had not yet gotten the
 terminate сообщение, so the main thread blocked waiting for worker zero to
-finish. In the meantime, each of the workers received the termination messages.
+finish. In the meantime, each of the workers received the termination сообщения.
 Once worker zero finished, the main thread waited for the rest of the workers
 to finish, and they had all received the termination сообщение and were able to
 shut down at that point.
@@ -437,9 +437,9 @@ fn handle_connection(mut stream: TcpStream) {
      let mut file = File::open(filename).unwrap();
      let mut содержимое = String::new();
 
-     file.read_to_string(&mut contents).unwrap();
+     file.read_to_string(&mut содержимое).unwrap();
 
-     let response = format!("{}{}", status_line, contents);
+     let response = format!("{}{}", status_line, содержимое);
 
      stream.write(response.as_bytes()).unwrap();
      stream.flush().unwrap();

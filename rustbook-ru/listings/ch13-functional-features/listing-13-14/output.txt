@@ -8,7 +8,7 @@ $ cargo run
   |
   = примечание: iterators are lazy and do nothing unless consumed
   = примечание: `#[warn(unused_must_use)]` on by default
-помощь: use `let _ = ...` to ignore the resulting значение
+помощь: use `let _ = ...` если не важен итог возвращаемого значения
   |
 4 |     let _ = v1.iter().map(|x| x + 1);
   |     +++++++

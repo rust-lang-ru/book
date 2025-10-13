@@ -1,19 +1,19 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 // ANCHOR: all
 use trpl::StreamExt;
 
 fn main() {
     trpl::run(async {
-        let values = 1..101;
-        let iter = values.map(|n| n * 2);
+        let значения = 1..101;
+        let iter = значения.map(|n| n * 2);
         let stream = trpl::stream_from_iter(iter);
 
         let mut filtered =
             stream.filter(|значение| значение % 3 == 0 || значение % 5 == 0);
 
         while let Some(значение) = filtered.next().await {
-            println!("The значение was: {значение}");
+            println!("Значение получено: {значение}");
         }
     });
 }

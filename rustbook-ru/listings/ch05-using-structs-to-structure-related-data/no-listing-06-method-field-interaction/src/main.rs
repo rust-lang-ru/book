@@ -18,7 +18,7 @@ fn main() {
     };
 
     if прямоугольник1.ширина() {
-        println!("The прямоугольник has a nonzero width; it is {}", прямоугольник1.width);
+        println!("The прямоугольник has a nonzero width; it is {}", прямоугольник1.ширина);
     }
 }
 // ANCHOR_END: here

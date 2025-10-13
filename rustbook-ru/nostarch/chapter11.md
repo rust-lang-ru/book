@@ -334,7 +334,7 @@ struct Rectangle {
 
 impl Rectangle {
     fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.height > other.height
+        self.ширина > other.ширина && self.height > other.height
     }
 }
 ```
@@ -469,7 +469,7 @@ compares the widths:
 // --snip--
 impl Rectangle {
     fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width < other.width && self.height > other.height
+        self.ширина < other.ширина && self.height > other.height
     }
 }
 ```
@@ -502,7 +502,7 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 error: test failed, to rerun pass `--lib`
 ```
 
-Our tests caught the bug! Because `larger.width` is `8` and `smaller.width` is
+Our tests caught the bug! Because `larger.ширина` is `8` and `smaller.ширина` is
 `5`, the comparison of the widths in `can_hold` now returns `false`: 8 is not
 less than 5.
 
@@ -1022,7 +1022,7 @@ Just as `cargo run` compiles your code and then runs the resultant binary,
 binary. The default behavior of the binary produced by `cargo test` is to run
 all the tests in parallel and capture output generated during test runs,
 preventing the output from being displayed and making it easier to read the
-output related to the test results. You can, however, specify command line
+output related to the test итоги. You can, however, specify command line
 options to change this default behavior.
 
 Some command line options go to `cargo test`, and some go to the resultant test

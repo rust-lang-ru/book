@@ -8,7 +8,7 @@ $ cargo run
   |
   = примечание: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
   = примечание: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
-  = примечание: the matched значение is of type `Option<i32>`
+  = примечание: the matched значение of type `Option<i32>`
 помощь: you might want to use `let else` to владение the variant that isn't matched
   |
 3 |     let Some(x) = some_option_value else { todo!() };

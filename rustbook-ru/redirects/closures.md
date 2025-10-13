@@ -8,12 +8,11 @@
 # use std::thread;
 # use std::time::Duration;
 
-let expensive_closure = |num| {
-    println!("calculating slowly...");
+let дорогое_замыкание = |num| {
+    println!("медленный подсчёт...");
     thread::sleep(Duration::from_secs(2));
-    num
-};
-# expensive_closure(5);
+    число};
+# дорогое_замыкание(5);
 ```
 
 ---

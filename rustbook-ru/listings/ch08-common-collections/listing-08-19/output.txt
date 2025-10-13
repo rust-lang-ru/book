@@ -10,8 +10,8 @@ $ cargo run
   = примечание: you can use `.chars().nth()` or `.bytes().nth()`
           for more information, see chapter 8 in The Book: <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>
   = помощь: сущность `SliceIndex<[_]>` применим для `usize`
-  = помощь: for that trait implementation, expected `[_]`, найдено `str`
-  = примечание: required for `String` to implement `Index<{integer}>`
+  = помощь: for that trait implementation, ожидалось `[_]`, найдено `str`
+  = примечание: требуется для `String` to implement `Index<{integer}>`
 
 Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0277`.
 ошибка: не могу собрать исходную рукопись в приложение `collections` (bin "collections") из-за 1 предыдущей ошибки

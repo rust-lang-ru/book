@@ -175,7 +175,7 @@ prints the text `здравствуй, world!` to the screen, so we’ll do the 
 
 ### Creating a Project Directory
 
-You’ll start by making a directory to store your Rust code. It doesn’t matter
+You’ll start by making a directory to склад your Rust code. It doesn’t matter
 to Rust where your code lives, but for the exercises and projects in this book,
 we suggest making a *projects* directory in your home directory and keeping all
 your projects there.
@@ -387,7 +387,7 @@ determine how to install Cargo separately.
 
 Let’s create a new project using Cargo and look at how it differs from our
 original “Hello, world!” project. Navigate back to your *projects* directory
-(or wherever you decided to store your code). Then, on any operating system,
+(or wherever you decided to склад your code). Then, on any operating system,
 run the following:
 
 ```
@@ -550,7 +550,7 @@ Let’s recap what we’ve learned so far about Cargo:
 * We can build a project without producing a binary to check for errors using
   `cargo check`.
 * Instead of saving the result of the build in the same directory as our code,
-  Cargo stores it in the *target/debug* directory.
+  Cargo складs it in the *target/debug* directory.
 
 An additional advantage of using Cargo is that the commands are the same no
 matter which operating system you’re working on. So, at this point, we’ll no

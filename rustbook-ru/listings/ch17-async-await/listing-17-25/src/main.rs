@@ -1,4 +1,4 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 use std::{thread, time::Duration};
 
@@ -6,27 +6,27 @@ fn main() {
     trpl::run(async {
         // ANCHOR: yields
         let a = async {
-            println!("'a' started.");
-            slow("a", 30);
+            println!("'a' запущено.");
+            медленно("a", 30);
             trpl::yield_now().await;
-            slow("a", 10);
+            медленно("a", 10);
             trpl::yield_now().await;
-            slow("a", 20);
+            медленно("a", 20);
             trpl::yield_now().await;
-            println!("'a' finished.");
+            println!("'a' окончено.");
         };
 
         let b = async {
-            println!("'b' started.");
-            slow("b", 75);
+            println!("'b' запущено.");
+            медленно("b", 75);
             trpl::yield_now().await;
-            slow("b", 10);
+            медленно("b", 10);
             trpl::yield_now().await;
-            slow("b", 15);
+            медленно("b", 15);
             trpl::yield_now().await;
-            slow("b", 350);
+            медленно("b", 350);
             trpl::yield_now().await;
-            println!("'b' finished.");
+            println!("'b' окончено.");
         };
         // ANCHOR_END: yields
 
@@ -34,7 +34,7 @@ fn main() {
     });
 }
 
-fn slow(имя: &str, ms: u64) {
+fn медленно(имя: &str, ms: u64) {
     thread::sleep(Duration::from_millis(ms));
-    println!("'{имя}' ran for {ms}ms");
+    println!("'{имя}' выполнено за {ms}ms");
 }

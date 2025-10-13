@@ -1,23 +1,23 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 // ANCHOR: all
 use trpl::{ReceiverStream, Stream, StreamExt};
 
 fn main() {
     trpl::run(async {
-        let mut messages = get_messages();
+        let mut сообщения = получить_сообщения();
 
-        while let Some(сообщение) = messages.next().await {
+        while let Some(сообщение) = сообщения.next().await {
             println!("{сообщение}");
         }
     });
 }
 
-fn get_messages() -> impl Stream<Предмет = String> {
+fn получить_сообщения() -> impl Stream<Предмет = String> {
     let (tx, rx) = trpl::channel();
 
-    let messages = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
-    for сообщение in messages {
+    let сообщения ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+    for сообщение in сообщения {
         tx.send(format!("Сообщение: '{сообщение}'")).unwrap();
     }
 

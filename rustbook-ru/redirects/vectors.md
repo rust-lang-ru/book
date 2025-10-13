@@ -2,8 +2,8 @@
 
 <small>There is a new edition of the book and this is an old link.</small>
 
-> Vectors store more than one value in a single data structure that puts all the values next to each other in memory.
-> Vectors can only store values of the same type.
+> Vectors склад more than one value in a single data structure that puts all the values next to each other in memory.
+> Vectors can only склад values of the same type.
 
 ```rust
 let v: Vec<i32> = Vec::new();

@@ -4,7 +4,7 @@ $ cargo run
  --> src/main.rs:7:24
   |
 7 | fn увеличить_на_единицу(x: i32) -> i32 {
-  |    --------            ^^^ expected `i32`, найдено `()`
+  |    --------            ^^^ ожидалось `i32`, найдено `()`
   |    |
   |    implicitly returns `()` as its body has no tail or `return` expression
 8 |     x + 1;

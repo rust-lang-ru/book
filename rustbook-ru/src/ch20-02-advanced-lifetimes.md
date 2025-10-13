@@ -288,9 +288,9 @@ struct Bar<'a> {
 
 impl<'a> Foo for Bar<'a> { }
 
-let num = 5;
+let число = 5;
 
-let obj = Box::new(Bar { x: &num }) as Box<Foo>;
+let obj = Box::new(Bar { x: &число }) as Box<Foo>;
 ```
 
 <span class="caption">рукопись 20-19: использование вида данных, который имеет переменную времени

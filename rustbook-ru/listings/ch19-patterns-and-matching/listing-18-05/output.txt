@@ -4,7 +4,7 @@ $ cargo run
  --> src/main.rs:2:9
   |
 2 |     let (x, y) = (1, 2, 3);
-  |         ^^^^^^   --------- this expression has type `({integer}, {integer}, {integer})`
+  |         ^^^^^^   --------- this expression имеет вид данных `({integer}, {integer}, {integer})`
   |         |
   |         expected a tuple with 3 elements, найдено one with 2 elements
   |

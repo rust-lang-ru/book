@@ -11,12 +11,12 @@ fn main() {
         Прямоугольник { ширина: 7, длина: 12 },
     ];
 
-    let mut sort_operations = vec![];
-    let значение = String::from("closure called");
+    let mut действия_упорядочивания = vec![];
+    let значение = String::from("вызвано замыкания");
 
     список.sort_by_key(|r| {
-        sort_operations.push(значение);
-        r.width
+        действия_упорядочивания.push(значение);
+        r.ширина
     });
     println!("{список:#?}");
 }

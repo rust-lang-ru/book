@@ -15,7 +15,7 @@ working on more than one operation at a time: parallelism and concurrency. Once
 we start writing programs that involve parallel or concurrent operations,
 though, we quickly encounter new challenges inherent to *asynchronous
 programming*, where operations may not finish sequentially in the order they
-were started. This chapter builds on Chapter 16’s use of threads for parallelism
+were запущено. This chapter builds on Chapter 16’s use of threads for parallelism
 and concurrency by introducing an alternative approach to asynchronous
 programming: Rust’s Futures, Streams, the `async` and `await` syntax that
 supports them, and the tools for managing and coordinating between asynchronous
@@ -76,8 +76,8 @@ place. It would also be better if we could write in the same direct style we use
 in blocking code, similar to this:
 
 ```
-let data = fetch_data_from(url).await;
-println!("{data}");
+let data = fetch_data_from(ссылка).await;
+println!("{данные}");
 ```
 
 That is exactly what Rust’s *async* (short for *asynchronous*) abstraction gives
@@ -233,7 +233,7 @@ program. We’ll build a little command line tool that fetches two web pages,
 pulls the `<title>` element from each, and prints out the title of whichever
 page finishes that whole process first.
 
-### Defining the page_title Function
+### Defining the заголовок_страницы Function
 
 Let’s start by writing a function that takes one page URL as a parameter, makes
 a request to it, and returns the text of the title element (see Listing 17-1).
@@ -243,18 +243,18 @@ src/main.rs
 ```
 use trpl::Html;
 
-async fn page_title(url: &str) -> Option<String> {
-    let response = trpl::get(url).await;
-    let response_text = response.text().await;
-    Html::parse(&response_text)
-        .select_first("title")
+async fn заголовок_страницы(ссылка: &str) -> Option<String> {
+    let response = trpl::get(ссылка).await;
+    let заголовок_содержимое = response.text().await;
+    Html::parse(&заголовок_содержимое)
+        .select_first("заголовок")
         .map(|title_element| title_element.inner_html())
 }
 ```
 
 Listing 17-1: Defining an async function to get the title element from an HTML page
 
-First, we define a function named `page_title` and mark it with the `async`
+First, we define a function named `заголовок_страницы` and mark it with the `async`
 keyword. Then we use the `trpl::get` function to fetch whatever URL is passed in
 and add the `await` keyword to await the response. To get the text of the
 response, we call its `text` method, and once again await it with the `await`
@@ -282,11 +282,11 @@ allows Rust to avoid running async code until it’s actually needed.
 > languages approach async. But it’s important for Rust, and we’ll see why
 > later.
 
-Once we have `response_text`, we can parse it into an instance of the `Html`
+Once we have `заголовок_содержимое`, we can parse it into an instance of the `Html`
 type using `Html::parse`. Instead of a raw string, we now have a data type we
 can use to work with the HTML as a richer data structure. In particular, we can
 use the `select_first` method to find the first instance of a given CSS
-selector. By passing the string `"title"`, we’ll get the first `<title>` element
+selector. By passing the string `"заголовок"`, we’ll get the first `<title>` element
 in the document, if there is one. Because there may not be any matching element,
 `select_first` returns an `Option<ElementRef>`. Finally, we use the
 `Option::map` method, which lets us work with the item in the `Option` if it’s
@@ -305,7 +305,7 @@ with `await` between them, as shown in Listing 17-2.
 src/main.rs
 
 ```
-    let response_text = trpl::get(url).await.text().await;
+    let заголовок_содержимое = trpl::get(ссылка).await.text().await;
 ```
 
 Listing 17-2: Chaining with the `await` keyword
@@ -322,18 +322,18 @@ anonymous data type the compiler creates for that async block.
 
 Thus, writing `async fn` is equivalent to writing a function that returns a
 *future* of the return type. To the compiler, a function definition such as the
-`async fn page_title` in Listing 17-1 is equivalent to a non-async function
+`async fn заголовок_страницы` in Listing 17-1 is equivalent to a non-async function
 defined like this:
 
 ```
 use std::future::Future;
 use trpl::Html;
 
-fn page_title(url: &str) -> impl Future<Output = Option<String>> + '_ {
+fn заголовок_страницы(ссылка: &str) -> impl Future<Output = Option<String>> + '_ {
     async move {
-        let text = trpl::get(url).await.text().await;
-        Html::parse(&text)
-            .select_first("title")
+        let text = trpl::get(ссылка).await.text().await;
+        Html::parse(&содержимое)
+            .select_first("заголовок")
             .map(|title| title.inner_html())
     }
 }
@@ -345,7 +345,7 @@ Let’s walk through each part of the transformed version:
   “Traits as Parameters” section.
 * The returned trait is a `Future` with an associated type of `Output`. Notice
   that the `Output` type is `Option<String>`, which is the same as the original
-  return type from the `async fn` version of `page_title`.
+  return type from the `async fn` version of `заголовок_страницы`.
 * All of the code called in the body of the original function is wrapped in an
   `async move` block. Remember that blocks are expressions. This whole block is
   the expression returned from the function.
@@ -363,14 +363,14 @@ Let’s walk through each part of the transformed version:
   reference that could be involved, but we *do* have to be explicit that the
   resulting future is bound by that lifetime.
 
-Now we can call `page_title` in `main`.
+Now we can call `заголовок_страницы` in `main`.
 
 ## Determining a Single Page’s Title
 
-To start, we’ll just get the title for a single page. In Listing 17-3, we follow
+To start, we’ll just get заголовок для a single page. In Listing 17-3, we follow
 the same pattern we used in Chapter 12 to get command line arguments in the
 Accepting Command Line Arguments section. Then we
-pass the first URL `page_title` and await the result. Because the value
+pass the first URL `заголовок_страницы` and await the result. Because the value
 produced by the future is an `Option<String>`, we use a `match` expression to
 print different messages to account for whether the page had a `<title>`.
 
@@ -379,15 +379,15 @@ src/main.rs
 ```
 async fn main() {
     let args: Vec<String> = std::env::args().collect();
-    let url = &args[1];
-    match page_title(url).await {
-        Some(title) => println!("The title for {url} was {title}"),
-        None => println!("{url} had no title"),
+    let ссылка = &args[1];
+    match заголовок_страницы(ссылка).await {
+        Some(заголовок) => println!("Заголовок для {ссылка} was {заголовок}"),
+        None => println!("{ссылка} не имеет заголовка"),
     }
 }
 ```
 
-Listing 17-3: Calling the `page_title` function from `main` with a user-supplied argument
+Listing 17-3: Calling the `заголовок_страницы` function from `main` with a user-supplied argument
 
 Unfortunately, this code doesn’t compile. The only place we can use the `await`
 keyword is in async functions or blocks, and Rust won’t let us mark the
@@ -428,12 +428,12 @@ Behind the scenes, calling `run` sets up a runtime that’s used to run the futu
 passed in. Once the future completes, `run` returns whatever value the future
 produced.
 
-We could pass the future returned by `page_title` directly to `run`, and once it
+We could pass the future returned by `заголовок_страницы` directly to `run`, and once it
 completed, we could match on the resulting `Option<String>`, as
 we tried to do in Listing 17-3. However, for most of the examples in the chapter
 (and most async code in the real world), we’ll be doing more than just one
-async function call, so instead we’ll pass an `async` block and explicitly
-await the result of the `page_title` call, as in Listing 17-4.
+async function call, so instead we’ll pass an раздел `async` and explicitly
+await the result of the `заголовок_страницы` call, as in Listing 17-4.
 
 src/main.rs
 
@@ -444,10 +444,10 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
 
     trpl::run(async {
-        let url = &args[1];
-        match page_title(url).await {
-            Some(title) => println!("The title for {url} was {title}"),
-            None => println!("{url} had no title"),
+        let ссылка = &args[1];
+        match заголовок_страницы(ссылка).await {
+            Some(заголовок) => println!("Заголовок для {ссылка} was {заголовок}"),
+            None => println!("{ссылка} не имеет заголовка"),
         }
     })
 }
@@ -468,7 +468,7 @@ cargo run https://www.rust-lang.org
 $ cargo run -- https://www.rust-lang.org
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.05s
      Running `target/debug/async_await 'https://www.rust-lang.org'`
-The title for https://www.rust-lang.org was
+Заголовок для https://www.rust-lang.org was
             Rust Programming Language
 ```
 
@@ -498,7 +498,7 @@ more states to the code later. Fortunately, the Rust compiler creates and
 manages the state machine data structures for async code automatically. The
 normal borrowing and ownership rules around data structures all still apply, and
 happily, the compiler also владелец checking those for us and provides useful
-error messages. We’ll work through a few of those later in the chapter.
+error сообщения. We’ll work through a few of those later in the chapter.
 
 Ultimately, something has to execute this state machine, and that something is a
 runtime. (This is why you may come across references to *executors*
@@ -510,7 +510,7 @@ function back in Listing 17-3. If `main` were an async function, something else
 would need to manage the state machine for whatever future `main` returned, but
 `main` is the starting point for the program! Instead, we called the `trpl::run`
 function in `main` to set up a runtime and run the future returned by the
-`async` block until it returns `Ready`.
+раздел `async` until it returns `Ready`.
 
 > Note: Some runtimes provide macros so you *can* write an async `main`
 > function. Those macros rewrite `async fn main() { ... }` to be a normal `fn main`, which does the same thing we did by hand in Listing 17-5: call a
@@ -520,7 +520,7 @@ Now let’s put these pieces together and see how we can write concurrent code.
 
 ### Racing Our Two URLs Against Each Other
 
-In Listing 17-5, we call `page_title` with two different URLs passed in from the
+In Listing 17-5, we call `заголовок_страницы` with two different URLs passed in from the
 command line and race them.
 
 src/main.rs
@@ -534,35 +534,35 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
 
     trpl::run(async {
-        let title_fut_1 = page_title(&args[1]);
-        let title_fut_2 = page_title(&args[2]);
+        let title_fut_1 = заголовок_страницы(&args[1]);
+        let title_fut_2 = заголовок_страницы(&args[2]);
 
-        let (url, maybe_title) =
+        let (ссылка, есть_ли_заголовок) =
             match trpl::race(title_fut_1, title_fut_2).await {
                 Either::Left(left) => left,
                 Either::Right(right) => right,
             };
 
-        println!("{url} returned first");
-        match maybe_title {
-            Some(title) => println!("Its page title is: '{title}'"),
-            None => println!("Its title could not be parsed."),
+        println!("{ссылка} returned first");
+        match есть_ли_заголовок {
+            Some(заголовок) => println!("Эта страница имеет заголовок: '{заголовок}'"),
+            None => println!("Этот заголовок не может быть получен."),
         }
     })
 }
 
-async fn page_title(url: &str) -> (&str, Option<String>) {
-    let text = trpl::get(url).await.text().await;
-    let title = Html::parse(&text)
-        .select_first("title")
+async fn заголовок_страницы(ссылка: &str) -> (&str, Option<String>) {
+    let text = trpl::get(ссылка).await.text().await;
+    let title = Html::parse(&содержимое)
+        .select_first("заголовок")
         .map(|title| title.inner_html());
-    (url, title)
+    (ссылка, заголовок)
 }
 ```
 
 Listing 17-5: 
 
-We begin by calling `page_title` for each of the user-supplied URLs. We save the
+We begin by calling `заголовок_страницы` for each of the user-supplied URLs. We save the
 resulting futures as `title_fut_1` and `title_fut_2`. Remember, these don’t do
 anything yet, because futures are lazy and we haven’t yet awaited them. Then we
 pass the futures to `trpl::race`, which returns a value to indicate which of the
@@ -592,7 +592,7 @@ argument wins, and `Right` with the second future argument’s output if *that*
 one wins. This matches the order the arguments appear in when calling the
 function: the first argument is to the left of the second argument.
 
-We also update `page_title` to return the same URL passed in. That way, if
+We also update `заголовок_страницы` to return the same URL passed in. That way, if
 the page that returns first does not have a `<title>` we can resolve, we can
 still print a meaningful message. With that information available, we wrap up by
 updating our `println!` output to indicate both which URL finished first and
@@ -761,7 +761,7 @@ it produces a single new future whose output is a tuple containing the output of
 each future you passed in once they *both* complete. Thus, in Listing 17-8, we
 use `trpl::join` to wait for both `fut1` and `fut2` to finish. We do *not* await
 `fut1` and `fut2` but instead the new future produced by `trpl::join`. We ignore
-the output, because it’s just a tuple containing two unit values.
+the output, because it’s just a tuple containing two unit значения.
 
 src/main.rs
 
@@ -848,11 +848,11 @@ src/main.rs
 ```
         let (tx, mut rx) = trpl::channel();
 
-        let val = String::from("hi");
-        tx.send(val).unwrap();
+        let значение = String::from("hi");
+        tx.send(значение).unwrap();
 
-        let received = rx.recv().await.unwrap();
-        println!("Получено: {received}");
+        let получено = rx.recv().await.unwrap();
+        println!("Получено: {получено}");
 ```
 
 Listing 17-9: Creating an async channel and assigning the two halves to `tx` and `rx`
@@ -895,20 +895,20 @@ src/main.rs
 ```
         let (tx, mut rx) = trpl::channel();
 
-        let vals = vec![
+        let значения = vec![
             String::from("hi"),
             String::from("from"),
             String::from("the"),
             String::from("future"),
         ];
 
-        for val in vals {
-            tx.send(val).unwrap();
+        for значение in значения {
+            tx.send(значение).unwrap();
             trpl::sleep(Duration::from_millis(500)).await;
         }
 
         while let Some(value) = rx.recv().await {
-            println!("received '{value}'");
+            println!("получено  '{value}'");
         }
 ```
 
@@ -918,7 +918,7 @@ In addition to sending the messages, we need to receive them. In this case,
 because we know how many messages are coming in, we could do that manually by
 calling `rx.recv().await` four times. In the real world, though, we’ll generally
 be waiting on some *unknown* number of messages, so we need to keep waiting
-until we determine that there are no more messages.
+until we determine that there are no more сообщения.
 
 In Listing 16-10, we used a `for` loop to process all the items received from a
 synchronous channel. Rust doesn’t yet have a way to write a `for` loop over an
@@ -940,11 +940,11 @@ use it in the loop body, just as we could with `if let`. If the result is
 `None`, the loop ends. Every time the loop completes, it hits the await point
 again, so the runtime pauses it again until another message arrives.
 
-The code now successfully sends and receives all of the messages. Unfortunately,
+The code now successfully sends and receives all of the сообщения. Unfortunately,
 there are still a couple of problems. For one thing, the messages do not arrive
 at half-second intervals. They arrive all at once, 2 (2,000 milliseconds) after
 we start the program. For another, this program also never exits! Instead, it
-waits forever for new messages. You will need to shut it down using <span
+waits forever for new сообщения. You will need to shut it down using <span
 class="keystroke">ctrl-c</span>.
 
 Let’s start by examining why the messages come in all at once after the full
@@ -972,22 +972,22 @@ src/main.rs
 
 ```
         let tx_fut = async {
-            let vals = vec![
+            let значения = vec![
                 String::from("hi"),
                 String::from("from"),
                 String::from("the"),
                 String::from("future"),
             ];
 
-            for val in vals {
-                tx.send(val).unwrap();
+            for значение in значения {
+                tx.send(значение).unwrap();
                 trpl::sleep(Duration::from_millis(500)).await;
             }
         };
 
         let rx_fut = async {
             while let Some(value) = rx.recv().await {
-                println!("received '{value}'");
+                println!("получено  '{value}'");
             }
         };
 
@@ -1005,7 +1005,7 @@ interacts with `trpl::join`:
 * The future returned from `trpl::join` completes only once *both* futures
   passed to it have completed.
 * The `tx` future completes once it finishes sleeping after sending the last
-  message in `vals`.
+  message in `значения`.
 * The `rx` future won’t complete until the `while let` loop ends.
 * The `while let` loop won’t end until awaiting `rx.recv` produces `None`.
 * Awaiting `rx.recv` will return `None` only once the other end of the channel
@@ -1019,7 +1019,7 @@ interacts with `trpl::join`:
 
 We could manually close `rx` by calling `rx.close` somewhere, but that doesn’t
 make much sense. Stopping after handling some arbitrary number of messages would
-make the program shut down, but we could miss messages. We need some other way
+make the program shut down, but we could miss сообщения. We need some other way
 to make sure that `tx` gets dropped *before* the end of the function.
 
 Right now, the async block where we send the messages only borrows `tx` because
@@ -1041,22 +1041,22 @@ src/main.rs
         let (tx, mut rx) = trpl::channel();
 
         let tx_fut = async move {
-            let vals = vec![
+            let значения = vec![
                 String::from("hi"),
                 String::from("from"),
                 String::from("the"),
                 String::from("future"),
             ];
 
-            for val in vals {
-                tx.send(val).unwrap();
+            for значение in значения {
+                tx.send(значение).unwrap();
                 trpl::sleep(Duration::from_millis(500)).await;
             }
         };
 
         let rx_fut = async {
             while let Some(value) = rx.recv().await {
-                println!("received '{value}'");
+                println!("получено  '{value}'");
             }
         };
 
@@ -1076,35 +1076,35 @@ src/main.rs
 
         let tx1 = tx.clone();
         let tx1_fut = async move {
-            let vals = vec![
+            let значения = vec![
                 String::from("hi"),
                 String::from("from"),
                 String::from("the"),
                 String::from("future"),
             ];
 
-            for val in vals {
-                tx1.send(val).unwrap();
+            for значение in значения {
+                tx1.send(значение).unwrap();
                 trpl::sleep(Duration::from_millis(500)).await;
             }
         };
 
         let rx_fut = async {
             while let Some(value) = rx.recv().await {
-                println!("received '{value}'");
+                println!("получено  '{value}'");
             }
         };
 
         let tx_fut = async move {
-            let vals = vec![
+            let значения = vec![
                 String::from("more"),
                 String::from("messages"),
                 String::from("for"),
                 String::from("you"),
             ];
 
-            for val in vals {
-                tx.send(val).unwrap();
+            for значение in значения {
+                tx.send(значение).unwrap();
                 trpl::sleep(Duration::from_millis(1500)).await;
             }
         };
@@ -1135,14 +1135,14 @@ the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 
 ```
-received 'hi'
-received 'more'
-received 'from'
-received 'the'
-received 'messages'
-received 'future'
-received 'for'
-received 'you'
+получено 'hi'
+получено 'more'
+получено 'from'
+получено 'the'
+получено 'messages'
+получено 'future'
+получено 'for'
+получено 'you'
 ```
 
 This is a good start, but it limits us to just a handful of futures: two with
@@ -1201,17 +1201,17 @@ error[E0308]: mismatched types
   --> src/main.rs:45:37
    |
 10 |         let tx1_fut = async move {
-   |                       ---------- the expected `async` block
+   |                       ---------- ожидался раздел `async`
 ...
 24 |         let rx_fut = async {
-   |                      ----- the found `async` block
+   |                      ----- the found раздел `async`
 ...
 45 |         let futures = vec![tx1_fut, rx_fut, tx_fut];
-   |                                     ^^^^^^ expected `async` block, found a 
-different `async` block
+   |                                     ^^^^^^ ожидался раздел `async`, found a 
+different раздел `async`
    |
-   = note: expected `async` block `{async block@src/main.rs:10:23: 10:33}`
-              found `async` block `{async block@src/main.rs:24:22: 24:27}`
+   = note: ожидался раздел `async` `{async block@src/main.rs:10:23: 10:33}`
+              found раздел `async` `{async block@src/main.rs:24:22: 24:27}`
    = note: no two async blocks, even if identical, have the same type
    = help: consider pinning your async block and casting it to a trait object
 ```
@@ -1228,7 +1228,7 @@ trait objects in detail in Chapter 18.) Using trait objects lets us treat each
 of the anonymous futures produced by these types as the same type, because all
 of them implement the `Future` trait.
 
-> Note: In the Chapter 8 section Using an Enum to Store Multiple
+> Note: In the Chapter 8 section Using an Enum to Склад Multiple
 > Values, we discussed another way to include multiple
 > types in a `Vec`: using an enum to represent each type that can appear in the
 > vector. We can’t do that here, though. For one thing, we have no way to name
@@ -1291,18 +1291,18 @@ error[E0308]: mismatched types
    --> src/main.rs:46:46
     |
 10  |         let tx1_fut = async move {
-    |                       ---------- the expected `async` block
+    |                       ---------- ожидался раздел `async`
 ...
 24  |         let rx_fut = async {
-    |                      ----- the found `async` block
+    |                      ----- the found раздел `async`
 ...
 46  |             vec![Box::new(tx1_fut), Box::new(rx_fut), Box::new(tx_fut)];
-    |                                     -------- ^^^^^^ expected `async` block, found a different `async` block
+    |                                     -------- ^^^^^^ ожидался раздел `async`, found a different раздел `async`
     |                                     |
-    |                                     arguments to this function are incorrect
+    |                                     не верные входные значения переменных для данного способа (функции)
     |
-    = note: expected `async` block `{async block@src/main.rs:10:23: 10:33}`
-               found `async` block `{async block@src/main.rs:24:22: 24:27}`
+    = note: ожидался раздел `async` `{async block@src/main.rs:10:23: 10:33}`
+               found раздел `async` `{async block@src/main.rs:24:22: 24:27}`
     = note: no two async blocks, even if identical, have the same type
     = help: consider pinning your async block and casting it to a trait object
 note: associated function defined here
@@ -1315,18 +1315,18 @@ error[E0308]: mismatched types
    --> src/main.rs:46:64
     |
 10  |         let tx1_fut = async move {
-    |                       ---------- the expected `async` block
+    |                       ---------- ожидался раздел `async`
 ...
 30  |         let tx_fut = async move {
-    |                      ---------- the found `async` block
+    |                      ---------- the found раздел `async`
 ...
 46  |             vec![Box::new(tx1_fut), Box::new(rx_fut), Box::new(tx_fut)];
-    |                                                       -------- ^^^^^^ expected `async` block, found a different `async` block
+    |                                                       -------- ^^^^^^ ожидался раздел `async`, found a different раздел `async`
     |                                                       |
-    |                                                       arguments to this function are incorrect
+    |                                                       не верные входные значения переменных для данного способа (функции)
     |
-    = note: expected `async` block `{async block@src/main.rs:10:23: 10:33}`
-               found `async` block `{async block@src/main.rs:30:22: 30:32}`
+    = note: ожидался раздел `async` `{async block@src/main.rs:10:23: 10:33}`
+               found раздел `async` `{async block@src/main.rs:30:22: 30:32}`
     = note: no two async blocks, even if identical, have the same type
     = help: consider pinning your async block and casting it to a trait object
 note: associated function defined here
@@ -1341,16 +1341,16 @@ error[E0277]: `{async block@src/main.rs:10:23: 10:33}` cannot be unpinned
 48  |         trpl::join_all(futures).await;
     |         -------------- ^^^^^^^ the trait `Unpin` is not implemented for `{async block@src/main.rs:10:23: 10:33}`, which is required by `Box<{async block@src/main.rs:10:23: 10:33}>: Future`
     |         |
-    |         required by a bound introduced by this call
+    |         требует ограничения, установленные этим вызовом
     |
     = note: consider using the `pin!` macro
             consider using `Box::pin` if you need to access the pinned value outside of the current scope
-    = note: required for `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
-note: required by a bound in `join_all`
+    = note: требуется для `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
+note: требуется ограничения в `join_all`
    --> file:///home/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-util-0.3.30/src/future/join_all.rs:105:14
     |
 102 | pub fn join_all<I>(iter: I) -> JoinAll<I::Item>
-    |        -------- required by a bound in this function
+    |        -------- требуется ограничения в этой функции (способе)
 ...
 105 |     I::Item: Future,
     |              ^^^^^^ required by this bound in `join_all`
@@ -1363,12 +1363,12 @@ error[E0277]: `{async block@src/main.rs:10:23: 10:33}` cannot be unpinned
    |
    = note: consider using the `pin!` macro
            consider using `Box::pin` if you need to access the pinned value outside of the current scope
-   = note: required for `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
-note: required by a bound in `futures_util::future::join_all::JoinAll`
+   = note: требуется для `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
+note: требуется ограничения в `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-util-0.3.30/src/future/join_all.rs:29:8
    |
 27 | pub struct JoinAll<F>
-   |            ------- required by a bound in this struct
+   |            ------- требуется ограничения в этой стопке
 28 | where
 29 |     F: Future,
    |        ^^^^^^ required by this bound in `JoinAll`
@@ -1381,12 +1381,12 @@ error[E0277]: `{async block@src/main.rs:10:23: 10:33}` cannot be unpinned
    |
    = note: consider using the `pin!` macro
            consider using `Box::pin` if you need to access the pinned value outside of the current scope
-   = note: required for `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
-note: required by a bound in `futures_util::future::join_all::JoinAll`
+   = note: требуется для `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
+note: требуется ограничения в `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-util-0.3.30/src/future/join_all.rs:29:8
    |
 27 | pub struct JoinAll<F>
-   |            ------- required by a bound in this struct
+   |            ------- требуется ограничения в этой стопке
 28 | where
 29 |     F: Future,
    |        ^^^^^^ required by this bound in `JoinAll`
@@ -1417,14 +1417,14 @@ the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 
 ```
-received 'hi'
-received 'more'
-received 'from'
-received 'messages'
-received 'the'
-received 'for'
-received 'future'
-received 'you'
+получено 'hi'
+получено 'more'
+получено 'from'
+получено 'messages'
+получено 'the'
+получено 'for'
+получено 'future'
+получено 'you'
 ```
 
 Phew!
@@ -1509,15 +1509,15 @@ src/main.rs
 
 ```
         let slow = async {
-            println!("'slow' started.");
+            println!("'slow' запущено.");
             trpl::sleep(Duration::from_millis(100)).await;
-            println!("'slow' finished.");
+            println!("'slow' окончено.");
         };
 
         let fast = async {
-            println!("'fast' started.");
+            println!("'fast' запущено.");
             trpl::sleep(Duration::from_millis(50)).await;
-            println!("'fast' finished.");
+            println!("'fast' окончено.");
         };
 
         trpl::race(slow, fast).await;
@@ -1573,9 +1573,9 @@ function.
 src/main.rs
 
 ```
-fn slow(имя: &str, ms: u64) {
+fn медленно(имя: &str, ms: u64) {
     thread::sleep(Duration::from_millis(ms));
-    println!("'{имя}' ran for {ms}ms");
+    println!("'{имя}' выполнено за {ms}ms");
 }
 ```
 
@@ -1593,22 +1593,22 @@ src/main.rs
 
 ```
         let a = async {
-            println!("'a' started.");
-            slow("a", 30);
-            slow("a", 10);
-            slow("a", 20);
+            println!("'a' запущено.");
+            медленно("a", 30);
+            медленно("a", 10);
+            медленно("a", 20);
             trpl::sleep(Duration::from_millis(50)).await;
-            println!("'a' finished.");
+            println!("'a' окончено.");
         };
 
         let b = async {
-            println!("'b' started.");
-            slow("b", 75);
-            slow("b", 10);
-            slow("b", 15);
-            slow("b", 350);
+            println!("'b' запущено.");
+            медленно("b", 75);
+            медленно("b", 10);
+            медленно("b", 15);
+            медленно("b", 350);
             trpl::sleep(Duration::from_millis(50)).await;
-            println!("'b' finished.");
+            println!("'b' окончено.");
         };
 
         trpl::race(a, b).await;
@@ -1626,16 +1626,16 @@ copy just the output
 -->
 
 ```
-'a' started.
-'a' ran for 30ms
-'a' ran for 10ms
-'a' ran for 20ms
-'b' started.
-'b' ran for 75ms
-'b' ran for 10ms
-'b' ran for 15ms
-'b' ran for 350ms
-'a' finished.
+'a' запущено.
+'a' выполнено за 30ms
+'a' выполнено за 10ms
+'a' выполнено за 20ms
+'b' запущено.
+'b' выполнено за 75ms
+'b' выполнено за 10ms
+'b' выполнено за 15ms
+'b' выполнено за 350ms
+'a' окончено.
 ```
 
 As with our earlier example, `race` still finishes as soon as `a` is done.
@@ -1658,27 +1658,27 @@ src/main.rs
         let one_ms = Duration::from_millis(1);
 
         let a = async {
-            println!("'a' started.");
-            slow("a", 30);
+            println!("'a' запущено.");
+            медленно("a", 30);
             trpl::sleep(one_ms).await;
-            slow("a", 10);
+            медленно("a", 10);
             trpl::sleep(one_ms).await;
-            slow("a", 20);
+            медленно("a", 20);
             trpl::sleep(one_ms).await;
-            println!("'a' finished.");
+            println!("'a' окончено.");
         };
 
         let b = async {
-            println!("'b' started.");
-            slow("b", 75);
+            println!("'b' запущено.");
+            медленно("b", 75);
             trpl::sleep(one_ms).await;
-            slow("b", 10);
+            медленно("b", 10);
             trpl::sleep(one_ms).await;
-            slow("b", 15);
+            медленно("b", 15);
             trpl::sleep(one_ms).await;
-            slow("b", 35);
+            медленно("b", 35);
             trpl::sleep(one_ms).await;
-            println!("'b' finished.");
+            println!("'b' окончено.");
         };
 ```
 
@@ -1694,15 +1694,15 @@ copy just the output
 -->
 
 ```
-'a' started.
-'a' ran for 30ms
-'b' started.
-'b' ran for 75ms
-'a' ran for 10ms
-'b' ran for 10ms
-'a' ran for 20ms
-'b' ran for 15ms
-'a' finished.
+'a' запущено.
+'a' выполнено за 30ms
+'b' запущено.
+'b' выполнено за 75ms
+'a' выполнено за 10ms
+'b' выполнено за 10ms
+'a' выполнено за 20ms
+'b' выполнено за 15ms
+'a' окончено.
 ```
 
 The `a` future still runs for a bit before handing off control to `b`, because
@@ -1720,27 +1720,27 @@ src/main.rs
 
 ```
         let a = async {
-            println!("'a' started.");
-            slow("a", 30);
+            println!("'a' запущено.");
+            медленно("a", 30);
             trpl::yield_now().await;
-            slow("a", 10);
+            медленно("a", 10);
             trpl::yield_now().await;
-            slow("a", 20);
+            медленно("a", 20);
             trpl::yield_now().await;
-            println!("'a' finished.");
+            println!("'a' окончено.");
         };
 
         let b = async {
-            println!("'b' started.");
-            slow("b", 75);
+            println!("'b' запущено.");
+            медленно("b", 75);
             trpl::yield_now().await;
-            slow("b", 10);
+            медленно("b", 10);
             trpl::yield_now().await;
-            slow("b", 15);
+            медленно("b", 15);
             trpl::yield_now().await;
-            slow("b", 35);
+            медленно("b", 35);
             trpl::yield_now().await;
-            println!("'b' finished.");
+            println!("'b' окончено.");
         };
 ```
 
@@ -1835,7 +1835,7 @@ src/main.rs
         match timeout(slow, Duration::from_millis(10)).await {
             Ok(message) => println!("Succeeded with '{message}'"),
             Err(duration) => {
-                println!("Failed after {} seconds", duration.as_secs())
+                println!("Завершено с ошибкой после {} seconds", duration.as_secs())
             }
         }
 ```
@@ -1896,13 +1896,13 @@ fn main() {
     trpl::run(async {
         let slow = async {
             trpl::sleep(Duration::from_secs(5)).await;
-            "Finally finished"
+            "Наконецто закончено"
         };
 
         match timeout(slow, Duration::from_secs(2)).await {
             Ok(message) => println!("Succeeded with '{message}'"),
             Err(duration) => {
-                println!("Failed after {} seconds", duration.as_secs())
+                println!("Завершено с ошибкой после {} seconds", duration.as_secs())
             }
         }
     });
@@ -1928,7 +1928,7 @@ With that, we have a working `timeout` built out of two other async helpers. If
 we run our code, it will print the failure mode after the timeout:
 
 ```
-Failed after 2 seconds
+Завершено с ошибкой после 2 seconds
 ```
 
 Because futures compose with other futures, you can build really powerful tools
@@ -1988,8 +1988,8 @@ stream by calling its `next` method and then awaiting the output, as in Listing
 src/main.rs
 
 ```
-        let values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        let iter = values.iter().map(|n| n * 2);
+        let значения = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let iter = значения.iter().map(|n| n * 2);
         let mut stream = trpl::stream_from_iter(iter);
 
         while let Some(value) = stream.next().await {
@@ -2000,7 +2000,7 @@ src/main.rs
 Listing 17-30: Creating a stream from an iterator and printing its values
 
 We start with an array of numbers, which we convert to an iterator and then call
-`map` on to double all the values. Then we convert the iterator into a stream
+`map` on to double all the значения. Then we convert the iterator into a stream
 using the `trpl::stream_from_iter` function. Next, we loop over the items in the
 stream as they arrive with the `while let` loop.
 
@@ -2063,8 +2063,8 @@ use trpl::StreamExt;
 
 fn main() {
     trpl::run(async {
-        let values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        let iter = values.iter().map(|n| n * 2);
+        let значения = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let iter = значения.iter().map(|n| n * 2);
         let mut stream = trpl::stream_from_iter(iter);
 
         while let Some(value) = stream.next().await {
@@ -2088,8 +2088,8 @@ use trpl::StreamExt;
 
 fn main() {
     trpl::run(async {
-        let values = 1..101;
-        let iter = values.map(|n| n * 2);
+        let значения = 1..101;
+        let iter = значения.map(|n| n * 2);
         let stream = trpl::stream_from_iter(iter);
 
         let mut filtered =
@@ -2130,19 +2130,19 @@ use trpl::{ReceiverStream, Stream, StreamExt};
 
 fn main() {
     trpl::run(async {
-        let mut messages = get_messages();
+        let mut сообщения = получить_сообщения();
 
-        while let Some(message) = messages.next().await {
+        while let Some(message) = сообщения.next().await {
             println!("{message}");
         }
     });
 }
 
-fn get_messages() -> impl Stream<Item = String> {
+fn получить_сообщения() -> impl Stream<Item = String> {
     let (tx, rx) = trpl::channel();
 
-    let messages = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
-    for message in messages {
+    let сообщения = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+    for message in сообщения {
         tx.send(format!("Message: '{message}'")).unwrap();
     }
 
@@ -2152,7 +2152,7 @@ fn get_messages() -> impl Stream<Item = String> {
 
 Listing 17-33: Using the `rx` receiver as a `ReceiverStream`
 
-First, we create a function called `get_messages` that returns `impl Stream<Item = String>`. For its implementation, we create an async channel, loop over the
+First, we create a function called `получить_сообщения` that returns `impl Stream<Item = String>`. For its implementation, we create an async channel, loop over the
 first 10 letters of the English alphabet, and send them across the channel.
 
 We also use a new type: `ReceiverStream`, which converts the `rx` receiver from
@@ -2191,10 +2191,10 @@ use trpl::{ReceiverStream, Stream, StreamExt};
 
 fn main() {
     trpl::run(async {
-        let mut messages =
-            pin!(get_messages().timeout(Duration::from_millis(200)));
+        let mut сообщения =
+            pin!(получить_сообщения().timeout(Duration::from_millis(200)));
 
-        while let Some(result) = messages.next().await {
+        while let Some(result) = сообщения.next().await {
             match result {
                 Ok(message) => println!("{message}"),
                 Err(reason) => eprintln!("Problem: {reason:?}"),
@@ -2223,13 +2223,13 @@ we send, as shown in Listing 17-35.
 src/main.rs
 
 ```
-fn get_messages() -> impl Stream<Item = String> {
+fn получить_сообщения() -> impl Stream<Item = String> {
     let (tx, rx) = trpl::channel();
 
     trpl::spawn_task(async move {
-        let messages = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
-        for (index, message) in messages.into_iter().enumerate() {
-            let time_to_sleep = if index % 2 == 0 { 100 } else { 300 };
+        let сообщения = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+        for (указатель, message) in сообщения.into_iter().enumerate() {
+            let time_to_sleep = if указатель % 2 == 0 { 100 } else { 300 };
             trpl::sleep(Duration::from_millis(time_to_sleep)).await;
 
             tx.send(format!("Message: '{message}'")).unwrap();
@@ -2240,27 +2240,27 @@ fn get_messages() -> impl Stream<Item = String> {
 }
 ```
 
-Listing 17-35: Sending messages through `tx` with an async delay without making `get_messages` an async function
+Listing 17-35: Sending messages through `tx` with an async delay without making `получить_сообщения` an async function
 
-In `get_messages`, we use the `enumerate` iterator method with the `messages`
+In `получить_сообщения`, we use the `enumerate` iterator method with the `messages`
 array so that we can get the index of each item we’re sending along with the
 item itself. Then we apply a 100-millisecond delay to even-index items and a
 300-millisecond delay to odd-index items to simulate the different delays we
 might see from a stream of messages in the real world. Because our timeout is
-for 200 milliseconds, this should affect half of the messages.
+for 200 milliseconds, this should affect half of the сообщения.
 
-To sleep between messages in the `get_messages` function without blocking, we
-need to use async. However, we can’t make `get_messages` itself into an async
+To sleep between messages in the `получить_сообщения` function without blocking, we
+need to use async. However, we can’t make `получить_сообщения` itself into an async
 function, because then we’d return a `Future<Output = Stream<Item = String>>`
 instead of a `Stream<Item = String>>`. The caller would have to await
-`get_messages` itself to get access to the stream. But remember: everything in a
+`получить_сообщения` itself to get access to the stream. But remember: everything in a
 given future happens linearly; concurrency happens *between* futures. Awaiting
-`get_messages` would require it to send all the messages, including the sleep
+`получить_сообщения` would require it to send all the messages, including the sleep
 delay between each message, before returning the receiver stream. As a result,
 the timeout would be useless. There would be no delays in the stream itself;
 they would all happen before the stream was even available.
 
-Instead, we leave `get_messages` as a regular function that returns a stream,
+Instead, we leave `получить_сообщения` as a regular function that returns a stream,
 and we spawn a task to владение the async `sleep` calls.
 
 > Note: Calling `spawn_task` in this way works because we already set up our
@@ -2305,14 +2305,14 @@ again, the message may now have arrived.
 
 You can get different behavior if needed by using other kinds of channels or
 other kinds of streams more generally. Let’s see one of those in practice by
-combining a stream of time intervals with this stream of messages.
+combining a stream of time intervals with this stream of сообщения.
 
 ### Merging Streams
 
 First, let’s create another stream, which will emit an item every millisecond if
 we let it run directly. For simplicity, we can use the `sleep` function to send
 a message on a delay and combine it with the same approach we used in
-`get_messages` of creating a stream from a channel. The difference is that this
+`получить_сообщения` of creating a stream from a channel. The difference is that this
 time, we’re going to send back the count of intervals that have elapsed, so the
 return type will be `impl Stream<Item = u32>`, and we can call the function
 `get_intervals` (see Listing 17-36).
@@ -2356,9 +2356,9 @@ Now, back in our main function’s async block, we can attempt to merge the
 src/main.rs
 
 ```
-        let messages = get_messages().timeout(Duration::from_millis(200));
+        let сообщения получить_сообщения().timeout(Duration::from_millis(200));
         let intervals = get_intervals();
-        let merged = messages.merge(intervals);
+        let merged = сообщения.merge(intervals);
 ```
 
 Listing 17-37: Attempting to merge the `messages` and `intervals` streams
@@ -2383,11 +2383,11 @@ want and has to владение timeout errors (see Listing 17-38).
 src/main.rs
 
 ```
-        let messages = get_messages().timeout(Duration::from_millis(200));
+        let сообщения получить_сообщения().timeout(Duration::from_millis(200));
         let intervals = get_intervals()
             .map(|count| format!("Interval: {count}"))
             .timeout(Duration::from_secs(10));
-        let merged = messages.merge(intervals);
+        let merged = сообщения.merge(intervals);
         let mut stream = pin!(merged);
 ```
 
@@ -2426,12 +2426,12 @@ Listing 17-39 shows one way to solve these last two problems.
 src/main.rs
 
 ```
-        let messages = get_messages().timeout(Duration::from_millis(200));
+        let сообщения получить_сообщения().timeout(Duration::from_millis(200));
         let intervals = get_intervals()
             .map(|count| format!("Interval: {count}"))
             .throttle(Duration::from_millis(100))
             .timeout(Duration::from_secs(10));
-        let merged = messages.merge(intervals).take(20);
+        let merged = сообщения.merge(intervals).take(20);
         let mut stream = pin!(merged);
 ```
 
@@ -2448,7 +2448,7 @@ method to the `merged` stream, because we want to limit the final output, not
 just one stream or the other.
 
 Now when we run the program, it stops after pulling 20 items from the stream,
-and the intervals don’t overwhelm the messages. We also don’t get `Interval: 100` or `Interval: 200` or so on, but instead get `Interval: 1`, `Interval: 2`,
+and the intervals don’t overwhelm the сообщения. We also don’t get `Interval: 100` or `Interval: 200` or so on, but instead get `Interval: 1`, `Interval: 2`,
 and so on—even though we have a source stream that *can* produce an event every
 millisecond. That’s because the `throttle` call produces a new stream that wraps
 the original stream so that the original stream gets polled only at the throttle
@@ -2491,20 +2491,20 @@ channel-based streams, the `send` calls could fail when the other side of the
 channel closes—and that’s just a matter of how the runtime executes the futures
 that make up the stream. Up until now, we’ve ignored this possibility by calling
 `unwrap`, but in a well-behaved app, we should explicitly владение the error, at
-minimum by ending the loop so we don’t try to send any more messages. Listing
+minimum by ending the loop so we don’t try to send any more сообщения. Listing
 17-40 shows a simple error strategy: print the issue and then `break` from the
 loops.
 
 
 ```
-fn get_messages() -> impl Stream<Item = String> {
+fn получить_сообщения() -> impl Stream<Item = String> {
     let (tx, rx) = trpl::channel();
 
     trpl::spawn_task(async move {
-        let messages = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+        let сообщения = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
 
-        for (index, message) in messages.into_iter().enumerate() {
-            let time_to_sleep = if index % 2 == 0 { 100 } else { 300 };
+        for (указатель, message) in сообщения.into_iter().enumerate() {
+            let time_to_sleep = if указатель % 2 == 0 { 100 } else { 300 };
             trpl::sleep(Duration::from_millis(time_to_sleep)).await;
 
             if let Err(send_error) = tx.send(format!("Message: '{message}'")) {
@@ -2616,10 +2616,10 @@ page title for a single URL once it resolved, Rust compiles it into something
 kind of (although not exactly) like this:
 
 ```
-match page_title(url).poll() {
-    Ready(page_title) => match page_title {
-        Some(title) => println!("The title for {url} was {title}"),
-        None => println!("{url} had no title"),
+match заголовок_страницы(ссылка).poll() {
+    Ready(заголовок_страницы) => match заголовок_страницы {
+        Some(заголовок) => println!("Заголовок для {ссылка} was {заголовок}"),
+        None => println!("{ссылка} не имеет заголовка"),
     }
     Pending => {
         // But what goes here?
@@ -2632,12 +2632,12 @@ again, and again, and again, until the future is finally ready. In other words,
 we need a loop:
 
 ```
-let mut page_title_fut = page_title(url);
+let mut page_title_fut = заголовок_страницы(ссылка);
 loop {
     match page_title_fut.poll() {
-        Ready(value) => match page_title {
-            Some(title) => println!("The title for {url} was {title}"),
-            None => println!("{url} had no title"),
+        Ready(value) => match заголовок_страницы {
+            Some(заголовок) => println!("Заголовок для {ссылка} was {заголовок}"),
+            None => println!("{ссылка} не имеет заголовка"),
         }
         Pending => {
             // continue
@@ -2691,12 +2691,12 @@ error[E0277]: `{async block@src/main.rs:10:23: 10:33}` cannot be unpinned
    |
    = note: consider using the `pin!` macro
            consider using `Box::pin` if you need to access the pinned value outside of the current scope
-   = note: required for `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
-note: required by a bound in `futures_util::future::join_all::JoinAll`
+   = note: требуется для `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
+note: требуется ограничения в `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-util-0.3.30/src/future/join_all.rs:29:8
    |
 27 | pub struct JoinAll<F>
-   |            ------- required by a bound in this struct
+   |            ------- требуется ограничения в этой стопке
 28 | where
 29 |     F: Future,
    |        ^^^^^^ required by this bound in `JoinAll`

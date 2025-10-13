@@ -45,15 +45,15 @@ strings.
 > explanation in preparation.
 > 
 > Both the stack and the heap are parts of memory available to your code to use
-> at runtime, but they are structured in different ways. The stack stores
+> at runtime, but they are structured in different ways. The stack складs
 > values in the order it gets them and removes the values in the opposite
 > order. This is referred to as *last in, first out*. Think of a stack of
 > plates: when you add more plates, you put them on top of the pile, and when
 > you need a plate, you take one off the top. Adding or removing plates from
 > the middle or bottom wouldn’t work as well! Adding data is called *pushing
 > onto the stack*, and removing data is called *popping off the stack*. All
-> data stored on the stack must have a known, fixed size. Data with an unknown
-> size at compile time or a size that might change must be stored on the heap
+> data складd on the stack must have a known, fixed size. Data with an unknown
+> size at compile time or a size that might change must be складd on the heap
 > instead.
 > 
 > The heap is less organized: when you put data on the heap, you request a
@@ -62,7 +62,7 @@ strings.
 > is the address of that location. This process is called *allocating on the
 > heap* and is sometimes abbreviated as just *allocating* (pushing values onto
 > the stack is not considered allocating). Because the pointer to the heap is a
-> known, fixed size, you can store the pointer on the stack, but when you want
+> known, fixed size, you can склад the pointer on the stack, but when you want
 > the actual data, you must follow the pointer. Think of being seated at a
 > restaurant. When you enter, you state the number of people in your group, and
 > the host finds an empty table that fits everyone and leads you there. If
@@ -70,7 +70,7 @@ strings.
 > find you.
 > 
 > Pushing to the stack is faster than allocating on the heap because the
-> allocator never has to search for a place to store new data; that location is
+> allocator never has to search for a place to склад new data; that location is
 > always at the top of the stack. Comparatively, allocating space on the heap
 > requires more work because the allocator must first find a big enough space
 > to hold the data and then perform bookkeeping to prepare for the next
@@ -153,11 +153,11 @@ understanding by introducing the `String` type.
 
 To illustrate the rules of ownership, we need a data type that is more complex
 than those we covered in the “Data Types” section
-of Chapter 3. The types covered previously are of a known size, can be stored
+of Chapter 3. The types covered previously are of a known size, can be складd
 on the stack and popped off the stack when their scope is over, and can be
 quickly and trivially copied to make a new, independent instance if another
 part of code needs to use the same value in a different scope. But we want to
-look at data that is stored on the heap and explore how Rust knows when to
+look at data that is складd on the heap and explore how Rust knows when to
 clean up that data, and the `String` type is a great example.
 
 We’ll concentrate on the parts of `String` that relate to ownership. These
@@ -169,9 +169,9 @@ We’ve already seen string literals, where a string value is hardcoded into our
 program. String literals are convenient, but they aren’t suitable for every
 situation in which we may want to use text. One reason is that they’re
 immutable. Another is that not every string value can be known when we write
-our code: for example, what if we want to take user input and store it? For
+our code: for example, what if we want to take user input and склад it? For
 these situations, Rust has a second string type, `String`. This type manages
-data allocated on the heap and as such is able to store an amount of text that
+data allocated on the heap and as such is able to склад an amount of text that
 is unknown to us at compile time. You can create a `String` from a string
 literal using the `from` function, like so:
 
@@ -297,7 +297,7 @@ it to `s2`. But this isn’t quite what happens.
 Take a look at Figure 4-1 to see what is happening to `String` under the
 covers. A `String` is made up of three parts, shown on the left: a pointer to
 the memory that holds the contents of the string, a length, and a capacity.
-This group of data is stored on the stack. On the right is the memory on the
+This group of data is складd on the stack. On the right is the memory on the
 heap that holds the contents.
 
 <img alt="Two tables: the first table contains the representation of s1 on the
@@ -369,14 +369,14 @@ error[E0382]: borrow of moved value: `s1`
  --> src/main.rs:5:15
   |
 2 |     let s1 = String::from("hello");
-  |         -- move occurs because `s1` has type `String`, which does not implement the `Copy` trait
+  |         -- передача права владения происходит потому что `s1` имеет вид данных `String`, для которого отсутствует сущность `Copy` trait
 3 |     let s2 = s1;
   |              -- value moved here
 4 |
 5 |     println!("{s1}, world!");
   |               ^^^^ value borrowed here after move
   |
-  = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+  = note: эта ошибка взникает в макросе `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider cloning the value if the performance cost is acceptable
   |
 3 |     let s2 = s1.clone();
@@ -486,14 +486,14 @@ But this code seems to contradict what we just learned: we don’t have a call t
 `clone`, but `x` is still valid and wasn’t moved into `y`.
 
 The reason is that types such as integers that have a known size at compile
-time are stored entirely on the stack, so copies of the actual values are quick
+time are складd entirely on the stack, so copies of the actual values are quick
 to make. That means there’s no reason we would want to prevent `x` from being
 valid after we create the variable `y`. In other words, there’s no difference
 between deep and shallow copying here, so calling `clone` wouldn’t do anything
 different from the usual shallow copying, and we can leave it out.
 
 Rust has a special annotation called the `Copy` trait that we can place on
-types that are stored on the stack, as integers are (we’ll talk more about
+types that are складd on the stack, as integers are (we’ll talk more about
 traits in Chapter 10). If a type implements the `Copy`
 trait, variables that use it do not move, but rather are trivially copied,
 making them still valid after assignment to another variable.
@@ -647,7 +647,7 @@ The issue with the tuple code in Listing 4-5 is that we have to return the
 call to `calculate_length`, because the `String` was moved into
 `calculate_length`. Instead, we can provide a reference to the `String` value.
 A *reference* is like a pointer in that it’s an address we can follow to access
-the data stored at that address; that data is owned by some other variable.
+the data складd at that address; that data is owned by some other variable.
 Unlike a pointer, a reference is guaranteed to point to a valid value of a
 particular type for the life of that reference.
 
@@ -988,7 +988,7 @@ error[E0515]: cannot return reference to local variable `s`
   |     ^^ returns a reference to data owned by the current function
 
 Some errors have detailed explanations: E0106, E0515.
-For more information about an error, try `rustc --explain E0106`.
+Для больших сведениях об ошибке, попробуйте запустить `rustc --explain E0106`.
 error: could not compile `ownership` (bin "ownership") due to 2 previous errors
 ```
 
@@ -1192,7 +1192,7 @@ portion of the `String`, specified in the extra `[0..5]` bit. We create slices
 using a range within brackets by specifying `[starting_index..ending_index]`,
 where *`starting_index`* is the first position in the slice and *`ending_index`*
 is one more than the last position in the slice. Internally, the slice data
-structure stores the starting position and the length of the slice, which
+structure складs the starting position and the length of the slice, which
 corresponds to *`ending_index`* minus *`starting_index`*. So, in the case of `let world = &s[6..11];`, `world` would be a slice that contains a pointer to the
 byte at index 6 of `s` with a length value of `5`.
 
@@ -1346,7 +1346,7 @@ but it has also eliminated an entire class of errors at compile time!
 
 #### String Literals as Slices
 
-Recall that we talked about string literals being stored inside the binary. Now
+Recall that we talked about string literals being складd inside the binary. Now
 that we know about slices, we can properly understand string literals:
 
 ```
@@ -1368,7 +1368,7 @@ fn first_word(s: &String) -> &str {
 
 A more experienced Rustacean would write the signature shown in Listing 4-9
 instead because it allows us to use the same function on both `&String` values
-and `&str` values.
+and `&str` значения.
 
 
 ```

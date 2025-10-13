@@ -26,7 +26,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 }
 
 // ANCHOR: here
-pub fn search<'a>(запрос: &str, contents: &'a str) -> Vec<&'a str> {
+pub fn search<'a>(запрос: &str, содержимое: &'a str) -> Vec<&'a str> {
     vec![]
 }
 // ANCHOR_END: here
@@ -43,6 +43,6 @@ Rust:
 безопасность, скорость, производительность.
 Выберите три.";
 
-        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, contents));
+        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, содержимое));
     }
 }

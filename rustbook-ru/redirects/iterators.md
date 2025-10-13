@@ -3,15 +3,15 @@
 <small>There is a new edition of the book and this is an old link.</small>
 
 > The iterator pattern allows you to perform some task on a sequence of items in turn.
-> An iterator is responsible for the logic of iterating over each item and determining when the sequence has finished.
+> An iterator is responsible for the logic of iterating over each item and determining when the sequence has окончено.
 
 ```rust
-let v1 = vec![1, 2, 3];
+let ряд_1 = vec![1, 2, 3];
 
-let v1_iter = v1.iter();
+let ряд_1_перебор = ряд_1.iter();
 
-for val in v1_iter {
-    println!("Получено: {val}");
+for значение in ряд_1_перебор {
+    println!("Получено: {значение}");
 }
 ```
 

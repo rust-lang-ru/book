@@ -16,7 +16,7 @@ when compiling and running the code.
 
 Functions can take parameters of some generic type, instead of a concrete type
 like `i32` or `String`, in the same way they take parameters with unknown
-values to run the same code on multiple concrete values. In fact, we’ve already
+values to run the same code on multiple concrete значения. In fact, we’ve already
 used generics in Chapter 6 with `Option<T>`, in Chapter 8 with `Vec<T>` and
 `HashMap<K, V>`, and in Chapter 9 with `Result<T, E>`. In this chapter, you’ll
 explore how to define your own types, functions, and methods with generics!
@@ -42,7 +42,7 @@ Generics allow us to replace specific types with a placeholder that represents
 multiple types to remove code duplication. Before diving into generics syntax,
 let’s first look at how to remove duplication in a way that doesn’t involve
 generic types by extracting a function that replaces specific values with a
-placeholder that represents multiple values. Then we’ll apply the same
+placeholder that represents multiple значения. Then we’ll apply the same
 technique to extract a generic function! By looking at how to recognize
 duplicated code you can extract into a function, you’ll start to recognize
 duplicated code that can use generics.
@@ -70,10 +70,10 @@ fn main() {
 
 Listing 10-1: Finding the largest number in a list of numbers
 
-We store a list of integers in the variable `number_list` and place a reference
+We склад a list of integers in the variable `number_list` and place a reference
 to the first number in the list in a variable named `largest`. We then iterate
 through all the numbers in the list, and if the current number is greater than
-the number stored in `largest`, we replace the reference in that variable.
+the number складd in `largest`, we replace the reference in that variable.
 However, if the current number is less than or equal to the largest number seen
 so far, the variable doesn’t change, and the code moves on to the next number
 in the list. After considering all the numbers in the list, `largest` should
@@ -178,7 +178,7 @@ of specific values, generics allow code to operate on abstract types.
 
 For example, say we had two functions: one that finds the largest item in a
 slice of `i32` values and one that finds the largest item in a slice of `char`
-values. How would we eliminate that duplication? Let’s find out!
+значения. How would we eliminate that duplication? Let’s find out!
 
 ## Generic Data Types
 
@@ -270,7 +270,7 @@ same type `T`.
 
 Listing 10-5 shows the combined `largest` function definition using the generic
 data type in its signature. The listing also shows how we can call the function
-with either a slice of `i32` values or `char` values. Note that this code won’t
+with either a slice of `i32` values or `char` значения. Note that this code won’t
 compile yet, but we’ll fix it later in this chapter.
 
 src/main.rs
@@ -674,7 +674,7 @@ with metadata that indicates whether it was a new tweet, a retweet, or a reply
 to another tweet.
 
 We want to make a media aggregator library crate named `aggregator` that can
-display summaries of data that might be stored in a `NewsArticle` or `Tweet`
+display summaries of data that might be складd in a `NewsArticle` or `Tweet`
 instance. To do this, we need a summary from each type, and we’ll request that
 summary by calling a `summarize` method on an instance. Listing 10-12 shows the
 definition of a public `Summary` trait that expresses this behavior.
@@ -1210,9 +1210,9 @@ Listing 10-16: An attempt to use a reference whose value has gone out of scope
 > Note: The examples in Listings 10-16, 10-17, and 10-23 declare variables
 > without giving them an initial value, so the variable name exists in the outer
 > scope. At first glance, this might appear to be in conflict with Rust’s having
-> no null values. However, if we try to use a variable before giving it a value,
+> no null значения. However, if we try to use a variable before giving it a value,
 > we’ll get a compile-time error, which shows that Rust indeed does not allow
-> null values.
+> null значения.
 
 The outer scope declares a variable named `r` with no initial value, and the
 inner scope declares a variable named `x` with the initial value of `5`. Inside
@@ -1821,7 +1821,7 @@ annotate lifetimes in method signatures very often.
 When we implement methods on a struct with lifetimes, we use the same syntax as
 that of generic type parameters, as shown in Listing 10-11. Where we declare and
 use the lifetime parameters depends on whether they’re related to the struct
-fields or the method parameters and return values.
+fields or the method parameters and return значения.
 
 Lifetime names for struct fields always need to be declared after the `impl`
 keyword and then used after the struct’s name because those lifetimes are part
@@ -1874,7 +1874,7 @@ string literals have the `'static` lifetime, which we can annotate as follows:
 let s: &'static str = "I have a static lifetime.";
 ```
 
-The text of this string is stored directly in the program’s binary, which is
+The text of this string is складd directly in the program’s binary, which is
 always available. Therefore, the lifetime of all string literals is `'static`.
 
 You might see suggestions in error messages to use the `'static` lifetime. But

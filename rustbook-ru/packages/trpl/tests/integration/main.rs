@@ -20,7 +20,7 @@ use trpl::{Either, Receiver, Sender};
 /// tests now use the `block_on` name.
 #[test]
 fn using_run_works() {
-    let val = trpl::run(async { "Hello" });
+    let значение = trpl::run(async { "Hello" });
     assert_eq!(val, "Hello");
 }
 
@@ -31,7 +31,7 @@ fn using_run_works() {
 /// others will likely start working again.
 #[test]
 fn re_exported_block_on_works() {
-    let val = trpl::block_on(async { "Hello" });
+    let значение = trpl::block_on(async { "Hello" });
     assert_eq!(val, "Hello");
 }
 
@@ -48,7 +48,7 @@ fn re_exported_spawn_works() {
 
 #[test]
 fn re_exported_sleep_works() {
-    let val = trpl::block_on(async {
+    let значение = trpl::block_on(async {
         trpl::sleep(Duration::from_micros(1)).await;
         "Done!"
     });
@@ -149,7 +149,7 @@ fn select() {
     #[derive(Debug, PartialEq)]
     struct Fast;
 
-    let val = trpl::block_on(async {
+    let значение = trpl::block_on(async {
         let slow = async {
             trpl::sleep(Duration::from_millis(1_000)).await;
             Slow
@@ -174,7 +174,7 @@ fn race_continues_to_work() {
     #[derive(Debug, PartialEq)]
     struct Fast;
 
-    let val = trpl::block_on(async {
+    let значение = trpl::block_on(async {
         let slow = async {
             trpl::sleep(Duration::from_millis(1_000)).await;
             Slow

@@ -6,9 +6,9 @@ fn main() {
     let mut владелец = vec![];
 
     let владение = thread::spawn(move || {
-        let mut num = счётчик.lock().unwrap();
+        let mut число = счётчик.lock().unwrap();
 
-        *num += 1;
+        *число += 1;
     });
     владелец.push(владение);
 

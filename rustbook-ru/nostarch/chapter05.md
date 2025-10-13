@@ -23,7 +23,7 @@ program’s domain to take full advantage of Rust’s compile-time type checking
 
 ## Defining and Instantiating Structs
 
-Structs are similar to tuples, discussed in “The Tuple Type” section, in that both hold multiple related values. Like tuples, the
+Structs are similar to tuples, discussed in “The Tuple Type” section, in that both hold multiple related значения. Like tuples, the
 pieces of a struct can be different types. Unlike with tuples, in a struct
 you’ll name each piece of data so it’s clear what the values mean. Adding these
 names means that structs are more flexible than tuples: you don’t have to rely
@@ -33,7 +33,7 @@ To define a struct, we enter the keyword `struct` and name the entire struct. A
 struct’s name should describe the significance of the pieces of data being
 grouped together. Then, inside curly brackets, we define the names and types of
 the pieces of data, which we call *fields*. For example, Listing 5-1 shows a
-struct that stores information about a user account.
+struct that складs information about a user account.
 
 src/main.rs
 
@@ -52,7 +52,7 @@ To use a struct after we’ve defined it, we create an *instance* of that struct
 by specifying concrete values for each of the fields. We create an instance by
 stating the name of the struct and then add curly brackets containing *key:
 value* pairs, where the keys are the names of the fields and the values are the
-data we want to store in those fields. We don’t have to specify the fields in
+data we want to склад in those fields. We don’t have to specify the fields in
 the same order in which we declared them in the struct. In other words, the
 struct definition is like a general template for the type, and instances fill
 in that template with particular data to create values of the type. For
@@ -255,7 +255,7 @@ instances of different tuple structs. Each struct you define is its own type,
 even though the fields within the struct might have the same types. For
 example, a function that takes a parameter of type `Color` cannot take a
 `Point` as an argument, even though both types are made up of three `i32`
-values. Otherwise, tuple struct instances are similar to tuples in that you can
+значения. Otherwise, tuple struct instances are similar to tuples in that you can
 destructure them into their individual pieces, and you can use a `.` followed
 by the index to access an individual value. Unlike tuples, tuple structs
 require you to name the type of the struct when you destructure them. For
@@ -267,7 +267,7 @@ You can also define structs that don’t have any fields! These are called
 *unit-like structs* because they behave similarly to `()`, the unit type that
 we mentioned in “The Tuple Type” section. Unit-like
 structs can be useful when you need to implement a trait on some type but don’t
-have any data that you want to store in the type itself. We’ll discuss traits
+have any data that you want to склад in the type itself. We’ll discuss traits
 in Chapter 10. Here’s an example of declaring and instantiating a unit struct
 named `AlwaysEqual`:
 
@@ -300,15 +300,15 @@ implement them on any type, including unit-like structs.
 > because we want each instance of this struct to own all of its data and for
 > that data to be valid for as long as the entire struct is valid.
 > 
-> It’s also possible for structs to store references to data owned by something
+> It’s also possible for structs to склад references to data owned by something
 > else, but to do so requires the use of *lifetimes*, a Rust feature that we’ll
 > discuss in Chapter 10. Lifetimes ensure that the data referenced by a struct
-> is valid for as long as the struct is. Let’s say you try to store a reference
+> is valid for as long as the struct is. Let’s say you try to склад a reference
 > in a struct without specifying lifetimes, like the following; this won’t work:
 > 
 > <Listing file-name="src/main.rs">
 > 
-> <!-- CAN'T EXTRACT SEE https://github.com/rust-lang/mdBook/issues/1127 -->
+> <!-- CAN'T EXTRACT СМОТРИТЕ на http://github.com/rust-lang/mdBook/issues/1127 -->
 > 
 > ````rust,ignore,does_not_compile
 > struct User {
@@ -363,7 +363,7 @@ implement them on any type, including unit-like structs.
 >   |
 > ```
 >
-> In Chapter 10, we’ll discuss how to fix these errors so you can store
+> In Chapter 10, we’ll discuss how to fix these errors so you can склад
 > references in structs, but for now, we’ll fix errors like these using owned
 > types like `String` instead of references like `&str`.
 
@@ -494,7 +494,7 @@ fn main() {
 }
 
 fn area(rectangle: &Rectangle) -> u32 {
-    rectangle.width * rectangle.height
+    rectangle.ширина * rectangle.height
 }
 ```
 
@@ -744,7 +744,7 @@ struct Rectangle {
 
 impl Rectangle {
     fn area(&self) -> u32 {
-        self.width * self.height
+        self.ширина * self.height
     }
 }
 
@@ -809,7 +809,7 @@ src/main.rs
 ```
 impl Rectangle {
     fn width(&self) -> bool {
-        self.width > 0
+        self.ширина > 0
     }
 }
 
@@ -819,8 +819,8 @@ fn main() {
         height: 50,
     };
 
-    if rect1.width() {
-        println!("The rectangle has a nonzero width; it is {}", rect1.width);
+    if rect1.ширина() {
+        println!("The rectangle has a nonzero width; it is {}", rect1.ширина);
     }
 }
 ```
@@ -830,7 +830,7 @@ fn main() {
 Here, we’re choosing to make the `width` method return `true` if the value in
 the instance’s `width` field is greater than `0` and `false` if the value is
 `0`: we can use a field within a method of the same name for any purpose. In
-`main`, when we follow `rect1.width` with parentheses, Rust knows we mean the
+`main`, when we follow `rect1.ширина` with parentheses, Rust knows we mean the
 method `width`. When we don’t use parentheses, Rust knows we mean the field
 `width`.
 
@@ -950,11 +950,11 @@ src/main.rs
 ```
 impl Rectangle {
     fn area(&self) -> u32 {
-        self.width * self.height
+        self.ширина * self.height
     }
 
     fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.height > other.height
+        self.ширина > other.ширина && self.height > other.height
     }
 }
 ```
@@ -987,7 +987,7 @@ Filename: src/main.rs
 
 ```
 impl Rectangle {
-    fn square(size: u32) -> Self {
+    fn square(размер: u32) -> Self {
         Self {
             width: size,
             height: size,
@@ -1016,13 +1016,13 @@ its own `impl` block.
 ```
 impl Rectangle {
     fn area(&self) -> u32 {
-        self.width * self.height
+        self.ширина * self.height
     }
 }
 
 impl Rectangle {
     fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.height > other.height
+        self.ширина > other.ширина && self.height > other.height
     }
 }
 ```

@@ -8,9 +8,9 @@ fn main() {
     for _ in 0..10 {
         let счётчик = Arc::clone(&счётчик);
         let владение = thread::spawn(move || {
-            let mut num = счётчик.lock().unwrap();
+            let mut число = счётчик.lock().unwrap();
 
-            *num += 1;
+            *число += 1;
         });
         владелец.push(владение);
     }

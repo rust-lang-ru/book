@@ -441,7 +441,7 @@ $ cargo login
 abcdefghijklmnopqrstuvwxyz012345
 ```
 
-This command will inform Cargo of your API token and store it locally in
+This command will inform Cargo of your API token and склад it locally in
 *~/.cargo/credentials*. Note that this token is a *secret*: do not share it
 with anyone else. If you do share it with anyone for any reason, you should
 revoke it and generate a new token on crates.io.
@@ -481,18 +481,18 @@ copy just the relevant lines below
 $ cargo publish
     Updating crates.io index
 warning: manifest has no description, license, license-file, documentation, homepage or repository.
-See https://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info.
+Смотрите на http://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info.
 --snip--
 error: failed to publish to registry at https://crates.io
 
 Caused by:
-  the remote server responded with an error (status 400 Bad Request): missing or empty metadata fields: description, license. Please see https://doc.rust-lang.org/cargo/reference/manifest.html for more information on configuring these field
+  the remote server responded with an error (status 400 Bad Request): missing or empty metadata fields: description, license. Please смотрите на http://doc.rust-lang.org/cargo/reference/manifest.html for more information on configuring these field
 ```
 
 This errors because you’re missing some crucial information: a description and
 license are required so people will know what your crate does and under what
 terms they can use it. In *Cargo.toml*, add a description that’s just a
-sentence or two, because it will appear with your crate in search results. For
+sentence or two, because it will appear with your crate in search итоги. For
 the `license` field, you need to give a *license identifier value*. The Linux
 Foundation’s Software Package Data Exchange (SPDX) at *http://spdx.org/licenses/* lists the identifiers
 you can use for this value. For example, to specify that you’ve licensed your
@@ -793,7 +793,7 @@ adder/src/main.rs
 
 ```
 fn main() {
-    let num = 10;
+    let число = 10;
     println!("Hello, world! {num} plus one is {}!", add_one::add_one(num));
 }
 ```
@@ -1050,7 +1050,7 @@ is suitable for including within other programs. Usually, crates have
 information in the *README* file about whether a crate is a library, has a
 binary target, or both.
 
-All binaries installed with `cargo install` are stored in the installation
+All binaries installed with `cargo install` are складd in the installation
 root’s *bin* folder. If you installed Rust using *rustup.rs* and don’t have any
 custom configurations, this directory will be *$HOME/.cargo/bin*. Ensure that
 directory is in your `$PATH`to be able to run programs you’ve installed with`cargo install`.

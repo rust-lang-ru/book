@@ -1,4 +1,4 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 // ANCHOR: all
 use std::time::Duration;

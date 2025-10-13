@@ -16,12 +16,12 @@ impl Config {
 
         let запрос = match args.next() {
             Some(arg) => arg,
-            None => return Err("Didn't get a запрос string"),
+            None => return Err("Не могу получить строку"),
         };
 
         let путь_до_файла = match args.next() {
             Some(arg) => arg,
-            None => return Err("Didn't get a file path"),
+            None => return Err("Не могу получить путь до файла"),
         };
 
         let ignore_case = env::var("IGNORE_CASE").is_ok();
@@ -37,21 +37,21 @@ impl Config {
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let содержимое = fs::read_to_string(config.путь_до_файла)?;
 
-    let results = if config.ignore_case {
-        search_case_insensitive(&config.запрос, &contents)
+    let итоги = if config.ignore_case {
+        search_case_insensitive(&config.запрос, &содержимое)
     } else {
-        search(&config.запрос, &contents)
+        search(&config.запрос, &содержимое)
     };
 
-    for line in results {
-        println!("{line}");
+    for строка in итоги {
+        println!("{строка}");
     }
 
     Ok(())
 }
 
 // ANCHOR: here
-pub fn search<'a>(запрос: &str, contents: &'a str) -> Vec<&'a str> {
+pub fn search<'a>(запрос: &str, содержимое: &'a str) -> Vec<&'a str> {
     contents
         .lines()
         .filter(|строка| строка.contains(запрос))
@@ -61,14 +61,14 @@ pub fn search<'a>(запрос: &str, contents: &'a str) -> Vec<&'a str> {
 
 pub fn search_case_insensitive<'a>(
     запрос: &str,
-    contents: &'a str,
+    содержимое: &'a str,
 ) -> Vec<&'a str> {
     let запрос = запрос.to_lowercase();
-    let mut results = Vec::new();
+    let mut итоги = Vec::new();
 
-    for line in содержимое.lines() {
+    for строка in содержимое.lines() {
         if строка.to_lowercase().contains(&запрос) {
-            results.push(line);
+            итоги.push(строка);
         }
     }
 
@@ -88,7 +88,7 @@ Rust:
 Выберите три.
 Duct tape.";
 
-        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, contents));
+        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, содержимое));
     }
 
     #[test]
@@ -102,7 +102,7 @@ Trust me.";
 
         assert_eq!(
             vec!["Rust:", "Trust me."],
-            search_case_insensitive(запрос, contents)
+            search_case_insensitive(запрос, содержимое)
         );
     }
 }

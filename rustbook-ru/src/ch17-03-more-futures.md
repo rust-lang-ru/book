@@ -45,16 +45,16 @@ copy just the compiler error
   --> src/main.rs:45:37
    |
 10 |         let tx1_fut = async move {
-   |                       ---------- the expected `async` block
+   |                       ---------- ожидался раздел `async`
 ...
 24 |         let rx_fut = async {
-   |                      ----- the найдено `async` block
+   |                      ----- найден(-о) раздел `async`
 ...
 45 |         let futures = vec![tx1_fut, rx_fut, tx_fut];
-   |                                     ^^^^^^ expected `async` block, найдено a different `async` block
+   |                                     ^^^^^^ ожидался раздел `async`, найдено a different раздел `async`
    |
-   = примечание: expected `async` block `{async block@src/main.rs:10:23: 10:33}`
-              найдено `async` block `{async block@src/main.rs:24:22: 24:27}`
+   = примечание: ожидался раздел `async` `{async block@src/main.rs:10:23: 10:33}`
+              найдено раздел `async` `{async block@src/main.rs:24:22: 24:27}`
    = примечание: no two async blocks, even if identical, have the same type
    = помощь: consider pinning your async block and casting it to a trait object
 ```
@@ -131,16 +131,16 @@ cargo build
 49  |         trpl::join_all(futures).await;
     |         -------------- ^^^^^^^ сущность `Unpin` не применим (-а) для `dyn Future<Output = ()>`
     |         |
-    |         required by a bound introduced by this call
+    |         требует ограничения, установленные этим вызовом
     |
     = примечание: consider using the `pin!` macro
             consider using `Box::pin` if you need to access the pinned значение outside of the current scope
-    = примечание: required for `Box<dyn Future<Output = ()>>` to implement `Future`
-примечание: required by a bound in `join_all`
+    = примечание: требуется для `Box<dyn Future<Output = ()>>` to implement `Future`
+примечание: требуется ограничения в `join_all`
    --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:105:14
     |
 102 | pub fn join_all<I>(iter: I) -> JoinAll<I::Item>
-    |        -------- required by a bound in this function
+    |        -------- требуется ограничения в этой функции (способе)
 ...
 105 |     I::Item: Future,
     |              ^^^^^^ required by this bound in `join_all`
@@ -153,12 +153,12 @@ cargo build
    |
    = примечание: consider using the `pin!` macro
            consider using `Box::pin` if you need to access the pinned значение outside of the current scope
-   = примечание: required for `Box<dyn Future<Output = ()>>` to implement `Future`
-примечание: required by a bound in `futures_util::future::join_all::JoinAll`
+   = примечание: требуется для `Box<dyn Future<Output = ()>>` to implement `Future`
+примечание: требуется ограничения в `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
    |
 27 | pub struct JoinAll<F>
-   |            ------- required by a bound in this struct
+   |            ------- требуется ограничения в этой стопке
 28 | where
 29 |     F: Future,
    |        ^^^^^^ required by this bound in `JoinAll`
@@ -171,18 +171,18 @@ cargo build
    |
    = примечание: consider using the `pin!` macro
            consider using `Box::pin` if you need to access the pinned значение outside of the current scope
-   = примечание: required for `Box<dyn Future<Output = ()>>` to implement `Future`
-примечание: required by a bound in `futures_util::future::join_all::JoinAll`
+   = примечание: требуется для `Box<dyn Future<Output = ()>>` to implement `Future`
+примечание: требуется ограничения в `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
    |
 27 | pub struct JoinAll<F>
-   |            ------- required by a bound in this struct
+   |            ------- требуется ограничения в этой стопке
 28 | where
 29 |     F: Future,
    |        ^^^^^^ required by this bound in `JoinAll`
 
 Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0277`.
-ошибка: не могу собрать исходную рукопись в приложение `async_await` (bin "async_await") из-за 3 предыдущая ошибкаs
+ошибка: не могу собрать исходную рукопись в приложение `async_await` (bin "async_await") из-за 3 предыдущих ошибок
 ```
 
 Это _много_ для усвоения, поэтому давайте разберем это. Первая часть сообщения
@@ -209,14 +209,14 @@ the changes are likely to be из-за the threads запщущен differently 
 changes in the compiler -->
 
 ```text
-received 'hi'
-received 'more'
-received 'from'
-received 'messages'
-received 'the'
-received 'for'
-received 'future'
-received 'you'
+получено 'hi'
+получено 'more'
+получено 'from'
+получено 'messages'
+получено 'the'
+получено 'for'
+получено 'future'
+получено 'you'
 ```
 
 Уф!
@@ -354,16 +354,16 @@ copy just the output
 -->
 
 ```text
-'a' started.
-'a' ran for 30ms
-'a' ran for 10ms
-'a' ran for 20ms
-'b' started.
-'b' ran for 75ms
-'b' ran for 10ms
-'b' ran for 15ms
-'b' ran for 350ms
-'a' finished.
+'a' запущено.
+'a' выполнено за 30ms
+'a' выполнено за 10ms
+'a' выполнено за 20ms
+'b' запущено.
+'b' выполнено за 75ms
+'b' выполнено за 10ms
+'b' выполнено за 15ms
+'b' выполнено за 350ms
+'a' окончено.
 ```
 
 Как и в нашем предыдущем примере, `race` все еще завершается, как только `a` завершается.
@@ -396,15 +396,15 @@ copy just the output
 -->
 
 ```text
-'a' started.
-'a' ran for 30ms
-'b' started.
-'b' ran for 75ms
-'a' ran for 10ms
-'b' ran for 10ms
-'a' ran for 20ms
-'b' ran for 15ms
-'a' finished.
+'a' запущено.
+'a' выполнено за 30ms
+'b' запущено.
+'b' выполнено за 75ms
+'a' выполнено за 10ms
+'b' выполнено за 10ms
+'a' выполнено за 20ms
+'b' выполнено за 15ms
+'a' окончено.
 ```
 
 Будущее `a` все еще выполняется некоторое время, прежде чем передать управление `b`, потому что
@@ -534,7 +534,7 @@ futures. Затем мы запускаем 1000 итераций и смотр�
 мы запустим наш код, он выведет режим сбоя после тайм-аута:
 
 ```text
-Failed after 2 seconds
+Завершено с ошибкой после 2 seconds
 ```
 
 Поскольку фьючерсы объединяются с другими фьючерсами, вы можете создавать действительно мощные средства,

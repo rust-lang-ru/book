@@ -17,7 +17,7 @@ $ cargo check
   --> src/lib.rs:72:22
    |
 72 |         Worker { id, thread }
-   |                      ^^^^^^ expected `Option<JoinHandle<()>>`, найдено `JoinHandle<_>`
+   |                      ^^^^^^ ожидалось `Option<JoinHandle<()>>`, найдено `JoinHandle<_>`
    |
    = примечание: expected enum `Option<JoinHandle<()>>`
             найдено struct `JoinHandle<_>`
@@ -27,5 +27,5 @@ $ cargo check
    |                      +++++++++++++      +
 
 Some errors have detailed explanations: E0308, E0599.
-For more information about an error, try `rustc --explain E0308`.
-ошибка: не могу собрать исходную рукопись в приложение `здравствуй` (lib) из-за 2 предыдущая ошибкаs
+Для больших сведениях об ошибке, попробуйте запустить `rustc --explain E0308`.
+ошибка: не могу собрать исходную рукопись в приложение `здравствуй` (lib) из-за 2 предыдущих ошибок

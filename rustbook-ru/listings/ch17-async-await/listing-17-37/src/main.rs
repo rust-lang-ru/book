@@ -1,4 +1,4 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 use std::{pin::pin, time::Duration};
 
@@ -7,9 +7,9 @@ use trpl::{ReceiverStream, Stream, StreamExt};
 fn main() {
     trpl::run(async {
         // ANCHOR: main
-        let messages = get_messages().timeout(Duration::from_millis(200));
+        let сообщения получить_сообщения().timeout(Duration::from_millis(200));
         let intervals = get_intervals();
-        let merged = messages.merge(intervals);
+        let merged = сообщения.merge(intervals);
         // ANCHOR_END: main
 
         while let Some(итог) = merged.next().await {
@@ -21,13 +21,13 @@ fn main() {
     })
 }
 
-fn get_messages() -> impl Stream<Предмет = String> {
+fn получить_сообщения() -> impl Stream<Предмет = String> {
     let (tx, rx) = trpl::channel();
 
     trpl::spawn_task(async move {
-        let messages = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
-        for (index, сообщение) in messages.into_iter().enumerate() {
-            let time_to_sleep = if index % 2 == 0 { 100 } else { 300 };
+        let сообщения ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+        for (указатель, сообщение) in сообщения.into_iter().enumerate() {
+            let time_to_sleep = if указатель % 2 == 0 { 100 } else { 300 };
             trpl::sleep(Duration::from_millis(time_to_sleep)).await;
 
             tx.send(format!("Сообщение: '{сообщение}'")).unwrap();

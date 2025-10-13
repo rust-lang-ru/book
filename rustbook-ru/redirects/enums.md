@@ -2,7 +2,7 @@
 
 <small>There is a new edition of the book and this is an old link.</small>
 
-> Enums allow you to define a type by enumerating its possible values.
+> Enums allow you to define a type by enumerating its possible значения.
 
 ```rust
 enum IpAddrKind {

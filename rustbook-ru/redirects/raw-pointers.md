@@ -5,10 +5,10 @@
 > Raw pointers are allowed to ignore many of the rules that references have to follow.
 
 ```rust
-let mut num = 5;
+let mut число = 5;
 
-let r1 = &num as *const i32;
-let r2 = &mut num as *mut i32;
+let r1 = &число as *const i32;
+let r2 = &mut число as *mut i32;
 ```
 
 ---

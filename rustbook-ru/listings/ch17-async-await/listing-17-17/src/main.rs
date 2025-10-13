@@ -1,4 +1,4 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 use std::time::Duration;
 
@@ -8,35 +8,35 @@ fn main() {
 
         let tx1 = tx.clone();
         let tx1_fut = async move {
-            let vals = vec![
+            let значения = vec![
                 String::from("hi"),
                 String::from("from"),
                 String::from("the"),
                 String::from("future"),
             ];
 
-            for val in vals {
-                tx1.send(val).unwrap();
+            for значение in значения {
+                tx1.send(значение).unwrap();
                 trpl::sleep(Duration::from_secs(1)).await;
             }
         };
 
         let rx_fut = async {
             while let Some(значение) = rx.recv().await {
-                println!("received '{значение}'");
+                println!("получено  '{значение}'");
             }
         };
 
         let tx_fut = async move {
-            let vals = vec![
+            let значения = vec![
                 String::from("more"),
                 String::from("messages"),
                 String::from("for"),
                 String::from("you"),
             ];
 
-            for val in vals {
-                tx.send(val).unwrap();
+            for значение in значения {
+                tx.send(значение).unwrap();
                 trpl::sleep(Duration::from_secs(1)).await;
             }
         };

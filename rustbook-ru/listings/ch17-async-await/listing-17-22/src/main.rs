@@ -1,4 +1,4 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 use std::{thread, time::Duration};
 
@@ -9,8 +9,8 @@ fn main() {
 }
 
 // ANCHOR: slow
-fn slow(имя: &str, ms: u64) {
+fn медленно(имя: &str, ms: u64) {
     thread::sleep(Duration::from_millis(ms));
-    println!("'{имя}' ran for {ms}ms");
+    println!("'{имя}' выполнено за {ms}ms");
 }
 // ANCHOR_END: slow

@@ -3,23 +3,23 @@ $ cargo run
 ошибка[E0308]: не соответствие видов данных
  --> src/main.rs:5:29
   |
-5 |     let n = example_closure(5);
-  |             --------------- ^- помощь: try используйте a conversion method: `.to_string()`
+5 |     let n = пример_замыкания(5);
+  |             --------------- ^- помощь: попробуйте использовать способ преобразования: `.to_string()`
   |             |               |
-  |             |               expected `String`, найдено integer
-  |             arguments to this function are incorrect
+  |             |               ожидалось `String`, найдено integer
+  |             не верные входные значения переменных для данного способа (функции)
   |
 примечание: expected because the closure was earlier called with an argument of type `String`
  --> src/main.rs:4:29
   |
-4 |     let s = example_closure(String::from("здравствуй"));
-  |             --------------- ^^^^^^^^^^^^^^^^^^^^^ expected because this argument is of type `String`
+4 |     let s = пример_замыкания(String::from("здравствуй"));
+  |             --------------- ^^^^^^^^^^^^^^^^^^^^^ ожидался потому что эта переменная вида данных `String`
   |             |
-  |             in this closure call
-примечание: closure parameter defined here
+  |             в этом вызове замыкания
+примечание: вид входных данных для замыкания определён здесь
  --> src/main.rs:2:28
   |
-2 |     let example_closure = |x| x;
+2 |     let пример_замыкания = |x| x;
   |                            ^
 
 Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0308`.

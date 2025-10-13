@@ -8,7 +8,7 @@ $ cargo build
    |
    = примечание: this `Result` may be an `Err` variant, which should be handled
    = примечание: `#[warn(unused_must_use)]` on by default
-помощь: use `let _ = ...` to ignore the resulting значение
+помощь: use `let _ = ...` если не важен итог возвращаемого значения
    |
 10 |     let _ = io::stdin().read_line(&mut догадка);
    |     +++++++

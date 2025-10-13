@@ -3,13 +3,13 @@ mod проверки {
     // ANCHOR: here
     #[test]
     fn iterator_sum() {
-        let v1 = vec![1, 2, 3];
+        let ряд_1 = vec![1, 2, 3];
 
-        let v1_iter = v1.iter();
+        let ряд_1_перебор = ряд_1.iter();
 
-        let total: i32 = v1_iter.sum();
+        let всего: i32 = ряд_1_перебор.sum();
 
-        assert_eq!(total, 6);
+        assert_eq!(всего, 6);
     }
     // ANCHOR_END: here
 }

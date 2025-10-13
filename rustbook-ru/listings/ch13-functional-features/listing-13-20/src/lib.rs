@@ -39,25 +39,25 @@ impl Config {
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let содержимое = fs::read_to_string(config.путь_до_файла)?;
 
-    let results = if config.ignore_case {
-        search_case_insensitive(&config.запрос, &contents)
+    let итоги = if config.ignore_case {
+        search_case_insensitive(&config.запрос, &содержимое)
     } else {
-        search(&config.запрос, &contents)
+        search(&config.запрос, &содержимое)
     };
 
-    for line in results {
-        println!("{line}");
+    for строка in итоги {
+        println!("{строка}");
     }
 
     Ok(())
 }
 
-pub fn search<'a>(запрос: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
+pub fn search<'a>(запрос: &str, содержимое: &'a str) -> Vec<&'a str> {
+    let mut итоги = Vec::new();
 
-    for line in содержимое.lines() {
+    for строка in содержимое.lines() {
         if строка.contains(запрос) {
-            results.push(line);
+            итоги.push(строка);
         }
     }
 
@@ -66,14 +66,14 @@ pub fn search<'a>(запрос: &str, contents: &'a str) -> Vec<&'a str> {
 
 pub fn search_case_insensitive<'a>(
     запрос: &str,
-    contents: &'a str,
+    содержимое: &'a str,
 ) -> Vec<&'a str> {
     let запрос = запрос.to_lowercase();
-    let mut results = Vec::new();
+    let mut итоги = Vec::new();
 
-    for line in содержимое.lines() {
+    for строка in содержимое.lines() {
         if строка.to_lowercase().contains(&запрос) {
-            results.push(line);
+            итоги.push(строка);
         }
     }
 
@@ -93,7 +93,7 @@ Rust:
 Выберите три.
 Duct tape.";
 
-        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, contents));
+        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, содержимое));
     }
 
     #[test]
@@ -107,7 +107,7 @@ Trust me.";
 
         assert_eq!(
             vec!["Rust:", "Trust me."],
-            search_case_insensitive(запрос, contents)
+            search_case_insensitive(запрос, содержимое)
         );
     }
 }

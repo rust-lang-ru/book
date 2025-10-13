@@ -26,7 +26,7 @@ impl AveragedCollection {
     }
 
     fn update_average(&mut self) {
-        let total: i32 = self.список.iter().sum();
+        let всего: i32 = self.список.iter().sum();
         self.average = total as f64 / self.список.len() as f64;
     }
 }

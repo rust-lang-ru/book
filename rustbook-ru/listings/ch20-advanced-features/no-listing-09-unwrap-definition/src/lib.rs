@@ -9,7 +9,7 @@ use crate::Option::*;
 impl<T> Option<T> {
     pub fn unwrap(self) -> T {
         match self {
-            Some(val) => val,
+            Some(значение) => val,
             None => panic!("called `Option::unwrap()` on a `None` значение"),
         }
     }

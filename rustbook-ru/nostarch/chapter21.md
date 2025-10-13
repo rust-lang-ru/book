@@ -301,7 +301,7 @@ information.
 
 The next part of the request line is */*, which indicates the *uniform resource
 identifier* *(URI)* the client is requesting: a URI is almost, but not quite,
-the same as a *uniform resource locator* *(URL)*. The difference between URIs
+the same as a *uniform resource locator* *(ССЫЛКА)*. The difference between URIs
 and URLs isn’t important for our purposes in this chapter, but the HTTP spec
 uses the term URI, so we can just mentally substitute *URL* for *URI* here.
 
@@ -913,7 +913,7 @@ src/lib.rs
 pub struct ThreadPool;
 
 impl ThreadPool {
-    pub fn new(size: usize) -> ThreadPool {
+    pub fn new(размер: usize) -> ThreadPool {
         ThreadPool
     }
 }
@@ -1045,7 +1045,7 @@ impl ThreadPool {
     /// # Panics
     ///
     /// The `new` function will panic if the size is zero.
-    pub fn new(size: usize) -> ThreadPool {
+    pub fn new(размер: usize) -> ThreadPool {
         assert!(size > 0);
 
         ThreadPool
@@ -1071,14 +1071,14 @@ feeling ambitious, try to write a function named `build` with the following
 signature to compare with the `new` function:
 
 ```
-pub fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {
+pub fn build(размер: usize) -> Result<ThreadPool, PoolCreationError> {
 ```
 
-#### Creating Space to Store the Threads
+#### Creating Space to Склад the Threads
 
-Now that we have a way to know we have a valid number of threads to store in
-the pool, we can create those threads and store them in the `ThreadPool` struct
-before returning the struct. But how do we “store” a thread? Let’s take another
+Now that we have a way to know we have a valid number of threads to склад in
+the pool, we can create those threads and склад them in the `ThreadPool` struct
+before returning the struct. But how do we “склад” a thread? Let’s take another
 look at the `thread::spawn` signature:
 
 ```
@@ -1111,13 +1111,13 @@ pub struct ThreadPool {
 
 impl ThreadPool {
     // --snip--
-    pub fn new(size: usize) -> ThreadPool {
+    pub fn new(размер: usize) -> ThreadPool {
         assert!(size > 0);
 
         let mut threads = Vec::with_capacity(size);
 
         for _ in 0..size {
-            // create some threads and store them in the vector
+            // create some threads and склад them in the vector
         }
 
         ThreadPool { threads }
@@ -1135,7 +1135,7 @@ using `thread::JoinHandle` as the type of the items in the vector in
 Once a valid size is received, our `ThreadPool` creates a new vector that can
 hold `size` items. The `with_capacity` function performs the same task as
 `Vec::new` but with an important difference: it pre-allocates space in the
-vector. Because we know we need to store `size` elements in the vector, doing
+vector. Because we know we need to склад `size` elements in the vector, doing
 this allocation up front is slightly more efficient than using `Vec::new`,
 which resizes itself as elements are inserted.
 
@@ -1163,7 +1163,7 @@ orders come in from customers, and then they’re responsible for taking those
 orders and fulfilling them.
 
 Instead of storing a vector of `JoinHandle<()>` instances in the thread pool,
-we’ll store instances of the `Worker` struct. Each `Worker` will store a single
+we’ll склад instances of the `Worker` struct. Each `Worker` will склад a single
 `JoinHandle<()>` instance. Then we’ll implement a method on `Worker` that will
 take a closure of code to run and send it to the already running thread for
 execution. We’ll also give each `Worker` an `id` so we can distinguish between
@@ -1179,7 +1179,7 @@ set up in this way:
    `Worker` instance that holds the `id` and a thread spawned with an empty
    closure.
 1. In `ThreadPool::new`, use the `for` loop counter to generate an `id`, create
-   a new `Worker` with that `id`, and store the worker in the vector.
+   a new `Worker` with that `id`, and склад the worker in the vector.
 
 If you’re up for a challenge, try implementing these changes on your own before
 looking at the code in Listing 21-15.
@@ -1197,7 +1197,7 @@ pub struct ThreadPool {
 
 impl ThreadPool {
     // --snip--
-    pub fn new(size: usize) -> ThreadPool {
+    pub fn new(размер: usize) -> ThreadPool {
         assert!(size > 0);
 
         let mut workers = Vec::with_capacity(size);
@@ -1230,12 +1230,12 @@ Listing 21-15: Modifying `ThreadPool` to hold `Worker` instances instead of hold
 We’ve changed the name of the field on `ThreadPool` from `threads` to `workers`
 because it’s now holding `Worker` instances instead of `JoinHandle<()>`
 instances. We use the counter in the `for` loop as an argument to
-`Worker::new`, and we store each new `Worker` in the vector named `workers`.
+`Worker::new`, and we склад each new `Worker` in the vector named `workers`.
 
 External code (like our server in *src/main.rs*) doesn’t need to know the
 implementation details regarding using a `Worker` struct within `ThreadPool`,
 so we make the `Worker` struct and its `new` function private. The
-`Worker::new` function uses the `id` we give it and stores a `JoinHandle<()>`
+`Worker::new` function uses the `id` we give it and складs a `JoinHandle<()>`
 instance that is created by spawning a new thread using an empty closure.
 
 > Note: If the operating system can’t create a thread because there aren’t
@@ -1246,7 +1246,7 @@ instance that is created by spawning a new thread using an empty closure.
 > `std::thread::Builder` and its
 > `spawn` method that returns `Result` instead.
 
-This code will compile and will store the number of `Worker` instances we
+This code will compile and will склад the number of `Worker` instances we
 specified as an argument to `ThreadPool::new`. But we’re *still* not processing
 the closure that we get in `execute`. Let’s look at how to do that next.
 
@@ -1293,7 +1293,7 @@ struct Job;
 
 impl ThreadPool {
     // --snip--
-    pub fn new(size: usize) -> ThreadPool {
+    pub fn new(размер: usize) -> ThreadPool {
         assert!(size > 0);
 
         let (sender, receiver) = mpsc::channel();
@@ -1310,7 +1310,7 @@ impl ThreadPool {
 }
 ```
 
-Listing 21-16: Modifying `ThreadPool` to store the sender of a channel that transmits `Job` instances
+Listing 21-16: Modifying `ThreadPool` to склад the sender of a channel that transmits `Job` instances
 
 In `ThreadPool::new`, we create our new channel and have the pool hold the
 sender. This will successfully compile.
@@ -1325,7 +1325,7 @@ src/lib.rs
 ```
 impl ThreadPool {
     // --snip--
-    pub fn new(size: usize) -> ThreadPool {
+    pub fn new(размер: usize) -> ThreadPool {
         assert!(size > 0);
 
         let (sender, receiver) = mpsc::channel();
@@ -1364,11 +1364,11 @@ When we try to check this code, we get this error:
 ```
 $ cargo check
     Checking hello v0.1.0 (file:///projects/hello)
-error[E0382]: use of moved value: `receiver`
+error[E0382]: использование право передачи владения value: `receiver`
   --> src/lib.rs:26:42
    |
 21 |         let (sender, receiver) = mpsc::channel();
-   |                      -------- move occurs because `receiver` has type `std::sync::mpsc::Receiver<Job>`, which does not implement the `Copy` trait
+   |                      -------- передача права владения происходит потому что `receiver` имеет вид данных `std::sync::mpsc::Receiver<Job>`, для которого отсутствует сущность `Copy` trait
 ...
 25 |         for id in 0..size {
    |         ----------------- inside of this loop
@@ -1420,7 +1420,7 @@ use std::{
 
 impl ThreadPool {
     // --snip--
-    pub fn new(size: usize) -> ThreadPool {
+    pub fn new(размер: usize) -> ThreadPool {
         assert!(size > 0);
 
         let (sender, receiver) = mpsc::channel();
@@ -1494,7 +1494,7 @@ After creating a new `Job` instance using the closure we get in `execute`, we
 send that job down the sending end of the channel. We’re calling `unwrap` on
 `send` for the case that sending fails. This might happen if, for example, we
 stop all our threads from executing, meaning the receiving end has stopped
-receiving new messages. At the moment, we can’t stop our threads from
+receiving new сообщения. At the moment, we can’t stop our threads from
 executing: our threads continue executing as long as the pool exists. The
 reason we use `unwrap` is that we know the failure case won’t happen, but the
 compiler doesn’t know that.
@@ -1712,7 +1712,7 @@ error[E0507]: cannot move out of `worker.thread` which is behind a mutable refer
 52   |             worker.thread.join().unwrap();
      |             ^^^^^^^^^^^^^ ------ `worker.thread` moved due to this method call
      |             |
-     |             move occurs because `worker.thread` has type `JoinHandle<()>`, which does not implement the `Copy` trait
+     |             передача права владения происходит потому что `worker.thread` имеет вид данных `JoinHandle<()>`, для которого отсутствует сущность `Copy` trait
      |
 note: `JoinHandle::<T>::join` takes ownership of the receiver `self`, which moves `worker.thread`
     --> file:///home/.rustup/toolchains/1.82/lib/rustlib/src/rust/library/std/src/thread/mod.rs:1763:17
@@ -1796,7 +1796,7 @@ pub struct ThreadPool {
 }
 // --snip--
 impl ThreadPool {
-    pub fn new(size: usize) -> ThreadPool {
+    pub fn new(размер: usize) -> ThreadPool {
         // --snip--
 
         ThreadPool {
@@ -2026,7 +2026,7 @@ impl ThreadPool {
     /// # Panics
     ///
     /// The `new` function will panic if the size is zero.
-    pub fn new(size: usize) -> ThreadPool {
+    pub fn new(размер: usize) -> ThreadPool {
         assert!(size > 0);
 
         let (sender, receiver) = mpsc::channel();

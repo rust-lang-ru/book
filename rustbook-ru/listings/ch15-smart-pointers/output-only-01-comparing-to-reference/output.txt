@@ -7,7 +7,7 @@ $ cargo run
   |     ^^^^^^^^^^^^^^^^ no implementation for `{integer} == &{integer}`
   |
   = помощь: сущность `PartialEq<&{integer}>` не применим (-а) для `{integer}`
-  = примечание: this error originates in the macro `assert_eq` (in Nightly builds, запустите с режимом -Z macro-backtrace for more info)
+  = примечание: эта ошибка взникает в макросе `assert_eq` (in Nightly builds, запустите с режимом -Z macro-backtrace for more info)
 
 Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0277`.
 ошибка: не могу собрать исходную рукопись в приложение `deref-example` (bin "deref-example") из-за 1 предыдущей ошибки

@@ -4,26 +4,26 @@ enum ЦветРубашки {
     Синий,
 }
 
-struct Inventory {
+struct Запасы {
     рубашки: Vec<ЦветРубашки>,
 }
 
-impl Inventory {
-    fn giveaway(&self, user_preference: Option<ЦветРубашки>) -> ЦветРубашки {
-        user_preference.unwrap_or_else(|| self.most_stocked())
+impl Запасы {
+    fn выдать(&self, пользвательский_выборerence: Option<ЦветРубашки>) -> ЦветРубашки {
+        пользвательский_выборerence.unwrap_or_else(|| self.most_stocked())
     }
 
     fn most_stocked(&self) -> ЦветРубашки {
-        let mut num_red = 0;
-        let mut num_голубой = 0;
+        let mut число_красных = 0;
+        let mut число_голубых = 0;
 
         for цвет in &self.рубашки {
             match цвет {
-                ЦветРубашки::Красный => num_red += 1,
-                ЦветРубашки::Синий => num_голубой += 1,
+                ЦветРубашки::Красный => число_красных += 1,
+                ЦветРубашки::Синий => число_голубых += 1,
             }
         }
-        if num_red > num_голубой {
+        if число_красных > число_голубых {
             ЦветРубашки::Красный
         } else {
             ЦветРубашки::Синий
@@ -32,21 +32,21 @@ impl Inventory {
 }
 
 fn main() {
-    let store = Inventory {
+    let склад = Запасы {
         рубашки: vec![ЦветРубашки::Синий, ЦветРубашки::Красный, ЦветРубашки::Синий],
     };
 
-    let user_pref1 = Some(ЦветРубашки::Красный);
-    let giveaway1 = store.giveaway(user_pref1);
+    let пользвательский_выбор1 = Some(ЦветРубашки::Красный);
+    let выдать1 = склад.выдать(пользвательский_выбор1);
     println!(
         "Пользователь выбрал {:?} получил {:?}",
-        user_pref1, giveaway1
+        пользвательский_выбор1, выдать1
     );
 
-    let user_pref2 = None;
-    let giveaway2 = store.giveaway(user_pref2);
+    let пользвательский_выбор2 = None;
+    let выдать2 = склад.выдать(пользвательский_выбор2);
     println!(
         "Пользователь выбрал {:?} получил {:?}",
-        user_pref2, giveaway2
+        пользвательский_выбор2, выдать2
     );
 }

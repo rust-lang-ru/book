@@ -1,4 +1,4 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 // ANCHOR: here
 use std::pin::{Pin, pin};
@@ -17,15 +17,15 @@ fn main() {
         let tx1_fut = pin!(async move {
             // --snip--
             // ANCHOR_END: here
-            let vals = vec![
+            let значения = vec![
                 String::from("hi"),
                 String::from("from"),
                 String::from("the"),
                 String::from("future"),
             ];
 
-            for val in vals {
-                tx1.send(val).unwrap();
+            for значение in значения {
+                tx1.send(значение).unwrap();
                 trpl::sleep(Duration::from_secs(1)).await;
             }
             // ANCHOR: here
@@ -37,7 +37,7 @@ fn main() {
             // --snip--
             // ANCHOR_END: here
             while let Some(значение) = rx.recv().await {
-                println!("received '{значение}'");
+                println!("получено  '{значение}'");
             }
             // ANCHOR: here
         });
@@ -45,15 +45,15 @@ fn main() {
         let tx_fut = pin!(async move {
             // --snip--
             // ANCHOR_END: here
-            let vals = vec![
+            let значения = vec![
                 String::from("more"),
                 String::from("messages"),
                 String::from("for"),
                 String::from("you"),
             ];
 
-            for val in vals {
-                tx.send(val).unwrap();
+            for значение in значения {
+                tx.send(значение).unwrap();
                 trpl::sleep(Duration::from_secs(1)).await;
             }
             // ANCHOR: here

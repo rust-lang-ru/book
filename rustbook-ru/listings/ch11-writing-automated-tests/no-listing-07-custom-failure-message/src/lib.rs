@@ -12,7 +12,7 @@ mod проверки {
         let итог = здравствуй("Ольга");
         assert!(
             итог.contains("Ольга"),
-            "Здравствуй did not contain name, значение was `{итог}`"
+            "Здравствуй did not contain name, значение получено `{итог}`"
         );
     }
     // ANCHOR_END: here

@@ -1,6 +1,6 @@
 use add_one;
 
 fn main() {
-    let num = 10;
+    let число = 10;
     println!("Здравствуй мир! {num} plus one is {}!", add_one::add_one(число));
 }

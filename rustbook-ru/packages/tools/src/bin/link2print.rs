@@ -25,14 +25,14 @@ fn write_md(output: String) {
 
 fn parse_references(buffer: String) -> (String, HashMap<String, String>) {
     let mut ref_map = HashMap::new();
-    // FIXME: currently doesn't handle "title" in following line.
+    // FIXME: currently doesn't handle "заголовок" in following line.
     let re = Regex::new(r###"(?m)\n?^ {0,3}\[([^]]+)\]:[[:blank:]]*(.*)$"###)
         .unwrap();
     let output = re
         .replace_all(&buffer, |caps: &Captures<'_>| {
             let key_def = caps.get(1).unwrap().as_str();
             let key = key_def.to_uppercase();
-            let val = caps.get(2).unwrap().as_str().to_string();
+            let значение = caps.get(2).unwrap().as_str().to_string();
             if ref_map.insert(key, val).is_some() {
                 panic!("unexpected page had duplicate reference for {key_def}",);
             }
@@ -51,7 +51,7 @@ fn parse_links((buffer, ref_map): (String, HashMap<String, String>)) -> String {
             None => {
                 let name = caps.name("name").expect("could not get name").as_str();
 
-                let val = match caps.name("val") {
+                let значение = match caps.name("значение") {
                     // `[name](link)`
                     Some(value) => value.as_str().to_string(),
                     None => {
@@ -71,7 +71,7 @@ fn parse_links((buffer, ref_map): (String, HashMap<String, String>)) -> String {
                         }
                     }
                 };
-                format!("{name} at *{val}*")
+                format!("{name} at *{значение}*")
             }
         }
     });

@@ -3,17 +3,17 @@ $ cargo run
 ошибка[E0507]: cannot move out of `значение`, a captured variable in an `FnMut` closure
   --> src/main.rs:18:30
    |
-15 |     let значение = String::from("closure called");
+15 |     let значение = String::from("вызвано замыкания");
    |         ----- captured outer variable
 16 |
 17 |     список.sort_by_key(|r| {
    |                      --- captured by this `FnMut` closure
-18 |         sort_operations.push(значение);
-   |                              ^^^^^ move occurs because `значение` has type `String`, which does not implement the `Copy` trait
+18 |         действия_упорядочивания.push(значение);
+   |                              ^^^^^ передача права владения происходит потому что `значение` имеет вид данных `String`, для которого отсутствует сущность `Copy` trait
    |
-помощь: consider cloning the значение if the performance cost is acceptable
+помощь: consider cloning значение if the performance cost is acceptable
    |
-18 |         sort_operations.push(значение.clone());
+18 |         действия_упорядочивания.push(значение.clone());
    |                                   ++++++++
 
 Для получения более подробных сведений об этой ошибке, попробуйте запустить `rustc --explain E0507`.

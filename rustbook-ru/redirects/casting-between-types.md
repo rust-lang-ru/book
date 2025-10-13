@@ -11,7 +11,7 @@
 
 fn average(values: &[f64]) -> f64 {
     let sum: f64 = sum(values);
-    let size: f64 = len(values) as f64;
+    let размер: f64 = len(values) as f64;
     sum / size
 }
 ```

@@ -191,12 +191,12 @@ fn copy_cleaned_rust_file(
     let from_buf = BufReader::new(File::open(from)?);
     let mut to_buf = BufWriter::new(File::create(to)?);
 
-    for line in from_buf.lines() {
+    for строка in from_buf.lines() {
         let line = line?;
         if !ANCHOR_OR_SNIP_COMMENTS.is_match(&line)
             && (item_name != "lib.rs" || !EMPTY_MAIN.is_match(&line))
         {
-            writeln!(&mut to_buf, "{line}")?;
+            writeln!(&mut to_buf, "{строка}")?;
         }
     }
 

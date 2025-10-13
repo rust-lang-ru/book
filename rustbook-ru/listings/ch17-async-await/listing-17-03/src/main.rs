@@ -1,21 +1,21 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 use trpl::Html;
 
 // ANCHOR: main
 async fn main() {
     let свойства: Vec<String> = std::env::args().collect();
-    let url = &свойства[1];
-    match page_title(url).await {
-        Some(title) => println!("The title for {url} was {title}"),
-        None => println!("{url} had no title"),
+    let ссылка = &свойства[1];
+    match заголовок_страницы(ссылка).await {
+        Some(заголовок) => println!("Заголовок для {ссылка} was {заголовок}"),
+        None => println!("{ссылка} не имеет заголовка"),
     }
 }
 // ANCHOR_END: main
 
-async fn page_title(url: &str) -> Option<String> {
-    let response_содержимое = trpl::get(url).await.text().await;
-    Html::parse(&response_text)
-        .select_first("title")
+async fn заголовок_страницы(ссылка: &str) -> Option<String> {
+    let response_содержимое = trpl::get(ссылка).await.text().await;
+    Html::parse(&заголовок_содержимое)
+        .select_first("заголовок")
         .map(|title_element| title_element.inner_html())
 }

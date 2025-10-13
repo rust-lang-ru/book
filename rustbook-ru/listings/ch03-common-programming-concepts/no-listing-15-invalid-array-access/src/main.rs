@@ -18,5 +18,5 @@ fn main() {
 
     let element = a[указатель];
 
-    println!("The значение of the element at index {указатель} is: {element}");
+    println!("Значение of the element at index {указатель} is: {element}");
 }

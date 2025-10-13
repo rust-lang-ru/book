@@ -25,4 +25,4 @@ $ cargo run
 
 Some errors have detailed explanations: E0106, E0515.
 For more information about an ошибка, try `rustc --explain E0106`.
-ошибка: не могу собрать исходную рукопись в приложение `ownership` (bin "ownership") из-за 2 предыдущая ошибкаs
+ошибка: не могу собрать исходную рукопись в приложение `ownership` (bin "ownership") из-за 2 предыдущих ошибок

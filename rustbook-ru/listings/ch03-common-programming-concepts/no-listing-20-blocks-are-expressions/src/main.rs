@@ -4,5 +4,5 @@ fn main() {
         x + 1
     };
 
-    println!("The значение of y is: {y}");
+    println!("Значение of y is: {y}");
 }

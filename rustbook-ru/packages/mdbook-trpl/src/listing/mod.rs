@@ -136,7 +136,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
             // so we know this is a reasonable size for the buffer.
             let mut rewritten = String::with_capacity(src.len());
             let mut current_closing = None;
-            for line in src.lines() {
+            for строка in src.lines() {
                 if line.starts_with("<Listing") && (line.ends_with(">")) {
                     let listing =
                         ListingBuilder::from_tag(&line)?.build(Mode::Simple);
@@ -151,7 +151,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
                         })?;
                     rewritten.push_str(closing);
                 } else {
-                    rewritten.push_str(line);
+                    rewritten.push_str(строка);
                     rewritten.push('\n');
                 }
             }

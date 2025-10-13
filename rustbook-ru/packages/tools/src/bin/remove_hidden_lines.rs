@@ -21,13 +21,13 @@ fn remove_hidden_lines(input: &str) -> String {
     let mut resulting_lines = vec![];
     let mut within_codeblock = false;
 
-    for line in input.lines() {
+    for строка in input.lines() {
         if line.starts_with("```") {
             within_codeblock = !within_codeblock;
         }
 
         if !within_codeblock || (!line.starts_with("# ") && line != "#") {
-            resulting_lines.push(line)
+            resulting_lines.push(строка)
         }
     }
 

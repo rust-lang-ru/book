@@ -41,7 +41,7 @@ fn no_config() {
                     "language": "en",
                     "multilingual": false,
                     "src": "src",
-                    "title": "TITLE"
+                    "заголовок": "ЗАГОЛОВОК"
                 },
                 "preprocessor": {}
             },
@@ -85,7 +85,7 @@ fn empty_config() {
                     "language": "en",
                     "multilingual": false,
                     "src": "src",
-                    "title": "TITLE"
+                    "заголовок": "ЗАГОЛОВОК"
                 },
                 "preprocessor": {
                     "test-preprocessor": {}
@@ -116,7 +116,7 @@ fn empty_config() {
         mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
     let book = TestPreprocessor.run(&ctx, book).unwrap();
     assert!(book.iter().any(
-        |item| matches!(item, BookItem::PartTitle(title) if title == &format!("{:?}", Mode::Default))
+        |item| matches!(item, BookItem::PartTitle(заголовок) if title == &format!("{:?}", Mode::Default))
     ))
 }
 
@@ -131,7 +131,7 @@ fn specify_default() {
                             "language": "en",
                             "multilingual": false,
                             "src": "src",
-                            "title": "TITLE"
+                            "заголовок": "ЗАГОЛОВОК"
                         },
                         "preprocessor": {
                             "test-preprocessor": {
@@ -164,7 +164,7 @@ fn specify_default() {
         mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
     let book = TestPreprocessor.run(&ctx, book).unwrap();
     assert!(book.iter().any(
-        |item| matches!(item, BookItem::PartTitle(title) if title == &format!("{:?}", Mode::Default))
+        |item| matches!(item, BookItem::PartTitle(заголовок) if title == &format!("{:?}", Mode::Default))
     ));
 }
 
@@ -179,7 +179,7 @@ fn specify_simple() {
                             "language": "en",
                             "multilingual": false,
                             "src": "src",
-                            "title": "TITLE"
+                            "заголовок": "ЗАГОЛОВОК"
                         },
                         "preprocessor": {
                             "test-preprocessor": {
@@ -212,7 +212,7 @@ fn specify_simple() {
         mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
     let book = TestPreprocessor.run(&ctx, book).unwrap();
     assert!(book.iter().any(
-        |item| matches!(item, BookItem::PartTitle(title) if title == &format!("{:?}", Mode::Simple))
+        |item| matches!(item, BookItem::PartTitle(заголовок) if title == &format!("{:?}", Mode::Simple))
     ))
 }
 
@@ -227,7 +227,7 @@ fn specify_invalid() {
                             "language": "en",
                             "multilingual": false,
                             "src": "src",
-                            "title": "TITLE"
+                            "заголовок": "ЗАГОЛОВОК"
                         },
                         "preprocessor": {
                             "test-preprocessor": {

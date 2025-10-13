@@ -117,8 +117,8 @@ where
 
 /// Fetch data from a URL. For more convenient use in _The Rust Programming
 /// Language_, panics instead of returning a [`Result`] if the request fails.
-pub async fn get(url: &str) -> Response {
-    Response(reqwest::get(url).await.unwrap())
+pub async fn get(ссылка: &str) -> Response {
+    Response(reqwest::get(ссылка).await.unwrap())
 }
 
 /// A thin wrapper around [`reqwest::Response`] to make the demos in _The Rust

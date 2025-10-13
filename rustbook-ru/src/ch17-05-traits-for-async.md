@@ -63,10 +63,10 @@ enum Poll<T> {
 заголовок страницы для одного URL после его разрешения, Ржавчина собирает его во что-то вроде (хотя и не совсем) такого:
 
 ```rust,ignore
-match page_title(url).poll() {
-    Ready(page_title) => match page_title {
-        Some(title) => println!("The title for {url} was {title}"),
-        None => println!("{url} had no title"),
+match заголовок_страницы(ссылка).poll() {
+    Ready(заголовок_страницы) => match заголовок_страницы {
+        Some(заголовок) => println!("Заголовок для {ссылка} was {заголовок}"),
+        None => println!("{ссылка} не имеет заголовка"),
     }
     Pending => {
         // But what goes here?
@@ -79,12 +79,12 @@ match page_title(url).poll() {
 нам нужен цикл:
 
 ```rust,ignore
-let mut page_title_fut = page_title(url);
+let mut page_title_fut = заголовок_страницы(ссылка);
 loop {
     match page_title_fut.poll() {
-        Ready(значение) => match page_title {
-            Some(title) => println!("The title for {url} was {title}"),
-            None => println!("{url} had no title"),
+        Ready(значение) => match заголовок_страницы {
+            Some(заголовок) => println!("Заголовок для {ссылка} was {заголовок}"),
+            None => println!("{ссылка} не имеет заголовка"),
         }
         Pending => {
             // continue
@@ -136,12 +136,12 @@ copy *only* the final `error` block from the errors
    |
    = примечание: consider using the `pin!` macro
            consider using `Box::pin` if you need to access the pinned значение outside of the current scope
-   = примечание: required for `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
-примечание: required by a bound in `futures_util::future::join_all::JoinAll`
+   = примечание: требуется для `Box<{async block@src/main.rs:10:23: 10:33}>` to implement `Future`
+примечание: требуется ограничения в `futures_util::future::join_all::JoinAll`
   --> file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
    |
 27 | pub struct JoinAll<F>
-   |            ------- required by a bound in this struct
+   |            ------- требуется ограничения в этой стопке
 28 | where
 29 |     F: Future,
    |        ^^^^^^ required by this bound in `JoinAll`

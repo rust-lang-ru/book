@@ -252,13 +252,13 @@ $ cargo build
   Downloaded rand v0.8.5
   Downloaded libc v0.2.127
   Downloaded getrandom v0.2.7
-  Downloaded cfg-if v1.0.0
+  Downloaded cfg-if ряд_1.0.0
   Downloaded ppv-lite86 v0.2.16
   Downloaded rand_chacha v0.3.1
   Downloaded rand_core v0.6.3
    Сборка libc v0.2.127
    Сборка getrandom v0.2.7
-   Сборка cfg-if v1.0.0
+   Сборка cfg-if ряд_1.0.0
    Сборка ppv-lite86 v0.2.16
    Сборка rand_core v0.6.3
    Сборка rand_chacha v0.3.1

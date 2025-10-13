@@ -1,4 +1,4 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 use std::{thread, time::Duration};
 
@@ -6,22 +6,22 @@ fn main() {
     trpl::run(async {
         // ANCHOR: slow-futures
         let a = async {
-            println!("'a' started.");
-            slow("a", 30);
-            slow("a", 10);
-            slow("a", 20);
+            println!("'a' запущено.");
+            медленно("a", 30);
+            медленно("a", 10);
+            медленно("a", 20);
             trpl::sleep(Duration::from_millis(50)).await;
-            println!("'a' finished.");
+            println!("'a' окончено.");
         };
 
         let b = async {
-            println!("'b' started.");
-            slow("b", 75);
-            slow("b", 10);
-            slow("b", 15);
-            slow("b", 350);
+            println!("'b' запущено.");
+            медленно("b", 75);
+            медленно("b", 10);
+            медленно("b", 15);
+            медленно("b", 350);
             trpl::sleep(Duration::from_millis(50)).await;
-            println!("'b' finished.");
+            println!("'b' окончено.");
         };
 
         trpl::race(a, b).await;
@@ -29,7 +29,7 @@ fn main() {
     });
 }
 
-fn slow(имя: &str, ms: u64) {
+fn медленно(имя: &str, ms: u64) {
     thread::sleep(Duration::from_millis(ms));
-    println!("'{имя}' ran for {ms}ms");
+    println!("'{имя}' выполнено за {ms}ms");
 }

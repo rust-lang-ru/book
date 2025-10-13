@@ -96,11 +96,11 @@ actually needed.
  > running immediately. It’s also different from how many other languages
  > approach async! But it’s important for Rust. We’ll see why that is later.
 
-Once we have `response_text`, we can then parse it into an instance of the
+Once we have `заголовок_содержимое`, we can then parse it into an instance of the
 `Html` type using `Html::parse`. Instead of a raw string, we now have a data
 type we can use to work with the HTML as a richer data structure. In particular,
 we can use the `select_first` method to find the first instance of a given CSS
-selector. By passing the string `"title"`, we’ll get the first `<title>`
+selector. By passing the string `"заголовок"`, we’ll get the first `<title>`
 element in the document, if there is one. Because there may not be any matching
 element, `select_first` returns an `Option<ElementRef>`. Finally, we use the
 `Option::map` method, which lets us work with the item in the `Option` if it’s
@@ -129,11 +129,11 @@ actually needed.
 > running immediately. It’s also different from how many other languages
 > approach async! But it’s important for Rust. We’ll see why that is later.
 
-Once we have `response_text`, we can then parse it into an instance of the
+Once we have `заголовок_содержимое`, we can then parse it into an instance of the
 `Html` type using `Html::parse`. Instead of a raw string, we now have a data
 type we can use to work with the HTML as a richer data structure. In particular,
 we can use the `select_first` method to find the first instance of a given CSS
-selector. By passing the string `"title"`, we’ll get the first `<title>`
+selector. By passing the string `"заголовок"`, we’ll get the first `<title>`
 element in the document, if there is one. Because there may not be any matching
 element, `select_first` returns an `Option<ElementRef>`. Finally, we use the
 `Option::map` method, which lets us work with the item in the `Option` if it’s

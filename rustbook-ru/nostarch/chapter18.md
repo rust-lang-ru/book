@@ -60,7 +60,7 @@ We discussed how to control encapsulation in Chapter 7: we can use the `pub`
 keyword to decide which modules, types, functions, and methods in our code
 should be public, and by default everything else is private. For example, we
 can define a struct `AveragedCollection` that has a field containing a vector
-of `i32` values. The struct can also have a field that contains the average of
+of `i32` значения. The struct can also have a field that contains the average of
 the values in the vector, meaning the average doesn’t have to be computed
 on demand whenever anyone needs it. In other words, `AveragedCollection` will
 cache the calculated average for us. Listing 18-1 has the definition of the
@@ -108,7 +108,7 @@ impl AveragedCollection {
     }
 
     fn update_average(&mut self) {
-        let total: i32 = self.list.iter().sum();
+        let всего: i32 = self.list.iter().sum();
         self.average = total as f64 / self.list.len() as f64;
     }
 }
@@ -201,9 +201,9 @@ Rust.
 ## Using Trait Objects That Allow for Values of Different Types
 
 In Chapter 8, we mentioned that one limitation of vectors is that they can
-store elements of only one type. We created a workaround in Listing 8-9 where
+склад elements of only one type. We created a workaround in Listing 8-9 where
 we defined a `SpreadsheetCell` enum that had variants to hold integers, floats,
-and text. This meant we could store different types of data in each cell and
+and text. This meant we could склад different types of data in each cell and
 still have a vector that represented a row of cells. This is a perfectly good
 solution when our interchangeable items are a fixed set of types that we know
 when our code is compiled.
@@ -223,7 +223,7 @@ We won’t implement a fully fledged GUI library for this example but will show
 how the pieces would fit together. At the time of writing the library, we can’t
 know and define all the types other programmers might want to create. But we do
 know that `gui` needs to keep track of many values of different types, and it
-needs to call a `draw` method on each of these differently typed values. It
+needs to call a `draw` method on each of these differently typed значения. It
 doesn’t need to know exactly what will happen when we call the `draw` method,
 just that the value will have that method available for us to call.
 
@@ -442,7 +442,7 @@ fn main() {
 }
 ```
 
-Listing 18-9: Using trait objects to store values of different types that implement the same trait
+Listing 18-9: Using trait objects to склад values of different types that implement the same trait
 
 When we wrote the library, we didn’t know that someone might add the
 `SelectBox` type, but our `Screen` implementation was able to operate on the
@@ -497,7 +497,7 @@ error[E0277]: the trait bound `String: Draw` is not satisfied
   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Draw` is not implemented for `String`
   |
   = help: the trait `Draw` is implemented for `Button`
-  = note: required for the cast from `Box<String>` to `Box<dyn Draw>`
+  = note: требуется для the cast from `Box<String>` to `Box<dyn Draw>`
 
 For more information about this error, try `rustc --explain E0277`.
 error: could not compile `gui` (bin "gui") due to 1 previous error
@@ -1094,7 +1094,7 @@ impl DraftPost {
 Listing 18-19: A `Post` with a `content` method and `DraftPost` without a `content` method
 
 Both the `Post` and `DraftPost` structs have a private `content` field that
-stores the blog post text. The structs no longer have the `state` field because
+складs the blog post text. The structs no longer have the `state` field because
 we’re moving the encoding of the state to the types of the structs. The `Post`
 struct will represent a published post, and it has a `content` method that
 returns the `content`.

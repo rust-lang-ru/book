@@ -74,7 +74,7 @@ tests to fail lol -->
 >
 > Например, вот другой приём написать тот же ход мыслей, что показан в Приложении 9-5, но с использованием замыканий и способа `unwrap_or_else`:
 >
-> <!-- CAN'T EXTRACT SEE https://github.com/rust-lang/mdBook/issues/1127 -->
+> <!-- CAN'T EXTRACT СМОТРИТЕ на http://github.com/rust-lang/mdBook/issues/1127 -->
 >
 > ```rust,ignore
 > use std::fs::File;

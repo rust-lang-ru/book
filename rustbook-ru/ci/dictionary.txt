@@ -557,7 +557,7 @@ USERPROFILE
 usize
 UsState
 utils
-vals
+значения
 variable's
 variant's
 vers

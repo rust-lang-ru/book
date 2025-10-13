@@ -10,7 +10,7 @@ test tests::this_test_will_pass ... успешно
 successes:
 
 ---- tests::this_test_will_pass stdout ----
-I got the значение 4
+I got значение 4
 
 
 successes:
@@ -19,7 +19,7 @@ successes:
 failures:
 
 ---- tests::this_test_will_fail stdout ----
-I got the значение 8
+I got значение 8
 thread 'tests::this_test_will_fail' завершил работу из-за сбоя src/lib.rs:19:9:
 assertion `left == right` failed
   левое: 5

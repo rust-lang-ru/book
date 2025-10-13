@@ -40,7 +40,7 @@ Rust also brings contemporary developer tools to the systems programming world:
 * The Rustfmt formatting tool ensures a consistent coding style across
   developers.
 * The Rust Language Server powers Integrated Development Environment (IDE)
-  integration for code completion and inline error messages.
+  integration for code completion and inline error сообщения.
 
 By using these and other tools in the Rust ecosystem, developers can be
 productive while writing systems-level code.

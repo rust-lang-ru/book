@@ -1,4 +1,4 @@
-extern crate trpl; // required for mdbook test
+extern crate trpl; // требуется для mdbook test
 
 use std::time::Duration;
 
@@ -13,7 +13,7 @@ fn main() {
         match timeout(slow, Duration::from_millis(10)).await {
             Ok(сообщение) => println!("Succeeded with '{сообщение}'"),
             Err(duration) => {
-                println!("Failed after {} seconds", duration.as_secs())
+                println!("Завершено с ошибкой после {} seconds", duration.as_secs())
             }
         }
         // ANCHOR_END: here

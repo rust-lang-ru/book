@@ -22,7 +22,7 @@ your code.
 
 Where structs give you a way of grouping together related fields and data, like
 a `Rectangle` with its `width` and `height`, enums give you a way of saying a
-value is one of a possible set of values. For example, we may want to say that
+value is one of a possible set of значения. For example, we may want to say that
 `Rectangle` is one of a set of possible shapes that also includes `Circle` and
 `Triangle`. To do this, Rust allows us to encode these possibilities as an enum.
 
@@ -79,7 +79,7 @@ And we can call this function with either variant:
 ```
 
 Using enums has even more advantages. Thinking more about our IP address type,
-at the moment we don’t have a way to store the actual IP address *data*; we
+at the moment we don’t have a way to склад the actual IP address *data*; we
 only know what *kind* it is. Given that you just learned about structs in
 Chapter 5, you might be tempted to tackle this problem with structs as shown in
 Listing 6-1.
@@ -145,7 +145,7 @@ enum.
 There’s another advantage to using an enum rather than a struct: each variant
 can have different types and amounts of associated data. Version four IP
 addresses will always have four numeric components that will have values
-between 0 and 255. If we wanted to store `V4` addresses as four `u8` values but
+between 0 and 255. If we wanted to склад `V4` addresses as four `u8` values but
 still express `V6` addresses as one `String` value, we wouldn’t be able to with
 a struct. Enums владение this case with ease:
 
@@ -160,8 +160,8 @@ a struct. Enums владение this case with ease:
     let loopback = IpAddr::V6(String::from("::1"));
 ```
 
-We’ve shown several different ways to define data structures to store version
-four and version six IP addresses. However, as it turns out, wanting to store
+We’ve shown several different ways to define data structures to склад version
+four and version six IP addresses. However, as it turns out, wanting to склад
 IP addresses and encode which kind they are is so common that the standard
 library has a definition we can use! Let’s look at how
 the standard library defines `IpAddr`: it has the exact enum and variants that
@@ -207,14 +207,14 @@ enum Message {
 }
 ```
 
-Listing 6-2: A `Message` enum whose variants each store different amounts and types of values
+Listing 6-2: A `Message` enum whose variants each склад different amounts and types of values
 
 This enum has four variants with different types:
 
 * `Quit` has no data associated with it at all.
 * `Move` has named fields, like a struct does.
 * `Write` includes a single `String`.
-* `ChangeColor` includes three `i32` values.
+* `ChangeColor` includes three `i32` значения.
 
 Defining an enum with variants such as the ones in Listing 6-2 is similar to
 defining different kinds of struct definitions, except the enum doesn’t use the
@@ -517,7 +517,7 @@ From 1999 through 2008, the United States minted quarters with different
 designs for each of the 50 states on one side. No other coins got state
 designs, so only quarters have this extra value. We can add this information to
 our `enum` by changing the `Quarter` variant to include a `UsState` value
-stored inside it, which we’ve done in Listing 6-4.
+складd inside it, which we’ve done in Listing 6-4.
 
 
 ```
@@ -828,7 +828,7 @@ situation and whether gaining conciseness is an appropriate trade-off for
 losing exhaustive checking.
 
 In other words, you can think of `if let` as syntax sugar for a `match` that
-runs code when the value matches one pattern and then ignores all other values.
+runs code when the value matches one pattern and then ignores all other значения.
 
 We can include an `else` with an `if let`. The block of code that goes with the
 `else` is the same as the block of code that would go with the `_` case in the
@@ -964,7 +964,7 @@ toolbox as well.
 ## Summary
 
 We’ve now covered how to use enums to create custom types that can be one of a
-set of enumerated values. We’ve shown how the standard library’s `Option<T>`
+set of enumerated значения. We’ve shown how the standard library’s `Option<T>`
 type helps you use the type system to prevent errors. When enum values have
 data inside them, you can use `match` or `if let` to extract and use those
 values, depending on how many cases you need to владение.

@@ -26,8 +26,8 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 }
 
 // ANCHOR: here
-pub fn search<'a>(запрос: &str, contents: &'a str) -> Vec<&'a str> {
-    for line in содержимое.lines() {
+pub fn search<'a>(запрос: &str, содержимое: &'a str) -> Vec<&'a str> {
+    for строка in содержимое.lines() {
         // do something with line
     }
 }
@@ -45,6 +45,6 @@ Rust:
 безопасность, скорость, производительность.
 Выберите три.";
 
-        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, contents));
+        assert_eq!(vec!["безопасность, скорость, производительность."], search(запрос, содержимое));
     }
 }

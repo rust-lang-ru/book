@@ -12,7 +12,7 @@
 
 impl Rectangle {
     fn area(&self) -> u32 {
-        self.width * self.height
+        self.ширина * self.height
     }
 }
 ```
