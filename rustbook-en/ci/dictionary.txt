@@ -168,6 +168,7 @@ eprintln
 Erlang
 ErrorKind
 Español
+ETAPS
 eval
 executables
 ExitCode
@@ -624,6 +625,7 @@ wasi
 wasn
 weakt
 WeatherForecast
+webpage
 WebSocket
 whitespace
 wildcard
