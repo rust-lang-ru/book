@@ -1,18 +1,32 @@
 # Язык программирования Rust
 
-*От Стива Клабника и Кэрол Николс, при поддержке других участников сообщества Rust*
+_авторы: Steve Klabnik, Carol Nichols и Chris Krycho при участии
+сообщества Rust_
 
-В этой версии учебника предполагается, что вы используете Rust 1.67.1 (выпущен 09.02.2023) или новее. См. [раздел «Установка» главы 1]<!-- ignore --> для установки или обновления Rust.
+Эта версия текста предполагает, что вы используете Rust 1.90.0 (выпущенный
+18.09.2025) или более позднюю версию с `edition = "2024"` в файле
+*Cargo.toml* всех проектов для настройки их в соответствии с идиомами
+редакции Rust 2024. Инструкции по установке или обновлению Rust см. в разделе
+[«Установка» главы 1][install]<!-- ignore -->, а информацию о редакциях Rust —
+в [Приложении E][appendix-e]<!-- ignore -->.
 
-HTML-версия книги доступна онлайн по адресам [https://doc.rust-lang.org/stable/book/](https://doc.rust-lang.org/stable/book/)<sub>(англ.)</sub> и [https://doc.rust-lang.ru/book](https://doc.rust-lang.ru/book)<sub>(рус.)</sub> и офлайн. При установке Rust с помощью `rustup`: просто запустите `rustup docs --book`, чтобы её открыть.
+HTML-версия доступна онлайн по адресу
 
-Также доступны несколько [переводов] от сообщества.
+[https://doc.rust-lang.org/stable/book/](https://doc.rust-lang.org/stable/book/)
 
-Этот материал доступен в виде [печатной книги в мягкой обложке и в формате электронной книги от No Starch Press] .
+а также офлайн при установке Rust через `rustup`; выполните `rustup doc
+--book`, чтобы открыть книгу.
 
-> **🚨 Предпочитаете более интерактивный процесс обучения? Попробуйте другую версию Rust Book, в которой есть: контрольные вопросы, цветовое выделение, наглядные визуализации и многое другое**: [https://rust-book.cs.brown.edu](https://rust-book.cs.brown.edu)
+Также доступны несколько [переводов](appendix-06-translation.html), подготовленных сообществом.
 
+Этот текст доступен в [печатном формате и формате электронных книг от No
+Starch Press][nsprust].
 
-[раздел «Установка» главы 1]: ch01-01-installation.html
-[печатной книги в мягкой обложке и в формате электронной книги от No Starch Press]: https://nostarch.com/rust-programming-language-2nd-edition
-[переводов]: appendix-06-translation.html
+[install]:    ch01-01-installation.html
+[appendix-e]: appendix-05-editions.html
+[nsprust]:    https://nostarch.com/rust-programming-language-3rd-edition
+
+> **🚨 Хотите получить более интерактивный опыт обучения? Попробуйте другую
+> версию Rust Book, в которой доступны: тесты, подсветка,
+> визуализации и многое другое**:
+> <https://rust-book.cs.brown.edu>
