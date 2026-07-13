@@ -19,7 +19,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-01/src/lib.rs}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-01/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 17-1: структура <code>AveragedCollection</code> содержит список целых чисел и их среднее арифметическое.</span>
@@ -29,7 +29,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-02/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-02/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-2: Реализация публичных методов <code>add</code>,<code>remove</code>, и <code>average</code> для <code>AveragedCollection</code></span>

@@ -11,7 +11,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-27/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-28/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-27: Использование типа <code>fn</code> для получения указателя на функцию в качестве аргумента</span>
@@ -27,21 +27,21 @@
 В качестве примера того, где можно использовать либо замыкание, определяемое непосредственно в месте передачи, либо именованную функцию, рассмотрим использование метода `map`, предоставляемого трейтом `Iterator` в стандартной библиотеке. Чтобы использовать функцию `map` для преобразования вектора чисел в вектор строк, мы можем использовать замыкание, например, так:
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-15-map-closure/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-29/src/main.rs:here}}
 ```
 
 Или мы можем использовать функцию в качестве аргумента `map` вместо замыкания, например, так:
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-16-map-function/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-30/src/main.rs:here}}
 ```
 
-Обратите внимание, что мы должны использовать полный синтаксис, о котором мы говорили ранее в разделе ["Продвинутые трейты"](ch19-03-advanced-traits.html#advanced-traits)<!--  -->, потому что доступно несколько функций с именем `to_string`. Здесь мы используем функцию `to_string` определённую в типаже `ToString`, который реализован в стандартной библиотеке для любого типа реализующего типаж `Display`.
+Обратите внимание, что мы должны использовать полный синтаксис, о котором мы говорили ранее в разделе ["Продвинутые трейты"](ch20-03-advanced-traits.html#advanced-traits)<!--  -->, потому что доступно несколько функций с именем `to_string`. Здесь мы используем функцию `to_string` определённую в типаже `ToString`, который реализован в стандартной библиотеке для любого типа реализующего типаж `Display`.
 
 Вспомните из раздела ["Значения перечислений"] главы 6, что имя каждого определённого нами варианта перечисления также становится функцией-инициализатором. Мы можем использовать эти инициализаторы в качестве указателей на функции, реализующих трейты замыканий, что означает, что мы можем использовать инициализаторы в качестве аргументов для методов, принимающих замыкания, например, так:
 
 ```rust
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-17-map-initializer/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-31/src/main.rs:here}}
 ```
 
 Здесь мы создаём экземпляры `Status::Value`, используя каждое значение `u32` в диапазоне (0..20), с которым вызывается `map` с помощью функции инициализатора `Status::Value`. Некоторые люди предпочитают этот стиль, а некоторые предпочитают использовать замыкания. Оба варианта компилируется в один и тот же код, поэтому используйте любой стиль, который вам понятнее.
@@ -53,19 +53,19 @@
 Следующий код пытается напрямую вернуть замыкание, но он не компилируется:
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-18-returns-closure/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-18-returns-closure/src/lib.rs}}
 ```
 
 Ошибка компилятора выглядит следующим образом:
 
 ```console
-{{#include ../listings/ch19-advanced-features/no-listing-18-returns-closure/output.txt}}
+{{#include ../listings/ch20-advanced-features/no-listing-18-returns-closure/output.txt}}
 ```
 
 Ошибка снова ссылается на типаж `Sized` ! Rust не знает, сколько памяти нужно будет выделить для замыкания. Мы видели решение этой проблемы ранее. Мы можем использовать типаж-объект:
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-19-returns-closure-trait-object/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-20-returns-closure-trait-object/src/lib.rs}}
 ```
 
 Этот код просто отлично компилируется. Для получения дополнительной информации об типаж-объектах обратитесь к разделу ["Использование типаж-объектов которые допускают значения разных типов"](ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types)<!--  --> главы 17.

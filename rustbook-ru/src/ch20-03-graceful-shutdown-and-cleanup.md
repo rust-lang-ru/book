@@ -11,7 +11,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-22/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-22/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-22: Присоединение (Joining) каждого потока, когда пул потоков выходит из области видимости</span>
@@ -21,7 +21,7 @@
 Ошибка получаемая при компиляции этого кода:
 
 ```console
-{{#include ../listings/ch20-web-server/listing-20-22/output.txt}}
+{{#include ../listings/ch21-web-server/listing-21-22/output.txt}}
 ```
 
 Ошибка говорит нам, что мы не можем вызвать `join`, потому что у нас есть только изменяемое заимствование каждого `worker`, а `join` забирает во владение свой аргумент. Чтобы решить эту проблему, нам нужно извлечь поток из экземпляра `Worker`, который владеет `thread`, чтобы `join` мог его использовать. Мы сделали это в листинге 17-15: теперь, когда `Worker` хранит в себе `Option<thread::JoinHandle<()>>`, мы можем воспользоваться методом `take` у `Option`, чтобы извлечь значение из варианта `Some`, тем самым оставляя на его месте `None`. Другими словами, в рабочем состоянии `Worker` будет использовать вариант `Some` содержащий `thread`, а когда мы захотим завершить `Worker`, мы заменим `Some` на `None`, чтобы у `Worker` не было потока для работы.
@@ -30,14 +30,15 @@
 
 <span class="filename">Файл: src/lib.rs</span>
 
-```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-04-update-worker-definition/src/lib.rs:here}}
+
+```rust
+{{#rustdoc_include ../listings/ch21-web-server/no-listing-04-update-drop-definition/src/lib.rs:here}}
 ```
 
 Теперь давайте опираться на компилятор, чтобы найти другие места, которые нужно изменить. Проверяя код, мы получаем две ошибки:
 
 ```console
-{{#include ../listings/ch20-web-server/no-listing-04-update-worker-definition/output.txt}}
+{{#include ../listings/ch21-web-server/listing-21-22/output.txt}}
 ```
 
 Давайте обратимся ко второй ошибке, которая указывает на код в конце `Worker::new`; нам нужно обернуть значение `thread` в вариант `Some` при создании нового `Worker`. Внесите следующие изменения, чтобы исправить эту ошибку:
@@ -45,7 +46,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-05-fix-worker-new/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/no-listing-05-fix-worker-new/src/lib.rs:here}}
 ```
 
 Первая ошибка находится в нашей реализации `Drop`. Ранее мы упоминали, что намеревались вызвать `take` для параметра `Option`, чтобы забрать `thread` из процесса `worker`. Следующие изменения делают это:
@@ -53,7 +54,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,not_desired_behavior
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-06-fix-threadpool-drop/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/no-listing-06-fix-threadpool-drop/src/lib.rs:here}}
 ```
 
 Как уже говорилось в главе 17, метод `take` у типа `Option` забирает значение из варианта `Some` и оставляет вариант `None` в этом месте. Мы используем `if let`, чтобы деструктурировать `Some` и получить поток; затем вызываем `join` у потока. Если поток "работника" уже `None`, мы знаем, что этот "работник" уже очистил свой поток, поэтому в этом случае ничего не происходит.
@@ -69,7 +70,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground,not_desired_behavior
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-23/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-23/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-23. Явное удаление <code>sender</code> перед ожиданием завершения рабочих потоков</span>
@@ -79,7 +80,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-24/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-24/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 20-24: Явный выход из цикла, когда <code>recv</code> возвращает ошибку</span>
@@ -89,7 +90,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-25/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-25/src/main.rs:here}}
 ```
 
 <span class="caption">Код 20-25. Выключение сервера после обслуживания двух запросов с помощью выхода из цикла</span>
@@ -101,7 +102,7 @@
 Запустите сервер с `cargo run` и сделайте три запроса. Третий запрос должен выдать ошибку и в терминале вы должны увидеть вывод, подобный следующему:
 
 <!-- manual-regeneration
-cd listings/ch20-web-server/listing-20-25
+cd listings/ch21-web-server/listing-21-25
 cargo run
 curl http://127.0.0.1:7878
 curl http://127.0.0.1:7878
@@ -140,13 +141,13 @@ Shutting down worker 3
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-07-final-code/src/main.rs}}
+{{#rustdoc_include ../listings/ch21-web-server/no-listing-07-final-code/src/main.rs}}
 ```
 
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-web-server/no-listing-07-final-code/src/lib.rs}}
+{{#rustdoc_include ../listings/ch21-web-server/no-listing-07-final-code/src/lib.rs}}
 ```
 
 Мы могли бы сделать ещё больше! Если вы хотите продолжить совершенствование этого проекта, вот несколько идей:
