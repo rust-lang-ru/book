@@ -37,7 +37,7 @@ let v: Vec<u32> = vec![1, 2, 3];
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-28/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-35/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 19-28: Упрощённая версия определения макроса <code>vec!</code></span>
@@ -103,7 +103,7 @@ pub fn some_name(input: TokenStream) -> TokenStream {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-30/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-37/src/main.rs}}
 ```
 
 <span class="caption">Листинг 19-30: Код, который сможет писать пользователь нашего крейта при использовании нашего процедурного макроса</span>
@@ -119,13 +119,13 @@ $ cargo new hello_macro --lib
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-20-impl-hellomacro-for-pancakes/hello_macro/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-38/hello_macro/src/lib.rs}}
 ```
 
 У нас есть типаж и его функция. На этом этапе пользователь крейта может реализовать типаж для достижения желаемой функциональности, так:
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-20-impl-hellomacro-for-pancakes/pancakes/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-39/pancakes/src/main.rs}}
 ```
 
 Тем не менее, ему придётся написать блок реализации для каждого типа, который он хотел использовать вместе с `hello_macro`; а мы хотим избавить их от необходимости делать эту работу.
@@ -145,7 +145,7 @@ $ cargo new hello_macro_derive --lib
 <span class="filename">Файл: hello_macro_derive/Cargo.toml</span>
 
 ```toml
-{{#include ../listings/ch19-advanced-features/listing-19-31/hello_macro/hello_macro_derive/Cargo.toml:6:12}}
+{{#include ../listings/ch20-advanced-features/listing-20-40/hello_macro/hello_macro_derive/Cargo.toml:6:12}}
 ```
 
 Чтобы начать определение процедурного макроса, поместите код листинга 19-31 в ваш файл *src/lib.rs* крейта `hello_macro_derive`. Обратите внимание, что этот код не скомпилируется пока мы не добавим определение для функции `impl_hello_macro`.
@@ -153,7 +153,7 @@ $ cargo new hello_macro_derive --lib
 <span class="filename">Файл: hello_macro_derive/src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-31/hello_macro/hello_macro_derive/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-40/hello_macro/hello_macro_derive/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 19-31: Код, который потребуется в большинстве процедурных макро крейтов для обработки Rust кода</span>
@@ -201,7 +201,7 @@ DeriveInput {
 <span class="filename">Файл: hello_macro_derive/src/lib.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-33/hello_macro/hello_macro_derive/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-42/hello_macro/hello_macro_derive/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 19-33: Реализация типажа <code>HelloMacro</code> с использованием проанализированного кода Rust.</span>
@@ -219,7 +219,7 @@ DeriveInput {
 На этом этапе команда `cargo build` должна завершиться успешно для обоих `hello_macro` и `hello_macro_derive`. Давайте подключим эти крейты к коду в листинге 19-30, чтобы увидеть процедурный макрос в действии! Создайте новый бинарный проект в каталоге ваших *проектов* с использованием команды `cargo new pancakes`. Нам нужно добавить `hello_macro` и `hello_macro_derive` в качестве зависимостей для крейта `pancakes` в файл *Cargo.toml*. Если вы публикуете свои версии `hello_macro` и `hello_macro_derive` на сайт [crates.io](https://crates.io/), они будут обычными зависимостями; если нет, вы можете указать их как `path` зависимости следующим образом:
 
 ```toml
-{{#include ../listings/ch19-advanced-features/no-listing-21-pancakes/pancakes/Cargo.toml:7:9}}
+{{#include ../listings/ch20-advanced-features/no-listing-21-pancakes/pancakes/Cargo.toml:7:9}}
 ```
 
 Поместите код в листинге 19-30 в *src/main.rs* и выполните `cargo run`: он должен вывести `Hello, Macro! My name is Pancakes!`. Реализация типажа `HelloMacro` из процедурного макроса была включена без необходимости его реализации крейтом `pancakes`; `#[derive(HelloMacro)]` добавил реализацию типажа.

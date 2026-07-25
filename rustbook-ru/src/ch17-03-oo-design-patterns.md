@@ -22,7 +22,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch17-oop/listing-17-11/src/main.rs:all}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-11/src/main.rs:all}}
 ```
 
 <span class="caption">Листинг 17-11: Код, демонстрирующий желаемое поведение, которое мы хотим получить в крейте <code>blog</code></span>
@@ -42,7 +42,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-12/src/lib.rs}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-12/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 17-12. Определение структуры <code>Post</code> и функции <code>new</code>, которая создаёт новый экземпляр <code>Post</code>, типажа <code>State</code> и структуры <code>Draft</code></span>
@@ -58,7 +58,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-13/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-13/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-13. Реализация <code>add_text</code> для добавления текста к <code>content</code> (содержимому записи)</span>
@@ -72,7 +72,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-14/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-14/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-14. Добавление реализации-заглушки для метода <code>content</code> в <code>Post</code>, которая всегда возвращает пустой фрагмент строки.</span>
@@ -86,7 +86,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-15/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-15/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-15. Реализация методов <code>request_review</code> в структуре <code>Post</code> и типаже <code>State</code></span>
@@ -116,7 +116,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-16/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-16/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-16. Реализация метода <code>approve</code> для типа <code>Post</code> и типажа <code>State</code></span>
@@ -130,7 +130,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
-{{#rustdoc_include ../listings/ch17-oop/listing-17-17/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-17/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-17: Обновление метода <code>content</code> в структуре <code>Post</code> для делегирования части функциональности методу <code>content</code> структуры <code>State</code></span>
@@ -146,7 +146,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-18/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-18/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-18. Добавление метода <code>content</code> в трейт <code>State</code></span>
@@ -192,7 +192,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch17-oop/listing-17-11/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-11/src/main.rs:here}}
 ```
 
 Мы по-прежнему поддерживаем создание новых сообщений в состоянии "черновика" с помощью метода `Post::new` и возможность добавлять текст к содержимому публикации. Но вместо метода `content` у чернового сообщения, возвращающего пустую строку, мы сделаем так, что у черновых сообщений вообще не будет метода `content`. Таким образом, если мы попытаемся получить содержимое черновика, мы получим ошибку компилятора, сообщающую, что метод не существует. В результате мы не сможем случайно отобразить черновик содержимого записи в работающей программе, потому что этот код даже не скомпилируется. В листинге 17-19 показано определение структур `Post` и `DraftPost`, а также методов для каждой из них:
@@ -200,7 +200,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-19/src/lib.rs}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-19/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 17-19: Структура <code>Post</code> с методом <code>content</code> и структура <code>DraftPost</code> без метода <code>content</code></span>
@@ -218,7 +218,7 @@
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch17-oop/listing-17-20/src/lib.rs:here}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-20/src/lib.rs:here}}
 ```
 
 <span class="caption">Листинг 17-20: Тип <code>PendingReviewPost</code>, который создаётся путём вызова <code>request_review</code> экземпляра <code>DraftPost</code> и метод <code>approve</code>, который превращает <code>PendingReviewPost</code> в опубликованный <code>Post</code>.</span>
@@ -230,7 +230,7 @@
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,ignore
-{{#rustdoc_include ../listings/ch17-oop/listing-17-21/src/main.rs}}
+{{#rustdoc_include ../listings/ch18-oop/listing-18-21/src/main.rs}}
 ```
 
 <span class="caption">Листинг 17-21: Изменения в <code>main</code>, использующие новую реализацию процесса подготовки записи блога</span>
