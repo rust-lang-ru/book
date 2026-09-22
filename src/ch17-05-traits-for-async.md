@@ -254,7 +254,7 @@ pub trait Future {
 
 `Pin` основывается на этом, чтобы дать нам точную гарантию, которая нам нужна. Когда мы _закрепляем_ значение, оборачивая указатель на это значение в `Pin`, оно больше не может перемещаться. Таким образом,
 если у вас есть `Pin<Box<SomeType>>`, вы в действительности закрепляете значение `SomeType`, _не_
-указатель `Box`. Рисунок 17-6 иллюстрирует этот этап.
+указатель `Box`. Рисунок 17-6 иллюстрирует этот шаг.
 
 <figure>
 
@@ -314,7 +314,7 @@ API, предоставляемые `Pin`, даже несмотря на то, 
 в Ржавчине.
 <figure>
 
-<img alt="Одновременный рабочий этап" src="img/trpl17-08.svg" class="center" />
+<img alt="Одновременный рабочий шаг" src="img/trpl17-08.svg" class="center" />
 
 <figcaption>Рисунок 17-8: Закрепление `Строки`; пунктирная линия указывает, что `Строка` использует сущность `Открепить` и, таким образом, не закреплена.</figcaption>
 
@@ -328,7 +328,7 @@ API, предоставляемые `Pin`, даже несмотря на то, 
 
 <figure>
 
-<img alt="Одновременный рабочий этап" src="img/trpl17-09.svg" class="center" />
+<img alt="Одновременный рабочий шаг" src="img/trpl17-09.svg" class="center" />
 
 <figcaption>Рисунок 17-9: Замена `Строки` на совершенно другую `Строку` в памяти.</figcaption>
 
@@ -442,9 +442,11 @@ in traits, since the lack thereof is the reason they do not yet have this.
 Это все, что мы собираемся рассмотреть для более низкоуровневых деталей этих черт. В заключение давайте рассмотрим, как фьючерсы (включая потоки), задачи и потоки
 сочетаются друг с другом!
 
+[message-passing]: ch17-02-concurrency-with-async.md#sending-data-between-two-tasks-using-message-passing
 [ch-18]: ch18-00-oop.html
 [async-book]: https://rust-lang.github.io/async-book/
 [under-the-hood]: https://rust-lang.github.io/async-book/02_execution/01_chapter.html
 [pinning]: https://rust-lang.github.io/async-book/04_pinning/01_chapter.html
 [first-async]: ch17-01-futures-and-syntax.html#our-first-async-program
 [any-number-futures]: ch17-03-more-futures.html#working-with-any-number-of-futures
+[streams]: ch17-04-streams.html

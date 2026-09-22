@@ -2,15 +2,15 @@ fn main() {
     // ANCHOR: here
     use std::collections::HashMap;
 
-    let содержимое = "здравствуй мир замечательный мир";
+    let text = "hello world wonderful world";
 
-    let mut карта = HashMap::new();
+    let mut map = HashMap::new();
 
-    for слово in содержимое.split_whitespace() {
-        let счётчик = map.entry(слово).or_insert(0);
-        *счётчик += 1;
+    for word in text.split_whitespace() {
+        let count = map.entry(word).or_insert(0);
+        *count += 1;
     }
 
-    println!("{карта:?}");
+    println!("{map:?}");
     // ANCHOR_END: here
 }

@@ -106,11 +106,11 @@ directory, so all fixes need to be made in `/src/`.
     for path in source_paths {
         println!("  {}", path.to_string_lossy());
         let mut source = File::open(path)?;
-        let mut содержимое: Vec<u8> = Vec::new();
-        source.read_to_end(&mut содержимое)?;
+        let mut contents: Vec<u8> = Vec::new();
+        source.read_to_end(&mut contents)?;
 
         target.write_all(b"\n")?;
-        target.write_all(&содержимое)?;
+        target.write_all(&contents)?;
         target.write_all(b"\n")?;
     }
     Ok(())

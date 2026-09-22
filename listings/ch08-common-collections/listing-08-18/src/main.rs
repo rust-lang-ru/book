@@ -1,7 +1,7 @@
 fn main() {
     // ANCHOR: here
-    let s1 = String::from("Здравствуй, ");
-    let s2 = String::from("мир!");
-    let s3 = s1 + &s2; // примечание: строка s1 было передано во владение s3 и более не доступно
-                       // ANCHOR_END: here
+    let s1 = String::from("Hello, ");
+    let s2 = String::from("world!");
+    let s3 = s1 + &s2; // note s1 has been moved here and can no longer be used
+    // ANCHOR_END: here
 }

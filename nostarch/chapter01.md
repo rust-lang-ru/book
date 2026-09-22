@@ -12,7 +12,7 @@ Let’s start your Rust journey! There’s a lot to learn, but every journey sta
 somewhere. In this chapter, we’ll discuss:
 
 * Installing Rust on Linux, macOS, and Windows
-* Writing a program that prints `здравствуй, world!`
+* Writing a program that prints `Hello, world!`
 * Using `cargo`, Rust’s package manager and build system
 
 ## Installation
@@ -74,11 +74,11 @@ the `build-essential` package.
 
 ### Installing rustup on Windows
 
-On Windows, go to https://www.rust-lang.org/tools/install at *https://www.rust-lang.org/tools/install* and follow
-the instructions for installing Rust. At some point in the installation, you’ll
-be prompted to install Visual Studio. This provides a linker and the native
-libraries needed to compile programs. If you need more help with this step, see
-https://rust-lang.github.io/rustup/installation/windows-msvc.html at *https://rust-lang.github.io/rustup/installation/windows-msvc.html*
+On Windows, go to https://www.rust-lang.org/tools/install and follow the instructions for installing Rust. At some point in the
+installation, you’ll be prompted to install Visual Studio. This provides a
+linker and the native libraries needed to compile programs. If you need more
+help with this step, see
+https://rust-lang.github.io/rustup/installation/windows-msvc.html.
 
 The rest of this book uses commands that work in both *cmd.exe* and PowerShell.
 If there are specific differences, we’ll explain which to use.
@@ -141,7 +141,11 @@ shell:
 $ rustup self uninstall
 ```
 
-### Local Documentation
+<!-- Old headings. Do not remove or links may break. -->
+
+<a id="local-documentation"></a>
+
+### Reading the Local Documentation
 
 The installation of Rust also includes a local copy of the documentation so
 that you can read it offline. Run `rustup doc` to open the local documentation
@@ -151,7 +155,11 @@ Any time a type or function is provided by the standard library and you’re not
 sure what it does or how to use it, use the application programming interface
 (API) documentation to find out!
 
-### Text Editors and Integrated Development Environments
+<!-- Old headings. Do not remove or links may break. -->
+
+<a id="text-editors-and-integrated-development-environments"></a>
+
+### Using Text Editors and IDEs
 
 This book makes no assumptions about what tools you use to author Rust code.
 Just about any text editor will get the job done! However, many text editors and
@@ -159,23 +167,47 @@ integrated development environments (IDEs) have built-in support for Rust. You
 can always find a fairly current list of many editors and IDEs on the tools
 page at *https://www.rust-lang.org/tools* on the Rust website.
 
+### Working Offline with This Book
+
+In several examples, we will use Rust packages beyond the standard library. To
+work through those examples, you will either need to have an internet connection
+or to have downloaded those dependencies ahead of time. To download the
+dependencies ahead of time, you can run the following commands. (We’ll explain
+what `cargo` is and what each of these commands does in detail later.)
+
+```
+$ cargo new get-dependencies
+$ cd get-dependencies
+$ cargo add rand@0.8.5 trpl@0.2.0
+```
+
+This will cache the downloads for these packages so you will not need to
+download them later. Once you have run this command, you do not need to keep the
+`get-dependencies` folder. If you have run this command, you can use the
+`--offline` flag with all `cargo` commands in the rest of the book to use these
+cached versions instead of attempting to use the network.
+
 ## Hello, World!
 
 Now that you’ve installed Rust, it’s time to write your first Rust program.
 It’s traditional when learning a new language to write a little program that
-prints the text `здравствуй, world!` to the screen, so we’ll do the same here!
+prints the text `Hello, world!` to the screen, so we’ll do the same here!
 
 > Note: This book assumes basic familiarity with the command line. Rust makes
 > no specific demands about your editing or tooling or where your code lives, so
-> if you prefer to use an integrated development environment (IDE) instead of
-> the command line, feel free to use your favorite IDE. Many IDEs now have some
-> degree of Rust support; check the IDE’s documentation for details. The Rust
-> team has been focusing on enabling great IDE support via `rust-analyzer`. See
-> Appendix D for more details.
+> if you prefer to use an IDE instead of the command line, feel free to use your
+> favorite IDE. Many IDEs now have some degree of Rust support; check the IDE’s
+> documentation for details. The Rust team has been focusing on enabling great
+> IDE support via `rust-analyzer`. See Appendix D
+> for more details.
 
-### Creating a Project Directory
+<!-- Old headings. Do not remove or links may break. -->
 
-You’ll start by making a directory to склад your Rust code. It doesn’t matter
+<a id="creating-a-project-directory"></a>
+
+### Project Directory Setup
+
+You’ll start by making a directory to store your Rust code. It doesn’t matter
 to Rust where your code lives, but for the exercises and projects in this book,
 we suggest making a *projects* directory in your home directory and keeping all
 your projects there.
@@ -201,7 +233,11 @@ For Windows CMD, enter this:
 > cd hello_world
 ```
 
-### Writing and Running a Rust Program
+<!-- Old headings. Do not remove or links may break. -->
+
+<a id="writing-and-running-a-rust-program"></a>
+
+### Rust Program Basics
 
 Next, make a new source file and call it *main.rs*. Rust files always end with
 the *.rs* extension. If you’re using more than one word in your filename, the
@@ -218,7 +254,7 @@ fn main() {
 }
 ```
 
-Listing 1-1: A program that prints `здравствуй, world!`
+Listing 1-1: A program that prints `Hello, world!`
 
 Save the file and go back to your terminal window in the
 *~/projects/hello_world* directory. On Linux or macOS, enter the following
@@ -230,23 +266,27 @@ $ ./main
 Hello, world!
 ```
 
-On Windows, enter the command `.\main.exe` instead of `./main`:
+On Windows, enter the command `.\main` instead of `./main`:
 
 ```
 > rustc main.rs
-> .\main.exe
+> .\main
 Hello, world!
 ```
 
-Regardless of your operating system, the string `здравствуй, world!` should print to
+Regardless of your operating system, the string `Hello, world!` should print to
 the terminal. If you don’t see this output, refer back to the
 “Troubleshooting” part of the Installation
 section for ways to get help.
 
-If `здравствуй, world!` did print, congratulations! You’ve officially written a Rust
+If `Hello, world!` did print, congratulations! You’ve officially written a Rust
 program. That makes you a Rust programmer—welcome!
 
-### Anatomy of a Rust Program
+<!-- Old headings. Do not remove or links may break. -->
+
+<a id="anatomy-of-a-rust-program"></a>
+
+### The Anatomy of a Rust Program
 
 Let’s review this “Hello, world!” program in detail. Here’s the first piece of
 the puzzle:
@@ -257,10 +297,10 @@ fn main() {
 }
 ```
 
-These lines define a function named `main`. The `main` function is special: it
+These lines define a function named `main`. The `main` function is special: It
 is always the first code that runs in every executable Rust program. Here, the
 first line declares a function named `main` that has no parameters and returns
-nothing. If there were parameters, they would go inside the parentheses `()`.
+nothing. If there were parameters, they would go inside the parentheses (`()`).
 
 The function body is wrapped in `{}`. Rust requires curly brackets around all
 function bodies. It’s good style to place the opening curly bracket on the same
@@ -279,23 +319,28 @@ The body of the `main` function holds the following code:
 println!("Hello, world!");
 ```
 
-This line does all the work in this little program: it prints text to the
+This line does all the work in this little program: It prints text to the
 screen. There are three important details to notice here.
 
 First, `println!` calls a Rust macro. If it had called a function instead, it
-would be entered as `println` (without the `!`). We’ll discuss Rust macros in
-more detail in Chapter 20. For now, you just need to know that using a `!`
-means that you’re calling a macro instead of a normal function and that macros
-don’t always follow the same rules as functions.
+would be entered as `println` (without the `!`). Rust macros are a way to write
+code that generates code to extend Rust syntax, and we’ll discuss them in more
+detail in Chapter 20. For now, you just need to
+know that using a `!` means that you’re calling a macro instead of a normal
+function and that macros don’t always follow the same rules as functions.
 
 Second, you see the `"Hello, world!"` string. We pass this string as an argument
 to `println!`, and the string is printed to the screen.
 
 Third, we end the line with a semicolon (`;`), which indicates that this
-expression is over and the next one is ready to begin. Most lines of Rust code
+expression is over, and the next one is ready to begin. Most lines of Rust code
 end with a semicolon.
 
-### Compiling and Running Are Separate Steps
+<!-- Old headings. Do not remove or links may break. -->
+
+<a id="compiling-and-running-are-separate-steps"></a>
+
+### Compilation and Execution
 
 You’ve just run a newly created program, so let’s examine each step in the
 process.
@@ -336,10 +381,10 @@ Windows, a file containing debugging information with the *.pdb* extension.
 From here, you run the *main* or *main.exe* file, like this:
 
 ```
-$ ./main # or .\main.exe on Windows
+$ ./main # or .\main on Windows
 ```
 
-If your *main.rs* is your “Hello, world!” program, this line prints `здравствуй, world!` to your terminal.
+If your *main.rs* is your “Hello, world!” program, this line prints `Hello, world!` to your terminal.
 
 If you’re more familiar with a dynamic language, such as Ruby, Python, or
 JavaScript, you might not be used to compiling and running a program as
@@ -358,14 +403,14 @@ real-world Rust programs.
 ## Hello, Cargo!
 
 Cargo is Rust’s build system and package manager. Most Rustaceans use this tool
-to manage their Rust projects because Cargo владелец a lot of tasks for you,
+to manage their Rust projects because Cargo handles a lot of tasks for you,
 such as building your code, downloading the libraries your code depends on, and
 building those libraries. (We call the libraries that your code needs
 *dependencies*.)
 
 The simplest Rust programs, like the one we’ve written so far, don’t have any
 dependencies. If we had built the “Hello, world!” project with Cargo, it would
-only use the part of Cargo that владелец building your code. As you write more
+only use the part of Cargo that handles building your code. As you write more
 complex Rust programs, you’ll add dependencies, and if you start a project
 using Cargo, adding dependencies will be much easier to do.
 
@@ -387,7 +432,7 @@ determine how to install Cargo separately.
 
 Let’s create a new project using Cargo and look at how it differs from our
 original “Hello, world!” project. Navigate back to your *projects* directory
-(or wherever you decided to склад your code). Then, on any operating system,
+(or wherever you decided to store your code). Then, on any operating system,
 run the following:
 
 ```
@@ -455,7 +500,7 @@ fn main() {
 
 Cargo has generated a “Hello, world!” program for you, just like the one we
 wrote in Listing 1-1! So far, the differences between our project and the
-project Cargo generated are that Cargo placed the code in the *src* directory
+project Cargo generated are that Cargo placed the code in the *src* directory,
 and we have a *Cargo.toml* configuration file in the top directory.
 
 Cargo expects your source files to live inside the *src* directory. The
@@ -492,7 +537,7 @@ $ ./target/debug/hello_cargo # or .\target\debug\hello_cargo.exe on Windows
 Hello, world!
 ```
 
-If all goes well, `здравствуй, world!` should print to the terminal. Running `cargo build` for the first time also causes Cargo to create a new file at the top
+If all goes well, `Hello, world!` should print to the terminal. Running `cargo build` for the first time also causes Cargo to create a new file at the top
 level: *Cargo.lock*. This file keeps track of the exact versions of
 dependencies in your project. This project doesn’t have dependencies, so the
 file is a bit sparse. You won’t ever need to change this file manually; Cargo
@@ -512,7 +557,7 @@ Hello, world!
 Using `cargo run` is more convenient than having to remember to run `cargo build` and then use the whole path to the binary, so most developers use `cargo run`.
 
 Notice that this time we didn’t see output indicating that Cargo was compiling
-`здравствуй_cargo`. Cargo figured out that the files hadn’t changed, so it didn’t
+`hello_cargo`. Cargo figured out that the files hadn’t changed, so it didn’t
 rebuild but just ran the binary. If you had modified your source code, Cargo
 would have rebuilt the project before running it, and you would have seen this
 output:
@@ -539,7 +584,7 @@ Why would you not want an executable? Often, `cargo check` is much faster than
 continually checking your work while writing the code, using `cargo check` will
 speed up the process of letting you know if your project is still compiling! As
 such, many Rustaceans run `cargo check` periodically as they write their
-program to make sure it compiles. Then they run `cargo build` when they’re
+program to make sure it compiles. Then, they run `cargo build` when they’re
 ready to use the executable.
 
 Let’s recap what we’ve learned so far about Cargo:
@@ -550,7 +595,7 @@ Let’s recap what we’ve learned so far about Cargo:
 * We can build a project without producing a binary to check for errors using
   `cargo check`.
 * Instead of saving the result of the build in the same directory as our code,
-  Cargo складs it in the *target/debug* directory.
+  Cargo stores it in the *target/debug* directory.
 
 An additional advantage of using Cargo is that the commands are the same no
 matter which operating system you’re working on. So, at this point, we’ll no
@@ -568,14 +613,18 @@ repeatedly and that will run as fast as possible. If you’re benchmarking your
 code’s running time, be sure to run `cargo build --release` and benchmark with
 the executable in *target/release*.
 
-### Cargo as Convention
+<!-- Old headings. Do not remove or links may break. -->
+
+<a id="cargo-as-convention"></a>
+
+### Leveraging Cargo’s Conventions
 
 With simple projects, Cargo doesn’t provide a lot of value over just using
 `rustc`, but it will prove its worth as your programs become more intricate.
 Once programs grow to multiple files or need a dependency, it’s much easier to
 let Cargo coordinate the build.
 
-Even though the `здравствуй_cargo` project is simple, it now uses much of the real
+Even though the `hello_cargo` project is simple, it now uses much of the real
 tooling you’ll use in the rest of your Rust career. In fact, to work on any
 existing projects, you can use the following commands to check out the code
 using Git, change to that project’s directory, and build:
@@ -590,14 +639,14 @@ For more information about Cargo, check out its documentation at *https://doc.ru
 
 ## Summary
 
-You’re already off to a great start on your Rust journey! In this chapter,
-you’ve learned how to:
+You’re already off to a great start on your Rust journey! In this chapter, you
+learned how to:
 
-* Install the latest stable version of Rust using `rustup`
-* Update to a newer Rust version
-* Open locally installed documentation
-* Write and run a “Hello, world!” program using `rustc` directly
-* Create and run a new project using the conventions of Cargo
+* Install the latest stable version of Rust using `rustup`.
+* Update to a newer Rust version.
+* Open locally installed documentation.
+* Write and run a “Hello, world!” program using `rustc` directly.
+* Create and run a new project using the conventions of Cargo.
 
 This is a great time to build a more substantial program to get used to reading
 and writing Rust code. So, in Chapter 2, we’ll build a guessing game program.

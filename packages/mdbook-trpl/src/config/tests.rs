@@ -6,11 +6,10 @@
 //! more complex in the future, it would be good to revisit and integrate
 //! the same kinds of tests as the unit tests above here.
 
-use mdbook::{
-    book::Book,
+use mdbook_preprocessor::{
+    book::{Book, BookItem},
     errors::Result,
-    preprocess::{Preprocessor, PreprocessorContext},
-    BookItem,
+    Preprocessor, PreprocessorContext,
 };
 
 use crate::config::Mode;
@@ -39,17 +38,16 @@ fn no_config() {
                 "book": {
                     "authors": ["AUTHOR"],
                     "language": "en",
-                    "multilingual": false,
                     "src": "src",
-                    "заголовок": "ЗАГОЛОВОК"
+                    "title": "TITLE"
                 },
                 "preprocessor": {}
             },
             "renderer": "html",
-            "mdbook_version": "0.4.21"
+            "mdbook_version": "0.5.1"
         },
         {
-            "sections": [
+            "items": [
                 {
                     "Chapter": {
                         "name": "Chapter 1",
@@ -66,8 +64,7 @@ fn no_config() {
         }
     ]"##;
     let input_json = input_json.as_bytes();
-    let (ctx, book) =
-        mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
+    let (ctx, book) = mdbook_preprocessor::parse_input(input_json).unwrap();
     let result = TestPreprocessor.run(&ctx, book);
     assert!(result.is_err());
     let err = result.unwrap_err();
@@ -83,19 +80,18 @@ fn empty_config() {
                 "book": {
                     "authors": ["AUTHOR"],
                     "language": "en",
-                    "multilingual": false,
                     "src": "src",
-                    "заголовок": "ЗАГОЛОВОК"
+                    "title": "TITLE"
                 },
                 "preprocessor": {
                     "test-preprocessor": {}
                 }
             },
             "renderer": "html",
-            "mdbook_version": "0.4.21"
+            "mdbook_version": "0.5.0"
         },
         {
-            "sections": [
+            "items": [
                 {
                     "Chapter": {
                         "name": "Chapter 1",
@@ -112,11 +108,10 @@ fn empty_config() {
         }
     ]"##;
     let input_json = input_json.as_bytes();
-    let (ctx, book) =
-        mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
+    let (ctx, book) = mdbook_preprocessor::parse_input(input_json).unwrap();
     let book = TestPreprocessor.run(&ctx, book).unwrap();
     assert!(book.iter().any(
-        |item| matches!(item, BookItem::PartTitle(заголовок) if title == &format!("{:?}", Mode::Default))
+        |item| matches!(item, BookItem::PartTitle(title) if title == &format!("{:?}", Mode::Default))
     ))
 }
 
@@ -129,9 +124,8 @@ fn specify_default() {
                         "book": {
                             "authors": ["AUTHOR"],
                             "language": "en",
-                            "multilingual": false,
                             "src": "src",
-                            "заголовок": "ЗАГОЛОВОК"
+                            "title": "TITLE"
                         },
                         "preprocessor": {
                             "test-preprocessor": {
@@ -140,10 +134,10 @@ fn specify_default() {
                         }
                     },
                     "renderer": "html",
-                    "mdbook_version": "0.4.21"
+                    "mdbook_version": "0.5.1"
                 },
                 {
-                    "sections": [
+                    "items": [
                         {
                             "Chapter": {
                                 "name": "Chapter 1",
@@ -160,11 +154,10 @@ fn specify_default() {
                 }
             ]"##;
     let input_json = input_json.as_bytes();
-    let (ctx, book) =
-        mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
+    let (ctx, book) = mdbook_preprocessor::parse_input(input_json).unwrap();
     let book = TestPreprocessor.run(&ctx, book).unwrap();
     assert!(book.iter().any(
-        |item| matches!(item, BookItem::PartTitle(заголовок) if title == &format!("{:?}", Mode::Default))
+        |item| matches!(item, BookItem::PartTitle(title) if title == &format!("{:?}", Mode::Default))
     ));
 }
 
@@ -177,9 +170,8 @@ fn specify_simple() {
                         "book": {
                             "authors": ["AUTHOR"],
                             "language": "en",
-                            "multilingual": false,
                             "src": "src",
-                            "заголовок": "ЗАГОЛОВОК"
+                            "title": "TITLE"
                         },
                         "preprocessor": {
                             "test-preprocessor": {
@@ -188,10 +180,10 @@ fn specify_simple() {
                         }
                     },
                     "renderer": "html",
-                    "mdbook_version": "0.4.21"
+                    "mdbook_version": "0.5.1"
                 },
                 {
-                    "sections": [
+                    "items": [
                         {
                             "Chapter": {
                                 "name": "Chapter 1",
@@ -208,11 +200,10 @@ fn specify_simple() {
                 }
             ]"##;
     let input_json = input_json.as_bytes();
-    let (ctx, book) =
-        mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
+    let (ctx, book) = mdbook_preprocessor::parse_input(input_json).unwrap();
     let book = TestPreprocessor.run(&ctx, book).unwrap();
     assert!(book.iter().any(
-        |item| matches!(item, BookItem::PartTitle(заголовок) if title == &format!("{:?}", Mode::Simple))
+        |item| matches!(item, BookItem::PartTitle(title) if title == &format!("{:?}", Mode::Simple))
     ))
 }
 
@@ -225,9 +216,8 @@ fn specify_invalid() {
                         "book": {
                             "authors": ["AUTHOR"],
                             "language": "en",
-                            "multilingual": false,
                             "src": "src",
-                            "заголовок": "ЗАГОЛОВОК"
+                            "title": "TITLE"
                         },
                         "preprocessor": {
                             "test-preprocessor": {
@@ -236,10 +226,10 @@ fn specify_invalid() {
                         }
                     },
                     "renderer": "html",
-                    "mdbook_version": "0.4.21"
+                    "mdbook_version": "0.5.1"
                 },
                 {
-                    "sections": [
+                    "items": [
                         {
                             "Chapter": {
                                 "name": "Chapter 1",
@@ -256,11 +246,14 @@ fn specify_invalid() {
                 }
             ]"##;
     let input_json = input_json.as_bytes();
-    let (ctx, book) =
-        mdbook::preprocess::CmdPreprocessor::parse_input(input_json).unwrap();
+    let (ctx, book) = mdbook_preprocessor::parse_input(input_json).unwrap();
     let result = TestPreprocessor.run(&ctx, book).unwrap_err();
     assert_eq!(
-        format!("{result}"),
-        "Bad config value '\"nonsense\"' for key 'output-mode'"
+        format!("{result:?}"),
+        "Failed to deserialize `preprocessor.test-preprocessor`\n\
+        \n\
+        Caused by:\n    \
+            unknown variant `nonsense`, expected `default` or `simple`\n    \
+            in `output-mode`\n    "
     );
 }

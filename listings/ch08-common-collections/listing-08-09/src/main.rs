@@ -8,7 +8,7 @@ fn main() {
 
     let row = vec![
         SpreadsheetCell::Int(3),
-        SpreadsheetCell::Text(String::from("синий")),
+        SpreadsheetCell::Text(String::from("blue")),
         SpreadsheetCell::Float(10.12),
     ];
     // ANCHOR_END: here

@@ -1,10 +1,9 @@
 use anyhow::anyhow;
 use html_parser::Dom;
-use mdbook::{
-    book::Book,
+use mdbook_preprocessor::{
+    book::{Book, BookItem},
     errors::Result,
-    preprocess::{Preprocessor, PreprocessorContext},
-    BookItem,
+    Preprocessor, PreprocessorContext,
 };
 use pulldown_cmark::{html, Event};
 use pulldown_cmark_to_cmark::cmark;
@@ -80,8 +79,8 @@ impl Preprocessor for TrplListing {
         }
     }
 
-    fn supports_renderer(&self, renderer: &str) -> bool {
-        renderer == "html" || renderer == "markdown" || renderer == "test"
+    fn supports_renderer(&self, renderer: &str) -> Result<bool> {
+        Ok(renderer == "html" || renderer == "markdown" || renderer == "test")
     }
 }
 
@@ -136,7 +135,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
             // so we know this is a reasonable size for the buffer.
             let mut rewritten = String::with_capacity(src.len());
             let mut current_closing = None;
-            for строка in src.lines() {
+            for line in src.lines() {
                 if line.starts_with("<Listing") && (line.ends_with(">")) {
                     let listing =
                         ListingBuilder::from_tag(&line)?.build(Mode::Simple);
@@ -151,7 +150,7 @@ fn rewrite_listing(src: &str, mode: Mode) -> Result<String, String> {
                         })?;
                     rewritten.push_str(closing);
                 } else {
-                    rewritten.push_str(строка);
+                    rewritten.push_str(line);
                     rewritten.push('\n');
                 }
             }
@@ -231,7 +230,7 @@ impl Listing {
 
         match self.file_name.as_ref() {
             Some(file_name) => format!(
-                "{figure}<span class=\"file-name\">Filename: {file_name}</span>\n",
+                "{figure}<span class=\"file-name\">Имя файла: {file_name}</span>\n",
             ),
             None => figure,
         }
@@ -245,7 +244,7 @@ impl Listing {
                     .map(|caption| format!(": {}", caption))
                     .unwrap_or_default();
                 let listing_a_tag = format!(
-                    "<a href=\"#listing-{number}\">Listing {number}</a>"
+                    "<a href=\"#listing-{number}\">Приложение {number}</a>"
                 );
                 format!(
                     r#"<figcaption>{listing_a_tag}{caption_text}</figcaption>
@@ -270,10 +269,10 @@ impl Listing {
     fn closing_text(&self, trailing: &str) -> String {
         match (&self.number, &self.caption) {
             (Some(number), Some(caption)) => {
-                format!("Listing {number}: {caption}{trailing}")
+                format!("Приложение {number}: {caption}{trailing}")
             }
             (None, Some(caption)) => format!("{caption}{trailing}"),
-            (Some(number), None) => format!("Listing {number}{trailing}"),
+            (Some(number), None) => format!("Приложение {number}{trailing}"),
             (None, None) => trailing.into(),
         }
     }

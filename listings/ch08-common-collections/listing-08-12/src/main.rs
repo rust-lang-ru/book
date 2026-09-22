@@ -1,10 +1,10 @@
 fn main() {
     // ANCHOR: here
-    let данные = "первоначальное содержание";
+    let data = "initial contents";
 
-    let s = данные.to_string();
+    let s = data.to_string();
 
-    // способ применим также со строкой напрямую
-    let s = "первоначальное содержание".to_string();
+    // The method also works on a literal directly:
+    let s = "initial contents".to_string();
     // ANCHOR_END: here
 }

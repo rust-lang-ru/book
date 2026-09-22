@@ -2,13 +2,13 @@ fn main() {
     // ANCHOR: here
     let v = vec![1, 2, 3, 4, 5];
 
-    let третье: &i32 = &v[2];
-    println!("Третье значение {третье}");
+    let third: &i32 = &v[2];
+    println!("The third element is {third}");
 
-    let третье: Option<&i32> = v.get(2);
-    match третье {
-        Some(третье) => println!("Третье значение {третье}"),
-        None => println!("Это не третье значение."),
+    let third: Option<&i32> = v.get(2);
+    match third {
+        Some(third) => println!("The third element is {third}"),
+        None => println!("There is no third element."),
     }
     // ANCHOR_END: here
 }

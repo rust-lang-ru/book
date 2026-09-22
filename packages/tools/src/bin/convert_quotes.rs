@@ -11,7 +11,7 @@ fn main() {
         panic!("{e}");
     }
 
-    for строка in buffer.lines() {
+    for line in buffer.lines() {
         if line.is_empty() {
             is_in_inline_code = false;
         }
@@ -21,7 +21,7 @@ fn main() {
         if is_in_code_block {
             is_in_inline_code = false;
             is_in_html_tag = false;
-            println!("{строка}");
+            println!("{line}");
         } else {
             let modified_line = &mut String::new();
             let mut previous_char = std::char::REPLACEMENT_CHARACTER;

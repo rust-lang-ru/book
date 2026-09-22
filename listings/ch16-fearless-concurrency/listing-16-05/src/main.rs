@@ -3,9 +3,9 @@ use std::thread;
 fn main() {
     let v = vec![1, 2, 3];
 
-    let владение = thread::spawn(move || {
-        println!("Это вектор: {v:?}");
+    let handle = thread::spawn(move || {
+        println!("Here's a vector: {v:?}");
     });
 
-    владение.join().unwrap();
+    handle.join().unwrap();
 }

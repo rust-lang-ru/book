@@ -1,3 +1,3 @@
 fn main() {
-    panic!("провались и сгори");
+    panic!("crash and burn");
 }

@@ -2,12 +2,12 @@ fn main() {
     // ANCHOR: here
     use std::collections::HashMap;
 
-    let mut очки = HashMap::new();
-    очки.insert(String::from("Синий"), 10);
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Blue"), 10);
 
-    очки.entry(String::from("Жёлтый")).or_insert(50);
-    очки.entry(String::from("Синий")).or_insert(50);
+    scores.entry(String::from("Yellow")).or_insert(50);
+    scores.entry(String::from("Blue")).or_insert(50);
 
-    println!("{очки:?}");
+    println!("{scores:?}");
     // ANCHOR_END: here
 }
