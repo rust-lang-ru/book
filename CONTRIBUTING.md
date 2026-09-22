@@ -1,35 +1,101 @@
-# Участие в переводе
+# Contributing
 
-Все вопросы можно задать в [чате переводов][translations-chat]
+We'd love your help! Thanks for caring about the book.
 
-## Как устроен процесс перевода
+## Where to Edit
 
-Перевод происходит исключительно в системе GitLocalize. Для регистрации в системе нужно авторизоваться через аккаунт на Github. Для каждого перевода создан отдельный дело.
-Список дел можно найти [тут][books-projects].
+All edits should be made in the `src` directory.
 
-Процесс перевода происходит в следующих этапах:
+The `nostarch` directory contains snapshots for sending edits to the publishers
+of the print version. The snapshot files reflect what has been sent or not, so
+they only get updated when edits are sent to No Starch. **Do not submit pull
+requests changing files in the `nostarch` directory, they will be closed.**
 
-1. Перевод файла
-2. После полного перевода файла появляется кнопка "Create Review Request" для отправки на ревью
-3. В течение недели изменитель вычитывает перевод, правит ошибки, приводит книгу к одному стилю
-4. После этого изменитель отправляет Pull Request на Github
-5. Писари перевода исправляют помарки, опечатки и технические ошибки, вызванные багами GitLocalize, и мержат перевод. После этого перевод синхронизируется с GitLocalize и появляется в системе
+We use [`rustfmt`][rustfmt] to apply standard formatting to Rust code in the
+repo and [`dprint`][dprint] to apply standard formatting to the Markdown source
+and the non-Rust code in the project.
 
-## Соглашения о процессе перевода
+[rustfmt]: https://github.com/rust-lang/rustfmt
+[dprint]: https://dprint.dev
 
-- Символ отступа — это пробел.
-- В документации используется буква `Ё`. Обращайте на это, пожалуйста, внимание.
-- Нельзя путать дефис (`-`, код 45 в юникоде) и тире (длинное) (`—`, «em dash», код 8212 в юникоде). Дефис — орфографический знак, используется в словах и словосочетаниях как символ переноса и т.д. Тире — пунктуационный знак, используется в предложениях для заполнения пропусков, соединений и прочего. Для обозначения числовых диапазонов следует использовать короткое (среднее) тире (`–`, «en dash», код 8211 в юникоде) без отбивки пробелами. Вместо знака минус (`−`, код 8722 в юникоде) повсеместно используется дефис.
-- В одном PR'e должен исправляться только один файл перевода.
-- Проверка и исправление орфографии проводится самостоятельно в соответствии с рекомендациями CI.
-- Перевод осуществляется только в системе GitLocalize.
-- Перевод должен быть в единой стилистике, которая поддерживается редактором. В [чате переводов][translations-chat] можно задать вопросы по стилистике и принести предложения по ней.
+You will normally have `rustfmt` installed if you have a Rust toolchain
+installed; if for some reason you do not have a copy of `rustfmt`, you can add
+it by running the following command:
 
-## Ресурсы
-- [Список дел и переводов][books-projects]
-- [Словарь терминов и переводов](https://github.com/rust-lang-ru/dictionary#readme)
-- [Словарь для проверки орфографии](https://github.com/rust-lang-ru/common-configs/blob/master/.yaspellerrc)
-- [Чат переводов][translations-chat]
+```sh
+rustup component add rustfmt
+```
 
-[books-projects]: https://github.com/rust-lang-ru/books#%D0%BF%D0%B5%D1%80%D0%B5%D0%B2%D0%BE%D0%B4%D1%8B-%D0%BA%D0%BD%D0%B8%D0%B3-%D0%B8-%D0%B3%D0%B4%D0%B5-%D0%BE%D0%BD%D0%B8-%D0%BE%D0%B1%D0%B8%D1%82%D0%B0%D1%8E%D1%82
-[translations-chat]: https://t.me/rustlang_ru_translations
+To install `dprint`, you can run the following command:
+
+```sh
+cargo install dprint
+```
+
+Or follow the [instructions][install-dprint] on the `dprint` website.
+
+[install-dprint]: https://dprint.dev/install/
+
+To format Rust code, you can run `rustfmt <path to file>`, and to format other
+files, you can pass `dprint fmt <path to file>`. Many text editors also have native
+support or extensions for both `rustfmt` and `dprint`.
+
+## Checking for Fixes
+
+The book rides the Rust release trains. Therefore, if you see a problem on
+https://doc.rust-lang.org/stable/book, it may already be fixed on the `main`
+branch in this repo, but the fix hasn't gone through nightly -> beta -> stable
+yet. Please check the `main` branch in this repo before reporting an issue.
+
+Looking at the history for a particular file can also give more information on
+how or whether an issue has been fixed or not if you're trying to figure that
+out.
+
+Please also search open and closed issues and open and closed PRs before
+reporting a new issue or opening a new PR.
+
+## Licensing
+
+This repository is under the same license as Rust itself, MIT/Apache2. You
+can find the full text of each license in the `LICENSE-*` files in this
+repository.
+
+## Code of Conduct
+
+The Rust project has [a code of conduct](http://rust-lang.org/policies/code-of-conduct)
+that governs all sub-projects, including this one. Please respect it!
+
+## Expectations
+
+Because the book is [printed][nostarch], and because we want
+to keep the online version of the book close to the print version when
+possible, it may take longer than you're used to for us to address your issue
+or pull request.
+
+[nostarch]: https://nostarch.com/rust-programming-language-2nd-edition
+
+So far, we've been doing a larger revision to coincide with [Rust Editions](https://doc.rust-lang.org/edition-guide/). Between those larger
+revisions, we will only be correcting errors. If your issue or pull request
+isn't strictly fixing an error, it might sit until the next time that we're
+working on a large revision: expect on the order of months or years. Thank you
+for your patience!
+
+## Help wanted
+
+If you're looking for ways to help that don't involve large amounts of
+reading or writing, check out the [open issues with the E-help-wanted
+label][help-wanted]. These might be small fixes to the text, Rust code,
+frontend code, or shell scripts that would help us be more efficient or
+enhance the book in some way!
+
+[help-wanted]: https://github.com/rust-lang/book/issues?q=is%3Aopen+is%3Aissue+label%3AE-help-wanted
+
+## Translations
+
+We'd love help translating the book! See the [Translations] label to join in
+efforts that are currently in progress. Open a new issue to start working on
+a new language! We're waiting on [mdbook support] for multiple languages
+before we merge any in, but feel free to start!
+
+[Translations]: https://github.com/rust-lang/book/issues?q=is%3Aopen+is%3Aissue+label%3ATranslations
+[mdbook support]: https://github.com/rust-lang/mdBook/issues/5
