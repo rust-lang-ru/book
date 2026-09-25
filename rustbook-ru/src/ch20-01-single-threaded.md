@@ -21,7 +21,7 @@ $ cd hello
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-01/src/main.rs}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-01/src/main.rs}}
 ```
 
 <span class="caption">Листинг 20-1: Прослушивание входящих потоков и печать сообщения при получении потока</span>
@@ -58,7 +58,7 @@ $ cd hello
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-02/src/main.rs}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-02/src/main.rs}}
 ```
 
 <span class="caption">Листинг 20-2: Чтение из <code>TcpStream</code> и печать данных</span>
@@ -149,7 +149,7 @@ HTTP/1.1 200 OK\r\n\r\n
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-03/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-03/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-3: Запись крошечного успешного HTTP-ответа в поток</span>
@@ -165,7 +165,7 @@ HTTP/1.1 200 OK\r\n\r\n
 <span class="filename">Файл: hello.html</span>
 
 ```html
-{{#include ../listings/ch20-web-server/listing-20-05/hello.html}}
+{{#include ../listings/ch21-web-server/listing-21-05/hello.html}}
 ```
 
 <span class="caption">Листинг 20-4: Пример HTML-файла для ответа на запрос</span>
@@ -175,7 +175,7 @@ HTTP/1.1 200 OK\r\n\r\n
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-05/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-05/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-5. Отправка содержимого <em>hello.html</em> в качестве тела ответа</span>
@@ -195,7 +195,7 @@ HTTP/1.1 200 OK\r\n\r\n
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-06/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-06/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-6: Обрабатываем запросы для корневого ресурса <em>/</em> не так, как запросы для других ресурсов</span>
@@ -213,7 +213,7 @@ HTTP/1.1 200 OK\r\n\r\n
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-07/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-07/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг  20-7: Отвечаем кодом состояния 404 и страницей ошибки, если было запрошено что-то, отличающееся от ресурса <em>/</em></span>
@@ -223,7 +223,7 @@ HTTP/1.1 200 OK\r\n\r\n
 <span class="filename">Файл: 404.html</span>
 
 ```html
-{{#include ../listings/ch20-web-server/listing-20-07/404.html}}
+{{#include ../listings/ch21-web-server/listing-21-07/404.html}}
 ```
 
 <span class="caption">Листинг 20-8. Пример содержимого страницы для отправки с любым ответом 404</span>
@@ -237,7 +237,7 @@ HTTP/1.1 200 OK\r\n\r\n
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust,no_run
-{{#rustdoc_include ../listings/ch20-web-server/listing-20-09/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch21-web-server/listing-21-09/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-9: Рефакторинг блоков <code>if</code> и <code>else</code>, чтобы они содержали только код, который отличается для каждого из случаев</span>
