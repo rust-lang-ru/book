@@ -1,0 +1,613 @@
+<!DOCTYPE HTML>
+<html lang="ru-RU" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Использование конкурентности с async - Язык программирования Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris-a4fe1a08.css">
+        <link rel="stylesheet" href="theme/2018-edition-ac5bde6f.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-186ebe57.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-7c053197.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Язык программирования Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <!-- Old headings. Do not remove or links may break. -->
+<p><a id="concurrency-with-async"></a></p>
+<h2 id="применение-конкурентности-с-async"><a class="header" href="#применение-конкурентности-с-async">Применение конкурентности с async</a></h2>
+<p>В этом разделе мы применим async к некоторым из тех же задач конкурентного выполнения, которые решали с помощью потоков в главе 16. Поскольку многие ключевые идеи мы уже обсуждали там, здесь сосредоточимся на различиях между потоками и фьючерсами.</p>
+<p>Во многих случаях API для работы с конкурентностью посредством async очень похожи на API для работы с потоками. В других случаях они оказываются совершенно разными. Даже когда API потоков и async <em>выглядят</em> похоже, их поведение часто различается, а характеристики производительности почти всегда отличаются.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="counting"></a></p>
+<h3 id="создание-новой-задачи-с-помощью-spawn_task"><a class="header" href="#создание-новой-задачи-с-помощью-spawn_task">Создание новой задачи с помощью spawn_task</a></h3>
+<p>Первой операцией, которую мы рассмотрели в разделе <a href="ch16-01-threads.html#creating-a-new-thread-with-spawn">«Создание нового потока с помощью <code>spawn</code>»</a><!-- ignore --> главы 16, был подсчёт чисел в двух отдельных потоках. Давайте сделаем то же самое с помощью async. Крейт <code>trpl</code> предоставляет функцию <code>spawn_task</code>, очень похожую на API <code>thread::spawn</code>, и функцию <code>sleep</code> — асинхронную версию API <code>thread::sleep</code>. Используя их вместе, мы можем реализовать пример с подсчётом, как показано в Листинге 17-6.</p>
+<listing number="17-6" caption="Создание новой задачи, которая выводит сообщения параллельно с основной задачей" file-name="src/main.rs">
+<pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span>use std::time::Duration;
+
+fn main() {
+    trpl::block_on(async {
+        trpl::spawn_task(async {
+            for i in 1..10 {
+                println!("hi number {i} from the first task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        });
+
+        for i in 1..5 {
+            println!("hi number {i} from the second task!");
+            trpl::sleep(Duration::from_millis(500)).await;
+        }
+    });
+}</code></pre>
+</listing>
+<p>В качестве отправной точки мы настраиваем функцию <code>main</code> с помощью <code>trpl::block_on</code>, чтобы наша функция верхнего уровня могла быть асинхронной.</p>
+<blockquote>
+<p>Примечание: Начиная с этого места и до конца главы каждый пример будет содержать точно такую же обёртку с <code>trpl::block_on</code> в <code>main</code>. Поэтому мы часто будем опускать её, как и саму <code>main</code>. Не забывайте добавлять её в свой код!</p>
+</blockquote>
+<p>Затем внутри этого блока мы записываем два цикла. Каждый из них содержит вызов <code>trpl::sleep</code>, который ожидает полсекунды (500 миллисекунд) перед отправкой следующего сообщения. Один цикл помещаем в тело <code>trpl::spawn_task</code>, а другой оставляем в цикле <code>for</code> верхнего уровня. После вызовов <code>sleep</code> мы также добавляем <code>await</code>.</p>
+<p>Этот код ведёт себя примерно так же, как реализация на потоках, — в том числе сообщения в вашем терминале при запуске могут появляться в другом порядке:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the second task!
+hi number 1 from the first task!
+hi number 2 from the first task!
+hi number 2 from the second task!
+hi number 3 from the first task!
+hi number 3 from the second task!
+hi number 4 from the first task!
+hi number 4 from the second task!
+hi number 5 from the first task!
+</code></pre>
+<p>Эта версия останавливается сразу после завершения цикла <code>for</code> в теле главного асинхронного блока, поскольку задача, созданная с помощью <code>spawn_task</code>, завершается при окончании функции <code>main</code>. Если вы хотите, чтобы она выполнялась до полного завершения задачи, потребуется использовать дескриптор объединения (join handle), чтобы дождаться окончания первой задачи. Для потоков мы использовали метод <code>join</code>, который «блокировал» выполнение до тех пор, пока поток не завершался. В Листинге 17-7 мы можем сделать то же самое с помощью <code>await</code>, поскольку сам дескриптор задачи является фьючерсом. Его тип <code>Output</code> — <code>Result</code>, поэтому после ожидания мы также распаковываем результат.</p>
+<listing number="17-7" caption="Использование await с дескриптором объединения для выполнения задачи до завершения" file-name="src/main.rs">
+<pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::block_on(async {
+</span>        let handle = trpl::spawn_task(async {
+            for i in 1..10 {
+                println!("hi number {i} from the first task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        });
+
+        for i in 1..5 {
+            println!("hi number {i} from the second task!");
+            trpl::sleep(Duration::from_millis(500)).await;
+        }
+
+        handle.await.unwrap();
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</listing>
+<p>Эта обновлённая версия работает до тех пор, пока не завершатся <em>оба</em> цикла:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the second task!
+hi number 1 from the first task!
+hi number 2 from the first task!
+hi number 2 from the second task!
+hi number 3 from the first task!
+hi number 3 from the second task!
+hi number 4 from the first task!
+hi number 4 from the second task!
+hi number 5 from the first task!
+hi number 6 from the first task!
+hi number 7 from the first task!
+hi number 8 from the first task!
+hi number 9 from the first task!
+</code></pre>
+<p>Пока кажется, что async и потоки дают похожие результаты, отличаясь лишь синтаксисом: вместо вызова <code>join</code> у дескриптора объединения мы используем <code>await</code>, а также ожидаем завершения вызовов <code>sleep</code>.</p>
+<p>Главное отличие состоит в том, что нам не пришлось создавать для этого ещё один поток операционной системы. Более того, нам даже не обязательно создавать отдельную задачу. Поскольку асинхронные блоки компилируются в анонимные фьючерсы, мы можем поместить каждый цикл в асинхронный блок и поручить среде выполнения выполнить оба блока до конца с помощью функции <code>trpl::join</code>.</p>
+<p>В разделе <a href="ch16-01-threads.html#waiting-for-all-threads-to-finish">«Ожидание завершения всех потоков»</a><!-- ignore --> главы 16 мы показали, как использовать метод <code>join</code> типа <code>JoinHandle</code>, возвращаемого при вызове <code>std::thread::spawn</code>. Функция <code>trpl::join</code> похожа на него, но предназначена для фьючерсов. Если передать ей два фьючерса, она создаст один новый фьючерс, результатом которого будет кортеж с результатами каждого из переданных фьючерсов после того, как <em>оба</em> завершатся. Поэтому в Листинге 17-8 мы используем <code>trpl::join</code>, чтобы дождаться завершения <code>fut1</code> и <code>fut2</code>. Мы не ожидаем <code>fut1</code> и <code>fut2</code> по отдельности, а ожидаем новый фьючерс, созданный <code>trpl::join</code>. Результат нам не нужен, поскольку это всего лишь кортеж из двух значений типа unit.</p>
+<listing number="17-8" caption="Использование trpl::join для ожидания двух анонимных фьючерсов" file-name="src/main.rs">
+<pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::block_on(async {
+</span>        let fut1 = async {
+            for i in 1..10 {
+                println!("hi number {i} from the first task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let fut2 = async {
+            for i in 1..5 {
+                println!("hi number {i} from the second task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        trpl::join(fut1, fut2).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</listing>
+<p>При запуске мы увидим, что оба фьючерса выполняются до завершения:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the first task!
+hi number 1 from the second task!
+hi number 2 from the first task!
+hi number 2 from the second task!
+hi number 3 from the first task!
+hi number 3 from the second task!
+hi number 4 from the first task!
+hi number 4 from the second task!
+hi number 5 from the first task!
+hi number 6 from the first task!
+hi number 7 from the first task!
+hi number 8 from the first task!
+hi number 9 from the first task!
+</code></pre>
+<p>Теперь вы будете видеть один и тот же порядок при каждом запуске. Это сильно отличается от того, что мы наблюдали с потоками и <code>trpl::spawn_task</code> в Листинге 17-7. Причина в том, что функция <code>trpl::join</code> является <em>справедливой</em>: она одинаково часто проверяет каждый фьючерс, чередуя их, и не позволяет одному фьючерсу убежать вперёд, если другой готов к выполнению. При работе с потоками операционная система решает, какой поток проверять и как долго позволять ему работать. В асинхронном Rust это решает среда выполнения. (На практике всё несколько сложнее, поскольку асинхронная среда выполнения может использовать потоки операционной системы внутри себя для управления конкурентностью, поэтому обеспечение справедливости может потребовать от неё дополнительных усилий. Но это всё равно возможно!) Среды выполнения не обязаны гарантировать справедливость для каждой операции и часто предлагают разные API, позволяющие выбрать, нужна ли она вам.</p>
+<p>Попробуйте некоторые из следующих вариантов ожидания фьючерсов и посмотрите, что произойдёт:</p>
+<ul>
+<li>Удалите асинхронный блок вокруг одного или обоих циклов.</li>
+<li>Ожидайте каждый асинхронный блок сразу после его определения.</li>
+<li>Оберните в асинхронный блок только первый цикл, а полученный фьючерс ожидайте после тела второго цикла.</li>
+</ul>
+<p>В качестве дополнительного испытания попробуйте определить, каким будет вывод в каждом случае, <em>до</em> запуска программы!</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="message-passing"></a>
+<a id="counting-up-on-two-tasks-using-message-passing"></a></p>
+<h3 id="передача-данных-между-двумя-задачами-с-помощью-обмена-сообщениями"><a class="header" href="#передача-данных-между-двумя-задачами-с-помощью-обмена-сообщениями">Передача данных между двумя задачами с помощью обмена сообщениями</a></h3>
+<p>Совместное использование данных между фьючерсами тоже покажется знакомым: мы снова воспользуемся передачей сообщений, но на этот раз асинхронными версиями типов и функций. Мы пойдём немного другим путём, чем в разделе <a href="ch16-02-message-passing.html">«Передача данных между потоками с помощью обмена сообщениями»</a><!-- ignore --> главы 16, чтобы показать некоторые ключевые различия между конкурентностью на основе потоков и на основе фьючерсов. В Листинге 17-9 мы начнём всего с одного асинхронного блока, <em>не</em> создавая отдельную задачу, как мы ранее создавали отдельный поток.</p>
+<listing number="17-9" caption="Создание асинхронного канала и присваивание его двух половин переменным tx и rx" file-name="src/main.rs">
+<pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::block_on(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+
+        let received = rx.recv().await.unwrap();
+        println!("received '{received}'");
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</listing>
+<p>Здесь мы используем <code>trpl::channel</code> — асинхронную версию API канала с несколькими отправителями и одним получателем, который мы использовали с потоками в главе 16. Асинхронная версия API лишь немного отличается от версии для потоков: она использует изменяемый получатель <code>rx</code> вместо неизменяемого, а её метод <code>recv</code> создаёт фьючерс, которого нам нужно дождаться, вместо того чтобы сразу возвращать значение. Теперь мы можем отправлять сообщения от отправителя получателю. Обратите внимание: нам не нужно создавать отдельный поток или даже задачу — достаточно дождаться вызова <code>rx.recv</code>.</p>
+<p>Синхронный метод <code>Receiver::recv</code> из <code>std::mpsc::channel</code> блокирует выполнение до получения сообщения. Метод <code>trpl::Receiver::recv</code> этого не делает, поскольку он асинхронный. Вместо блокировки он возвращает управление среде выполнения до тех пор, пока не будет получено сообщение или пока отправляющая сторона канала не закроется. Напротив, вызов <code>send</code> мы не ожидаем, поскольку он не блокирует выполнение. В этом нет необходимости, потому что канал, в который мы отправляем сообщения, не имеет ограничения на размер очереди.</p>
+<blockquote>
+<p>Примечание: Поскольку весь этот асинхронный код выполняется внутри асинхронного блока в вызове <code>trpl::block_on</code>, всё внутри него может обходиться без блокировки. Однако код <em>вне</em> этого блока будет заблокирован до возврата функции <code>block_on</code>. В этом и заключается назначение <code>trpl::block_on</code>: она позволяет вам <em>выбрать</em>, где блокировать выполнение при запуске некоторого асинхронного кода, а значит, определить место перехода между синхронным и асинхронным кодом.</p>
+</blockquote>
+<p>В этом примере стоит обратить внимание на две вещи. Во-первых, сообщение поступит немедленно. Во-вторых, хотя здесь мы используем фьючерс, конкурентности пока нет. Всё в листинге происходит последовательно, точно так же, как если бы фьючерсы вообще не использовались.</p>
+<p>Решим первую проблему, отправляя последовательность сообщений и делая паузу между ними, как показано в Листинге 17-10.</p>
+<!-- We cannot test this one because it never stops! -->
+<listing number="17-10" caption="Отправка и получение нескольких сообщений через асинхронный канал с ожиданием между отправками" file-name="src/main.rs">
+<pre><code class="language-rust ignore"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::block_on(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("future"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            trpl::sleep(Duration::from_millis(500)).await;
+        }
+
+        while let Some(value) = rx.recv().await {
+            println!("received '{value}'");
+        }
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</listing>
+<p>Помимо отправки сообщений, нам нужно их получать. В данном случае, поскольку мы знаем, сколько сообщений придёт, мы могли бы сделать это вручную, вызвав <code>rx.recv().await</code> четыре раза. Однако в реальном мире нам обычно приходится ожидать <em>неизвестное</em> количество сообщений, поэтому нужно продолжать ожидание, пока мы не определим, что сообщений больше нет.</p>
+<p>В Листинге 16-10 мы использовали цикл <code>for</code> для обработки всех элементов, полученных из синхронного канала. Однако в Rust пока нет способа использовать цикл <code>for</code> с <em>асинхронно создаваемой</em> последовательностью элементов. Поэтому нам нужно воспользоваться циклом, который мы ещё не рассматривали: условным циклом <code>while let</code>. Это циклический вариант конструкции <code>if let</code>, которую мы изучали в разделе <a href="ch06-03-if-let.html">«Краткое управление потоком с помощью if let и let…else»</a><!-- ignore --> главы 6. Цикл продолжает выполняться, пока заданный шаблон сопоставляется со значением.</p>
+<p>Вызов <code>rx.recv</code> создаёт фьючерс, которого мы ожидаем. Среда выполнения приостановит этот фьючерс, пока он не будет готов. Когда приходит сообщение, фьючерс разрешается в <code>Some(message)</code> — так происходит для каждого полученного сообщения. Когда канал закрывается, независимо от того, <em>пришли ли вообще</em> какие-нибудь сообщения, фьючерс разрешается в <code>None</code>, указывая, что значений больше не будет и, следовательно, опрос нужно прекратить, то есть больше не нужно ожидать его завершения.</p>
+<p>Цикл <code>while let</code> объединяет всё это. Если результат вызова <code>rx.recv().await</code> — <code>Some(message)</code>, мы получаем доступ к сообщению и можем использовать его в теле цикла, как и в случае с <code>if let</code>. Если результат — <code>None</code>, цикл завершается. Каждый раз после завершения тела цикла выполнение снова доходит до точки ожидания, поэтому среда выполнения снова приостанавливает его до поступления следующего сообщения.</p>
+<p>Теперь код успешно отправляет и получает все сообщения. К сожалению, остаётся ещё пара проблем. Во-первых, сообщения приходят не с интервалом в полсекунды. Вместо этого все они поступают одновременно, через 2 секунды (2000 миллисекунд) после запуска программы. Во-вторых, программа никогда не завершается! Вместо этого она бесконечно ждёт новые сообщения. Чтобы остановить её, придётся нажать <kbd>ctrl</kbd>-<kbd>C</kbd>.</p>
+<h4 id="код-внутри-одного-асинхронного-блока-выполняется-последовательно"><a class="header" href="#код-внутри-одного-асинхронного-блока-выполняется-последовательно">Код внутри одного асинхронного блока выполняется последовательно</a></h4>
+<p>Начнём с выяснения, почему все сообщения приходят одновременно после полной задержки, а не с паузами между ними. Внутри заданного асинхронного блока порядок появления ключевых слов <code>await</code> в коде совпадает с порядком их выполнения при запуске программы.</p>
+<p>В Листинге 17-10 есть только один асинхронный блок, поэтому всё внутри него выполняется последовательно. Конкурентности по-прежнему нет. Все вызовы <code>tx.send</code> происходят вперемешку с вызовами <code>trpl::sleep</code> и соответствующими точками ожидания. И только после этого цикл <code>while let</code> доходит до точек ожидания в вызовах <code>recv</code>.</p>
+<p>Чтобы получить желаемое поведение, при котором между отправками сообщений выдерживается пауза, нужно поместить операции <code>tx</code> и <code>rx</code> в собственные асинхронные блоки, как показано в Листинге 17-11. Тогда среда выполнения сможет выполнять их отдельно друг от друга с помощью <code>trpl::join</code>, как в Листинге 17-8. И снова мы ожидаем результат вызова <code>trpl::join</code>, а не отдельные фьючерсы. Если бы мы ожидали отдельные фьючерсы последовательно, то вернулись бы к последовательному выполнению — именно от него мы и пытаемся уйти.</p>
+<!-- We cannot test this one because it never stops! -->
+<listing number="17-11" caption="Разделение send и recv на собственные асинхронные блоки и ожидание созданных ими фьючерсов" file-name="src/main.rs">
+<pre><code class="language-rust ignore"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::block_on(async {
+</span><span class="boring">        let (tx, mut rx) = trpl::channel();
+</span><span class="boring">
+</span>        let tx_fut = async {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("future"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let rx_fut = async {
+            while let Some(value) = rx.recv().await {
+                println!("received '{value}'");
+            }
+        };
+
+        trpl::join(tx_fut, rx_fut).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</listing>
+<p>В обновлённом коде из Листинга 17-11 сообщения выводятся с интервалом в 500 миллисекунд, а не все разом через 2 секунды.</p>
+<h4 id="перемещение-владения-внутрь-асинхронного-блока"><a class="header" href="#перемещение-владения-внутрь-асинхронного-блока">Перемещение владения внутрь асинхронного блока</a></h4>
+<p>Однако программа всё ещё никогда не завершается из-за того, как цикл <code>while let</code> взаимодействует с <code>trpl::join</code>:</p>
+<ul>
+<li>Фьючерс, возвращаемый <code>trpl::join</code>, завершается только после того, как завершатся <em>оба</em> переданных ему фьючерса.</li>
+<li>Фьючерс <code>tx_fut</code> завершается, когда заканчивается ожидание после отправки последнего сообщения из <code>vals</code>.</li>
+<li>Фьючерс <code>rx_fut</code> не завершится, пока не закончится цикл <code>while let</code>.</li>
+<li>Цикл <code>while let</code> не завершится, пока ожидание <code>rx.recv</code> не вернёт <code>None</code>.</li>
+<li>Ожидание <code>rx.recv</code> вернёт <code>None</code> только после закрытия другого конца канала.</li>
+<li>Канал закроется только в том случае, если мы вызовем <code>rx.close</code> или будет удалён отправитель <code>tx</code>.</li>
+<li>Мы нигде не вызываем <code>rx.close</code>, а <code>tx</code> не будет удалён, пока не завершится внешний асинхронный блок, переданный в <code>trpl::block_on</code>.</li>
+<li>Блок не может завершиться, потому что он заблокирован ожиданием завершения <code>trpl::join</code>, что возвращает нас к началу этого списка.</li>
+</ul>
+<p>Сейчас асинхронный блок, в котором мы отправляем сообщения, только <em>заимствует</em> <code>tx</code>, поскольку для отправки сообщения владение не требуется. Но если бы мы могли <em>переместить</em> <code>tx</code> в этот асинхронный блок, то после завершения блока он был бы удалён. В разделе <a href="ch13-01-closures.html#capturing-references-or-moving-ownership">«Захват ссылок или перемещение владения»</a><!-- ignore --> главы 13 вы узнали, как использовать ключевое слово <code>move</code> с замыканиями. А в разделе <a href="ch16-01-threads.html#using-move-closures-with-threads">«Использование замыканий move с потоками»</a><!-- ignore --> главы 16 мы обсуждали, что при работе с потоками часто приходится перемещать данные в замыкания. Та же основная логика применима к асинхронным блокам, поэтому ключевое слово <code>move</code> работает с ними так же, как с замыканиями.</p>
+<p>В Листинге 17-12 мы меняем блок, используемый для отправки сообщений, с <code>async</code> на <code>async move</code>.</p>
+<listing number="17-12" caption="Изменённая версия кода из Листинга 17-11, которая корректно завершает работу после выполнения" file-name="src/main.rs">
+<pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::block_on(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let tx_fut = async move {
+            // --snip--
+<span class="boring">            let vals = vec![
+</span><span class="boring">                String::from("hi"),
+</span><span class="boring">                String::from("from"),
+</span><span class="boring">                String::from("the"),
+</span><span class="boring">                String::from("future"),
+</span><span class="boring">            ];
+</span><span class="boring">
+</span><span class="boring">            for val in vals {
+</span><span class="boring">                tx.send(val).unwrap();
+</span><span class="boring">                trpl::sleep(Duration::from_millis(500)).await;
+</span><span class="boring">            }
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">        let rx_fut = async {
+</span><span class="boring">            while let Some(value) = rx.recv().await {
+</span><span class="boring">                println!("received '{value}'");
+</span><span class="boring">            }
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">        trpl::join(tx_fut, rx_fut).await;
+</span><span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</listing>
+<p>При запуске <em>этой</em> версии программа корректно завершается после отправки и получения последнего сообщения. Теперь посмотрим, что нужно изменить, чтобы отправлять данные более чем из одного фьючерса.</p>
+<h4 id="объединение-нескольких-фьючерсов-с-помощью-макроса-join"><a class="header" href="#объединение-нескольких-фьючерсов-с-помощью-макроса-join">Объединение нескольких фьючерсов с помощью макроса join!</a></h4>
+<p>Этот асинхронный канал также поддерживает несколько отправителей, поэтому мы можем вызвать <code>clone</code> для <code>tx</code>, если хотим отправлять сообщения из нескольких фьючерсов, как показано в Листинге 17-13.</p>
+<listing number="17-13" caption="Использование нескольких отправителей в асинхронных блоках" file-name="src/main.rs">
+<pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::block_on(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let tx1 = tx.clone();
+        let tx1_fut = async move {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("future"),
+            ];
+
+            for val in vals {
+                tx1.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let rx_fut = async {
+            while let Some(value) = rx.recv().await {
+                println!("received '{value}'");
+            }
+        };
+
+        let tx_fut = async move {
+            let vals = vec![
+                String::from("more"),
+                String::from("messages"),
+                String::from("for"),
+                String::from("you"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(1500)).await;
+            }
+        };
+
+        trpl::join!(tx1_fut, tx_fut, rx_fut);
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</listing>
+<p>Сначала мы клонируем <code>tx</code>, создавая <code>tx1</code> вне первого асинхронного блока. Затем перемещаем <code>tx1</code> в этот блок, как ранее поступили с <code>tx</code>. Позже мы перемещаем исходный <code>tx</code> в <em>новый</em> асинхронный блок, где отправляем дополнительные сообщения с немного большей задержкой. Мы расположили этот новый асинхронный блок после блока для получения сообщений, но его можно было бы расположить и перед ним. Главное — порядок, в котором ожидаются фьючерсы, а не порядок их создания.</p>
+<p>Оба асинхронных блока для отправки сообщений должны быть блоками <code>async move</code>, чтобы <code>tx</code> и <code>tx1</code> удалялись после завершения этих блоков. В противном случае мы снова окажемся в бесконечном цикле, с которого начинали.</p>
+<p>Наконец, мы заменяем <code>trpl::join</code> на <code>trpl::join!</code>, чтобы обработать дополнительный фьючерс. Макрос <code>join!</code> ожидает произвольное количество фьючерсов, если их количество известно во время компиляции. Позже в этой главе мы обсудим, как ожидать коллекцию фьючерсов, количество которых заранее неизвестно.</p>
+<p>Теперь мы видим все сообщения от обоих фьючерсов-отправителей. Поскольку после отправки сообщения они используют немного разные задержки, сообщения также принимаются через разные интервалы:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">received 'hi'
+received 'more'
+received 'from'
+received 'the'
+received 'messages'
+received 'future'
+received 'for'
+received 'you'
+</code></pre>
+<p>Мы рассмотрели, как с помощью передачи сообщений отправлять данные между фьючерсами, как последовательно выполняется код внутри асинхронного блока, как перемещать владение внутрь асинхронного блока и как объединять несколько фьючерсов. Далее обсудим, как и зачем сообщать среде выполнения, что она может переключиться на другую задачу.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch17-01-futures-and-syntax.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch17-03-more-futures.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch17-01-futures-and-syntax.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch17-03-more-futures.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris-4d46571e.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
