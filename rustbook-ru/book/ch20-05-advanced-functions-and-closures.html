@@ -37,7 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-186ebe57.js";
+            window.path_to_searchindex_js = "searchindex-af6cc48d.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-7c053197.js"></script>
@@ -182,30 +182,45 @@
 <p>Мы уже обсуждали, как передавать замыкания в функции; но также можно передавать обычные функции в функции! Эта техника полезна, когда вы хотите передать ранее созданную функцию, а не определять новое замыкание. Функции соответствуют типу <code>fn</code> (со строчной буквой f), не путать с трейтом замыкания <code>Fn</code>. Тип <code>fn</code> называется <em>указателем функции</em>. Передача функций с помощью указателей функций позволяет использовать функции в качестве аргументов других функций.</p>
 <p>Для указания того, что параметр является указателем на функцию, используется синтаксис, такой же, как и для замыканий, что демонстрируется в листинге 20-27, где мы определили функцию <code>add_one</code>, которая добавляет единицу к переданному ей параметру. Функция <code>do_twice</code> принимает два параметра: указатель на любую функцию, принимающую параметр <code>i32</code> и возвращающую <code>i32</code>, и число типа <code>i32</code>. Функция <code>do_twice</code> дважды вызывает функцию <code>f</code>, передавая ей значение <code>arg</code>, а затем складывает полученные результаты. Функция <code>main</code> вызывает функцию <code>do_twice</code> с аргументами <code>add_one</code> и <code>5</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-27/src/main.rs}}
-<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust">fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}
+
+fn do_twice(f: fn(i32) -&gt; i32, arg: i32) -&gt; i32 {
+    f(arg) + f(arg)
+}
+
+fn main() {
+    let answer = do_twice(add_one, 5);
+
+    println!("The answer is: {answer}");
+}</code></pre>
 <p><span class="caption">Листинг 20-27: Использование типа <code>fn</code> для получения указателя на функцию в качестве аргумента</span></p>
 <p>Этот код выводит <code>Ответ: 12</code>. Мы указали, что параметр <code>f</code> в <code>do_twice</code> является <code>fn</code>, которая принимает на вход единственный параметр типа <code>i32</code> и возвращает <code>i32</code>. Затем мы можем вызвать <code>f</code> в теле <code>do_twice</code>. В <code>main</code> мы можем передать имя функции <code>add_one</code> в качестве первого аргумента в <code>do_twice</code>.</p>
 <p>В отличие от замыканий, <code>fn</code> является типом, а не трейтом, поэтому мы указываем <code>fn</code> непосредственно в качестве типа параметра, а не объявляем параметр универсального типа с одним из трейтов <code>Fn</code> в качестве связанного.</p>
 <p>Указатели функций реализуют все три трейта замыканий (<code>Fn</code>, <code>FnMut</code> и <code>FnOnce</code>), то есть вы всегда можете передать указатель функции в качестве аргумента функции, которая ожидает замыкание. Лучше всего для описания функции использовать универсальный тип и один из трейтов замыканий, чтобы ваши функции могли принимать как функции, так и замыкания.</p>
 <p>Однако, одним из примеров, когда вы бы хотели принимать только <code>fn</code>, но не замыкания, является взаимодействие с внешним кодом, который не имеет замыканий: функции языка C могут принимать функции в качестве аргументов, однако замыканий в языке C нет.</p>
 <p>В качестве примера того, где можно использовать либо замыкание, определяемое непосредственно в месте передачи, либо именованную функцию, рассмотрим использование метода <code>map</code>, предоставляемого трейтом <code>Iterator</code> в стандартной библиотеке. Чтобы использовать функцию <code>map</code> для преобразования вектора чисел в вектор строк, мы можем использовать замыкание, например, так:</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-15-map-closure/src/main.rs:here}}
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let list_of_numbers = vec![1, 2, 3];
+    let list_of_strings: Vec&lt;String&gt; =
+        list_of_numbers.iter().map(|i| i.to_string()).collect();
 <span class="boring">}</span></code></pre>
 <p>Или мы можем использовать функцию в качестве аргумента <code>map</code> вместо замыкания, например, так:</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-16-map-function/src/main.rs:here}}
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let list_of_numbers = vec![1, 2, 3];
+    let list_of_strings: Vec&lt;String&gt; =
+        list_of_numbers.iter().map(ToString::to_string).collect();
 <span class="boring">}</span></code></pre>
 <p>Обратите внимание, что мы должны использовать полный синтаксис, о котором мы говорили ранее в разделе <a href="ch20-03-advanced-traits.html#advanced-traits">“Продвинутые трейты”</a><!--  -->, потому что доступно несколько функций с именем <code>to_string</code>. Здесь мы используем функцию <code>to_string</code> определённую в типаже <code>ToString</code>, который реализован в стандартной библиотеке для любого типа реализующего типаж <code>Display</code>.</p>
 <p>Вспомните из раздела <a href="ch06-01-defining-an-enum.html#enum-values">“Значения перечислений”</a> главы 6, что имя каждого определённого нами варианта перечисления также становится функцией-инициализатором. Мы можем использовать эти инициализаторы в качестве указателей на функции, реализующих трейты замыканий, что означает, что мы можем использовать инициализаторы в качестве аргументов для методов, принимающих замыкания, например, так:</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-17-map-initializer/src/main.rs:here}}
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum Status {
+        Value(u32),
+        Stop,
+    }
+
+    let list_of_statuses: Vec&lt;Status&gt; = (0u32..20).map(Status::Value).collect();
 <span class="boring">}</span></code></pre>
 <p>Здесь мы создаём экземпляры <code>Status::Value</code>, используя каждое значение <code>u32</code> в диапазоне (0..20), с которым вызывается <code>map</code> с помощью функции инициализатора <code>Status::Value</code>. Некоторые люди предпочитают этот стиль, а некоторые предпочитают использовать замыкания. Оба варианта компилируется в один и тот же код, поэтому используйте любой стиль, который вам понятнее.</p>
 <h3 id="возврат-замыканий"><a class="header" href="#возврат-замыканий">Возврат замыканий</a></h3>
@@ -215,10 +230,45 @@
     move |x| x + init
 }</code></pre>
 <p>Ошибка компилятора выглядит следующим образом:</p>
-<pre><code class="language-console">{{#include ../listings/ch20-advanced-features/no-listing-18-returns-closure/output.txt}}
+<pre><code class="language-console">$ cargo build
+   Compiling functions-example v0.1.0 (file:///projects/functions-example)
+error[E0308]: mismatched types
+  --&gt; src/main.rs:2:44
+   |
+ 2 |     let handlers = vec![returns_closure(), returns_initialized_closure(123)];
+   |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected opaque type, found a different opaque type
+...
+ 9 | fn returns_closure() -&gt; impl Fn(i32) -&gt; i32 {
+   |                         ------------------- the expected opaque type
+...
+13 | fn returns_initialized_closure(init: i32) -&gt; impl Fn(i32) -&gt; i32 {
+   |                                              ------------------- the found opaque type
+   |
+   = note: expected opaque type `impl Fn(i32) -&gt; i32`
+              found opaque type `impl Fn(i32) -&gt; i32`
+   = note: distinct uses of `impl Trait` result in different opaque types
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `functions-example` (bin "functions-example") due to 1 previous error
 </code></pre>
 <p>Ошибка снова ссылается на типаж <code>Sized</code> ! Rust не знает, сколько памяти нужно будет выделить для замыкания. Мы видели решение этой проблемы ранее. Мы можем использовать типаж-объект:</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-20-returns-closure-trait-object/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">fn main() {
+    let handlers = vec![returns_closure(), returns_initialized_closure(123)];
+    for handler in handlers {
+        let output = handler(5);
+        println!("{output}");
+    }
+}
+
+// ANCHOR: here
+fn returns_closure() -&gt; Box&lt;dyn Fn(i32) -&gt; i32&gt; {
+    Box::new(|x| x + 1)
+}
+
+fn returns_initialized_closure(init: i32) -&gt; Box&lt;dyn Fn(i32) -&gt; i32&gt; {
+    Box::new(move |x| x + init)
+}
+// ANCHOR_END: here</code></pre>
 <p>Этот код просто отлично компилируется. Для получения дополнительной информации об типаж-объектах обратитесь к разделу <a href="ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Использование типаж-объектов которые допускают значения разных типов”</a><!--  --> главы 17.</p>
 <p>Далее давайте посмотрим на макросы!</p>
 

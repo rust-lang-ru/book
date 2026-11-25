@@ -38,7 +38,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-186ebe57.js";
+            window.path_to_searchindex_js = "searchindex-af6cc48d.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-7c053197.js"></script>
@@ -11041,7 +11041,8 @@ $ cd add
 </code></pre>
 <p>Далее в каталоге <em>add</em> мы создадим файл <em>Cargo.toml</em>, который будет определять конфигурацию всего рабочего окружения. В этом файле не будет секции <code>[package]</code>. Вместо этого он будет начинаться с секции <code>[workspace]</code>, которая позволит нам добавить модули в рабочее пространство, указав путь к пакету с нашим бинарным крейтом; в данном случае этот путь - <em>adder</em>:</p>
 <p><span class="filename">Файл: Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch14-more-about-cargo/no-listing-01-workspace-with-adder-crate/add/Cargo.toml}}
+<pre><code class="language-toml">[workspace]
+resolver = "3"
 </code></pre>
 <p>Затем мы создадим исполняемый крейт <code>adder</code>, запустив команду <code>cargo new</code> в каталоге <em>add</em>:</p>
 <!-- manual-regeneration
@@ -13090,7 +13091,7 @@ fn main() {
 <p><span class="caption">Листинг 16-12: Изучение API <code>Mutex&lt;T&gt;</code> для простоты в однопоточном контексте</span></p>
 <p>Как и во многих других типах, мы создаём <code>Mutex&lt;T&gt;</code> с помощью сопутствующей функции <code>new</code>. Чтобы получить доступ к данным внутри мьютекса, мы используем метод <code>lock</code> для получения блокировки. Этот вызов блокирует выполнение текущего потока, так что он не сможет выполнять никакие действия, до тех пор пока не наступит наша очередь получить блокировку.</p>
 <p>Вызов <code>lock</code> потерпит неудачу, если другой поток, удерживающий блокировку, запаникует. В таком случае никто не сможет получить блокировку, поэтому мы предпочли использовать <code>unwrap</code> и заставить этот поток паниковать, если мы окажемся в такой ситуации.</p>
-<p>После получения блокировки мы можем воспринимать возвращённое значение, названное в данном случае <code>num</code>, как изменяемую ссылку на содержащиеся внутри данные. Система типов гарантирует, что мы получим блокировку перед использованием значения в <code>m</code>. Тип <code>m</code> - <code>Mutex&lt;i32&gt;</code>, а не <code>i32</code>, поэтому мы <em>должны</em> вызвать <code>lock</code>, чтобы иметь возможность использовать значение <code>i32</code>. Мы не должны об этом забывать, тем более что в иных случаях система типов и не даст нам доступ к внутреннему значению <code>i32</code>.</p>
+<p>После получения блокировки мы можем воспринимать возвращённое значение, названное в данном случае <code>num</code>, как изменяемую ссылку на содержащиеся внутри данные. Система типов гарантирует, что мы получим блокировку перед использованием значения в <code>m</code>. Тип <code>m</code> - <code>Mutex</code>i32``, а не <code>i32</code>, поэтому мы <em>должны</em> вызвать <code>lock</code>, чтобы иметь возможность использовать значение <code>i32</code>. Мы не должны об этом забывать, тем более что в иных случаях система типов и не даст нам доступ к внутреннему значению <code>i32</code>.</p>
 <p>Как вы наверное подозреваете, <code>Mutex&lt;T&gt;</code> является умным указателем. Точнее, вызов <code>lock</code> <em>возвращает</em> умный указатель, называемый <code>MutexGuard</code>, обёрнутый в <code>LockResult</code>, который мы обработали с помощью вызова <code>unwrap</code>. Умный указатель типа <code>MutexGuard</code> реализует типаж <code>Deref</code> для указания на внутренние данные; умный указатель также имеет реализацию типажа <code>Drop</code>, автоматически снимающего блокировку, когда <code>MutexGuard</code> выходит из области видимости, что происходит в конце внутренней области видимости. В результате у нас нет риска забыть снять блокировку и оставить мьютекс в заблокированном состоянии, препятствуя  его использованию другими потоками (снятие блокировки происходит автоматически).</p>
 <p>После снятия блокировки можно напечатать значение мьютекса и увидеть, что мы смогли изменить внутреннее <code>i32</code> на 6.</p>
 <h4 id="разделение-mutext-между-множеством-потоков"><a class="header" href="#разделение-mutext-между-множеством-потоков">Разделение <code>Mutex&lt;T&gt;</code> между множеством потоков</a></h4>
@@ -13200,7 +13201,7 @@ note: required by a bound in `spawn`
 For more information about this error, try `rustc --explain E0277`.
 error: could not compile `shared-state` (bin "shared-state") due to 1 previous error
 </code></pre>
-<p>Ничего себе, это сообщение об ошибке очень многословно! Вот важная часть, на которой следует сосредоточиться: ``Rc&lt;Mutex<i32>&gt;<code> cannot be sent between threads safely</code>. Компилятор также сообщает нам причину: <code>the trait </code>Send<code>is not implemented for</code>Rc&lt;Mutex<i32>&gt;<code> </code>. Мы поговорим о <code>Send</code> в следующем разделе: это один из типажей, который гарантирует, что типы которые мы используем с потоками, предназначены для использования в многопоточном коде.</i32></i32></p>
+<p>Ничего себе, это сообщение об ошибке очень многословно! Вот важная часть, на которой следует сосредоточиться: ``Rc&lt;Mutex<code>i32</code>&gt;<code> cannot be sent between threads safely</code>. Компилятор также сообщает нам причину: <code>the trait </code>Send<code>is not implemented for</code>Rc&lt;Mutex<code>i32</code>&gt;<code> </code>. Мы поговорим о <code>Send</code> в следующем разделе: это один из типажей, который гарантирует, что типы которые мы используем с потоками, предназначены для использования в многопоточном коде.</p>
 <p>К сожалению, <code>Rc&lt;T&gt;</code> небезопасен для совместного использования между потоками. Когда <code>Rc&lt;T&gt;</code> управляет счётчиком ссылок, он добавляется значение к счётчику для каждого вызова <code>clone</code> и вычитается значение из счётчика, когда каждое клонированное значение удаляется при выходе из области видимости. Но он не использует примитивы многопоточности, чтобы гарантировать, что изменения в подсчёте не могут быть прерваны другим потоком. Это может привести к неправильным подсчётам - незначительным ошибкам, которые в свою очередь, могут привести к утечкам памяти или удалению значения до того, как мы отработали с ним. Нам нужен тип точно такой же как <code>Rc&lt;T&gt;</code>, но который позволяет изменять счётчик ссылок безопасно из разных потоков.</p>
 <h4 id="атомарный-счётчик-ссылок-arct"><a class="header" href="#атомарный-счётчик-ссылок-arct">Атомарный счётчик ссылок <code>Arc&lt;T&gt;</code></a></h4>
 <p>К счастью, <code>Arc&lt;T&gt;</code> <em>является</em> типом аналогичным типу <code>Rc&lt;T&gt;</code>, который безопасен для использования в ситуациях многопоточности. Буква <em>А</em> означает <em>атомарное</em>, что означает тип <em>ссылка подсчитываемая атомарно</em>. Atomics - это дополнительный вид примитивов для многопоточности, который мы не будем здесь подробно описывать: дополнительную информацию смотрите в документации стандартной библиотеки для <code>std::sync::atomic</code>. На данный момент вам просто нужно знать, что atomics работают как примитивные типы, но безопасны для совместного использования между потоками.</p>
@@ -15570,7 +15571,7 @@ fn main() {
 </span><span class="boring">}</span></code></pre>
 <p><span class="caption">Листинг 19-3: Использование шаблона в цикле <code>for</code> для деструктурирования кортежа</span></p>
 <p>Код в листинге 19-3 выведет следующее:</p>
-<pre><code class="language-console">{{#include ../listings/ch19-patterns-and-matching/listing-19-03/output.txt}}
+<pre><code class="language-console">Using purple as the background color
 </code></pre>
 <p>Мы адаптируем итератор с помощью метода <code>enumerate</code>, чтобы он генерировал кортеж, состоящий из значения и индекса этого значения. Первым сгенерированным значением будет кортеж <code>(0, 'a')</code>. Когда это значение сопоставляется с шаблоном <code>(index, value)</code>, <code>index</code> будет равен <code>0</code>, а <code>value</code> будет равно <code>'a'</code> и будет напечатана первая строка выходных данных.</p>
 <h3 id="инструкция-let"><a class="header" href="#инструкция-let">Инструкция <code>let</code></a></h3>
@@ -16399,7 +16400,11 @@ fn main() {
 <p><em>Ассоциированные типы</em> связывают тип-заполнитель с типажом таким образом, что определения методов типажа могут использовать эти типы-заполнители в своих сигнатурах. Для конкретной реализации типажа вместо типа-заполнителя указывается конкретный тип, который будет использоваться. Таким образом, мы можем определить типажи, использующие некоторые типы, без необходимости точно знать, что это за типы, пока типажи не будут реализованы.</p>
 <p>Мы назвали большинство продвинутых возможностей в этой главе редко востребованными. Ассоциированные типы находятся где-то посередине: они используются реже чем возможности описанные в остальной части книги, но чаще чем многие другие возможности обсуждаемые в этой главе.</p>
 <p>Одним из примеров трейта с ассоциированным типом является типаж <code>Iterator</code> из стандартной библиотеки. Ассоциированный тип называется <code>Item</code> и символизирует тип значений, по которым итерируется тип, реализующий типаж <code>Iterator</code>. Определение трейта <code>Iterator</code> показано в листинге 20-12.</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-12/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub trait Iterator {
+    type Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+}</code></pre>
 <p><span class="caption">Листинг 20-12: Определение трейта <code>Iterator</code>, который имеет ассоциированный тип <code>Item</code></span></p>
 <p>Тип <code>Item</code> является заполнителем и определение метода <code>next</code> показывает, что он будет возвращать значения типа <code>Option&lt;Self::Item&gt;</code>. Разработчики типажа <code>Iterator</code> определят конкретный тип для <code>Item</code>, а метод <code>next</code> вернёт <code>Option</code> содержащий значение этого конкретного типа.</p>
 <p>Ассоциированные типы могут показаться концепцией похожей на обобщения, поскольку последние позволяют нам определять функцию, не указывая, какие типы она может обрабатывать. Чтобы изучить разницу между этими двумя концепциями, мы рассмотрим реализацию типажа <code>Iterator</code> для типа с именем <code>Counter</code>, который указывает, что тип <code>Item</code> равен <code>u32</code>:</p>
@@ -16442,10 +16447,31 @@ fn main() {
 <p>Отличным примером, когда этот метод полезен, является <em>перегрузка оператора</em> (operator overloading), когда вы настраиваете поведение оператора (например, <code>+</code> ) для определённых ситуаций.</p>
 <p>Rust не позволяет создавать собственные операторы или перегружать произвольные операторы. Но можно перегрузить перечисленные операции и соответствующие им типажи из <code>std::ops</code> путём реализации типажей, связанных с этими операторами. Например, в листинге 20-14 мы перегружаем оператор <code>+</code>, чтобы складывать два экземпляра <code>Point</code>. Мы делаем это реализуя типаж <code>Add</code> для структуры <code>Point</code>:</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-14/src/main.rs}}
-<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust">use std::ops::Add;
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl Add for Point {
+    type Output = Point;
+
+    fn add(self, other: Point) -&gt; Point {
+        Point {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+fn main() {
+    assert_eq!(
+        Point { x: 1, y: 0 } + Point { x: 2, y: 3 },
+        Point { x: 3, y: 3 }
+    );
+}</code></pre>
 <p><span class="caption">Листинг 20-14: Реализация типажа <code>Add</code> для перегрузки оператора <code>+</code> для экземпляров <code>Point</code></span></p>
 <p>Метод <code>add</code> складывает значения <code>x</code> двух экземпляров <code>Point</code> и значения <code>y</code> у <code>Point</code> для создания нового экземпляра <code>Point</code>. Типаж <code>Add</code> имеет ассоциированный тип с именем <code>Output</code>, который определяет тип, возвращаемый из метода <code>add</code>.</p>
 <p>Обобщённый тип по умолчанию в этом коде находится в типаже <code>Add</code> . Вот его определение:</p>
@@ -16461,7 +16487,18 @@ fn main() {
 <p>Когда мы реализовали <code>Add</code> для структуры <code>Point</code>, мы использовали стандартное значение для <code>RHS</code>, потому что хотели сложить два экземпляра <code>Point</code>. Давайте посмотрим на пример реализации типажа <code>Add</code>, где мы хотим пользовательский тип <code>RHS</code> вместо использования типа по умолчанию.</p>
 <p>У нас есть две разные структуры <code>Millimeters</code> и <code>Meters</code>, хранящие значения в разных единицах измерения. Это тонкое обёртывание существующего типа в другую структуру известно как шаблон <em>newtype</em>, который мы более подробно опишем в разделе <a href="#using-the-newtype-pattern-to-implement-external-traits-on-external-types">“Шаблон Newtype для реализация внешних типажей у внешних типов”</a><!-- ignore --> . Мы хотим добавить значения в миллиметрах к значениям в метрах и хотим иметь реализацию типажа <code>Add</code>, которая делает правильное преобразование единиц. Можно реализовать <code>Add</code> для <code>Millimeters</code> с типом <code>Meters</code> в качестве <code>Rhs</code>, как показано в листинге 20-15.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-15/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">use std::ops::Add;
+
+struct Millimeters(u32);
+struct Meters(u32);
+
+impl Add&lt;Meters&gt; for Millimeters {
+    type Output = Millimeters;
+
+    fn add(self, other: Meters) -&gt; Millimeters {
+        Millimeters(self.0 + (other.0 * 1000))
+    }
+}</code></pre>
 <p><span class="caption">Листинг 20-15: Реализация типажа <code>Add</code> для структуры  <code>Millimeters</code>, чтобы складывать <code>Millimeters</code> и <code>Meters</code></span></p>
 <p>Чтобы сложить <code>Millimeters</code> и <code>Meters</code>, мы указываем <code>impl Add&lt;Meters&gt;</code>, чтобы указать значение параметра типа <code>RHS</code> (Meters) вместо использования значения по умолчанию <code>Self</code> (Millimeters).</p>
 <p>Параметры типа по умолчанию используются в двух основных случаях:</p>
@@ -16475,10 +16512,35 @@ fn main() {
 <p>В Rust ничего не мешает типажу иметь метод с одинаковым именем, таким же как метод другого типажа и Rust не мешает реализовывать оба таких типажа у одного типа. Также возможно реализовать метод с таким же именем непосредственно у типа, такой как и методы у типажей.</p>
 <p>При вызове методов с одинаковыми именами в Rust нужно указать, какой из трёх возможных вы хотите использовать. Рассмотрим код в листинге 20-16, где мы определили два типажа: <code>Pilot</code> и <code>Wizard</code>, у обоих есть метод <code>fly</code>. Затем мы реализуем оба типажа у типа <code>Human</code> в котором уже реализован метод с именем <code>fly</code>. Каждый метод <code>fly</code> делает что-то своё.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-16/src/main.rs:here}}
-<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust">trait Pilot {
+    fn fly(&amp;self);
+}
+
+trait Wizard {
+    fn fly(&amp;self);
+}
+
+struct Human;
+
+impl Pilot for Human {
+    fn fly(&amp;self) {
+        println!("This is your captain speaking.");
+    }
+}
+
+impl Wizard for Human {
+    fn fly(&amp;self) {
+        println!("Up!");
+    }
+}
+
+impl Human {
+    fn fly(&amp;self) {
+        println!("*waving arms furiously*");
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
 <p><span class="caption">Листинг 20-16: Два типажа определены с методом <code>fly</code> и реализованы у типа <code>Human</code>, а также метод <code>fly</code> реализован непосредственно у <code>Human</code></span></p>
 <p>Когда мы вызываем <code>fly</code> у экземпляра <code>Human</code>, то компилятор по умолчанию вызывает метод, который непосредственно реализован для типа, как показано в листинге 20-17.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
@@ -16550,7 +16612,7 @@ impl Human {
 <p><span class="caption">Листинг 20-18: Указание какой метода <code>fly</code> мы хотим вызвать</span></p>
 <p>Указание имени типажа перед именем метода проясняет компилятору Rust, какую именно реализацию <code>fly</code> мы хотим вызвать. Мы могли бы также написать <code>Human::fly(&amp;person)</code>, что эквивалентно используемому нами <code>person.fly()</code> в листинге 20-18, но это писание немного длиннее, когда нужна неоднозначность.</p>
 <p>Выполнение этого кода выводит следующее:</p>
-<pre><code class="language-console">{{#include ../listings/ch20-advanced-features/listing-20-18/output.txt}}
+<pre><code class="language-console">*waving arms furiously*
 </code></pre>
 <p>Поскольку метод <code>fly</code> принимает параметр <code>self</code>, если у нас было два <em>типа</em> оба реализующих один <em>типаж</em>, то Rust может понять, какую реализацию типажа использовать в зависимости от типа <code>self</code>.</p>
 <p>Однако, ассоциированные функции, не являющиеся методами, не имеют параметра <code>self</code>. Когда существует несколько типов или типажей, определяющих функции, не являющиеся методами, с одним и тем же именем функции, Rust не всегда знает, какой тип вы имеете в виду, если только вы не используете <em>полный синтаксис</em>. Например, в листинге 20-19 мы создаём типаж для приюта животных, который хочет назвать всех маленьких собак <em>Spot</em>. Мы создаём типаж <code>Animal</code> со связанной с ним функцией <code>baby_name</code>, не являющейся методом. Типаж <code>Animal</code> реализован для структуры <code>Dog</code>, для которой мы также напрямую предоставляем связанную функцию <code>baby_name</code>, не являющуюся методом.</p>
@@ -17063,30 +17125,45 @@ pub trait Write {
 <p>Мы уже обсуждали, как передавать замыкания в функции; но также можно передавать обычные функции в функции! Эта техника полезна, когда вы хотите передать ранее созданную функцию, а не определять новое замыкание. Функции соответствуют типу <code>fn</code> (со строчной буквой f), не путать с трейтом замыкания <code>Fn</code>. Тип <code>fn</code> называется <em>указателем функции</em>. Передача функций с помощью указателей функций позволяет использовать функции в качестве аргументов других функций.</p>
 <p>Для указания того, что параметр является указателем на функцию, используется синтаксис, такой же, как и для замыканий, что демонстрируется в листинге 20-27, где мы определили функцию <code>add_one</code>, которая добавляет единицу к переданному ей параметру. Функция <code>do_twice</code> принимает два параметра: указатель на любую функцию, принимающую параметр <code>i32</code> и возвращающую <code>i32</code>, и число типа <code>i32</code>. Функция <code>do_twice</code> дважды вызывает функцию <code>f</code>, передавая ей значение <code>arg</code>, а затем складывает полученные результаты. Функция <code>main</code> вызывает функцию <code>do_twice</code> с аргументами <code>add_one</code> и <code>5</code>.</p>
 <p><span class="filename">Файл: src/main.rs</span></p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-27/src/main.rs}}
-<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust">fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}
+
+fn do_twice(f: fn(i32) -&gt; i32, arg: i32) -&gt; i32 {
+    f(arg) + f(arg)
+}
+
+fn main() {
+    let answer = do_twice(add_one, 5);
+
+    println!("The answer is: {answer}");
+}</code></pre>
 <p><span class="caption">Листинг 20-27: Использование типа <code>fn</code> для получения указателя на функцию в качестве аргумента</span></p>
 <p>Этот код выводит <code>Ответ: 12</code>. Мы указали, что параметр <code>f</code> в <code>do_twice</code> является <code>fn</code>, которая принимает на вход единственный параметр типа <code>i32</code> и возвращает <code>i32</code>. Затем мы можем вызвать <code>f</code> в теле <code>do_twice</code>. В <code>main</code> мы можем передать имя функции <code>add_one</code> в качестве первого аргумента в <code>do_twice</code>.</p>
 <p>В отличие от замыканий, <code>fn</code> является типом, а не трейтом, поэтому мы указываем <code>fn</code> непосредственно в качестве типа параметра, а не объявляем параметр универсального типа с одним из трейтов <code>Fn</code> в качестве связанного.</p>
 <p>Указатели функций реализуют все три трейта замыканий (<code>Fn</code>, <code>FnMut</code> и <code>FnOnce</code>), то есть вы всегда можете передать указатель функции в качестве аргумента функции, которая ожидает замыкание. Лучше всего для описания функции использовать универсальный тип и один из трейтов замыканий, чтобы ваши функции могли принимать как функции, так и замыкания.</p>
 <p>Однако, одним из примеров, когда вы бы хотели принимать только <code>fn</code>, но не замыкания, является взаимодействие с внешним кодом, который не имеет замыканий: функции языка C могут принимать функции в качестве аргументов, однако замыканий в языке C нет.</p>
 <p>В качестве примера того, где можно использовать либо замыкание, определяемое непосредственно в месте передачи, либо именованную функцию, рассмотрим использование метода <code>map</code>, предоставляемого трейтом <code>Iterator</code> в стандартной библиотеке. Чтобы использовать функцию <code>map</code> для преобразования вектора чисел в вектор строк, мы можем использовать замыкание, например, так:</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-15-map-closure/src/main.rs:here}}
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let list_of_numbers = vec![1, 2, 3];
+    let list_of_strings: Vec&lt;String&gt; =
+        list_of_numbers.iter().map(|i| i.to_string()).collect();
 <span class="boring">}</span></code></pre>
 <p>Или мы можем использовать функцию в качестве аргумента <code>map</code> вместо замыкания, например, так:</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-16-map-function/src/main.rs:here}}
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let list_of_numbers = vec![1, 2, 3];
+    let list_of_strings: Vec&lt;String&gt; =
+        list_of_numbers.iter().map(ToString::to_string).collect();
 <span class="boring">}</span></code></pre>
 <p>Обратите внимание, что мы должны использовать полный синтаксис, о котором мы говорили ранее в разделе <a href="#advanced-traits">“Продвинутые трейты”</a><!--  -->, потому что доступно несколько функций с именем <code>to_string</code>. Здесь мы используем функцию <code>to_string</code> определённую в типаже <code>ToString</code>, который реализован в стандартной библиотеке для любого типа реализующего типаж <code>Display</code>.</p>
 <p>Вспомните из раздела <a href="#enum-values">“Значения перечислений”</a> главы 6, что имя каждого определённого нами варианта перечисления также становится функцией-инициализатором. Мы можем использовать эти инициализаторы в качестве указателей на функции, реализующих трейты замыканий, что означает, что мы можем использовать инициализаторы в качестве аргументов для методов, принимающих замыкания, например, так:</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-17-map-initializer/src/main.rs:here}}
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum Status {
+        Value(u32),
+        Stop,
+    }
+
+    let list_of_statuses: Vec&lt;Status&gt; = (0u32..20).map(Status::Value).collect();
 <span class="boring">}</span></code></pre>
 <p>Здесь мы создаём экземпляры <code>Status::Value</code>, используя каждое значение <code>u32</code> в диапазоне (0..20), с которым вызывается <code>map</code> с помощью функции инициализатора <code>Status::Value</code>. Некоторые люди предпочитают этот стиль, а некоторые предпочитают использовать замыкания. Оба варианта компилируется в один и тот же код, поэтому используйте любой стиль, который вам понятнее.</p>
 <h3 id="возврат-замыканий"><a class="header" href="#возврат-замыканий">Возврат замыканий</a></h3>
@@ -17096,10 +17173,45 @@ pub trait Write {
     move |x| x + init
 }</code></pre>
 <p>Ошибка компилятора выглядит следующим образом:</p>
-<pre><code class="language-console">{{#include ../listings/ch20-advanced-features/no-listing-18-returns-closure/output.txt}}
+<pre><code class="language-console">$ cargo build
+   Compiling functions-example v0.1.0 (file:///projects/functions-example)
+error[E0308]: mismatched types
+  --&gt; src/main.rs:2:44
+   |
+ 2 |     let handlers = vec![returns_closure(), returns_initialized_closure(123)];
+   |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected opaque type, found a different opaque type
+...
+ 9 | fn returns_closure() -&gt; impl Fn(i32) -&gt; i32 {
+   |                         ------------------- the expected opaque type
+...
+13 | fn returns_initialized_closure(init: i32) -&gt; impl Fn(i32) -&gt; i32 {
+   |                                              ------------------- the found opaque type
+   |
+   = note: expected opaque type `impl Fn(i32) -&gt; i32`
+              found opaque type `impl Fn(i32) -&gt; i32`
+   = note: distinct uses of `impl Trait` result in different opaque types
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `functions-example` (bin "functions-example") due to 1 previous error
 </code></pre>
 <p>Ошибка снова ссылается на типаж <code>Sized</code> ! Rust не знает, сколько памяти нужно будет выделить для замыкания. Мы видели решение этой проблемы ранее. Мы можем использовать типаж-объект:</p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-20-returns-closure-trait-object/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">fn main() {
+    let handlers = vec![returns_closure(), returns_initialized_closure(123)];
+    for handler in handlers {
+        let output = handler(5);
+        println!("{output}");
+    }
+}
+
+// ANCHOR: here
+fn returns_closure() -&gt; Box&lt;dyn Fn(i32) -&gt; i32&gt; {
+    Box::new(|x| x + 1)
+}
+
+fn returns_initialized_closure(init: i32) -&gt; Box&lt;dyn Fn(i32) -&gt; i32&gt; {
+    Box::new(move |x| x + init)
+}
+// ANCHOR_END: here</code></pre>
 <p>Этот код просто отлично компилируется. Для получения дополнительной информации об типаж-объектах обратитесь к разделу <a href="ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Использование типаж-объектов которые допускают значения разных типов”</a><!--  --> главы 17.</p>
 <p>Далее давайте посмотрим на макросы!</p>
 <div style="break-before: page; page-break-before: always;"></div>
@@ -17128,7 +17240,18 @@ pub trait Write {
 <p>Мы также могли использовать макрос <code>vec!</code> для создания вектора из двух целых чисел или вектора из пяти строковых срезов. Мы не смогли бы использовать функцию, чтобы сделать то же самое, потому что мы не знали бы заранее количество или тип значений.</p>
 <p>В листинге 20-28 приведено несколько упрощённое определение макроса <code>vec!</code>.</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-28/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">#[macro_export]
+macro_rules! vec {
+    ( $( $x:expr ),* ) =&gt; {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            temp_vec
+        }
+    };
+}</code></pre>
 <p><span class="caption">Листинг 20-28: Упрощённая версия определения макроса <code>vec!</code></span></p>
 <blockquote>
 <p>Примечание: фактическое определение макроса <code>vec!</code> в стандартной библиотеке содержит код для предварительного выделения правильного объёма памяти. Этот код является оптимизацией, которую мы здесь не используем, чтобы сделать пример проще.</p>
@@ -17178,9 +17301,23 @@ pub fn some_name(input: TokenStream) -&gt; TokenStream {
 </code></pre>
 <p>Далее, мы определим типаж <code>HelloMacro</code> и ассоциированную с ним функцию:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust noplayground">{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-20-impl-hellomacro-for-pancakes/hello_macro/src/lib.rs}}</code></pre>
+<pre><code class="language-rust noplayground">pub trait HelloMacro {
+    fn hello_macro();
+}</code></pre>
 <p>У нас есть типаж и его функция. На этом этапе пользователь крейта может реализовать типаж для достижения желаемой функциональности, так:</p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch20-advanced-features/no-listing-20-impl-hellomacro-for-pancakes/pancakes/src/main.rs}}</code></pre>
+<pre><code class="language-rust ignore">use hello_macro::HelloMacro;
+
+struct Pancakes;
+
+impl HelloMacro for Pancakes {
+    fn hello_macro() {
+        println!("Hello, Macro! My name is Pancakes!");
+    }
+}
+
+fn main() {
+    Pancakes::hello_macro();
+}</code></pre>
 <p>Тем не менее, ему придётся написать блок реализации для каждого типа, который он хотел использовать вместе с <code>hello_macro</code>; а мы хотим избавить их от необходимости делать эту работу.</p>
 <p>Кроме того, мы пока не можем предоставить функцию <code>hello_macro</code> с реализацией по умолчанию, которая будет печатать имя типа, для которого реализован типаж: Rust не имеет возможностей рефлексии (reflection), поэтому он не может выполнить поиск имени типа во время выполнения кода. Нам нужен макрос для генерации кода во время компиляции.</p>
 <p>Следующим шагом является определение процедурного макроса. На момент написания этой статьи процедурные макросы должны быть в собственном крейте. Со временем это ограничение может быть отменено. Соглашение о структурировании крейтов и макросов является следующим: для крейта с именем <code>foo</code>, его пользовательский, крейт с выводимым процедурным макросом называется <code>foo_derive</code>. Давайте начнём с создания нового крейта с именем <code>hello_macro_derive</code> внутри проекта <code>hello_macro</code>:</p>
@@ -17189,11 +17326,27 @@ pub fn some_name(input: TokenStream) -&gt; TokenStream {
 <p>Наши два крейта тесно связаны, поэтому мы создаём процедурный макрос-крейт в каталоге крейта <code>hello_macro</code>. Если мы изменим определение типажа в <code>hello_macro</code>, то нам придётся также изменить реализацию процедурного макроса в <code>hello_macro_derive</code>. Два крейта нужно будет опубликовать отдельно и программисты, использующие эти крейты, должны будут добавить их как зависимости, а затем добавить их в область видимости. Мы могли вместо этого сделать так, что крейт <code>hello_macro</code> использует <code>hello_macro_derive</code> как зависимость и реэкспортирует код процедурного макроса. Однако то, как мы структурировали проект, делает возможным программистам использовать <code>hello_macro</code> даже если они не хотят <code>derive</code> функциональность.</p>
 <p>Нам нужно объявить крейт <code>hello_macro_derive</code> как процедурный макрос-крейт. Также понадобятся функционал из крейтов <code>syn</code> и <code>quote</code>, как вы увидите через мгновение, поэтому нам нужно добавить их как зависимости. Добавьте следующее в файл <em>Cargo.toml</em> для <code>hello_macro_derive</code>:</p>
 <p><span class="filename">Файл: hello_macro_derive/Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch20-advanced-features/listing-20-31/hello_macro/hello_macro_derive/Cargo.toml:6:12}}
+<pre><code class="language-toml">[lib]
+proc-macro = true
+
+[dependencies]
+syn = "2.0"
+quote = "1.0"
 </code></pre>
 <p>Чтобы начать определение процедурного макроса, поместите код листинга 20-31 в ваш файл <em>src/lib.rs</em> крейта <code>hello_macro_derive</code>. Обратите внимание, что этот код не скомпилируется пока мы не добавим определение для функции <code>impl_hello_macro</code>.</p>
 <p><span class="filename">Файл: hello_macro_derive/src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-31/hello_macro/hello_macro_derive/src/lib.rs}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">use proc_macro::TokenStream;
+use quote::quote;
+
+#[proc_macro_derive(HelloMacro)]
+pub fn hello_macro_derive(input: TokenStream) -&gt; TokenStream {
+    // Construct a representation of Rust code as a syntax tree
+    // that we can manipulate.
+    let ast = syn::parse(input).unwrap();
+
+    // Build the trait implementation.
+    impl_hello_macro(&amp;ast)
+}</code></pre>
 <p><span class="caption">Листинг 20-31: Код, который потребуется в большинстве процедурных макро крейтов для обработки Rust кода</span></p>
 <p>Обратите внимание, что мы разделили код на функцию <code>hello_macro_derive</code>, которая отвечает за синтаксический анализ <code>TokenStream</code> и функцию <code>impl_hello_macro</code>, которая отвечает за преобразование синтаксического дерева: это делает написание процедурного макроса удобнее. Код во внешней функции ( <code>hello_macro_derive</code> в данном случае) будет одинаковым для почти любого процедурного макрос крейта, который вы видите или создаёте. Код, который вы указываете в теле внутренней функции (в данном случае <code>impl_hello_macro</code> ) будет отличаться в зависимости от цели вашего процедурного макроса.</p>
 <p>Мы представили три новых крейта: <code>proc_macro</code> <a href="https://crates.io/crates/syn"><code>syn</code></a> и <a href="https://crates.io/crates/quote"><code>quote</code></a>. Макрос <code>proc_macro</code> поставляется с Rust, поэтому нам не нужно было добавлять его в зависимости внутри <em>Cargo.toml</em>. Макрос <code>proc_macro</code> - это API компилятора, который позволяет нам читать и манипулировать Rust кодом из нашего кода.</p>
@@ -17223,7 +17376,30 @@ pub fn some_name(input: TokenStream) -&gt; TokenStream {
 <p>Возможно, вы заметили, что мы вызываем <code>unwrap</code> чтобы выполнить панику в функции <code>hello_macro_derive</code>, если вызов функции <code>syn::parse</code> потерпит неудачу. Наш процедурный макрос должен паниковать при ошибках, потому что функции <code>proc_macro_derive</code> должны возвращать <code>TokenStream</code>, а не тип <code>Result</code> для соответствия API процедурного макроса. Мы упростили этот пример с помощью <code>unwrap</code>, но в рабочем коде вы должны предоставить более конкретные сообщения об ошибках, если что-то пошло не правильно, используя <code>panic!</code> или <code>expect</code>.</p>
 <p>Теперь, когда у нас есть код для преобразования аннотированного Rust кода из <code>TokenStream</code> в экземпляр <code>DeriveInput</code>, давайте сгенерируем код реализующий типаж <code>HelloMacro</code> у аннотированного типа, как показано в листинге 20-33.</p>
 <p><span class="filename">Файл: hello_macro_derive/src/lib.rs</span></p>
-<pre><code class="language-rust ignore">{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-33/hello_macro/hello_macro_derive/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore"><span class="boring">use proc_macro::TokenStream;
+</span><span class="boring">use quote::quote;
+</span><span class="boring">
+</span><span class="boring">#[proc_macro_derive(HelloMacro)]
+</span><span class="boring">pub fn hello_macro_derive(input: TokenStream) -&gt; TokenStream {
+</span><span class="boring">    // Construct a representation of Rust code as a syntax tree
+</span><span class="boring">    // that we can manipulate
+</span><span class="boring">    let ast = syn::parse(input).unwrap();
+</span><span class="boring">
+</span><span class="boring">    // Build the trait implementation
+</span><span class="boring">    impl_hello_macro(&amp;ast)
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn impl_hello_macro(ast: &amp;syn::DeriveInput) -&gt; TokenStream {
+    let name = &amp;ast.ident;
+    let generated = quote! {
+        impl HelloMacro for #name {
+            fn hello_macro() {
+                println!("Hello, Macro! My name is {}!", stringify!(#name));
+            }
+        }
+    };
+    generated.into()
+}</code></pre>
 <p><span class="caption">Листинг 20-33: Реализация типажа <code>HelloMacro</code> с использованием проанализированного кода Rust.</span></p>
 <p>Мы получаем экземпляр структуры <code>Ident</code> содержащий имя (идентификатор) аннотированного типа с использованием <code>ast.ident</code>. Структура в листинге 20-32 показывает, что когда мы запускаем функцию <code>impl_hello_macro</code> для кода из листинга 20-30, то получаемый <code>ident</code> будет иметь поле <code>ident</code> со значением <code>"Pancakes"</code>. Таким образом, переменная <code>name</code> в листинге 20-33 будет содержать экземпляр структуры <code>Ident</code>, что при печати выдаст строку <code>"Pancakes"</code>, что является именем структуры в листинге 20-30.</p>
 <p>Макрос <code>quote!</code> позволяет определить код Rust, который мы хотим вернуть. Компилятор ожидает что-то отличное от прямого результата выполнения макроса <code>quote!</code>, поэтому нужно преобразовать его в <code>TokenStream</code>. Мы делаем это путём вызова метода <code>into</code>, который использует промежуточное представление и возвращает значение требуемого типа <code>TokenStream</code>.</p>
@@ -18657,10 +18833,12 @@ error: could not compile `hello` (lib) due to 1 previous error
 <p>Ошибка говорит нам, что мы не можем вызвать <code>join</code>, потому что у нас есть только изменяемое заимствование каждого <code>worker</code>, а <code>join</code> забирает во владение свой аргумент. Чтобы решить эту проблему, нам нужно извлечь поток из экземпляра <code>Worker</code>, который владеет <code>thread</code>, чтобы <code>join</code> мог его использовать. Мы сделали это в листинге 18-15: теперь, когда <code>Worker</code> хранит в себе <code>Option&lt;thread::JoinHandle&lt;()&gt;&gt;</code>, мы можем воспользоваться методом <code>take</code> у <code>Option</code>, чтобы извлечь значение из варианта <code>Some</code>, тем самым оставляя на его месте <code>None</code>. Другими словами, в рабочем состоянии <code>Worker</code> будет использовать вариант <code>Some</code> содержащий <code>thread</code>, а когда мы захотим завершить <code>Worker</code>, мы заменим <code>Some</code> на <code>None</code>, чтобы у <code>Worker</code> не было потока для работы.</p>
 <p>Итак, мы хотим обновить объявление <code>Worker</code> следующим образом:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch21-web-server/no-listing-04-update-worker-definition/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">struct Worker {
+    id: usize,
+    thread: Option&lt;thread::JoinHandle&lt;()&gt;&gt;,
+}</code></pre>
 <p>Теперь давайте опираться на компилятор, чтобы найти другие места, которые нужно изменить. Проверяя код, мы получаем две ошибки:</p>
-<pre><code class="language-console">{{#include ../listings/ch21-web-server/no-listing-04-update-worker-definition/output.txt}}
-</code></pre>
+<p>Компилятор указывает на две проблемы: поле <code>thread</code> теперь имеет тип <code>Option&lt;thread::JoinHandle&lt;()&gt;&gt;</code>, поэтому у него нельзя напрямую вызвать <code>join</code>, а при создании <code>Worker</code> значение <code>thread</code> ещё не обёрнуто в <code>Some</code>. Мы исправим обе проблемы в следующих листингах.</p>
 <p>Давайте обратимся ко второй ошибке, которая указывает на код в конце <code>Worker::new</code>; нам нужно обернуть значение <code>thread</code> в вариант <code>Some</code> при создании нового <code>Worker</code>. Внесите следующие изменения, чтобы исправить эту ошибку:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::{

@@ -37,7 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-186ebe57.js";
+            window.path_to_searchindex_js = "searchindex-af6cc48d.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-7c053197.js"></script>
@@ -280,10 +280,12 @@ error: could not compile `hello` (lib) due to 1 previous error
 <p>Ошибка говорит нам, что мы не можем вызвать <code>join</code>, потому что у нас есть только изменяемое заимствование каждого <code>worker</code>, а <code>join</code> забирает во владение свой аргумент. Чтобы решить эту проблему, нам нужно извлечь поток из экземпляра <code>Worker</code>, который владеет <code>thread</code>, чтобы <code>join</code> мог его использовать. Мы сделали это в листинге 18-15: теперь, когда <code>Worker</code> хранит в себе <code>Option&lt;thread::JoinHandle&lt;()&gt;&gt;</code>, мы можем воспользоваться методом <code>take</code> у <code>Option</code>, чтобы извлечь значение из варианта <code>Some</code>, тем самым оставляя на его месте <code>None</code>. Другими словами, в рабочем состоянии <code>Worker</code> будет использовать вариант <code>Some</code> содержащий <code>thread</code>, а когда мы захотим завершить <code>Worker</code>, мы заменим <code>Some</code> на <code>None</code>, чтобы у <code>Worker</code> не было потока для работы.</p>
 <p>Итак, мы хотим обновить объявление <code>Worker</code> следующим образом:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
-<pre><code class="language-rust ignore does_not_compile">{{#rustdoc_include ../listings/ch21-web-server/no-listing-04-update-worker-definition/src/lib.rs:here}}</code></pre>
+<pre><code class="language-rust ignore does_not_compile">struct Worker {
+    id: usize,
+    thread: Option&lt;thread::JoinHandle&lt;()&gt;&gt;,
+}</code></pre>
 <p>Теперь давайте опираться на компилятор, чтобы найти другие места, которые нужно изменить. Проверяя код, мы получаем две ошибки:</p>
-<pre><code class="language-console">{{#include ../listings/ch21-web-server/no-listing-04-update-worker-definition/output.txt}}
-</code></pre>
+<p>Компилятор указывает на две проблемы: поле <code>thread</code> теперь имеет тип <code>Option&lt;thread::JoinHandle&lt;()&gt;&gt;</code>, поэтому у него нельзя напрямую вызвать <code>join</code>, а при создании <code>Worker</code> значение <code>thread</code> ещё не обёрнуто в <code>Some</code>. Мы исправим обе проблемы в следующих листингах.</p>
 <p>Давайте обратимся ко второй ошибке, которая указывает на код в конце <code>Worker::new</code>; нам нужно обернуть значение <code>thread</code> в вариант <code>Some</code> при создании нового <code>Worker</code>. Внесите следующие изменения, чтобы исправить эту ошибку:</p>
 <p><span class="filename">Файл: src/lib.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::{

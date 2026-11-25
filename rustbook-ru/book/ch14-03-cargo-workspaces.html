@@ -37,7 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-186ebe57.js";
+            window.path_to_searchindex_js = "searchindex-af6cc48d.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-7c053197.js"></script>
@@ -185,7 +185,8 @@ $ cd add
 </code></pre>
 <p>Далее в каталоге <em>add</em> мы создадим файл <em>Cargo.toml</em>, который будет определять конфигурацию всего рабочего окружения. В этом файле не будет секции <code>[package]</code>. Вместо этого он будет начинаться с секции <code>[workspace]</code>, которая позволит нам добавить модули в рабочее пространство, указав путь к пакету с нашим бинарным крейтом; в данном случае этот путь - <em>adder</em>:</p>
 <p><span class="filename">Файл: Cargo.toml</span></p>
-<pre><code class="language-toml">{{#include ../listings/ch14-more-about-cargo/no-listing-01-workspace-with-adder-crate/add/Cargo.toml}}
+<pre><code class="language-toml">[workspace]
+resolver = "3"
 </code></pre>
 <p>Затем мы создадим исполняемый крейт <code>adder</code>, запустив команду <code>cargo new</code> в каталоге <em>add</em>:</p>
 <!-- manual-regeneration
