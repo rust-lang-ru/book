@@ -1,0 +1,763 @@
+<!DOCTYPE HTML>
+<html lang="ru-RU" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Продвинутые типажи - Язык программирования Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris-a4fe1a08.css">
+        <link rel="stylesheet" href="theme/2018-edition-ac5bde6f.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-af6cc48d.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-7c053197.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Язык программирования Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h2 id="продвинутые-типажи"><a class="header" href="#продвинутые-типажи">Продвинутые типажи</a></h2>
+<p>Мы познакомились с трейтами в разделе <a href="ch10-02-traits.html#traits-defining-shared-behavior">“Трейты: Определение общего поведения”</a><!-- ignore --> в главе 10, но там мы не обсуждали более сложные детали. Теперь, когда вы больше знаете о Rust, мы можем перейти к более подробному рассмотрению.</p>
+<h3 id="указание-типов-заполнителей-в-определениях-трейтов-с-ассоциированными-типами"><a class="header" href="#указание-типов-заполнителей-в-определениях-трейтов-с-ассоциированными-типами">Указание типов-заполнителей в определениях трейтов с ассоциированными типами</a></h3>
+<p><em>Ассоциированные типы</em> связывают тип-заполнитель с типажом таким образом, что определения методов типажа могут использовать эти типы-заполнители в своих сигнатурах. Для конкретной реализации типажа вместо типа-заполнителя указывается конкретный тип, который будет использоваться. Таким образом, мы можем определить типажи, использующие некоторые типы, без необходимости точно знать, что это за типы, пока типажи не будут реализованы.</p>
+<p>Мы назвали большинство продвинутых возможностей в этой главе редко востребованными. Ассоциированные типы находятся где-то посередине: они используются реже чем возможности описанные в остальной части книги, но чаще чем многие другие возможности обсуждаемые в этой главе.</p>
+<p>Одним из примеров трейта с ассоциированным типом является типаж <code>Iterator</code> из стандартной библиотеки. Ассоциированный тип называется <code>Item</code> и символизирует тип значений, по которым итерируется тип, реализующий типаж <code>Iterator</code>. Определение трейта <code>Iterator</code> показано в листинге 20-12.</p>
+<pre><code class="language-rust noplayground">pub trait Iterator {
+    type Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+}</code></pre>
+<p><span class="caption">Листинг 20-12: Определение трейта <code>Iterator</code>, который имеет ассоциированный тип <code>Item</code></span></p>
+<p>Тип <code>Item</code> является заполнителем и определение метода <code>next</code> показывает, что он будет возвращать значения типа <code>Option&lt;Self::Item&gt;</code>. Разработчики типажа <code>Iterator</code> определят конкретный тип для <code>Item</code>, а метод <code>next</code> вернёт <code>Option</code> содержащий значение этого конкретного типа.</p>
+<p>Ассоциированные типы могут показаться концепцией похожей на обобщения, поскольку последние позволяют нам определять функцию, не указывая, какие типы она может обрабатывать. Чтобы изучить разницу между этими двумя концепциями, мы рассмотрим реализацию типажа <code>Iterator</code> для типа с именем <code>Counter</code>, который указывает, что тип <code>Item</code> равен <code>u32</code>:</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust ignore"><span class="boring">struct Counter {
+</span><span class="boring">    count: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Counter {
+</span><span class="boring">    fn new() -&gt; Counter {
+</span><span class="boring">        Counter { count: 0 }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        // --snip--
+<span class="boring">        if self.count &lt; 5 {
+</span><span class="boring">            self.count += 1;
+</span><span class="boring">            Some(self.count)
+</span><span class="boring">        } else {
+</span><span class="boring">            None
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<p>Этот синтаксис весьма напоминает обобщённые типы. Так почему же типаж <code>Iterator</code> не определён обобщённым типом, как показано в листинге 20-13?</p>
+<pre><code class="language-rust noplayground">pub trait Iterator {
+    type Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+}</code></pre>
+<p><span class="caption">Листинг 20-13: Гипотетическое определение типажа <code>Iterator</code> используя обобщённые типы</span></p>
+<p>Разница в том, что при использовании обобщений, как показано в листинге 20-13, мы должны аннотировать типы в каждой реализации; потому что мы также можем реализовать <code>Iterator&lt;String&gt; for Counter</code> или любого другого типа, мы могли бы иметь несколько реализации <code>Iterator</code> для <code>Counter</code>. Другими словами, когда типаж имеет обобщённый параметр, он может быть реализован для типа несколько раз, каждый раз меняя конкретные типы параметров обобщённого типа. Когда мы используем метод <code>next</code> у <code>Counter</code>, нам пришлось бы предоставить аннотации типа, указывая какую реализацию <code>Iterator</code> мы хотим использовать.</p>
+<p>С ассоциированными типами не нужно аннотировать типы, потому что мы не можем реализовать типаж у типа несколько раз. В листинге 20-12 с определением, использующим ассоциированные типы можно выбрать только один тип <code>Item</code>, потому что может быть только одно объявление <code>impl Iterator for Counter</code>. Нам не нужно указывать, что нужен итератор значений типа <code>u32</code> везде, где мы вызываем <code>next</code> у <code>Counter</code>.</p>
+<p>Ассоциированные типы также становятся частью контракта типажа: разработчики типажа должны предоставить тип, который заменит ассоциированный заполнитель типа. Связанные типы часто имеют имя, описывающее то, как будет использоваться тип, и хорошей практикой является документирование связанного типа в документации по API.</p>
+<h3 id="параметры-обобщённого-типа-по-умолчанию-и-перегрузка-операторов"><a class="header" href="#параметры-обобщённого-типа-по-умолчанию-и-перегрузка-операторов">Параметры обобщённого типа по умолчанию и перегрузка операторов</a></h3>
+<p>Когда мы используем параметры обобщённого типа, мы можем указать конкретный тип по умолчанию для обобщённого типа. Это устраняет необходимость разработчикам указывать конкретный тип, если работает тип по умолчанию. Тип по умолчанию указывается при объявлении обобщённого типа с помощью синтаксиса  <code>&lt;PlaceholderType=ConcreteType&gt;</code>.</p>
+<p>Отличным примером, когда этот метод полезен, является <em>перегрузка оператора</em> (operator overloading), когда вы настраиваете поведение оператора (например, <code>+</code> ) для определённых ситуаций.</p>
+<p>Rust не позволяет создавать собственные операторы или перегружать произвольные операторы. Но можно перегрузить перечисленные операции и соответствующие им типажи из <code>std::ops</code> путём реализации типажей, связанных с этими операторами. Например, в листинге 20-14 мы перегружаем оператор <code>+</code>, чтобы складывать два экземпляра <code>Point</code>. Мы делаем это реализуя типаж <code>Add</code> для структуры <code>Point</code>:</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">use std::ops::Add;
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl Add for Point {
+    type Output = Point;
+
+    fn add(self, other: Point) -&gt; Point {
+        Point {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+fn main() {
+    assert_eq!(
+        Point { x: 1, y: 0 } + Point { x: 2, y: 3 },
+        Point { x: 3, y: 3 }
+    );
+}</code></pre>
+<p><span class="caption">Листинг 20-14: Реализация типажа <code>Add</code> для перегрузки оператора <code>+</code> для экземпляров <code>Point</code></span></p>
+<p>Метод <code>add</code> складывает значения <code>x</code> двух экземпляров <code>Point</code> и значения <code>y</code> у <code>Point</code> для создания нового экземпляра <code>Point</code>. Типаж <code>Add</code> имеет ассоциированный тип с именем <code>Output</code>, который определяет тип, возвращаемый из метода <code>add</code>.</p>
+<p>Обобщённый тип по умолчанию в этом коде находится в типаже <code>Add</code> . Вот его определение:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>trait Add&lt;Rhs = Self&gt; {
+    type Output;
+
+    fn add(self, rhs: Rhs) -&gt; Self::Output;
+}
+<span class="boring">}</span></code></pre>
+<p>Этот код должен выглядеть знакомым: типаж с одним методом и ассоциированным типом. Новый синтаксис это <code>RHS=Self</code>. Такой синтаксис называется <em>параметры типа по умолчанию</em> (default type parameters). Параметр обобщённого типа <code>RHS</code> (сокращённо “right hand side”) определяет тип параметра <code>rhs</code> в методе <code>add</code>. Если мы не укажем конкретный тип для <code>RHS</code> при реализации типажа <code>Add</code>, то типом для <code>RHS</code> по умолчанию будет <code>Self</code>, который будет типом для которого реализуется типаж <code>Add</code>.</p>
+<p>Когда мы реализовали <code>Add</code> для структуры <code>Point</code>, мы использовали стандартное значение для <code>RHS</code>, потому что хотели сложить два экземпляра <code>Point</code>. Давайте посмотрим на пример реализации типажа <code>Add</code>, где мы хотим пользовательский тип <code>RHS</code> вместо использования типа по умолчанию.</p>
+<p>У нас есть две разные структуры <code>Millimeters</code> и <code>Meters</code>, хранящие значения в разных единицах измерения. Это тонкое обёртывание существующего типа в другую структуру известно как шаблон <em>newtype</em>, который мы более подробно опишем в разделе <a href="ch20-03-advanced-traits.html#using-the-newtype-pattern-to-implement-external-traits-on-external-types">“Шаблон Newtype для реализация внешних типажей у внешних типов”</a><!-- ignore --> . Мы хотим добавить значения в миллиметрах к значениям в метрах и хотим иметь реализацию типажа <code>Add</code>, которая делает правильное преобразование единиц. Можно реализовать <code>Add</code> для <code>Millimeters</code> с типом <code>Meters</code> в качестве <code>Rhs</code>, как показано в листинге 20-15.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">use std::ops::Add;
+
+struct Millimeters(u32);
+struct Meters(u32);
+
+impl Add&lt;Meters&gt; for Millimeters {
+    type Output = Millimeters;
+
+    fn add(self, other: Meters) -&gt; Millimeters {
+        Millimeters(self.0 + (other.0 * 1000))
+    }
+}</code></pre>
+<p><span class="caption">Листинг 20-15: Реализация типажа <code>Add</code> для структуры  <code>Millimeters</code>, чтобы складывать <code>Millimeters</code> и <code>Meters</code></span></p>
+<p>Чтобы сложить <code>Millimeters</code> и <code>Meters</code>, мы указываем <code>impl Add&lt;Meters&gt;</code>, чтобы указать значение параметра типа <code>RHS</code> (Meters) вместо использования значения по умолчанию <code>Self</code> (Millimeters).</p>
+<p>Параметры типа по умолчанию используются в двух основных случаях:</p>
+<ul>
+<li>Чтобы расширить тип без внесения изменений ломающих существующий код</li>
+<li>Чтобы позволить пользовательское поведение в специальных случаях, которые не нужны большинству пользователей</li>
+</ul>
+<p>Типаж <code>Add</code> из стандартной библиотеки является примером второй цели: обычно вы складываете два одинаковых типа, но типаж <code>Add</code> позволяет сделать больше. Использование параметра типа по умолчанию в объявлении типажа <code>Add</code> означает, что не нужно указывать дополнительный параметр большую часть времени. Другими словами, большая часть кода реализации не нужна, что делает использование типажа проще.</p>
+<p>Первая цель похожа на вторую, но используется наоборот: если вы хотите добавить параметр типа к существующему типажу, можно дать ему значение по умолчанию, чтобы разрешить расширение функциональности типажа без нарушения кода существующей реализации.</p>
+<h3 id="полностью-квалифицированный-синтаксис-для-устранения-неоднозначности-вызов-методов-с-одинаковым-именем"><a class="header" href="#полностью-квалифицированный-синтаксис-для-устранения-неоднозначности-вызов-методов-с-одинаковым-именем">Полностью квалифицированный синтаксис для устранения неоднозначности: вызов методов с одинаковым именем</a></h3>
+<p>В Rust ничего не мешает типажу иметь метод с одинаковым именем, таким же как метод другого типажа и Rust не мешает реализовывать оба таких типажа у одного типа. Также возможно реализовать метод с таким же именем непосредственно у типа, такой как и методы у типажей.</p>
+<p>При вызове методов с одинаковыми именами в Rust нужно указать, какой из трёх возможных вы хотите использовать. Рассмотрим код в листинге 20-16, где мы определили два типажа: <code>Pilot</code> и <code>Wizard</code>, у обоих есть метод <code>fly</code>. Затем мы реализуем оба типажа у типа <code>Human</code> в котором уже реализован метод с именем <code>fly</code>. Каждый метод <code>fly</code> делает что-то своё.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">trait Pilot {
+    fn fly(&amp;self);
+}
+
+trait Wizard {
+    fn fly(&amp;self);
+}
+
+struct Human;
+
+impl Pilot for Human {
+    fn fly(&amp;self) {
+        println!("This is your captain speaking.");
+    }
+}
+
+impl Wizard for Human {
+    fn fly(&amp;self) {
+        println!("Up!");
+    }
+}
+
+impl Human {
+    fn fly(&amp;self) {
+        println!("*waving arms furiously*");
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+<p><span class="caption">Листинг 20-16: Два типажа определены с методом <code>fly</code> и реализованы у типа <code>Human</code>, а также метод <code>fly</code> реализован непосредственно у <code>Human</code></span></p>
+<p>Когда мы вызываем <code>fly</code> у экземпляра <code>Human</code>, то компилятор по умолчанию вызывает метод, который непосредственно реализован для типа, как показано в листинге 20-17.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">trait Pilot {
+    fn fly(&amp;self);
+}
+
+trait Wizard {
+    fn fly(&amp;self);
+}
+
+struct Human;
+
+impl Pilot for Human {
+    fn fly(&amp;self) {
+        println!("This is your captain speaking.");
+    }
+}
+
+impl Wizard for Human {
+    fn fly(&amp;self) {
+        println!("Up!");
+    }
+}
+
+impl Human {
+    fn fly(&amp;self) {
+        println!("*waving arms furiously*");
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+<p><span class="caption">Листинг 20-17: Вызов <code>fly</code> у экземпляра <code>Human</code></span></p>
+<p>Запуск этого кода напечатает <code>*waving arms furiously*</code> , показывая, что Rust называется метод <code>fly</code> реализованный непосредственно у <code>Human</code>.</p>
+<p>Чтобы вызвать методы <code>fly</code> у типажа <code>Pilot</code> или типажа <code>Wizard</code> нужно использовать более явный синтаксис, указывая какой метод <code>fly</code> мы имеем в виду. Листинг 20-18 демонстрирует такой синтаксис.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust"><span class="boring">trait Pilot {
+</span><span class="boring">    fn fly(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">trait Wizard {
+</span><span class="boring">    fn fly(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Human;
+</span><span class="boring">
+</span><span class="boring">impl Pilot for Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("This is your captain speaking.");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Wizard for Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("Up!");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("*waving arms furiously*");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let person = Human;
+    person.fly();
+}</code></pre>
+<p><span class="caption">Листинг 20-18: Указание какой метода <code>fly</code> мы хотим вызвать</span></p>
+<p>Указание имени типажа перед именем метода проясняет компилятору Rust, какую именно реализацию <code>fly</code> мы хотим вызвать. Мы могли бы также написать <code>Human::fly(&amp;person)</code>, что эквивалентно используемому нами <code>person.fly()</code> в листинге 20-18, но это писание немного длиннее, когда нужна неоднозначность.</p>
+<p>Выполнение этого кода выводит следующее:</p>
+<pre><code class="language-console">*waving arms furiously*
+</code></pre>
+<p>Поскольку метод <code>fly</code> принимает параметр <code>self</code>, если у нас было два <em>типа</em> оба реализующих один <em>типаж</em>, то Rust может понять, какую реализацию типажа использовать в зависимости от типа <code>self</code>.</p>
+<p>Однако, ассоциированные функции, не являющиеся методами, не имеют параметра <code>self</code>. Когда существует несколько типов или типажей, определяющих функции, не являющиеся методами, с одним и тем же именем функции, Rust не всегда знает, какой тип вы имеете в виду, если только вы не используете <em>полный синтаксис</em>. Например, в листинге 20-19 мы создаём типаж для приюта животных, который хочет назвать всех маленьких собак <em>Spot</em>. Мы создаём типаж <code>Animal</code> со связанной с ним функцией <code>baby_name</code>, не являющейся методом. Типаж <code>Animal</code> реализован для структуры <code>Dog</code>, для которой мы также напрямую предоставляем связанную функцию <code>baby_name</code>, не являющуюся методом.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">trait Pilot {
+    fn fly(&amp;self);
+}
+
+trait Wizard {
+    fn fly(&amp;self);
+}
+
+struct Human;
+
+impl Pilot for Human {
+    fn fly(&amp;self) {
+        println!("This is your captain speaking.");
+    }
+}
+
+impl Wizard for Human {
+    fn fly(&amp;self) {
+        println!("Up!");
+    }
+}
+
+impl Human {
+    fn fly(&amp;self) {
+        println!("*waving arms furiously*");
+    }
+}
+
+// ANCHOR: here
+fn main() {
+    let person = Human;
+    Pilot::fly(&amp;person);
+    Wizard::fly(&amp;person);
+    person.fly();
+}
+// ANCHOR_END: here</code></pre>
+<p><span class="caption">Листинг 20-19: Типаж с ассоциированной функцией и тип с ассоциированной функцией с тем же именем, которая тоже реализует типаж</span></p>
+<p>Мы реализовали код для приюта для животных, который хочет назвать всех щенков именем Spot, в ассоциированной функции <code>baby_name</code>, которая определена для <code>Dog</code>. Тип <code>Dog</code> также реализует типаж <code>Animal</code>, который описывает характеристики, которые есть у всех животных. Маленьких собак называют щенками, и это выражается в реализации <code>Animal</code> у <code>Dog</code> в функции <code>baby_name</code> ассоциированной с типажом <code>Animal</code>.</p>
+<p>В <code>main</code> мы вызываем функцию <code>Dog::baby_name</code>, которая вызывает ассоциированную функцию определённую напрямую у <code>Dog</code>. Этот код печатает следующее:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.46s
+     Running `target/debug/traits-example`
+This is your captain speaking.
+Up!
+*waving arms furiously*
+</code></pre>
+<p>Этот вывод не является тем, что мы хотели бы получить. Мы хотим вызвать функцию <code>baby_name</code>, которая является частью типажа <code>Animal</code> реализованного у <code>Dog</code>, так чтобы код печатал <code>A baby dog is called a puppy</code>. Техника указания имени типажа использованная в листинге 20-18 здесь не помогает; если мы изменим <code>main</code> код как в листинге 20-20, мы получим ошибку компиляции.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">trait Animal {
+</span><span class="boring">    fn baby_name() -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Dog;
+</span><span class="boring">
+</span><span class="boring">impl Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("Spot")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Animal for Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("puppy")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("A baby dog is called a {}", Dog::baby_name());
+</span><span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 20-20. Попытка вызвать функцию <code>baby_name</code> из типажа <code>Animal</code>, но Rust не знает какую реализацию использовать</span></p>
+<p>Поскольку <code>Animal::baby_name</code> не имеет параметра <code>self</code>, и могут быть другие типы, реализующие типаж <code>Animal</code>, Rust не может понять, какую реализацию <code>Animal::baby_name</code> мы хотим использовать. Мы получим эту ошибку компилятора:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.54s
+     Running `target/debug/traits-example`
+A baby dog is called a Spot
+</code></pre>
+<p>Чтобы устранить неоднозначность и сказать Rust, что мы хотим использовать реализацию <code>Animal</code> для <code>Dog</code>, нужно использовать полный синтаксис. Листинг 20-21 демонстрирует, как использовать полный синтаксис.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust"><span class="boring">trait Animal {
+</span><span class="boring">    fn baby_name() -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Dog;
+</span><span class="boring">
+</span><span class="boring">impl Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("Spot")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Animal for Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("puppy")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    println!("A baby dog is called a {}", Animal::baby_name());
+}</code></pre>
+<p><span class="caption">Листинг 20-21: Использование полного синтаксиса для указания, что мы мы хотим вызвать функцию <code>baby_name</code> у типажа <code>Animal</code> реализованную в <code>Dog</code></span></p>
+<p>Мы указываем аннотацию типа в угловых скобках, которая указывает на то что мы хотим вызвать метод <code>baby_name</code> из типажа <code>Animal</code> реализованный в <code>Dog</code>, также указывая что мы хотим рассматривать тип <code>Dog</code> в качестве <code>Animal</code> для вызова этой функции. Этот код теперь напечатает то, что мы хотим:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+error[E0790]: cannot call associated function on trait without specifying the corresponding `impl` type
+  --&gt; src/main.rs:20:43
+   |
+ 2 |     fn baby_name() -&gt; String;
+   |     ------------------------- `Animal::baby_name` defined here
+...
+20 |     println!("A baby dog is called a {}", Animal::baby_name());
+   |                                           ^^^^^^^^^^^^^^^^^^^ cannot call associated function of trait
+   |
+help: use the fully-qualified path to the only available implementation
+   |
+20 |     println!("A baby dog is called a {}", &lt;Dog as Animal&gt;::baby_name());
+   |                                           +++++++       +
+
+For more information about this error, try `rustc --explain E0790`.
+error: could not compile `traits-example` (bin "traits-example") due to 1 previous error
+</code></pre>
+<p>В общем, полный синтаксис определяется следующим образом:</p>
+<pre><code class="language-rust ignore">&lt;Type as Trait&gt;::function(receiver_if_method, next_arg, ...);</code></pre>
+<p>Для ассоциированных функций, которые не являются методами, будет отсутствовать <code>receiver</code> (объект приёмника): будет только список аргументов. Вы можете использовать полный синтаксис везде, где вызываете функции или методы. Тем не менее, разрешается опустить любую часть этого синтаксиса, которую Rust может понять из другой информации в программе. Вам нужно использовать более подробный синтаксис только в тех случаях, когда существует несколько реализаций, использующих одно и то же название, и Rust нужно помочь определить, какую реализацию вы хотите вызвать.</p>
+<h3 id="использование-супер-типажей-для-требования-функциональности-одного-типажа-в-рамках-другого-типажа"><a class="header" href="#использование-супер-типажей-для-требования-функциональности-одного-типажа-в-рамках-другого-типажа">Использование супер типажей для требования функциональности одного типажа в рамках другого типажа</a></h3>
+<p>Иногда вы можете написать определение типажа, которое зависит от другого типажа: для типа, реализующего первый типаж, вы хотите потребовать, чтобы этот тип также реализовал второй типаж. Вы должны сделать это, чтобы ваше определение типажа могло использовать связанные элементы второго типажа. Типаж, на который опирается ваше определение типажа, называется <em>supertrait</em> вашего типажа.</p>
+<p>Например, мы хотим создать типаж <code>OutlinePrint</code> с методом <code>outline_print</code>, который будет печатать значение обрамлённое звёздочками. Мы хотим чтобы структура <code>Point</code>, реализующая типаж стандартной библиотеки <code>Display</code>, вывела на печать <code>(x, y)</code> при вызове <code>outline_print</code> у экземпляра <code>Point</code>, который имеет значение <code>1</code> для <code>x</code> и значение <code>3</code> для <code>y</code>. Она должна напечатать следующее:</p>
+<pre><code class="language-text">**********
+*        *
+* (1, 3) *
+*        *
+**********
+</code></pre>
+<p>В реализации <code>outline_print</code> мы хотим использовать функциональность типажа <code>Display</code>. Поэтому нам нужно указать, что типаж <code>OutlinePrint</code> будет работать только для типов, которые также реализуют <code>Display</code> и предоставляют функциональность, которая нужна в <code>OutlinePrint</code>. Мы можем сделать это в объявлении типажа, указав <code>OutlinePrint: Display</code>. Этот метод похож на добавление ограничения в типаж. В листинге 20-22 показана реализация типажа <code>OutlinePrint</code>.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust"><span class="boring">trait Animal {
+</span><span class="boring">    fn baby_name() -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Dog;
+</span><span class="boring">
+</span><span class="boring">impl Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("Spot")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Animal for Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("puppy")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    println!("A baby dog is called a {}", &lt;Dog as Animal&gt;::baby_name());
+}</code></pre>
+<p><span class="caption">Листинг 20-22: Реализация типажа <code>OutlinePrint</code> которая требует функциональности типажа <code>Display</code></span></p>
+<p>Поскольку мы указали, что типаж <code>OutlinePrint</code> требует типажа <code>Display</code>, мы можем использовать функцию <code>to_string</code>, которая автоматически реализована для любого типа реализующего <code>Display</code>. Если бы мы попытались использовать <code>to_string</code> не добавляя двоеточие и не указывая типаж <code>Display</code> после имени типажа, мы получили бы сообщение о том, что метод с именем <code>to_string</code> не был найден у типа <code>&amp;Self</code> в текущей области видимости.</p>
+<p>Давайте посмотрим что происходит, если мы пытаемся реализовать типаж <code>OutlinePrint</code> для типа, который не реализует <code>Display</code>, например структура <code>Point</code>:</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::fmt;
+</span><span class="boring">
+</span><span class="boring">trait OutlinePrint: fmt::Display {
+</span><span class="boring">    fn outline_print(&amp;self) {
+</span><span class="boring">        let output = self.to_string();
+</span><span class="boring">        let len = output.len();
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("* {output} *");
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl OutlinePrint for Point {}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let p = Point { x: 1, y: 3 };
+</span><span class="boring">    p.outline_print();
+</span><span class="boring">}</span></code></pre>
+<p>Мы получаем сообщение о том, что требуется реализация <code>Display</code>, но её нет:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+error[E0277]: `Point` doesn't implement `std::fmt::Display`
+  --&gt; src/main.rs:20:23
+   |
+20 | impl OutlinePrint for Point {}
+   |                       ^^^^^ unsatisfied trait bound
+   |
+help: the trait `std::fmt::Display` is not implemented for `Point`
+  --&gt; src/main.rs:15:1
+   |
+15 | struct Point {
+   | ^^^^^^^^^^^^
+note: required by a bound in `OutlinePrint`
+  --&gt; src/main.rs:3:21
+   |
+ 3 | trait OutlinePrint: fmt::Display {
+   |                     ^^^^^^^^^^^^ required by this bound in `OutlinePrint`
+
+error[E0277]: `Point` doesn't implement `std::fmt::Display`
+  --&gt; src/main.rs:24:7
+   |
+24 |     p.outline_print();
+   |       ^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `std::fmt::Display` is not implemented for `Point`
+  --&gt; src/main.rs:15:1
+   |
+15 | struct Point {
+   | ^^^^^^^^^^^^
+note: required by a bound in `OutlinePrint::outline_print`
+  --&gt; src/main.rs:3:21
+   |
+ 3 | trait OutlinePrint: fmt::Display {
+   |                     ^^^^^^^^^^^^ required by this bound in `OutlinePrint::outline_print`
+ 4 |     fn outline_print(&amp;self) {
+   |        ------------- required by a bound in this associated function
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `traits-example` (bin "traits-example") due to 2 previous errors
+</code></pre>
+<p>Чтобы исправить, мы реализуем <code>Display</code> у структуры <code>Point</code> и выполняем требуемое ограничение <code>OutlinePrint</code>, вот так:</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust"><span class="boring">trait OutlinePrint: fmt::Display {
+</span><span class="boring">    fn outline_print(&amp;self) {
+</span><span class="boring">        let output = self.to_string();
+</span><span class="boring">        let len = output.len();
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("* {output} *");
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Point {
+</span><span class="boring">    x: i32,
+</span><span class="boring">    y: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl OutlinePrint for Point {}
+</span><span class="boring">
+</span>use std::fmt;
+
+impl fmt::Display for Point {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let p = Point { x: 1, y: 3 };
+</span><span class="boring">    p.outline_print();
+</span><span class="boring">}</span></code></pre>
+<p>Тогда реализация типажа <code>OutlinePrint</code> для структуры <code>Point</code> будет скомпилирована успешно и мы можем вызвать <code>outline_print</code> у экземпляра <code>Point</code> для отображения значения обрамлённое звёздочками.</p>
+<h3 id="шаблон-newtype-для-реализация-внешних-типажей-у-внешних-типов"><a class="header" href="#шаблон-newtype-для-реализация-внешних-типажей-у-внешних-типов">Шаблон Newtype для реализация внешних типажей у внешних типов</a></h3>
+<p>В разделе <a href="ch10-02-traits.html#implementing-a-trait-on-a-type">“Реализация типажа у типа”</a><!-- ignore --> главы 10, мы упоминали “правило сироты” (orphan rule), которое гласит, что разрешается реализовать типаж у типа, если либо типаж, либо тип являются локальными для нашего крейта. Можно обойти это ограничение, используя <em>шаблон нового типа</em> (newtype pattern), который включает в себя создание нового типа в кортежной структуре. (Мы рассмотрели кортежные структуры  в разделе <a href="ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types">“Использование структур кортежей без именованных полей для создания различных типов”</a><!--  --> главы 5.) Структура кортежа будет иметь одно поле и будет тонкой оболочкой для типа которому мы хотим реализовать типаж. Тогда тип оболочки является локальным для нашего крейта и мы можем реализовать типаж для локальной обёртки. <em>Newtype</em> это термин, который происходит от языка программирования Haskell. В нем нет ухудшения производительности времени выполнения при использовании этого шаблона и тип оболочки исключается во время компиляции.</p>
+<p>В качестве примера, мы хотим реализовать типаж <code>Display</code> для типа <code>Vec&lt;T&gt;</code>, где “правило сироты” (orphan rule) не позволяет нам этого делать напрямую, потому что типаж <code>Display</code> и тип <code>Vec&lt;T&gt;</code> объявлены вне нашего крейта. Мы можем сделать структуру <code>Wrapper</code>, которая содержит экземпляр <code>Vec&lt;T&gt;</code>; тогда мы можем реализовать <code>Display</code> у структуры <code>Wrapper</code> и использовать значение <code>Vec&lt;T&gt;</code> как показано в листинге 20-23.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">// ANCHOR: here
+use std::fmt;
+
+trait OutlinePrint: fmt::Display {
+    fn outline_print(&amp;self) {
+        let output = self.to_string();
+        let len = output.len();
+        println!("{}", "*".repeat(len + 4));
+        println!("*{}*", " ".repeat(len + 2));
+        println!("* {output} *");
+        println!("*{}*", " ".repeat(len + 2));
+        println!("{}", "*".repeat(len + 4));
+    }
+}
+// ANCHOR_END: here
+
+fn main() {}</code></pre>
+<p><span class="caption">Листинг 20-23. Создание типа <code>Wrapper</code> <code>Vec&lt;String&gt;</code> для реализации <code>Display</code></span></p>
+<p>Реализация <code>Display</code> использует <code>self.0</code> для доступа к внутреннему <code>Vec&lt;T&gt;</code>, потому что <code>Wrapper</code> это структура кортежа, а <code>Vec&lt;T&gt;</code> это элемент с индексом 0 в кортеже. Затем мы можем использовать функциональные возможности типа <code>Display</code> у <code>Wrapper</code>.</p>
+<p>Недостатком использования этой техники является то, что <code>Wrapper</code> является новым типом, поэтому он не имеет методов для значения, которое он держит в себе. Мы должны были бы реализовать все методы для <code>Vec&lt;T&gt;</code> непосредственно во <code>Wrapper</code>, так чтобы эти методы делегировались внутреннему <code>self.0</code>, что позволило бы нам обращаться с <code>Wrapper</code> точно так же, как с <code>Vec&lt;T&gt;</code>. Если бы мы хотели, чтобы новый тип имел каждый метод имеющийся у внутреннего типа, реализуя типаж <code>Deref</code> (обсуждается в разделе <a data-md-type="raw_html" href="ch15-02-deref.html#treating-smart-pointers-like-regular-references-with-the-deref-trait">“Работа с умными указателями как с обычными ссылками с помощью <code>Deref</code> типажа”</a><!-- ignore --> главы 15) у <code>Wrapper</code> для возвращения внутреннего типа, то это было бы решением. Если мы не хотим, чтобы тип <code>Wrapper</code> имел все методы внутреннего типа, например, для ограничения поведения типа <code>Wrapper</code>, то пришлось бы вручную реализовать только те методы, которые нам нужны.</p>
+<p>Этот шаблон newtype также полезен, даже когда типажи не задействованы. Давайте переключим внимание и рассмотрим некоторые продвинутые способы взаимодействия с системой типов Rust.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch20-01-unsafe-rust.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch20-04-advanced-types.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch20-01-unsafe-rust.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch20-04-advanced-types.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris-4d46571e.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

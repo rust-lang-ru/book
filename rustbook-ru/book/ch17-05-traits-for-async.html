@@ -1,0 +1,580 @@
+<!DOCTYPE HTML>
+<html lang="ru-RU" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Подробнее о трейтах для async - Язык программирования Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris-a4fe1a08.css">
+        <link rel="stylesheet" href="theme/2018-edition-ac5bde6f.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-af6cc48d.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-7c053197.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Язык программирования Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <!-- Old headings. Do not remove or links may break. -->
+<p><a id="digging-into-the-traits-for-async"></a></p>
+<h2 id="подробное-рассмотрение-трейтов-для-async"><a class="header" href="#подробное-рассмотрение-трейтов-для-async">Подробное рассмотрение трейтов для async</a></h2>
+<p>На протяжении всей главы мы по-разному использовали трейты <code>Future</code>, <code>Stream</code> и <code>StreamExt</code>. Однако до сих пор мы не углублялись в детали их работы и взаимодействия, что вполне нормально для большинства повседневных задач на Rust. Но иногда возникают ситуации, в которых необходимо лучше понимать некоторые подробности этих трейтов, а также тип <code>Pin</code> и трейт <code>Unpin</code>. В этом разделе мы разберём их ровно настолько подробно, чтобы вы могли справиться с такими ситуациями, оставив <em>по-настоящему</em> глубокое изучение для другой документации.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="future"></a></p>
+<h3 id="трейт-future"><a class="header" href="#трейт-future">Трейт <code>Future</code></a></h3>
+<p>Начнём с более подробного рассмотрения работы трейта <code>Future</code>. Вот как Rust определяет его:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::pin::Pin;
+use std::task::{Context, Poll};
+
+pub trait Future {
+    type Output;
+
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;;
+}
+<span class="boring">}</span></code></pre>
+<p>Это определение трейта содержит несколько новых типов и синтаксических конструкций, которые мы ещё не рассматривали, поэтому давайте разберём его по частям.</p>
+<p>Во-первых, ассоциированный тип <code>Output</code> трейта <code>Future</code> указывает, к какому значению разрешается фьючерс. Это аналогично ассоциированному типу <code>Item</code> у трейта <code>Iterator</code>. Во-вторых, у <code>Future</code> есть метод <code>poll</code>, который принимает специальную ссылку <code>Pin</code> в качестве параметра <code>self</code> и изменяемую ссылку на тип <code>Context</code>, а возвращает <code>Poll&lt;Self::Output&gt;</code>. Чуть позже мы подробнее поговорим о <code>Pin</code> и <code>Context</code>. Пока сосредоточимся на типе возвращаемого значения — <code>Poll</code>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum Poll&lt;T&gt; {
+    Ready(T),
+    Pending,
+}
+<span class="boring">}</span></code></pre>
+<p>Тип <code>Poll</code> похож на <code>Option</code>. У него есть один вариант со значением — <code>Ready(T)</code>, и один вариант без значения — <code>Pending</code>. Однако смысл <code>Poll</code> совсем не такой, как у <code>Option</code>! Вариант <code>Pending</code> означает, что фьючерсу ещё предстоит выполнить работу, поэтому вызывающая сторона должна будет проверить его снова позже. Вариант <code>Ready</code> означает, что <code>Future</code> завершил свою работу и значение типа <code>T</code> доступно.</p>
+<blockquote>
+<p>Примечание: Обычно метод <code>poll</code> не приходится вызывать напрямую. Но если такая необходимость возникнет, помните, что для большинства фьючерсов вызывающая сторона не должна повторно вызывать <code>poll</code> после того, как фьючерс вернул <code>Ready</code>. Многие фьючерсы при повторном опросе после перехода в готовое состояние вызовут панику. Фьючерсы, которые безопасно опрашивать повторно, явно указывают это в своей документации. Поведение похоже на поведение <code>Iterator::next</code>.</p>
+</blockquote>
+<p>Когда вы видите код, использующий <code>await</code>, Rust под капотом компилирует его в код, вызывающий <code>poll</code>. Если вернуться к Листингу 17-4, в котором мы выводили заголовок страницы для одного URL после завершения загрузки, Rust компилирует его во что-то похожее (хотя и не полностью эквивалентное) на следующий код:</p>
+<pre><code class="language-rust ignore">match page_title(url).poll() {
+    Ready(page_title) =&gt; match page_title {
+        Some(title) =&gt; println!("The title for {url} was {title}"),
+        None =&gt; println!("{url} had no title"),
+    }
+    Pending =&gt; {
+        // But what goes here?
+    }
+}</code></pre>
+<p>Что делать, если фьючерс всё ещё находится в состоянии <code>Pending</code>? Нам нужен способ пробовать снова, и снова, и снова, пока фьючерс наконец не будет готов. Другими словами, нам нужен цикл:</p>
+<pre><code class="language-rust ignore">let mut page_title_fut = page_title(url);
+loop {
+    match page_title_fut.poll() {
+        Ready(value) =&gt; match page_title {
+            Some(title) =&gt; println!("The title for {url} was {title}"),
+            None =&gt; println!("{url} had no title"),
+        }
+        Pending =&gt; {
+            // continue
+        }
+    }
+}</code></pre>
+<p>Однако если бы Rust компилировал код именно так, каждый <code>await</code> блокировал бы выполнение — то есть происходило бы ровно обратное тому, чего мы хотели добиться! Вместо этого Rust гарантирует, что цикл сможет передать управление чему-то, что приостановит работу над этим фьючерсом, позволит выполнить другие фьючерсы, а затем вернётся к проверке первого. Как мы уже видели, эту задачу выполняет асинхронная среда выполнения, а планирование и координация являются одними из её основных обязанностей.</p>
+<p>В разделе <a href="ch17-02-concurrency-with-async.html#sending-data-between-two-tasks-using-message-passing">«Передача данных между двумя задачами с помощью обмена сообщениями»</a><!-- ignore --> мы описывали ожидание <code>rx.recv</code>. Вызов <code>recv</code> возвращает фьючерс, а ожидание этого фьючерса приводит к его опросу. Мы отмечали, что среда выполнения приостановит фьючерс до тех пор, пока он не будет готов вернуть <code>Some(message)</code> или <code>None</code> при закрытии канала. Теперь, лучше понимая трейт <code>Future</code> и, в частности, <code>Future::poll</code>, мы можем увидеть, как это работает. Среда выполнения понимает, что фьючерс ещё не готов, когда он возвращает <code>Poll::Pending</code>. И наоборот, когда <code>poll</code> возвращает <code>Poll::Ready(Some(message))</code> или <code>Poll::Ready(None)</code>, среда выполнения понимает, что фьючерс <em>готов</em>, и продвигает его выполнение дальше.</p>
+<p>Точные детали того, как среда выполнения это делает, выходят за рамки этой книги. Главное — понять базовый механизм работы фьючерсов: среда выполнения <em>опрашивает</em> каждый фьючерс, за который отвечает, и снова приостанавливает его, если он пока не готов.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="pinning-and-the-pin-and-unpin-traits"></a>
+<a id="the-pin-and-unpin-traits"></a></p>
+<h3 id="тип-pin-и-трейт-unpin"><a class="header" href="#тип-pin-и-трейт-unpin">Тип <code>Pin</code> и трейт <code>Unpin</code></a></h3>
+<p>В Листинге 17-13 мы использовали макрос <code>trpl::join!</code>, чтобы ожидать три фьючерса. Однако часто возникает необходимость работать с коллекцией, например вектором, содержащим некоторое количество фьючерсов, которое станет известно только во время выполнения. Давайте изменим Листинг 17-13: поместим три фьючерса в вектор и вместо этого вызовем функцию <code>trpl::join_all</code>, как показано в Листинге 17-23. Пока этот код не компилируется.</p>
+<listing number="17-23" caption="Ожидание фьючерсов, находящихся в коллекции" file-name="src/main.rs">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::block_on(async {
+</span><span class="boring">        let (tx, mut rx) = trpl::channel();
+</span><span class="boring">
+</span><span class="boring">        let tx1 = tx.clone();
+</span><span class="boring">        let tx1_fut = async move {
+</span><span class="boring">            let vals = vec![
+</span><span class="boring">                String::from("hi"),
+</span><span class="boring">                String::from("from"),
+</span><span class="boring">                String::from("the"),
+</span><span class="boring">                String::from("future"),
+</span><span class="boring">            ];
+</span><span class="boring">
+</span><span class="boring">            for val in vals {
+</span><span class="boring">                tx1.send(val).unwrap();
+</span><span class="boring">                trpl::sleep(Duration::from_secs(1)).await;
+</span><span class="boring">            }
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">        let rx_fut = async {
+</span><span class="boring">            while let Some(value) = rx.recv().await {
+</span><span class="boring">                println!("received '{value}'");
+</span><span class="boring">            }
+</span><span class="boring">        };
+</span><span class="boring">
+</span>        let tx_fut = async move {
+            // --snip--
+<span class="boring">            let vals = vec![
+</span><span class="boring">                String::from("more"),
+</span><span class="boring">                String::from("messages"),
+</span><span class="boring">                String::from("for"),
+</span><span class="boring">                String::from("you"),
+</span><span class="boring">            ];
+</span><span class="boring">
+</span><span class="boring">            for val in vals {
+</span><span class="boring">                tx.send(val).unwrap();
+</span><span class="boring">                trpl::sleep(Duration::from_secs(1)).await;
+</span><span class="boring">            }
+</span>        };
+
+        let futures: Vec&lt;Box&lt;dyn Future&lt;Output = ()&gt;&gt;&gt; =
+            vec![Box::new(tx1_fut), Box::new(rx_fut), Box::new(tx_fut)];
+
+        trpl::join_all(futures).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</listing>
+<p>Мы помещаем каждый фьючерс в <code>Box</code>, чтобы превратить их в <em>объекты трейтов</em>, как мы делали в разделе «Возврат ошибок из <code>run</code>» главы 12. (Подробно объекты трейтов мы рассмотрим в главе 18.) Использование объектов трейтов позволяет обращаться с каждым анонимным фьючерсом, созданным этими типами, как с одним и тем же типом, поскольку все они реализуют трейт <code>Future</code>.</p>
+<p>Это может показаться неожиданным. Ведь ни один из асинхронных блоков ничего не возвращает, поэтому каждый из них создаёт <code>Future&lt;Output = ()&gt;</code>. Однако помните, что <code>Future</code> — это трейт, а компилятор создаёт уникальное перечисление для каждого асинхронного блока, даже если типы их выходных значений совпадают. Подобно тому как нельзя поместить две разные структуры, написанные вручную, в один <code>Vec</code>, нельзя смешивать и перечисления, сгенерированные компилятором.</p>
+<p>Затем мы передаём коллекцию фьючерсов в функцию <code>trpl::join_all</code> и ожидаем её результат. Однако код не компилируется. Вот соответствующая часть сообщений об ошибках:</p>
+<!-- manual-regeneration
+cd listings/ch17-async-await/listing-17-23
+cargo build
+copy *only* the final `error` block from the errors
+-->
+<pre><code class="language-text">error[E0277]: `dyn Future&lt;Output = ()&gt;` cannot be unpinned
+  --&gt; src/main.rs:48:33
+   |
+48 |         trpl::join_all(futures).await;
+   |                                 ^^^^^ the trait `Unpin` is not implemented for `dyn Future&lt;Output = ()&gt;`
+   |
+   = note: consider using the `pin!` macro
+           consider using `Box::pin` if you need to access the pinned value outside of the current scope
+   = note: required for `Box&lt;dyn Future&lt;Output = ()&gt;&gt;` to implement `Future`
+note: required by a bound in `futures_util::future::join_all::JoinAll`
+  --&gt; file:///home/oai/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
+   |
+27 | pub struct JoinAll&lt;F&gt;
+   |            ------- required by a bound in this struct
+28 | where
+29 |     F: Future,
+   |        ^^^^^^ required by this bound in `JoinAll`
+</code></pre>
+<p>Примечание в этом сообщении об ошибке подсказывает, что для <em>закрепления</em> значений следует использовать макрос <code>pin!</code>, то есть поместить их внутрь типа <code>Pin</code>, который гарантирует, что значения не будут перемещены в памяти. В сообщении об ошибке говорится, что закрепление необходимо, поскольку <code>dyn Future&lt;Output = ()&gt;</code> должен реализовать трейт <code>Unpin</code>, но в данный момент не реализует его.</p>
+<p>Функция <code>trpl::join_all</code> возвращает структуру <code>JoinAll</code>. Эта структура обобщена по типу <code>F</code>, для которого установлено ограничение: он должен реализовывать трейт <code>Future</code>. При непосредственном ожидании фьючерса с помощью <code>await</code> закрепление выполняется неявно. Поэтому нам не нужно использовать <code>pin!</code> везде, где мы хотим ожидать фьючерс.</p>
+<p>Однако здесь мы не ожидаем фьючерс напрямую. Вместо этого мы создаём новый фьючерс <code>JoinAll</code>, передавая коллекцию фьючерсов функции <code>join_all</code>. Сигнатура <code>join_all</code> требует, чтобы типы элементов коллекции реализовывали трейт <code>Future</code>, а <code>Box&lt;T&gt;</code> реализует <code>Future</code> только в том случае, если обёрнутый тип <code>T</code> является фьючерсом, реализующим трейт <code>Unpin</code>.</p>
+<p>Всё это довольно непросто усвоить! Чтобы действительно понять происходящее, давайте подробнее разберём работу трейта <code>Future</code>, в частности закрепление. Ещё раз взглянем на определение трейта <code>Future</code>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::pin::Pin;
+use std::task::{Context, Poll};
+
+pub trait Future {
+    type Output;
+
+    // Required method
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;;
+}
+<span class="boring">}</span></code></pre>
+<p>Параметр <code>cx</code> и его тип <code>Context</code> — ключ к тому, как среда выполнения определяет, когда нужно проверять тот или иной фьючерс, сохраняя при этом ленивость выполнения. Повторимся: подробности этой работы выходят за рамки главы, и обычно задумываться о них нужно только при написании собственной реализации <code>Future</code>. Вместо этого сосредоточимся на типе <code>self</code>, поскольку впервые встречаем метод, в котором для <code>self</code> явно указана аннотация типа. Аннотация типа для <code>self</code> работает так же, как аннотации типов для других параметров функции, но имеет два важных отличия:</p>
+<ul>
+<li>Она сообщает Rust, какого типа должен быть <code>self</code>, чтобы можно было вызвать метод.</li>
+<li>Это не может быть произвольный тип. Он ограничен типом, для которого реализован метод, ссылкой или умным указателем на этот тип либо типом <code>Pin</code>, оборачивающим ссылку на этот тип.</li>
+</ul>
+<p>Подробнее этот синтаксис мы рассмотрим в <a href="ch18-00-oop.html">главе 18</a><!-- ignore -->. Пока достаточно знать, что для опроса фьючерса и проверки того, находится ли он в состоянии <code>Pending</code> или <code>Ready(Output)</code>, нам нужна изменяемая ссылка на тип, обёрнутая в <code>Pin</code>.</p>
+<p><code>Pin</code> — это обёртка для типов, похожих на указатели, например <code>&amp;</code>, <code>&amp;mut</code>, <code>Box</code> и <code>Rc</code>. (Технически <code>Pin</code> работает с типами, реализующими трейты <code>Deref</code> или <code>DerefMut</code>, но фактически это эквивалентно работе только со ссылками и умными указателями.) Сам <code>Pin</code> не является указателем и не обладает собственным поведением, подобным подсчёту ссылок в <code>Rc</code> и <code>Arc</code>; это исключительно инструмент, который компилятор может использовать для обеспечения ограничений на использование указателей.</p>
+<p>Вспомнив, что <code>await</code> реализован через вызовы <code>poll</code>, мы можем понять часть сообщения об ошибке, которое видели ранее. Однако оно касалось <code>Unpin</code>, а не <code>Pin</code>. Как именно <code>Pin</code> связан с <code>Unpin</code> и почему для вызова <code>poll</code> трейт <code>Future</code> требует, чтобы <code>self</code> находился внутри типа <code>Pin</code>?</p>
+<p>Помните, что ранее в этой главе мы говорили: последовательность точек ожидания во фьючерсе компилируется в машину состояний, а компилятор следит за тем, чтобы эта машина состояний соблюдала все обычные правила безопасности Rust, включая правила заимствования и владения. Для этого Rust анализирует, какие данные нужны между одной точкой ожидания и следующей точкой ожидания либо концом асинхронного блока. Затем он создаёт соответствующий вариант в скомпилированной машине состояний. Каждый вариант получает необходимый доступ к данным, которые будут использоваться в соответствующей части исходного кода: либо принимая владение этими данными, либо получая изменяемую или неизменяемую ссылку на них.</p>
+<p>Пока всё хорошо: если в каком-либо асинхронном блоке мы допустим ошибку с владением или ссылками, об этом сообщит проверяющий заимствования. Но когда мы захотим переместить фьючерс, соответствующий этому блоку, — например, поместить его в <code>Vec</code>, чтобы передать в <code>join_all</code>, — всё становится сложнее.</p>
+<p>Когда мы перемещаем фьючерс — добавляя его в структуру данных, чтобы использовать в качестве итератора с <code>join_all</code>, или возвращая его из функции, — фактически перемещается созданная Rust машина состояний. И в отличие от большинства других типов Rust, фьючерсы, создаваемые для асинхронных блоков, могут содержать ссылки на самих себя в полях отдельных вариантов, как показано на упрощённой схеме на Рисунке 17-4.</p>
+<figure>
+<img alt="Таблица из одного столбца и трёх строк, изображающая фьючерс fut1: в первых двух строках находятся значения 0 и 1, а стрелка из третьей строки указывает обратно на вторую, обозначая внутреннюю ссылку внутри фьючерса." src="img/trpl17-04.svg" class="center" />
+<figcaption>Рисунок 17-4. Тип данных со ссылкой на самого себя</figcaption>
+</figure>
+<p>По умолчанию любой объект, содержащий ссылку на самого себя, небезопасно перемещать, поскольку ссылки всегда указывают на фактический адрес памяти объекта, на который они ссылаются (см. Рисунок 17-5). Если переместить саму структуру данных, её внутренние ссылки продолжат указывать на старое местоположение. Однако эта область памяти теперь недействительна. Во-первых, её значение не будет обновляться при изменении структуры данных. Во-вторых, и это важнее, компьютер теперь может повторно использовать эту область памяти для других целей! В результате позднее вы можете прочитать совершенно посторонние данные.</p>
+<figure>
+<img alt="Две таблицы, изображающие два фьючерса fut1 и fut2. После перемещения фьючерса из fut1 в fut2 первая таблица fut1 затенена, а её ячейки содержат знаки вопроса, обозначающие неизвестное содержимое памяти. Во второй таблице fut2 находятся значения 0 и 1, но стрелка из третьей строки указывает на вторую строку старого fut1, показывая, что указатель всё ещё ссылается на прежнее местоположение фьючерса." src="img/trpl17-05.svg" class="center" />
+<figcaption>Рисунок 17-5. Небезопасный результат перемещения типа данных со ссылкой на самого себя</figcaption>
+</figure>
+<p>Теоретически компилятор Rust мог бы пытаться обновлять каждую ссылку на объект при каждом его перемещении, но это создало бы значительные накладные расходы, особенно если пришлось бы обновлять целую сеть ссылок. Если бы вместо этого мы могли гарантировать, что рассматриваемая структура данных <em>не перемещается в памяти</em>, обновлять ссылки не пришлось бы. Именно для этого и нужен проверяющий заимствования Rust: в безопасном коде он не позволяет перемещать элемент, на который существует активная ссылка.</p>
+<p><code>Pin</code> развивает эту идею и предоставляет именно ту гарантию, которая нам нужна. Когда мы <em>закрепляем</em> значение, оборачивая указатель на него в <code>Pin</code>, это значение больше нельзя перемещать. Таким образом, если у вас есть <code>Pin&lt;Box&lt;SomeType&gt;&gt;</code>, закрепляется само значение <code>SomeType</code>, <em>а не</em> указатель <code>Box</code>. Этот процесс показан на Рисунке 17-6.</p>
+<figure>
+<img alt="Три блока, расположенные рядом. Первый подписан Pin, второй — b1, третий — pinned. Внутри pinned находится таблица fut с одним столбцом, представляющая фьючерс со ссылкой на самого себя: первая ячейка содержит 0, из второй выходит стрелка к четвёртой ячейке со значением 1, третья ячейка обозначена многоточием. Стрелка выходит из блока Pin, проходит через b1 и заканчивается внутри pinned на таблице fut." src="img/trpl17-06.svg" class="center" />
+<figcaption>Рисунок 17-6. Закрепление Box, указывающего на тип фьючерса со ссылкой на самого себя</figcaption>
+</figure>
+<p>На самом деле указатель <code>Box</code> по-прежнему можно свободно перемещать. Помните: нам важно, чтобы данные, на которые в конечном счёте ссылаются указатели, оставались на прежнем месте. Если перемещается указатель, <em>но данные, на которые он указывает</em>, остаются на том же месте, как на Рисунке 17-7, потенциальной проблемы нет. (В качестве самостоятельного упражнения изучите документацию типов и модуля <code>std::pin</code> и попробуйте разобраться, как сделать это с помощью <code>Pin</code>, оборачивающего <code>Box</code>.) Главное, что сам тип со ссылкой на себя не может перемещаться, поскольку он остаётся закреплённым.</p>
+<figure>
+<img alt="Четыре блока, расположенные в трёх условных столбцах. В отличие от предыдущей схемы, во втором столбце теперь два блока: b1 и b2. Блок b1 затенён, а стрелка от Pin проходит через b2 вместо b1. Это показывает, что указатель переместился с b1 на b2, но данные в pinned остались на месте." src="img/trpl17-07.svg" class="center" />
+<figcaption>Рисунок 17-7. Перемещение Box, указывающего на тип фьючерса со ссылкой на самого себя</figcaption>
+</figure>
+<p>Однако большинство типов совершенно безопасно перемещать, даже если они находятся за указателем <code>Pin</code>. О закреплении нужно задумываться только тогда, когда элементы содержат внутренние ссылки. Примитивные значения, например числа и логические значения, безопасны, поскольку в них очевидно нет внутренних ссылок. Их нет и у большинства типов, с которыми вы обычно работаете в Rust. Например, вы можете перемещать <code>Vec</code>, не беспокоясь об этом. Если исходить из того, что мы уже узнали, то при наличии <code>Pin&lt;Vec&lt;String&gt;&gt;</code> пришлось бы выполнять все операции через безопасный, но ограниченный API, предоставляемый <code>Pin</code>, хотя <code>Vec&lt;String&gt;</code> всегда безопасно перемещать, если на него нет других ссылок. Нам нужен способ сообщить компилятору, что в таких случаях перемещение элементов допустимо. Здесь и появляется <code>Unpin</code>.</p>
+<p><code>Unpin</code> — это маркерный трейт, похожий на трейты <code>Send</code> и <code>Sync</code>, которые мы рассматривали в главе 16. Поэтому у него нет собственной функциональности. Маркерные трейты существуют только для того, чтобы сообщить компилятору, что тип, реализующий определённый трейт, безопасно использовать в некотором контексте. <code>Unpin</code> сообщает компилятору, что для данного типа <em>не требуется</em> соблюдать какие-либо гарантии относительно возможности безопасного перемещения соответствующего значения.</p>
+<!--
+  The inline `<code>` in the next block is to allow the inline `<em>` inside it,
+  matching what NoStarch does style-wise, and emphasizing within the text here
+  that it is something distinct from a normal type.
+-->
+<p>Как и в случае с <code>Send</code> и <code>Sync</code>, компилятор автоматически реализует <code>Unpin</code> для всех типов, для которых может доказать безопасность такой реализации. Особый случай, опять же похожий на <code>Send</code> и <code>Sync,</code> — это ситуация, когда <code>Unpin</code> для типа <em>не</em> реализован. Такая ситуация обозначается записью <code>impl !Unpin for <em>SomeType</em></code>, где <code><em>SomeType</em></code> — имя типа, который должен соблюдать соответствующие гарантии, чтобы оставаться безопасным при использовании указателя на него внутри <code>Pin</code>.</p>
+<p>Иными словами, во взаимосвязи <code>Pin</code> и <code>Unpin</code> нужно помнить о двух вещах. Во-первых, <code>Unpin</code> — это «обычный» случай, а <code>!Unpin</code> — особый. Во-вторых, то, реализует ли тип <code>Unpin</code> или <code>!Unpin</code>, имеет значение <em>только</em> при использовании закреплённого указателя на этот тип, например <code>Pin&lt;&amp;mut <em>SomeType</em>&gt;</code>.</p>
+<p>Чтобы сделать это более наглядным, рассмотрим <code>String</code>: он содержит длину и составляющие его символы Unicode. Мы можем обернуть <code>String</code> в <code>Pin</code>, как показано на Рисунке 17-8. Однако <code>String</code>, как и большинство других типов в Rust, автоматически реализует <code>Unpin</code>.</p>
+<figure>
+<img alt="Слева находится блок Pin со стрелкой к блоку String справа. В блоке String содержится значение 5usize, обозначающее длину строки, и символы h, e, l, l, o, составляющие строку hello. Пунктирная рамка окружает блок String и его подпись, но не блок Pin." src="img/trpl17-08.svg" class="center" />
+<figcaption>Рисунок 17-8. Закрепление String; пунктирная линия показывает, что String реализует трейт Unpin и поэтому фактически не закреплён</figcaption>
+</figure>
+<p>В результате мы можем выполнять действия, которые были бы запрещены, если бы <code>String</code> вместо этого реализовывал <code>!Unpin</code>. Например, мы можем заменить одну строку другой в том же самом месте памяти, как показано на Рисунке 17-9. Это не нарушает контракт <code>Pin</code>, поскольку у <code>String</code> нет внутренних ссылок, из-за которых его было бы небезопасно перемещать. Именно поэтому он реализует <code>Unpin</code>, а не <code>!Unpin</code>.</p>
+<figure>
+<img alt="Данные строки hello из предыдущего примера теперь обозначены s1 и затенены. Блок Pin указывает на другой экземпляр String с именем s2: он действителен, имеет длину 7usize и содержит символы строки goodbye. s2 окружён пунктирной рамкой, поскольку он также реализует Unpin." src="img/trpl17-09.svg" class="center" />
+<figcaption>Рисунок 17-9. Замена String совершенно другим значением String в памяти</figcaption>
+</figure>
+<p>Теперь мы знаем достаточно, чтобы понять ошибки, возникшие при вызове <code>join_all</code> в Листинге 17-23. Изначально мы пытались переместить фьючерсы, созданные асинхронными блоками, в <code>Vec&lt;Box&lt;dyn Future&lt;Output = ()&gt;&gt;&gt;</code>. Но, как мы уже увидели, эти фьючерсы могут содержать внутренние ссылки, поэтому они не реализуют <code>Unpin</code> автоматически. После закрепления мы можем передать полученный тип <code>Pin</code> в <code>Vec</code>, будучи уверенными, что лежащие в основе фьючерсов данные <em>не</em> будут перемещены. В Листинге 17-24 показано, как исправить код: вызвать макрос <code>pin!</code> там, где определяется каждый из трёх фьючерсов, и изменить тип объекта трейта.</p>
+<listing number="17-24" caption="Закрепление фьючерсов, позволяющее переместить их в вектор">
+<pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span>use std::pin::{Pin, pin};
+
+// --snip--
+
+<span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::block_on(async {
+</span><span class="boring">        let (tx, mut rx) = trpl::channel();
+</span><span class="boring">
+</span><span class="boring">        let tx1 = tx.clone();
+</span>        let tx1_fut = pin!(async move {
+            // --snip--
+<span class="boring">            let vals = vec![
+</span><span class="boring">                String::from("hi"),
+</span><span class="boring">                String::from("from"),
+</span><span class="boring">                String::from("the"),
+</span><span class="boring">                String::from("future"),
+</span><span class="boring">            ];
+</span><span class="boring">
+</span><span class="boring">            for val in vals {
+</span><span class="boring">                tx1.send(val).unwrap();
+</span><span class="boring">                trpl::sleep(Duration::from_secs(1)).await;
+</span><span class="boring">            }
+</span>        });
+
+        let rx_fut = pin!(async {
+            // --snip--
+<span class="boring">            while let Some(value) = rx.recv().await {
+</span><span class="boring">                println!("received '{value}'");
+</span><span class="boring">            }
+</span>        });
+
+        let tx_fut = pin!(async move {
+            // --snip--
+<span class="boring">            let vals = vec![
+</span><span class="boring">                String::from("more"),
+</span><span class="boring">                String::from("messages"),
+</span><span class="boring">                String::from("for"),
+</span><span class="boring">                String::from("you"),
+</span><span class="boring">            ];
+</span><span class="boring">
+</span><span class="boring">            for val in vals {
+</span><span class="boring">                tx.send(val).unwrap();
+</span><span class="boring">                trpl::sleep(Duration::from_secs(1)).await;
+</span><span class="boring">            }
+</span>        });
+
+        let futures: Vec&lt;Pin&lt;&amp;mut dyn Future&lt;Output = ()&gt;&gt;&gt; =
+            vec![tx1_fut, rx_fut, tx_fut];
+<span class="boring">
+</span><span class="boring">        trpl::join_all(futures).await;
+</span><span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</listing>
+<p>Теперь этот пример компилируется и запускается. Мы также могли бы добавлять фьючерсы в вектор и удалять их из него во время выполнения, а затем объединять их все.</p>
+<p><code>Pin</code> и <code>Unpin</code> в основном важны при создании низкоуровневых библиотек или самой среды выполнения, а не при повседневном написании кода на Rust. Но теперь, когда вы встретите эти трейты в сообщениях об ошибках, вы будете лучше понимать, как исправить свой код!</p>
+<blockquote>
+<p>Примечание: Сочетание <code>Pin</code> и <code>Unpin</code> позволяет безопасно реализовать в Rust целый класс сложных типов, которые иначе было бы трудно создать из-за ссылок на самих себя. Сегодня типы, требующие <code>Pin</code>, чаще всего встречаются в асинхронном Rust, но иногда вы можете увидеть их и в других контекстах.</p>
+<p>Подробное описание работы <code>Pin</code> и <code>Unpin</code>, а также правил, которые они должны соблюдать, содержится в документации API для <code>std::pin</code>. Если вы хотите узнать больше, это отличная отправная точка.</p>
+<p>Если вы хотите ещё глубже разобраться в том, что происходит под капотом, обратитесь ко второй <a href="https://rust-lang.github.io/async-book/02_execution/01_chapter.html">главе</a><!-- ignore --> и четвёртой <a href="https://rust-lang.github.io/async-book/04_pinning/01_chapter.html">главе</a><!-- ignore --> книги <a href="https://rust-lang.github.io/async-book/"><em>Asynchronous Programming in Rust</em></a>.</p>
+</blockquote>
+<h3 id="трейт-stream"><a class="header" href="#трейт-stream">Трейт <code>Stream</code></a></h3>
+<p>Теперь, когда вы лучше понимаете трейты <code>Future</code>, <code>Pin</code> и <code>Unpin</code>, мы можем перейти к трейту <code>Stream</code>. Как вы узнали ранее в этой главе, потоки похожи на асинхронные итераторы. Однако, в отличие от <code>Iterator</code> и <code>Future</code>, на момент написания этой книги <code>Stream</code> не имеет определения в стандартной библиотеке. Тем не менее существует очень распространённое определение из крейта <code>futures</code>, которое используется во всей экосистеме.</p>
+<p>Прежде чем посмотреть, как трейт <code>Stream</code> может объединить возможности двух других трейтов, вспомним определения <code>Iterator</code> и <code>Future</code>. От <code>Iterator</code> мы получаем идею последовательности: его метод <code>next</code> предоставляет <code>Option&lt;Self::Item&gt;</code>. От <code>Future</code> мы получаем идею готовности с течением времени: его метод <code>poll</code> предоставляет <code>Poll&lt;Self::Output&gt;</code>. Чтобы представить последовательность элементов, которые становятся готовыми с течением времени, мы определяем трейт <code>Stream</code>, объединяющий эти возможности:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::pin::Pin;
+use std::task::{Context, Poll};
+
+trait Stream {
+    type Item;
+
+    fn poll_next(
+        self: Pin&lt;&amp;mut Self&gt;,
+        cx: &amp;mut Context&lt;'_&gt;
+    ) -&gt; Poll&lt;Option&lt;Self::Item&gt;&gt;;
+}
+<span class="boring">}</span></code></pre>
+<p>Трейт <code>Stream</code> определяет ассоциированный тип <code>Item</code>, задающий тип элементов, создаваемых потоком. Это похоже на <code>Iterator</code>, у которого может быть от нуля до множества элементов, и отличается от <code>Future</code>, у которого всегда есть одно значение <code>Output</code>, даже если его тип — <code>()</code>.</p>
+<p><code>Stream</code> также определяет метод для получения этих элементов. Мы называем его <code>poll_next</code>, чтобы показать, что он опрашивает поток так же, как <code>Future::poll</code>, и создаёт последовательность элементов так же, как <code>Iterator::next</code>. Его возвращаемый тип объединяет <code>Poll</code> и <code>Option</code>. Внешний тип — <code>Poll</code>, поскольку, как и фьючерс, поток нужно проверять на готовность. Внутренний тип — <code>Option</code>, поскольку, как и итератор, поток должен сообщать, остались ли ещё сообщения.</p>
+<p>Что-то очень похожее на это определение, вероятно, в итоге станет частью стандартной библиотеки Rust. А пока оно входит в набор инструментов большинства сред выполнения, поэтому на него можно рассчитывать. Всё, что мы рассмотрим далее, в целом должно применяться и к нему!</p>
+<p>Однако в примерах из раздела <a href="ch17-04-streams.html">«Потоки: последовательности фьючерсов»</a><!-- ignore --> мы не использовали ни <code>poll_next</code>, ни <code>Stream</code>. Вместо этого мы применяли <code>next</code> и <code>StreamExt</code>. Конечно, мы <em>могли бы</em> вручную работать непосредственно с API <code>poll_next</code>, самостоятельно написав машины состояний для <code>Stream</code>, точно так же, как <em>могли бы</em> работать с фьючерсами напрямую через их метод <code>poll</code>. Но использовать <code>await</code> гораздо удобнее, а трейт <code>StreamExt</code> предоставляет метод <code>next</code>, позволяющий именно так и поступать:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">use std::pin::Pin;
+</span><span class="boring">use std::task::{Context, Poll};
+</span><span class="boring">
+</span><span class="boring">trait Stream {
+</span><span class="boring">    type Item;
+</span><span class="boring">    fn poll_next(
+</span><span class="boring">        self: Pin&lt;&amp;mut Self&gt;,
+</span><span class="boring">        cx: &amp;mut Context&lt;'_&gt;,
+</span><span class="boring">    ) -&gt; Poll&lt;Option&lt;Self::Item&gt;&gt;;
+</span><span class="boring">}
+</span><span class="boring">
+</span>trait StreamExt: Stream {
+    async fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;
+    where
+        Self: Unpin;
+
+    // other methods...
+}
+<span class="boring">}</span></code></pre>
+<!--
+TODO: update this if/when tokio/etc. update their MSRV and switch to using async functions
+in traits, since the lack thereof is the reason they do not yet have this.
+-->
+<blockquote>
+<p>Примечание: Фактическое определение, которое мы использовали ранее в этой главе, немного отличается от приведённого здесь, поскольку оно поддерживает версии Rust, в которых ещё не было поддержки асинхронных функций в трейтах. Поэтому оно выглядит так:</p>
+<pre><code class="language-rust ignore">fn next(&amp;mut self) -&gt; Next&lt;'_, Self&gt; where Self: Unpin;</code></pre>
+<p>Тип <code>Next</code> — это <code>struct</code>, реализующий <code>Future</code>. Он позволяет нам указать время жизни ссылки на <code>self</code> с помощью <code>Next&lt;'_, Self&gt;</code>, чтобы <code>await</code> мог работать с этим методом.</p>
+</blockquote>
+<p>Трейт <code>StreamExt</code> также содержит все интересные методы, доступные для использования с потоками. <code>StreamExt</code> автоматически реализуется для каждого типа, который реализует <code>Stream</code>. При этом эти трейты определены отдельно, чтобы сообщество могло развивать удобные API, не затрагивая фундаментальный трейт.</p>
+<p>В версии <code>StreamExt</code>, используемой в крейте <code>trpl</code>, трейт не только определяет метод <code>next</code>, но и предоставляет его реализацию по умолчанию, которая корректно обрабатывает детали вызова <code>Stream::poll_next</code>. Это означает, что даже если вам нужно написать собственный тип потоковых данных, достаточно реализовать только <code>Stream</code>. После этого любой пользователь вашего типа сможет автоматически использовать с ним <code>StreamExt</code> и его методы.</p>
+<p>На этом мы закончим рассмотрение низкоуровневых деталей этих трейтов. В завершение давайте посмотрим, как фьючерсы (включая потоки), задачи и потоки операционной системы сочетаются друг с другом!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch17-04-streams.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch17-06-futures-tasks-threads.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch17-04-streams.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch17-06-futures-tasks-threads.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris-4d46571e.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

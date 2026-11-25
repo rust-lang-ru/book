@@ -1,0 +1,16 @@
+$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+warning: unreachable `else` clause
+ --> src/main.rs:2:15
+  |
+2 |     let x = 5 else {
+  |     --------- ^^^^
+  |     |
+  |     assigning to binding pattern will always succeed
+  |
+  = note: this pattern always matches, so the else clause is unreachable
+  = note: `#[warn(irrefutable_let_patterns)]` on by default
+
+warning: `patterns` (bin "patterns") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
+     Running `target/debug/patterns`

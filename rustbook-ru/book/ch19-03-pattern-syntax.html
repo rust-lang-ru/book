@@ -1,0 +1,669 @@
+<!DOCTYPE HTML>
+<html lang="ru-RU" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Синтаксис шаблона - Язык программирования Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris-a4fe1a08.css">
+        <link rel="stylesheet" href="theme/2018-edition-ac5bde6f.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-af6cc48d.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-7c053197.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Язык программирования Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h2 id="синтаксис-шаблонов"><a class="header" href="#синтаксис-шаблонов">Синтаксис шаблонов</a></h2>
+<p>В этом разделе мы рассмотрим все виды допустимого синтаксиса в шаблонах и расскажем, когда и для чего вам может понадобиться каждый из них.</p>
+<h3 id="сопоставление-с-литералом"><a class="header" href="#сопоставление-с-литералом">Сопоставление с литералом</a></h3>
+<p>Как мы уже видели в главе 6, можно сопоставлять шаблоны с литералами напрямую. В следующем коде есть несколько примеров:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 1;
+
+    match x {
+        1 =&gt; println!("one"),
+        2 =&gt; println!("two"),
+        3 =&gt; println!("three"),
+        _ =&gt; println!("anything"),
+    }
+<span class="boring">}</span></code></pre>
+<p>Этот код печатает <code>one</code>, потому что значение в <code>x</code> равно 1. Данный синтаксис полезен, когда вы хотите, чтобы ваш код предпринял действие, если он получает конкретное значение.</p>
+<h3 id="сопоставление-именованных-переменных"><a class="header" href="#сопоставление-именованных-переменных">Сопоставление именованных переменных</a></h3>
+<p>Именованные переменные - это неопровержимые (irrefutable) шаблоны, которые соответствуют любому значению и мы использовали их много раз в книге. Однако при использовании именованных переменных в выражениях <code>match</code> возникает сложность. Поскольку <code>match</code> начинает новую область видимости, то переменные, объявленные как часть шаблона внутри выражения <code>match</code>, будут затенять переменные с тем же именем вне конструкции <code>match</code> как и в случае со всеми переменными. В листинге 19-11 мы объявляем переменную с именем <code>x</code> со значением <code>Some(5)</code> и переменную <code>y</code> со значением <code>10</code>. Затем мы создаём выражение <code>match</code> для значения <code>x</code>. Посмотрите на шаблоны в ветках, <code>println!</code> в конце и попытайтесь выяснить, какой код будет напечатан прежде чем запускать его или читать дальше.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) =&gt; println!("Got 50"),
+        Some(y) =&gt; println!("Matched, y = {y}"),
+        _ =&gt; println!("Default case, x = {x:?}"),
+    }
+
+    println!("at the end: x = {x:?}, y = {y}");
+<span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 19-11: Выражение <code>match</code> с веткой, которая добавляет затенённую переменную <code>y</code></span></p>
+<p>Давайте рассмотрим, что происходит, когда выполняется выражение <code>match</code>. Шаблон в первой ветке не соответствует определённому значению <code>x</code>, поэтому выполнение продолжается.</p>
+<p>Шаблон во второй ветке вводит новую переменную с именем <code>y</code>, которая будет соответствовать любому значению в <code>Some</code>. Поскольку мы находимся в новой области видимости внутри выражения <code>match</code>, это новая переменная <code>y</code>, а не <code>y</code> которую мы объявили в начале со значением 10. Эта новая привязка <code>y</code> будет соответствовать любому значению из <code>Some</code>, которое находится в <code>x</code>. Следовательно, эта новая <code>y</code> связывается с внутренним значением <code>Some</code> из переменной <code>x</code>. Этим значением является <code>5</code>, поэтому выражение для этой ветки выполняется и печатает <code>Matched, y = 5</code>.</p>
+<p>Если бы <code>x</code> было значением <code>None</code> вместо <code>Some(5)</code>, то шаблоны в первых двух ветках не совпали бы, поэтому значение соответствовало бы подчёркиванию. Мы не ввели переменную <code>x</code> в шаблоне ветки со знаком подчёркивания, поэтому <code>x</code> в выражении все ещё является внешней переменной <code>x</code>, которая не была затенена. В этом гипотетическом случае совпадение <code>match</code> выведет <code>Default case, x = None</code>.</p>
+<p>Когда выражение <code>match</code> завершается, заканчивается его область видимости как и область действия внутренней переменной <code>y</code>. Последний <code>println!</code> печатает <code>at the end: x = Some(5), y = 10</code>.</p>
+<p>Чтобы создать выражение <code>match</code>, которое сравнивает значения внешних <code>x</code> и <code>y</code>, вместо введения затенённой переменной нужно использовать условие в сопоставлении образца. Мы поговорим про условие в сопоставлении шаблона позже в разделе <a href="#extra-conditionals-with-match-guards">“Дополнительные условия в сопоставлении образца”</a><!--  -->.</p>
+<h3 id="группа-шаблонов"><a class="header" href="#группа-шаблонов">Группа шаблонов</a></h3>
+<p>В выражениях <code>match</code> можно сравнивать сразу с несколькими шаблонами, используя синтаксис <code>|</code>, который является оператором паттерна <em>or</em>. Например, в следующем примере мы сопоставляем значение <code>x</code> с ветвями match, первая из которых содержит оператор <em>or</em>, так что если значение <code>x</code> совпадёт с любым из значений в этой ветви, то будет выполнен её код:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 1;
+
+    match x {
+        1 | 2 =&gt; println!("one or two"),
+        3 =&gt; println!("three"),
+        _ =&gt; println!("anything"),
+    }
+<span class="boring">}</span></code></pre>
+<p>Будет напечатано <code>one or two</code>.</p>
+<h3 id="сопоставление-диапазонов-с-помощью-"><a class="header" href="#сопоставление-диапазонов-с-помощью-">Сопоставление диапазонов с помощью <code>..=</code></a></h3>
+<p>Синтаксис <code>..=</code> позволяет нам выполнять сравнение с диапазоном значений. В следующем коде, когда в шаблоне найдётся совпадение с любым из значений заданного диапазона, будет выполнена эта ветка:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 5;
+
+    match x {
+        1..=5 =&gt; println!("one through five"),
+        _ =&gt; println!("something else"),
+    }
+<span class="boring">}</span></code></pre>
+<p>Если <code>x</code> равен 1, 2, 3, 4 или 5, то совпадение будет достигнуто в первой ветке. Этот синтаксис более удобен при указании нескольких значений для сравнения, чем использование оператора <code>|</code> для определения этой же идеи; если бы мы решили использовать <code>|</code>, нам пришлось бы написать <code>1 | 2 | 3 | 4 | 5</code>. Указание диапазона намного короче, особенно если мы хотим подобрать, скажем, любое число от 1 до 1 000!</p>
+<p>Компилятор проверяет, что диапазон не является пустым во время компиляции, и поскольку единственными типами, для которых Rust может определить, пуст диапазон или нет, являются <code>char</code> и числовые значения, диапазоны допускаются только с числовыми или <code>char</code> значениями.</p>
+<p>Вот пример использования диапазонов значений <code>char</code>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 'c';
+
+    match x {
+        'a'..='j' =&gt; println!("early ASCII letter"),
+        'k'..='z' =&gt; println!("late ASCII letter"),
+        _ =&gt; println!("something else"),
+    }
+<span class="boring">}</span></code></pre>
+<p>Rust может сообщить, что <code>'c'</code> находится в диапазоне первого шаблона и напечатать <code>early ASCII letter</code>.</p>
+<h3 id="деструктуризация-для-получения-значений"><a class="header" href="#деструктуризация-для-получения-значений">Деструктуризация для получения значений</a></h3>
+<p>Мы также можем использовать шаблоны для деструктуризации структур, перечислений и кортежей, чтобы использовать разные части этих значений. Давайте пройдёмся по каждому варианту.</p>
+<h4 id="деструктуризация-структуры"><a class="header" href="#деструктуризация-структуры">Деструктуризация структуры</a></h4>
+<p>В листинге 19-12 показана структура <code>Point</code> с двумя полями <code>x</code> и <code>y</code>, которые мы можем разделить, используя шаблон с инструкцией <code>let</code>.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x: a, y: b } = p;
+    assert_eq!(0, a);
+    assert_eq!(7, b);
+}</code></pre>
+<p><span class="caption">Листинг 19-12: Разбиение полей структуры в отдельные переменные</span></p>
+<p>Этот код создаёт переменные <code>a</code> и <code>b</code> , которые сопоставляются значениям полей <code>x</code> и <code>y</code> структуры <code>p</code> . Этот пример показывает, что имена переменных в шаблоне не обязательно должны совпадать с именами полей структуры. Однако обычно имена переменных сопоставляются с именами полей, чтобы было легче запомнить, какие переменные взяты из каких полей. Из-за этого, а также из-за того, что строчка <code>let Point { x: x, y: y } = p;</code> содержит много дублирования, в Rust ввели специальное сокращение для шаблонов, соответствующих полям структуры: вам нужно только указать имя поля структуры, и тогда переменные, созданные из шаблона, будут иметь те же имена. Код в листинге 19-13 аналогичен коду в Листинге 19-12, но в шаблоне <code>let</code> создаются переменные <code>x</code> и <code>y</code>, вместо <code>a</code> и <code>b</code> .</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x, y } = p;
+    assert_eq!(0, x);
+    assert_eq!(7, y);
+}</code></pre>
+<p><span class="caption">Листинг 19-13: Деструктуризация полей структуры с использованием сокращённой записи</span></p>
+<p>Этот код создаёт переменные <code>x</code> и <code>y</code>, которые соответствуют полям <code>x</code> и <code>y</code> из переменной <code>p</code>. В результате переменные <code>x</code> и <code>y</code> содержат значения из структуры <code>p</code>.</p>
+<p>А ещё, используя литеральные значения в шаблоне, мы можем деструктурировать, не создавая переменные для всех полей. Это даёт возможность, проверяя одни поля на соответствие конкретным значениям, создавать переменные для деструктуризации других.</p>
+<p>В листинге 19-14 показано выражение <code>match</code>, которое разделяет значения <code>Point</code> на три случая: точки, которые лежат непосредственно на оси <code>x</code> (что верно, когда <code>y = 0</code>), на оси <code>y</code> (<code>x = 0</code>) или ни то, ни другое.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust"><span class="boring">struct Point {
+</span><span class="boring">    x: i32,
+</span><span class="boring">    y: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    match p {
+        Point { x, y: 0 } =&gt; println!("On the x axis at {x}"),
+        Point { x: 0, y } =&gt; println!("On the y axis at {y}"),
+        Point { x, y } =&gt; {
+            println!("On neither axis: ({x}, {y})");
+        }
+    }
+}</code></pre>
+<p><span class="caption">Листинг 19-14: Деструктуризация и сопоставление с литералами в одном шаблоне</span></p>
+<p>Первая ветвь будет соответствовать любой точке, лежащей на оси <code>x</code>, если значение поля <code>y</code> будет соответствовать литералу <code>0</code>. Шаблон по-прежнему создаёт переменную <code>x</code>, которую мы сможем использовать в коде этой ветви.</p>
+<p>Аналогично, вторая ветвь совпадёт с любой точкой на оси <code>y</code>, в случае, если значение поля <code>x</code> будет равно <code>0</code>, а для значения поля <code>y</code> будет создана переменная <code>y</code>. Третья ветвь не содержит никаких литералов, поэтому она соответствует любому другому <code>Point</code> и создаёт переменные как для поля <code>x</code>, так и для поля <code>y</code>.</p>
+<p>В этом примере значение <code>p</code> совпадает по второй ветке, так как <code>x</code> содержит значение 0, поэтому этот код будет печатать <code>On the y axis at 7</code>.</p>
+<p>Помните, что выражение <code>match</code> перестаёт проверять следующие ветви, как только оно находит первый совпадающий шаблон, поэтому, даже если <code>Point { x: 0, y: 0}</code> находится на оси <code>x</code> и оси <code>y</code>, этот код будет печатать только <code>On the x axis at 0</code> .</p>
+<h4 id="деструктуризация-перечислений"><a class="header" href="#деструктуризация-перечислений">Деструктуризация перечислений</a></h4>
+<p>Мы уже деструктурировали перечисления в книге (см., например, листинг 6-5 главы 6), но<br>не обсуждали явно, что шаблон для деструктуризации перечисления должен соответствовать способу объявления данных, хранящихся в перечислении. Например, в листинге 19-15 мы используем перечисление <code>Message</code> из листинга 6-2 и пишем <code>match</code> с шаблонами, которые будут деструктурировать каждое внутреннее значение.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(0, 160, 255);
+
+    match msg {
+        Message::Quit =&gt; {
+            println!("The Quit variant has no data to destructure.");
+        }
+        Message::Move { x, y } =&gt; {
+            println!("Move in the x direction {x} and in the y direction {y}");
+        }
+        Message::Write(text) =&gt; {
+            println!("Text message: {text}");
+        }
+        Message::ChangeColor(r, g, b) =&gt; {
+            println!("Change color to red {r}, green {g}, and blue {b}");
+        }
+    }
+}</code></pre>
+<p><span class="caption">Листинг 19-15: Деструктуризация вариантов перечисления, содержащих разные виды значений</span></p>
+<p>Этот код напечатает <code>Change the color to red 0, green 160, and blue 255</code>. Попробуйте изменить значение переменной <code>msg</code>, чтобы увидеть выполнение кода в других ветках.</p>
+<p>Для вариантов перечисления без каких-либо данных, вроде <code>Message::Quit</code>, мы не можем деструктурировать значение, которого нет. Мы можем сопоставить только буквальное значение <code>Message::Quit</code> в этом шаблоне, но без переменных.</p>
+<p>Для вариантов перечисления похожих на структуры, таких как <code>Message::Move</code>, можно использовать шаблон, подобный шаблону, который мы указываем для сопоставления структур. После имени варианта мы помещаем фигурные скобки и затем перечисляем поля именами переменных. Таким образом мы разделяем фрагменты, которые будут использоваться в коде этой ветки. Здесь мы используем сокращённую форму, как в листинге 19-13.</p>
+<p>Для вариантов перечисления, подобных кортежу, вроде <code>Message::Write</code>, который содержит кортеж с одним элементом и <code>Message::ChangeColor</code>, содержащему кортеж с тремя элементами, шаблон аналогичен тому, который мы указываем для сопоставления кортежей. Количество переменных в шаблоне должно соответствовать количеству элементов в варианте, который мы сопоставляем.</p>
+<h4 id="деструктуризация-вложенных-структур-и-перечислений"><a class="header" href="#деструктуризация-вложенных-структур-и-перечислений">Деструктуризация вложенных структур и перечислений</a></h4>
+<p>До сих пор все наши примеры сопоставляли структуры или перечисления на один уровень глубины, но сопоставление может работать и с вложенными элементами! Например, мы можем реорганизовать код в листинге 19-15 для поддержки цветов RGB и HSV в сообщении <code>ChangeColor</code> , как показано в листинге 19-16.</p>
+<pre class="playground"><code class="language-rust">enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
+}
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(Color),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+
+    match msg {
+        Message::ChangeColor(Color::Rgb(r, g, b)) =&gt; {
+            println!("Change color to red {r}, green {g}, and blue {b}");
+        }
+        Message::ChangeColor(Color::Hsv(h, s, v)) =&gt; {
+            println!("Change color to hue {h}, saturation {s}, value {v}");
+        }
+        _ =&gt; (),
+    }
+}</code></pre>
+<p><span class="caption">Листинг 19-16: Сопоставление со вложенными перечислениями</span></p>
+<p>Шаблон первой ветки в выражении <code>match</code> соответствует варианту перечисления <code>Message::ChangeColor</code>, который содержит вариант <code>Color::Rgb</code>; затем шаблон привязывается к трём внутренними значениями <code>i32</code>. Шаблон второй ветки также соответствует варианту перечисления <code>Message::ChangeColor</code>, но внутреннее перечисление соответствует варианту <code>Color::Hsv</code>. Мы можем указать эти сложные условия в одном выражении <code>match</code>, даже если задействованы два перечисления.</p>
+<h4 id="деструктуризация-структур-и-кортежей"><a class="header" href="#деструктуризация-структур-и-кортежей">Деструктуризация структур и кортежей</a></h4>
+<p>Можно смешивать, сопоставлять и вкладывать шаблоны деструктуризации ещё более сложными способами. В следующем примере показана сложная деструктуризация, где мы вкладываем структуры и кортежи внутрь кортежа и деструктурируем из него все примитивные значения:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    struct Point {
+</span><span class="boring">        x: i32,
+</span><span class="boring">        y: i32,
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    let ((feet, inches), Point { x, y }) = ((3, 10), Point { x: 3, y: -10 });
+<span class="boring">}</span></code></pre>
+<p>Этот код позволяет нам разбивать сложные типы на составные части, чтобы мы могли использовать интересующие нас значения по отдельности.</p>
+<p>Деструктуризация с помощью шаблонов - это удобный способ использования фрагментов значений, таких как как значение из каждого поля в структуре, по отдельности друг от друга.</p>
+<h3 id="игнорирование-значений-в-шаблоне"><a class="header" href="#игнорирование-значений-в-шаблоне">Игнорирование значений в шаблоне</a></h3>
+<p>Вы видели, что иногда полезно игнорировать значения в шаблоне, например в последней ветке <code>match</code>, чтобы получить ветку, обрабатывающую любые значения, которая на самом деле ничего не делает, но учитывает все оставшиеся возможные значения. Есть несколько способов игнорировать целые значения или части значений в шаблоне: используя шаблон <code>_</code> (который вы видели), используя шаблон <code>_</code> внутри другого шаблона, используя имя, начинающееся с подчёркивания, либо используя <code>..</code>, чтобы игнорировать оставшиеся части значения. Давайте рассмотрим, как и зачем использовать каждый из этих шаблонов.</p>
+<h4 id="игнорирование-всего-значения-с-помощью-шаблона-_"><a class="header" href="#игнорирование-всего-значения-с-помощью-шаблона-_">Игнорирование всего значения с помощью шаблона <code>_</code></a></h4>
+<p>Мы использовали подчёркивание (<code>_</code>) в качестве шаблона подстановочного знака (wildcard), который будет сопоставляться с любом значением, но не будет привязываться к этому значению. Это особенно удобно в последней ветке выражения <code>match</code>, но мы также можем использовать его в любом шаблоне, в том числе в параметрах функции, как показано в листинге 19-17.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">fn foo(_: i32, y: i32) {
+    println!("This code only uses the y parameter: {y}");
+}
+
+fn main() {
+    foo(3, 4);
+}</code></pre>
+<p><span class="caption">Листинг 19-15: Использование <code>_</code> в сигнатуре функции</span></p>
+<p>Этот код полностью игнорирует значение <code>3</code>, переданное в качестве первого аргумента, и выведет на печать <code>This code only uses the y parameter: 4</code>.</p>
+<p>В большинстве случаев, когда вам больше не нужен какой-то из параметров функции, вы можете изменить её сигнатуру, убрав неиспользуемый параметр. Игнорирование параметра функции может быть особенно полезно в случаях когда, например, вы реализуете типаж с определённой сигнатурой, но тело функции в вашей реализации не нуждается в одном из параметров. В таком случае компилятор не будет выдавать предупреждения о неиспользуемых параметрах функции, как это было бы, если бы вы указали имя параметра.</p>
+<h4 id="игнорирование-частей-значения-с-помощью-вложенного-_"><a class="header" href="#игнорирование-частей-значения-с-помощью-вложенного-_">Игнорирование частей значения с помощью вложенного <code>_</code></a></h4>
+<p>Также, <code>_</code> можно использовать внутри шаблонов, чтобы игнорировать какую-то часть значения, например, когда мы хотим проверить только определённую деталь, а остальные параметры нам не понадобятся в коде, который нужно выполнить. В листинге 19-18 показан код, ответственный за управление значениями настроек. Согласно бизнес-требованиям, пользователь не может изменить установленное значение параметра, но может удалить его и задать ему новое значение, если на данный момент оно отсутствует.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut setting_value = Some(5);
+    let new_setting_value = Some(10);
+
+    match (setting_value, new_setting_value) {
+        (Some(_), Some(_)) =&gt; {
+            println!("Can't overwrite an existing customized value");
+        }
+        _ =&gt; {
+            setting_value = new_setting_value;
+        }
+    }
+
+    println!("setting is {setting_value:?}");
+<span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 19-18: Использование подчёркивания в шаблонах, соответствующих вариантам <code>Some</code>, когда нам не нужно использовать значение внутри <code>Some</code></span></p>
+<p>Этот код будет печатать <code>Can't overwrite an existing customized value</code>, а затем <code>setting is Some(5)</code>. В первой ветке нам не нужно сопоставлять или использовать значения внутри варианта <code>Some</code>, но нам нужно проверить случай, когда <code>setting_value</code> и <code>new_setting_value</code> являются вариантом <code>Some</code>. В этом случае мы печатаем причину, почему мы не меняем значение <code>setting_value</code> и оно не меняется.</p>
+<p>Во всех других случаях (если либо <code>setting_value</code>, либо <code>new_setting_value</code> являются вариантом <code>None</code>), выраженных шаблоном <code>_</code> во второй ветке, мы хотим, чтобы <code>new_setting_value</code> стало равно <code>setting_value</code>.</p>
+<p>Мы также можем использовать подчёркивание в нескольких местах в одном шаблоне, чтобы игнорировать конкретные значения. Листинг 19-19 показывает пример игнорирования второго и четвёртого значения в кортеже из пяти элементов.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, _, third, _, fifth) =&gt; {
+            println!("Some numbers: {first}, {third}, {fifth}");
+        }
+    }
+<span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 19-19: Игнорирование нескольких частей кортежа</span></p>
+<p>Этот код напечатает <code>Some numbers: 2, 8, 32</code>, а значения 4 и 16 будут проигнорированы.</p>
+<h4 id="игнорирование-неиспользуемой-переменной-начинающейся-с-символа-_-в-имени"><a class="header" href="#игнорирование-неиспользуемой-переменной-начинающейся-с-символа-_-в-имени">Игнорирование неиспользуемой переменной, начинающейся с символа <code>_</code> в имени</a></h4>
+<p>Если вы создаёте переменную, но нигде её не используете, Rust обычно выдаёт предупреждение, потому что неиспользуемая переменная может быть ошибкой. Но иногда полезно создать переменную, которую вы пока не используете, например, когда вы создаёте прототип или только начинаете проект. В этой ситуации вы можете сказать Rust не предупреждать вас о неиспользуемой переменной, начав имя переменной с подчёркивания. В листинге 19-20 мы создаём две неиспользуемые переменные, но когда мы компилируем такой код, мы должны получить предупреждение только об одной из них.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let _x = 5;
+    let y = 10;
+}</code></pre>
+<p><span class="caption">Листинг 19-20: Начинаем имя переменной с подчёркивания, чтобы не получить предупреждения о неиспользованных переменных</span></p>
+<p>Здесь мы получаем предупреждение о том, что не используем переменную <code>y</code>, но мы не получаем предупреждения о неиспользовании переменной<code>_x</code>.</p>
+<p>Обратите внимание, что есть небольшая разница между использованием только <code>_</code> и использованием имени, начинающегося с подчёркивания. Синтаксис <code>_x </code> по-прежнему привязывает значение к переменной, тогда как <code>_</code> не привязывает ничего. В листинге 19-21 представлена ошибка, показывающая, в каком случае это различие имеет значение.</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s = Some(String::from("Hello!"));
+
+    if let Some(_s) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
+<span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 19-21: Неиспользуемая переменная, начинающаяся с подчёркивания, по-прежнему привязывает значение, что может привести к смене владельца значения</span></p>
+<p>Мы получим ошибку, поскольку значение <code>s</code> все равно будет перемещено в <code>_s</code>, что не позволит нам больше воспользоваться <code>s</code>. Однако использование подчёркивания само по себе никогда не приводит к привязке к значению. Листинг 19-22 скомпилируется без ошибок, поскольку <code>s</code> не будет перемещён в <code>_</code>.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s = Some(String::from("Hello!"));
+
+    if let Some(_) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
+<span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 19-22. Использование подчёркивания не привязывает значение</span></p>
+<p>Этот код работает нормально, потому что мы никогда не привязываем <code>s</code> к чему либо; оно не перемещается.</p>
+<h4 id="игнорирование-оставшихся-частей-значения-с-помощью-"><a class="header" href="#игнорирование-оставшихся-частей-значения-с-помощью-">Игнорирование оставшихся частей значения с помощью <code>..</code></a></h4>
+<p>Со значениями, которые имеют много частей, можно использовать синтаксис <code>..</code>, чтобы использовать только некоторые части и игнорировать остальные, избегая необходимости перечислять подчёркивания для каждого игнорируемого значения. Шаблон <code>..</code> игнорирует любые части значения, которые мы явно не сопоставили в остальной частью шаблона. В листинге 19-23 мы имеем структуру <code>Point</code>, которая содержит координату в трёхмерном пространстве. В выражении <code>match</code> мы хотим работать только с координатой <code>x</code> и игнорировать значения полей <code>y</code> и <code>z</code>.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    struct Point {
+        x: i32,
+        y: i32,
+        z: i32,
+    }
+
+    let origin = Point { x: 0, y: 0, z: 0 };
+
+    match origin {
+        Point { x, .. } =&gt; println!("x is {x}"),
+    }
+<span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 19-21: Игнорирование полей структуры <code>Point</code> кроме поля <code>x</code> с помощью <code>..</code></span></p>
+<p>Мы перечисляем значение <code>x</code> и затем просто включаем шаблон <code>..</code>. Это быстрее, чем перечислять <code>y: _</code> и <code>z: _</code>, особенно когда мы работаем со структурами, которые имеют много полей, в ситуациях, когда только одно или два поля представляют для нас интерес.</p>
+<p>Синтаксис <code>..</code> раскроется до необходимого количества значений. В листинге 19-24 показано, как использовать <code>..</code> с кортежем.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, .., last) =&gt; {
+            println!("Some numbers: {first}, {last}");
+        }
+    }
+}</code></pre>
+<p><span class="caption">Листинг 19-24: Сопоставление только первого и последнего значений в кортеже и игнорирование всех других значений</span></p>
+<p>В этом коде первое и последнее значение соответствуют <code>first</code> и <code>last</code>. Конструкция <code>..</code> будет соответствовать и игнорировать всё, что находится между ними.</p>
+<p>Однако использование <code>..</code> должно быть однозначным. Если неясно, какие значения предназначены для сопоставления, а какие следует игнорировать, Rust выдаст ошибку. В листинге 19-25 показан пример неоднозначного использования <code>..</code>, поэтому он не будет компилироваться.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (.., second, ..) =&gt; {
+            println!("Some numbers: {second}")
+        },
+    }
+}</code></pre>
+<p><span class="caption">Листинг 19-25: Попытка использовать <code>..</code> неоднозначным способом</span></p>
+<p>При компиляции примера, мы получаем эту ошибку:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+error: `..` can only be used once per tuple pattern
+ --&gt; src/main.rs:5:22
+  |
+5 |         (.., second, ..) =&gt; {
+  |          --          ^^ can only be used once per tuple pattern
+  |          |
+  |          previously used here
+
+error: could not compile `patterns` (bin "patterns") due to 1 previous error
+</code></pre>
+<p>Rust не может определить, сколько значений в кортеже нужно игнорировать, прежде чем сопоставить значение с <code>second</code>, и сколько следующих значений проигнорировать после этого. Этот код может означать, что мы хотим игнорировать <code>2</code>, связать <code>second</code> с <code>4</code>, а затем игнорировать <code>8</code>, <code>16</code> и <code>32</code>; или что мы хотим игнорировать <code>2</code> и <code>4</code>, связать <code>second</code> с <code>8</code>, а затем игнорировать <code>16</code> и <code>32</code>; и так далее. Имя переменной <code>second</code> не означает ничего особенного для Rust, поэтому мы получаем ошибку компилятора, так как использование <code>..</code> в двух местах как здесь, является неоднозначным.</p>
+<h3 id="дополнительные-условия-оператора-сопоставления-match-guards"><a class="header" href="#дополнительные-условия-оператора-сопоставления-match-guards">Дополнительные условия оператора сопоставления (Match Guards)</a></h3>
+<p><em>Условие сопоставления</em> (match guard) является дополнительным условием <code>if</code>, указанным после шаблона в ветке <code>match</code>, которое также должно быть выполнено, чтобы ветка была выбрана. Условия сопоставления полезны для выражения более сложных идей, чем позволяет только шаблон.</p>
+<p>Условие может использовать переменные, созданные в шаблоне. В листинге 19-26 показан <code>match</code>, в котором первая ветка имеет шаблон <code>Some(x)</code>, а также имеет условие сопоставления, <code>if x % 2 == 0</code> (которое будет истинным, если число чётное).</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let num = Some(4);
+
+    match num {
+        Some(x) if x % 2 == 0 =&gt; println!("The number {x} is even"),
+        Some(x) =&gt; println!("The number {x} is odd"),
+        None =&gt; (),
+    }
+<span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 19-26: Добавление условия сопоставления в шаблон</span></p>
+<p>В этом примере будет напечатано <code>The number 4 is even</code>. Когда <code>num</code> сравнивается с шаблоном в первой ветке, он совпадает, потому что <code>Some(4)</code> соответствует <code>Some(x)</code>. Затем условие сопоставления проверяет, равен ли 0 остаток от деления <code>x</code> на 2 и если это так, то выбирается первая ветка.</p>
+<p>Если бы <code>num</code> вместо этого было <code>Some(5)</code>, условие в сопоставлении первой ветки было бы ложным, потому что остаток от 5 делённый на 2, равен 1, что не равно 0. Rust тогда перешёл бы ко второй ветке, которое совпадает, потому что вторая ветка не имеет условия сопоставления и, следовательно, соответствует любому варианту <code>Some</code>.</p>
+<p>Невозможно выразить условие <code>if x % 2 == 0</code> внутри шаблона, поэтому условие в сопоставлении даёт нам возможность выразить эту логику. Недостатком этой дополнительной выразительности является то, что компилятор не пытается проверять полноту, когда задействованы выражения с условием в сопоставлении.</p>
+<p>В листинге 19-11 мы упомянули, что можно использовать условия сопоставления для решения нашей проблемы затенения шаблона. Напомним, что внутри шаблона в выражении <code>match</code> была создана новая переменная, вместо использования внешней к <code>match</code> переменной. Эта новая переменная означала, что мы не могли выполнить сравнение с помощью значения внешней переменной. В листинге 19-27 показано, как мы можем использовать условие сопоставления для решения этой проблемы.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) =&gt; println!("Got 50"),
+        Some(n) if n == y =&gt; println!("Matched, n = {n}"),
+        _ =&gt; println!("Default case, x = {x:?}"),
+    }
+
+    println!("at the end: x = {x:?}, y = {y}");
+}</code></pre>
+<p><span class="caption">Листинг 19-27. Использование условия сопоставления для проверки на равенство со значением внешней переменной</span></p>
+<p>Этот код теперь напечатает <code>Default case, x = Some(5)</code>. Шаблон во второй ветке не вводит новую переменную <code>y</code>, которая будет затенять внешнюю <code>y</code>, это означает, что теперь можно использовать внешнюю переменную <code>y</code> в условии сопоставления. Вместо указания шаблона как <code>Some(y)</code>, который бы затенял бы внешнюю <code>y</code>, мы указываем <code>Some(n)</code>. Это создаёт новую переменную <code>n</code>, которая ничего не затеняет, так как переменной <code>n</code> нет вне конструкции <code>match</code>.</p>
+<p>Условие сопоставления <code>if n == y</code> не является шаблоном и следовательно, не вводит новые переменные. Переменная <code>y</code> <em>и есть</em> внешняя <code>y</code>, а не новая затенённая <code>y</code>, и теперь мы можем искать элемент, который будет иметь то же значение, что и внешняя <code>y</code>, путём сравнения <code>n</code> и <code>y</code>.</p>
+<p>Вы также можете использовать оператор <em>или</em> <code>|</code> в условии сопоставления, чтобы указать несколько шаблонов; условие сопоставления будет применяться ко всем шаблонам. В листинге 19-28 показан приоритет комбинирования условия сопоставления с шаблоном, который использует <code>|</code>. Важной частью этого примера является то, что условие сопоставления <code>if y</code> применяется к <code>4</code>, <code>5</code>, <em>и</em> к <code>6</code>, хотя это может выглядеть как будто <code>if y</code> относится только к <code>6</code>.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 4;
+    let y = false;
+
+    match x {
+        4 | 5 | 6 if y =&gt; println!("yes"),
+        _ =&gt; println!("no"),
+    }
+<span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 19-28: Комбинирование нескольких шаблонов с условием сопоставления</span></p>
+<p>Условие сопоставления гласит, что ветка совпадает, только если значение <code>x</code> равно <code>4</code>, <code>5</code> или <code>6</code>, <em>и</em> если <code>y</code> равно <code>true</code>. Когда этот код выполняется, шаблон первой ветки совпадает, потому что <code>x</code> равно <code>4</code>, но условие сопоставления <code>if y</code> равно false, поэтому первая ветка не выбрана. Код переходит ко второй ветке, которая совпадает, и эта программа печатает <code>no</code>. Причина в том, что условие <code>if</code> применяется ко всему шаблону <code>4 | 5 | 6</code>, а не только к последнему значению <code>6</code>. Другими словами, приоритет условия сопоставления по отношению к шаблону ведёт себя так:</p>
+<pre><code class="language-text">(4 | 5 | 6) if y =&gt; ...
+</code></pre>
+<p>а не так:</p>
+<pre><code class="language-text">4 | 5 | (6 if y) =&gt; ...
+</code></pre>
+<p>После запуска кода, старшинство в поведении становится очевидным: если условие сопоставления применялось бы только к конечному значению в списке, указанном с помощью оператора <code>|</code>, то ветка бы совпала и программа напечатала бы <code>yes</code>.</p>
+<h3 id="связывание-"><a class="header" href="#связывание-">Связывание <code>@</code></a></h3>
+<p>Оператор <em>at</em> (<code>@</code>) позволяет создать переменную, которая содержит значение, одновременно с тем, как мы проверяем, соответствует ли это значение шаблону. В листинге 19-29 показан пример, в котором мы хотим проверить, что перечисление <code>Message::Hello</code> со значением поля <code>id</code> находится в диапазоне <code>3..=7</code>. Но мы также хотим привязать такое значение к переменной <code>id_variable</code>, чтобы использовать его внутри кода данной ветки. Мы могли бы назвать эту переменную <code>id</code>, так же как поле, но для этого примера мы будем использовать другое имя.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum Message {
+        Hello { id: i32 },
+    }
+
+    let msg = Message::Hello { id: 5 };
+
+    match msg {
+        Message::Hello { id: id @ 3..=7 } =&gt; {
+            println!("Found an id in range: {id}")
+        }
+        Message::Hello { id: 10..=12 } =&gt; {
+            println!("Found an id in another range")
+        }
+        Message::Hello { id } =&gt; println!("Found some other id: {id}"),
+    }
+<span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 19-29: Использование <code>@</code> для привязывания значения в шаблоне, с одновременной его проверкой</span></p>
+<p>В этом примере будет напечатано <code>Found an id in range: 5</code>. Указывая <code>id_variable @</code> перед диапазоном <code>3..=7</code>, мы захватываем любое значение, попадающее в диапазон, одновременно проверяя, что это значение соответствует диапазону в шаблоне.</p>
+<p>Во второй ветке, где у нас в шаблоне указан только диапазон, код этой ветки не имеет переменной, которая содержит фактическое значение поля <code>id</code>. Значение поля <code>id</code> могло бы быть 10, 11 или 12, но код, соответствующий этому шаблону, не знает, чему оно равно. Код шаблона не может использовать значение из поля <code>id</code>, потому что мы не сохранили значение <code>id</code> в переменной.</p>
+<p>В последней ветке, где мы указали переменную без диапазона, у нас есть значение, доступное для использования в коде ветки, в переменной с именем <code>id</code>. Причина в том, что мы использовали упрощённый синтаксис полей структуры. Но мы не применяли никакого сравнения со значением в поле <code>id</code> в этой ветке, как мы это делали в первых двух ветках: любое значение будет соответствовать этому шаблону.</p>
+<p>Использование <code>@</code> позволяет проверять значение и сохранять его в переменной в пределах одного шаблона.</p>
+<h2 id="итоги"><a class="header" href="#итоги">Итоги</a></h2>
+<p>Шаблоны Rust очень помогают различать разные виды данных. При использовании их в выражениях <code>match</code>, Rust гарантирует, что ваши шаблоны охватывают все возможные значения, потому что иначе ваша программа не скомпилируется. Шаблоны в инструкциях <code>let</code> и параметрах функций делают такие конструкции более полезными, позволяя разбивать элементы на более мелкие части, одновременно присваивая их значения переменным. Мы можем создавать простые или сложные шаблоны в соответствии с нашими потребностями.</p>
+<p>Далее, в предпоследней главе книги, мы рассмотрим некоторые продвинутые аспекты различных возможностей Rust.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch19-02-refutability.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch20-00-advanced-features.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch19-02-refutability.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch20-00-advanced-features.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris-4d46571e.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

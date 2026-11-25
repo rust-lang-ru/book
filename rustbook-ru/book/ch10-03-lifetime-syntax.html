@@ -1,0 +1,661 @@
+<!DOCTYPE HTML>
+<html lang="ru-RU" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Валидация ссылок посредством сроков жизни - Язык программирования Rust</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris-a4fe1a08.css">
+        <link rel="stylesheet" href="theme/2018-edition-ac5bde6f.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-af6cc48d.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-7c053197.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Язык программирования Rust</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h2 id="валидация-ссылок-при-помощи-времён-жизни"><a class="header" href="#валидация-ссылок-при-помощи-времён-жизни">Валидация ссылок при помощи времён жизни<a name="validating-references-with-lifetimes"></a></a></h2>
+<p>Сроки (времена) жизни - ещё один вид обобщений, с которыми мы уже встречались. Если раньше мы использовали обобщения, чтобы убедиться, что тип обладает нужным нам поведением, теперь мы будем использовать сроки жизни для того, чтобы быть уверенными, что ссылки действительны как минимум столько времени в процессе исполнения программы, сколько нам требуется.</p>
+<p>В разделе <a href="ch04-02-references-and-borrowing.html#references-and-borrowing">“Ссылки и заимствование”</a> главы 4, мы кое о чём умолчали: у каждой ссылки в Rust есть своё <em>время жизни</em> — область кода, на протяжении которого данная ссылка действительна (valid). В большинстве случаев сроки жизни выводятся неявно — так же, как у типов (нам требуется явно объявлять типы лишь в тех случаях, когда при автоматическом выведении типа возможны варианты). Точно так же мы должны явно объявлять сроки жизни тех ссылок, для которых времена жизни могут быть определены компилятором по-разному. Rust требует от нас объявлять взаимосвязи посредством обобщённых параметров сроков жизни, чтобы убедиться в том, что во время исполнения все действующие ссылки будут корректными.</p>
+<p>Аннотирование времени жизни — это концепция, отсутствующая в большинстве других языков программирования, так что она может показаться незнакомой. Хотя в этой главе мы не будем рассматривать времена жизни во всех деталях, тем не менее, мы обсудим основные ситуации, в которых вы можете столкнуться с синтаксисом времени жизни, что позволит вам получше ознакомиться с этой концепцией.</p>
+<h3 id="времена-жизни-предотвращают-появление-повисших-ссылок"><a class="header" href="#времена-жизни-предотвращают-появление-повисших-ссылок">Времена жизни предотвращают появление “повисших” ссылок</a></h3>
+<p>Основное предназначение сроков жизни — предотвращать появление так называемых <em>“повисших ссылок”</em> (<em>dangling references</em>), из-за которых программа обращается не к тем данным, к которым она собиралась обратиться. Рассмотрим программу из листинга 10-16, имеющую внешнюю и внутреннюю области видимости.</p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let r;
+
+    {
+        let x = 5;
+        r = &amp;x;
+    }
+
+    println!("r: {r}");
+}</code></pre>
+<p><span class="caption">Листинг 10-16: Попытка использования ссылки, значение которой вышло из области видимости</span></p>
+<blockquote>
+<p>Примечание: примеры в листингах 10-16, 10-17 и 10-23 объявляют переменные без указания их начального значения, поэтому имя переменной существует во внешней области видимости. На первый взгляд может показаться, что это противоречит отсутствию в Rust нулевых (null) значений. Однако, если мы попытаемся использовать переменную, прежде чем присвоить ей значение, мы получим ошибку компиляции, которая показывает, что Rust действительно не разрешает нулевые (null) значения.</p>
+</blockquote>
+<p>Внешняя область видимости объявляет переменную с именем <code>r</code> без начального значения, а внутренняя область объявляет переменную с именем <code>x</code> с начальным значением <code>5</code>. Во внутренней области мы пытаемся установить значение <code>r</code> как ссылку на <code>x</code>. Затем внутренняя область видимости заканчивается и мы пытаемся напечатать значение из <code>r</code>. Этот код не будет скомпилирован, потому что значение на которое ссылается <code>r</code> исчезает из области видимости, прежде чем мы попробуем использовать его. Вот сообщение об ошибке:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0597]: `x` does not live long enough
+ --&gt; src/main.rs:6:13
+  |
+5 |         let x = 5;
+  |             - binding `x` declared here
+6 |         r = &amp;x;
+  |             ^^ borrowed value does not live long enough
+7 |     }
+  |     - `x` dropped here while still borrowed
+8 |
+9 |     println!("r: {r}");
+  |                   - borrow later used here
+
+For more information about this error, try `rustc --explain E0597`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Переменная <code>x</code> «не живёт достаточно долго». Причина в том, что <code>x</code> выйдет из области видимости, когда эта внутренняя область закончится в строке 7. Но <code>r</code> все ещё является действительной во внешней области видимости; поскольку её охват больше, мы говорим, что она «живёт дольше». Если бы Rust позволил такому коду работать, то переменная <code>r</code> смогла бы ссылаться на память, которая уже была освобождена (в тот момент, когда <code>x</code> вышла из внутренней области видимости), и всё что мы попытались бы сделать с <code>r</code> работало бы неправильно. Как же Rust определяет, что этот код некорректен? Он использует для этого анализатор заимствований (<em>borrow checker</em>).</p>
+<h3 id="анализатор-заимствований"><a class="header" href="#анализатор-заимствований">Анализатор заимствований</a></h3>
+<p>Компилятор Rust имеет в своём составе <em>анализатор заимствований</em>, который сравнивает области видимости для определения, являются ли все заимствования действительными. В листинге 10-17 показан тот же код, что и в листинге 10-16, но с аннотациями, показывающими времена жизни переменных.</p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let r;                // ---------+-- 'a
+                          //          |
+    {                     //          |
+        let x = 5;        // -+-- 'b  |
+        r = &amp;x;           //  |       |
+    }                     // -+       |
+                          //          |
+    println!("r: {r}");   //          |
+}                         // ---------+</code></pre>
+<p><span class="caption">Пример 10-17: Аннотация времён жизни переменных <code>r</code> и <code>x</code>, с помощью идентификаторов времени жизни <code>’a</code> и <code>’b</code>, соответственно</span></p>
+<p>Здесь мы описали время жизни для <code>r</code> с помощью <code>'a</code> и время жизни <code>x</code> с помощью <code>'b</code> . Как видите, время жизни <code>'b</code> внутреннего блока гораздо меньше, чем время жизни <code>'a</code> внешнего блока. Во время компиляции Rust сравнивает продолжительность двух времён жизни и видит, что <code>r</code> имеет время жизни <code>'a</code>, но ссылается на память со временем жизни <code>'b</code>. Программа отклоняется, потому что <code>'b</code> короче, чем <code>'a</code>: объект ссылки не живёт так же долго, как сама ссылка.</p>
+<p>Листинг 10-18 исправляет код, чтобы в нём не было повисшей ссылки, и компилируется без ошибок.</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;            // ----------+-- 'b
+                          //           |
+    let r = &amp;x;           // --+-- 'a  |
+                          //   |       |
+    println!("r: {r}");   //   |       |
+                          // --+       |
+}                         // ----------+</code></pre>
+<p><span class="caption">Листинг 10-18: Ссылка корректна, так как данные имеют более продолжительное время жизни, чем ссылка на эти данные</span></p>
+<p>Здесь переменная <code>x</code> имеет время жизни <code>'b</code>, которое больше, чем время жизни <code>'a</code>. Это означает, что переменная <code>r</code> может ссылаться на переменную <code>x</code> потому что Rust знает, что ссылка в переменной <code>r</code> будет всегда действительной до тех пор, пока переменная <code>x</code> является валидной.</p>
+<p>После того, как мы на примерах рассмотрели времена жизни ссылок и обсудили как Rust их анализирует, давайте поговорим об обобщённых временах жизни входных параметров и возвращаемых значений функций.</p>
+<h3 id="обобщённые-времена-жизни-в-функциях"><a class="header" href="#обобщённые-времена-жизни-в-функциях">Обобщённые времена жизни в функциях</a></h3>
+<p>Напишем функцию, которая возвращает более длинный из двух срезов строки. Эта функция принимает два среза строки и возвращает один срез строки. После того как мы реализовали функцию <code>longest</code>, код в листинге 10-19 должен вывести <code>The longest string is abcd</code>.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore">fn main() {
+    let string1 = String::from("abcd");
+    let string2 = "xyz";
+
+    let result = longest(string1.as_str(), string2);
+    println!("The longest string is {result}");
+}</code></pre>
+<p><span class="caption">Листинг 10-19: Функция <code>main</code> вызывает функцию <code>longest</code> для поиска наибольшего из двух срезов строки</span></p>
+<p>Обратите внимание, что мы хотим чтобы функция принимала строковые срезы, которые являются ссылками, а не строки, потому что мы не хотим, чтобы функция <code>longest</code> забирала во владение свои параметры. Обратитесь к разделу <a href="ch04-03-slices.html#string-slices-as-parameters">“Строковые срезы как параметры”</a><!--  --> Главы 4 для более подробного обсуждения того, почему параметры используемые в листинге 10-19 выбраны именно таким образом.</p>
+<p>Если мы попробуем реализовать функцию <code>longest</code> так, как это показано в листинге 10-20, программа не скомпилируется:</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let string1 = String::from("abcd");
+</span><span class="boring">    let string2 = "xyz";
+</span><span class="boring">
+</span><span class="boring">    let result = longest(string1.as_str(), string2);
+</span><span class="boring">    println!("The longest string is {result}");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn longest(x: &amp;str, y: &amp;str) -&gt; &amp;str {
+    if x.len() &gt; y.len() { x } else { y }
+}</code></pre>
+<p><span class="caption">Листинг 10-20: Реализация функции <code>longest</code>, которая возвращает наибольший срез строки, но пока не компилируется</span></p>
+<p>Вместо этого мы получим следующую ошибку, говорящую о временах жизни:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0106]: missing lifetime specifier
+ --&gt; src/main.rs:9:33
+  |
+9 | fn longest(x: &amp;str, y: &amp;str) -&gt; &amp;str {
+  |               ----     ----     ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `x` or `y`
+help: consider introducing a named lifetime parameter
+  |
+9 | fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+  |           ++++     ++          ++          ++
+
+For more information about this error, try `rustc --explain E0106`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Текст ошибки показывает, что возвращаемому типу нужен обобщённый параметр времени жизни, потому что Rust не может определить, относится ли возвращаемая ссылка к <code>x</code> или к <code>y</code>. На самом деле, мы тоже не знаем, потому что блок <code>if</code> в теле функции возвращает ссылку на <code>x</code>, а блок <code>else</code> возвращает ссылку на <code>y</code>!</p>
+<p>Когда мы определяем эту функцию, мы не знаем конкретных значений, которые будут в неё передаваться. Поэтому мы не знаем какая из ветвей оператора <code>if</code> или <code>else</code> будет выполнена. Мы также не знаем конкретных времён жизни ссылок, которые будут переданы в функцию, поэтому мы не можем посмотреть на их области видимости, как мы делали в примерах 10-17 и 10-18, чтобы определить, будет ли возвращаемая нами ссылка корректной во всех случаях. Анализатор заимствований также не может этого определить, потому что он не знает как времена жизни переменных <code>x</code> и <code>y</code> соотносятся с временем жизни возвращаемого значения. Чтобы исправить эту ошибку, мы добавим обобщённый параметр времени жизни, который определит отношения между ссылками таким образом, чтобы анализатор заимствований мог провести свой анализ.</p>
+<h3 id="синтаксис-аннотации-времени-жизни"><a class="header" href="#синтаксис-аннотации-времени-жизни">Синтаксис аннотации времени жизни</a></h3>
+<p>Аннотации времени жизни не меняют срок, как долго живёт та или иная ссылка. Они скорее описывают, как соотносятся между собой времена жизни нескольких ссылок, не влияя на само время жизни. Точно так же, как функции могут принимать любой тип, когда в сигнатуре указан параметр обобщённого типа, функции могут принимать ссылки с любым временем жизни, указанным с помощью параметра обобщённого времени жизни.</p>
+<p>Аннотации времени жизни имеют немного необычный синтаксис: имена параметров времени жизни должны начинаться с апострофа (<code>'</code>), пишутся маленькими буквами, и обычно очень короткие, как и имена обобщённых типов. Большинство людей использует имя <code>'a</code> в качестве первой аннотации времени жизни. Аннотации параметров времени жизни следуют после символа <code>&amp;</code> и отделяются пробелом от названия ссылочного типа.</p>
+<p>Приведём несколько примеров: у нас есть ссылка на <code>i32</code> без указания времени жизни, ссылка на <code>i32</code>, с временем жизни имеющим имя <code>'a</code> и изменяемая ссылка на <code>i32</code>, которая также имеет время жизни <code>'a</code>.</p>
+<pre><code class="language-rust ignore">&amp;i32        // a reference
+&amp;'a i32     // a reference with an explicit lifetime
+&amp;'a mut i32 // a mutable reference with an explicit lifetime</code></pre>
+<p>Одна аннотация времени жизни сама по себе не имеет большого значения, поскольку аннотации предназначены для того, чтобы проинформировать Rust о том, как времена жизни нескольких ссылок соотносятся между собой. Давайте рассмотрим, как аннотации времени жизни связаны друг с другом в контексте функции <code>longest</code>.</p>
+<h3 id="аннотации-времени-жизни-в-сигнатурах-функций"><a class="header" href="#аннотации-времени-жизни-в-сигнатурах-функций">Аннотации времени жизни в сигнатурах функций</a></h3>
+<p>Чтобы использовать аннотации времени жизни в сигнатурах функций, нам нужно объявить параметры обобщённого <em>времени жизни</em> внутри угловых скобок между именем функции и списком параметров, как мы это делали с параметрами обобщённого <em>типа</em> .</p>
+<p>Мы хотим, чтобы сигнатура отражала следующее ограничение: возвращаемая ссылка будет действительна до тех пор, пока валидны оба параметра. Это связь между временами жизни параметров и возвращаемого значения. Мы назовём это время жизни <code>'a</code>, а затем добавим его к каждой ссылке, как показано в листинге 10-21.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let string1 = String::from("abcd");
+</span><span class="boring">    let string2 = "xyz";
+</span><span class="boring">
+</span><span class="boring">    let result = longest(string1.as_str(), string2);
+</span><span class="boring">    println!("The longest string is {result}");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+    if x.len() &gt; y.len() { x } else { y }
+}</code></pre>
+<p><span class="caption">Листинг 10-21: В определении функции <code>longest</code> указано, что все ссылки должны иметь одинаковое время жизни, обозначенное как <code>’a</code></span></p>
+<p>Этот код должен компилироваться и давать желаемый результат, когда мы вызовем его в функции <code>main</code> листинга 10-19.</p>
+<p>Сигнатура функции теперь сообщает Rust, что для некоторого времени жизни <code>'a</code> функция принимает два параметра, оба из которых являются срезами строк, которые живут не меньше, чем время жизни <code>'a</code>. Сигнатура функции также сообщает Rust, что срез строки, возвращаемый функцией, будет жить как минимум столько, сколько длится время жизни <code>'a</code>. На практике это означает, что время жизни ссылки, возвращаемой функцией <code>longest</code>, равно меньшему времени жизни передаваемых в неё ссылок. Мы хотим, чтобы Rust использовал именно такие отношения при анализе этого кода.</p>
+<p>Помните, когда мы указываем параметры времени жизни в этой сигнатуре функции, мы не меняем время жизни каких-либо переданных или возвращённых значений. Скорее, мы указываем, что анализатор заимствований должен отклонять любые значения, которые не соответствуют этим ограничениям. Обратите внимание, что самой функции <code>longest</code> не нужно точно знать, как долго будут жить <code>x</code> и <code>y</code>, достаточно  того, что некоторая область может быть заменена на <code>'a</code>, которая будет удовлетворять этой сигнатуре.</p>
+<p>При аннотировании времён жизни функций, аннотации помещаются в сигнатуру функции, а не в тело функции. Аннотации времени жизни становятся частью контракта функции, как и типы в сигнатуре. Наличие сигнатур функций, содержащих контракт времени жизни, означает, что анализ который выполняет компилятор Rust, может быть проще. Если есть проблема с тем, как функция аннотируется или как она вызывается, ошибки компилятора могут указать на часть нашего кода и ограничения более точно. Если бы вместо этого компилятор Rust сделал больше предположений о том, какие отношения времён жизни мы хотели получить, компилятор смог бы указать только на использование нашего кода за много шагов от источника проблемы.</p>
+<p>Когда мы передаём конкретные ссылки в функцию <code>longest</code>, конкретным временем жизни, которое будет заменено на <code>'a</code>, является часть области видимости <code>x</code>, которая пересекается с областью видимости <code>y</code>. Другими словами, обобщённое время жизни <code>'a</code> получит конкретное время жизни, равное меньшему из времён жизни <code>x</code> и <code>y</code>. Так как мы аннотировали возвращаемую ссылку тем же параметром времени жизни <code>'a</code>, то возвращённая ссылка также будет действительна на протяжении меньшего из времён жизни <code>x</code> и <code>y</code>.</p>
+<p>Давайте посмотрим, как аннотации времени жизни ограничивают функцию <code>longest</code> путём передачи в неё ссылок, которые имеют разные конкретные времена жизни. Листинг 10-22 является очевидным примером.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let string1 = String::from("long string is long");
+
+    {
+        let string2 = String::from("xyz");
+        let result = longest(string1.as_str(), string2.as_str());
+        println!("The longest string is {result}");
+    }
+}
+<span class="boring">
+</span><span class="boring">fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+</span><span class="boring">    if x.len() &gt; y.len() { x } else { y }
+</span><span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 10-22: Использование функции <code>longest</code> со ссылками на значения типа <code>String</code>, имеющими разное время жизни</span></p>
+<p>В этом примере переменная <code>string1</code> действительна до конца внешней области, <code>string2</code> действует до конца внутренней области видимости и <code>result</code> ссылается на что-то, что является действительным до конца внутренней области видимости. Запустите этот код, и вы увидите что анализатор заимствований разрешает такой код; он скомпилирует и напечатает <code>The longest string is long string is long</code>.</p>
+<p>Теперь, давайте попробуем пример, который показывает, что время жизни ссылки <code>result</code> должно быть меньшим временем жизни одного из двух аргументов. Мы переместим объявление переменной <code>result</code> за пределы внутренней области видимости, но оставим присвоение значения переменной <code>result</code> в области видимости <code>string2</code>. Затем мы переместим <code>println!</code>, который использует <code>result</code> за пределы внутренней области видимости, после того как внутренняя область видимости закончилась. Код в листинге 10-23 не скомпилируется.</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let string1 = String::from("long string is long");
+    let result;
+    {
+        let string2 = String::from("xyz");
+        result = longest(string1.as_str(), string2.as_str());
+    }
+    println!("The longest string is {result}");
+}
+<span class="boring">
+</span><span class="boring">fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+</span><span class="boring">    if x.len() &gt; y.len() { x } else { y }
+</span><span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 10-23: Попытка использования <code>result</code>, после того как <code>string2</code> вышла из области видимости</span></p>
+<p>При попытке скомпилировать этот код, мы получим такую ошибку:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0597]: `string2` does not live long enough
+ --&gt; src/main.rs:6:44
+  |
+5 |         let string2 = String::from("xyz");
+  |             ------- binding `string2` declared here
+6 |         result = longest(string1.as_str(), string2.as_str());
+  |                                            ^^^^^^^ borrowed value does not live long enough
+7 |     }
+  |     - `string2` dropped here while still borrowed
+8 |     println!("The longest string is {result}");
+  |                                      ------ borrow later used here
+
+For more information about this error, try `rustc --explain E0597`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Эта ошибка говорит о том, что если мы хотим использовать <code>result</code> в инструкции <code>println!</code>, переменная <code>string2</code> должна бы быть действительной до конца внешней области видимости. Rust знает об этом, потому что мы аннотировали параметры функции и её возвращаемое значение одинаковым временем жизни <code>'a</code>.</p>
+<p>Будучи людьми, мы можем посмотреть на этот код и увидеть, что <code>string1</code> длиннее, чем <code>string2</code> и, следовательно, <code>result</code> будет содержать ссылку на <code>string1</code>. Поскольку <code>string1</code> ещё не вышла из области видимости, ссылка на <code>string1</code> будет все ещё действительной в инструкции <code>println!</code>. Однако компилятор не видит, что ссылка в этом случае валидна. Мы сказали Rust, что время жизни ссылки, возвращаемой из функции <code>longest</code>, равняется меньшему из времён жизни переданных в неё ссылок. Таким образом, анализатор заимствований запрещает код в листинге 10-23, как возможно имеющий недействительную ссылку.</p>
+<p>Попробуйте провести больше экспериментов с различными значениями и временами жизни ссылок, передаваемых в функцию <code>longest</code>, а также с тем, как используется возвращаемое значение  Перед компиляцией делайте предположения о том, пройдёт ли ваш код анализ заимствований, а затем проверяйте, насколько вы были правы.</p>
+<h3 id="мышление-в-терминах-времён-жизни"><a class="header" href="#мышление-в-терминах-времён-жизни">Мышление в терминах времён жизни</a></h3>
+<p>В зависимости от того, что делает ваша функция, следует использовать разные способы указания параметров времени жизни. Например, если мы изменим реализацию функции <code>longest</code> таким образом, чтобы она всегда возвращала свой первый аргумент вместо самого длинного среза строки, то время жизни для параметра <code>y</code> можно совсем не указывать. Этот код скомпилируется:</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let string1 = String::from("abcd");
+</span><span class="boring">    let string2 = "efghijklmnopqrstuvwxyz";
+</span><span class="boring">
+</span><span class="boring">    let result = longest(string1.as_str(), string2);
+</span><span class="boring">    println!("The longest string is {result}");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;str) -&gt; &amp;'a str {
+    x
+}</code></pre>
+<p>Мы указали параметр времени жизни <code>'a</code> для параметра <code>x</code> и возвращаемого значения, но не для параметра <code>y</code>, поскольку время жизни параметра <code>y</code> никак не соотносится с временем жизни параметра <code>x</code> или возвращаемого значения.</p>
+<p>При возврате ссылки из функции, параметр времени жизни для возвращаемого типа должен соответствовать параметру времени жизни одного из аргументов. Если возвращаемая ссылка <em>не</em> ссылается на один из параметров, она должна ссылаться на значение, созданное внутри функции. Однако, это приведёт к недействительной ссылке, поскольку значение, на которое она ссылается, выйдет из области видимости в конце функции. Посмотрите на попытку реализации функции <code>longest</code>, которая не скомпилируется:</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let string1 = String::from("abcd");
+</span><span class="boring">    let string2 = "xyz";
+</span><span class="boring">
+</span><span class="boring">    let result = longest(string1.as_str(), string2);
+</span><span class="boring">    println!("The longest string is {result}");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn longest&lt;'a&gt;(x: &amp;str, y: &amp;str) -&gt; &amp;'a str {
+    let result = String::from("really long string");
+    result.as_str()
+}</code></pre>
+<p>Здесь, несмотря на то, что мы указали параметр времени жизни <code>'a</code> для возвращаемого типа, реализация не будет скомпилирована, потому что время жизни возвращаемого значения никак не связано с временем жизни параметров. Получаем сообщение об ошибке:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0515]: cannot return value referencing local variable `result`
+  --&gt; src/main.rs:11:5
+   |
+11 |     result.as_str()
+   |     ------^^^^^^^^^
+   |     |
+   |     returns a value referencing data owned by the current function
+   |     `result` is borrowed here
+
+For more information about this error, try `rustc --explain E0515`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Проблема заключается в том, что <code>result</code> выходит за область видимости и очищается в конце функции <code>longest</code>. Мы также пытаемся вернуть ссылку на <code>result</code> из функции. Мы не можем указать параметры времени жизни, которые могли бы изменить недействительную ссылку, а Rust не позволит нам создать недействительную ссылку. В этом случае лучшим решением будет вернуть владеющий тип данных, а не ссылку: в этом случае вызывающая функция будет нести ответственность за очистку полученного ею значения.</p>
+<p>В конечном итоге, синтаксис времён жизни реализует связывание времён жизни различных аргументов и возвращаемых значений функций. Описывая времена жизни, мы даём Rust достаточно информации, чтобы разрешить безопасные операции с памятью и запретить операции, которые могли бы создать недействительные ссылки или иным способом нарушить безопасность памяти.</p>
+<h3 id="определение-времён-жизни-при-объявлении-структур"><a class="header" href="#определение-времён-жизни-при-объявлении-структур">Определение времён жизни при объявлении структур</a></h3>
+<p>До сих пор мы объявляли структуры, которые всегда содержали владеющие типы данных. Структуры могут содержать и ссылки, но при этом необходимо добавить аннотацию времени жизни для каждой ссылки в определении структуры. Листинг 10-24 описывает структуру <code>ImportantExcerpt</code>, содержащую срез строки:</p>
+<p><span class="filename">Файл: src/main.rs</span></p>
+<pre class="playground"><code class="language-rust">struct ImportantExcerpt&lt;'a&gt; {
+    part: &amp;'a str,
+}
+
+fn main() {
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split('.').next().unwrap();
+    let i = ImportantExcerpt {
+        part: first_sentence,
+    };
+}</code></pre>
+<p><span class="caption">Листинг 10-25. Структура, содержащая ссылку, требует аннотации времени жизни</span></p>
+<p>У структуры имеется одно поле <code>part</code>, хранящее срез строки, который сам по себе является ссылкой. Как и в случае с обобщёнными типами данных, мы объявляем имя обобщённого параметра времени жизни внутри угловых скобок после имени структуры, чтобы иметь возможность использовать его внутри определения структуры. Данная аннотация означает, что экземпляр <code>ImportantExcerpt</code> не может пережить ссылку, которую он содержит в своём поле <code>part</code>.</p>
+<p>Функция <code>main</code> здесь создаёт экземпляр структуры <code>ImportantExcerpt</code>, который содержит ссылку на первое предложение типа <code>String</code> принадлежащее переменной <code>novel</code>. Данные в <code>novel</code> существуют до  создания экземпляра <code>ImportantExcerpt</code>. Кроме того, <code>novel</code> не выходит из области видимости до тех пор, пока <code>ImportantExcerpt</code> не выйдет за область видимости, поэтому ссылка в внутри экземпляра <code>ImportantExcerpt</code>  является действительной.</p>
+<h3 id="правила-неявного-выведения-времени-жизни"><a class="header" href="#правила-неявного-выведения-времени-жизни">Правила неявного выведения времени жизни</a></h3>
+<p>Вы изучили, что у каждой ссылки есть время жизни и что нужно указывать параметры времени жизни для функций или структур, которые используют ссылки. Однако в Главе 4 у нас была функция в листинге 4-9, которая затем снова показана в листинге 10-25, в которой код скомпилировался без аннотаций времени жизни.</p>
+<p><span class="filename">Файл: src/lib.rs</span></p>
+<pre class="playground"><code class="language-rust">fn first_word(s: &amp;str) -&gt; &amp;str {
+    let bytes = s.as_bytes();
+
+    for (i, &amp;item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &amp;s[0..i];
+        }
+    }
+
+    &amp;s[..]
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let my_string = String::from("hello world");
+</span><span class="boring">
+</span><span class="boring">    // first_word works on slices of `String`s
+</span><span class="boring">    let word = first_word(&amp;my_string[..]);
+</span><span class="boring">
+</span><span class="boring">    let my_string_literal = "hello world";
+</span><span class="boring">
+</span><span class="boring">    // first_word works on slices of string literals
+</span><span class="boring">    let word = first_word(&amp;my_string_literal[..]);
+</span><span class="boring">
+</span><span class="boring">    // Because string literals *are* string slices already,
+</span><span class="boring">    // this works too, without the slice syntax!
+</span><span class="boring">    let word = first_word(my_string_literal);
+</span><span class="boring">}</span></code></pre>
+<p><span class="caption">Листинг 10-25: Функция, которую мы определили в листинге 4-9  компилируется без аннотаций времени жизни, несмотря на то, что входной и возвращаемый тип параметров являются ссылками</span></p>
+<p>Причина, по которой этот код компилируется — историческая. В ранних (до-1.0) версиях Rust этот код не скомпилировался бы, поскольку каждой ссылке нужно было явно назначать время жизни. В те времена, сигнатура функции была бы написана примерно так:</p>
+<pre><code class="language-rust ignore">fn first_word&lt;'a&gt;(s: &amp;'a str) -&gt; &amp;'a str {</code></pre>
+<p>После написания большого количества кода на Rust разработчики языка обнаружили, что в определённых ситуациях программисты описывают одни и те же аннотации времён жизни снова и снова. Эти ситуации были предсказуемы и следовали нескольким детерминированным шаблонным моделям. Команда Rust решила запрограммировать эти шаблоны в код компилятора Rust, чтобы анализатор заимствований мог вывести времена жизни в таких ситуациях без необходимости явного указания аннотаций программистами.</p>
+<p>Мы упоминаем этот фрагмент истории Rust, потому что возможно, что в будущем появится больше шаблонов для автоматического выведения времён жизни, которые будут добавлены в компилятор. Таким образом, в будущем может понадобится ещё меньшее количество аннотаций.</p>
+<p>Шаблоны, запрограммированные в анализаторе ссылок языка Rust, называются <em>правилами неявного выведения времени жизни</em>. Это не правила, которым должны следовать программисты; а набор частных случаев, которые рассмотрит компилятор, и, если ваш код попадает в эти случаи, вам не нужно будет указывать время жизни явно.</p>
+<p>Правила выведения не предоставляют полного заключения. Если Rust детерминировано применяет правила, но некоторая неясность относительно времён жизни ссылок все ещё остаётся, компилятор не будет догадываться, какими должны быть времена жизни оставшихся ссылок. В этом случае, вместо угадывания компилятор выдаст ошибку, которую вы можете устранить, добавив аннотации времени жизни.</p>
+<p>Времена жизни параметров функции или метода называются <em>временем жизни ввода</em>, а времена жизни возвращаемых значений называются <em>временем жизни вывода</em>.</p>
+<p>Компилятор использует три правила, чтобы выяснить времена жизни ссылок при отсутствии явных аннотаций. Первое правило относится ко времени жизни ввода, второе и третье правила применяются ко временам жизни вывода. Если компилятор доходит до конца проверки трёх правил и всё ещё есть ссылки, для которых он не может выяснить время жизни, компилятор остановится с ошибкой. Эти правила применяются к объявлениям <code>fn</code>, а также к блокам <code>impl</code>.</p>
+<p>Первое правило заключается в том, что каждый параметр являющийся ссылкой, получает свой собственный параметр времени жизни. Другими словами, функция с одним параметром получит один параметр времени жизни: <code>fn foo&lt;'a&gt;(x: &amp;'a i32)</code>; функция с двумя аргументами получит два отдельных параметра времени жизни: <code>fn foo&lt;'a, 'b&gt;(x: &amp;'a i32, y: &amp;'b i32)</code>, и так далее.</p>
+<p>Второе правило говорит, что если есть ровно один входной параметр времени жизни, то его время жизни назначается всем выходным параметрам: <code>fn foo&lt;'a&gt;(x: &amp;'a i32) -&gt; &amp;'a i32</code>.</p>
+<p>Третье правило о том, что если есть множество входных параметров времени жизни, но один из них является ссылкой <code>&amp;self</code> или <code>&amp;mut self</code>, так как эта функция является методом, то время жизни <code>self</code> назначается временем жизни всем выходным параметрам. Это третье правило делает методы намного приятнее для чтения и записи, потому что требуется меньше символов.</p>
+<p>Представим, что мы компилятор и применим эти правила, чтобы вывести времена жизни ссылок в сигнатуре функции <code>first_word</code> листинга 10-25. Сигнатура этой функции начинается без объявления времён жизни ссылок:</p>
+<pre><code class="language-rust ignore">fn first_word(s: &amp;str) -&gt; &amp;str {</code></pre>
+<p>Теперь мы (в качестве компилятора) применим первое правило, утверждающее, что каждый параметр функции получает своё собственное время жизни. Как обычно, назовём его <code>'a</code> и теперь сигнатура выглядит так:</p>
+<pre><code class="language-rust ignore">fn first_word&lt;'a&gt;(s: &amp;'a str) -&gt; &amp;str {</code></pre>
+<p>Далее применяем второе правило, поскольку в функции указан только один входной параметр времени жизни. Второе правило гласит, что время жизни единственного входного параметра назначается выходным параметрам, поэтому сигнатура теперь преобразуется таким образом:</p>
+<pre><code class="language-rust ignore">fn first_word&lt;'a&gt;(s: &amp;'a str) -&gt; &amp;'a str {</code></pre>
+<p>Теперь все ссылки в этой функции имеют параметры времени жизни и компилятор может продолжить свой анализ без необходимости просить у программиста указать аннотации времён жизни в сигнатуре этой функции.</p>
+<p>Давайте рассмотрим ещё один пример: на этот раз функцию <code>longest</code>, в которой не было параметров времени жизни, когда мы начали с ней работать в листинге 10-20:</p>
+<pre><code class="language-rust ignore">fn longest(x: &amp;str, y: &amp;str) -&gt; &amp;str {</code></pre>
+<p>Применим первое правило: каждому параметру назначается собственное время жизни. На этот раз у функции есть два параметра, поэтому есть два времени жизни:</p>
+<pre><code class="language-rust ignore">fn longest&lt;'a, 'b&gt;(x: &amp;'a str, y: &amp;'b str) -&gt; &amp;str {</code></pre>
+<p>Можно заметить, что второе правило здесь не применимо, так как в сигнатуре указано больше одного входного параметра времени жизни. Третье правило также не применимо, так как <code>longest</code> — функция, а не метод, следовательно, в ней нет параметра <code>self</code>.  Итак, мы прошли все три правила, но так и не смогли вычислить время жизни выходного параметра. Поэтому мы и получили ошибку при попытке скомпилировать код листинга 10-20: компилятор работал по правилам неявного выведения времён жизни, но не мог выяснить все времена жизни ссылок в сигнатуре.</p>
+<p>Так как третье правило применяется только к методам, далее мы рассмотрим времена жизни в этом контексте, чтобы понять, почему нам часто не требуется аннотировать времена жизни в сигнатурах методов.</p>
+<h3 id="аннотация-времён-жизни-в-определении-методов"><a class="header" href="#аннотация-времён-жизни-в-определении-методов">Аннотация времён жизни в определении методов</a></h3>
+<p>Когда мы реализуем методы для структур с временами жизни, мы используем тот же синтаксис, который применялся для аннотаций обобщённых типов данных на листинге 10-11. Место, где мы объявляем и используем времена жизни, зависит от того, с чем они связаны — с полями структуры, либо с аргументами методов и возвращаемыми значениями.</p>
+<p>Имена параметров времени жизни для полей структур всегда описываются после ключевого слова <code>impl</code> и затем используются после имени структуры, поскольку эти времена жизни являются частью типа структуры.</p>
+<p>В сигнатурах методов внутри блока <code>impl</code> ссылки могут быть привязаны ко времени жизни ссылок в полях структуры, либо могут быть независимыми. Вдобавок, правила неявного выведения времён жизни часто делают так, что аннотации переменных времён жизни являются необязательными в сигнатурах методов. Рассмотрим несколько примеров, использующих структуру с названием <code>ImportantExcerpt</code>, которую мы определили в листинге 10-24.</p>
+<p>Сначала, воспользуемся методом <code>level</code>, чей  единственный параметр является ссылкой на <code>self</code>, а возвращаемое значение <code>i32</code>, не является ссылкой ни на что:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">struct ImportantExcerpt&lt;'a&gt; {
+</span><span class="boring">    part: &amp;'a str,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl&lt;'a&gt; ImportantExcerpt&lt;'a&gt; {
+    fn level(&amp;self) -&gt; i32 {
+        3
+    }
+}
+<span class="boring">
+</span><span class="boring">impl&lt;'a&gt; ImportantExcerpt&lt;'a&gt; {
+</span><span class="boring">    fn announce_and_return_part(&amp;self, announcement: &amp;str) -&gt; &amp;str {
+</span><span class="boring">        println!("Attention please: {announcement}");
+</span><span class="boring">        self.part
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let novel = String::from("Call me Ishmael. Some years ago...");
+</span><span class="boring">    let first_sentence = novel.split('.').next().unwrap();
+</span><span class="boring">    let i = ImportantExcerpt {
+</span><span class="boring">        part: first_sentence,
+</span><span class="boring">    };
+</span><span class="boring">}</span></code></pre>
+<p>Объявление параметра времени жизни после <code>impl</code> и его использование после имени типа является обязательным, но нам не нужно аннотировать время жизни ссылки на <code>self</code>, благодаря первому правилу неявного выведения времён жизни.</p>
+<p>Вот пример, где применяется третье правило неявного выведения времён жизни:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">struct ImportantExcerpt&lt;'a&gt; {
+</span><span class="boring">    part: &amp;'a str,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a&gt; ImportantExcerpt&lt;'a&gt; {
+</span><span class="boring">    fn level(&amp;self) -&gt; i32 {
+</span><span class="boring">        3
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl&lt;'a&gt; ImportantExcerpt&lt;'a&gt; {
+    fn announce_and_return_part(&amp;self, announcement: &amp;str) -&gt; &amp;str {
+        println!("Attention please: {announcement}");
+        self.part
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let novel = String::from("Call me Ishmael. Some years ago...");
+</span><span class="boring">    let first_sentence = novel.split('.').next().unwrap();
+</span><span class="boring">    let i = ImportantExcerpt {
+</span><span class="boring">        part: first_sentence,
+</span><span class="boring">    };
+</span><span class="boring">}</span></code></pre>
+<p>В этом методе имеется два входных параметра, поэтому Rust применит первое правило и назначит обоим параметрам <code>&amp;self</code> и <code>announcement</code> собственные времена жизни. Далее, поскольку один из параметров является <code>&amp;self</code>, то возвращаемое значение получает время жизни переменой <code>&amp;self</code> и все времена жизни теперь выведены.</p>
+<h3 id="статическое-время-жизни"><a class="header" href="#статическое-время-жизни">Статическое время жизни</a></h3>
+<p>Одно особенное время жизни, которое мы должны обсудить, называется <code>'static</code>. Оно означает, что данная ссылка  <em>может</em> жить всю продолжительность работы программы. Все строковые литералы по умолчанию имеют время жизни <code>'static</code>, но мы можем указать его явным образом:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s: &amp;'static str = "I have a static lifetime.";
+<span class="boring">}</span></code></pre>
+<p>Содержание этой строки сохраняется внутри бинарного файл программы и всегда доступно для использования. Следовательно, время жизни всех строковых литералов равно <code>'static</code>.</p>
+<p>Сообщения компилятора об ошибках в качестве решения проблемы могут предлагать вам использовать время жизни <code>'static</code>. Но прежде чем указывать <code>'static</code> как время жизни для ссылки, подумайте, на самом ли деле данная ссылка будет доступна во всё время работы программы. В большинстве случаев, сообщения об ошибках, предлагающие использовать время жизни <code>'static</code> появляются при попытках создания недействительных ссылок или несовпадения имеющихся времён жизни. В таких случаях, решение заключается в исправлении таких проблем, а не в указании статического времени жизни <code>'static</code>.</p>
+<h2 id="обобщённые-типы-параметров-ограничения-типажей-и-времена-жизни-вместе"><a class="header" href="#обобщённые-типы-параметров-ограничения-типажей-и-времена-жизни-вместе">Обобщённые типы параметров, ограничения типажей и времена жизни вместе</a></h2>
+<p>Давайте кратко рассмотрим синтаксис задания параметров обобщённых типов, ограничений типажа и времён жизни совместно в одной функции:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let string1 = String::from("abcd");
+</span><span class="boring">    let string2 = "xyz";
+</span><span class="boring">
+</span><span class="boring">    let result = longest_with_an_announcement(
+</span><span class="boring">        string1.as_str(),
+</span><span class="boring">        string2,
+</span><span class="boring">        "Today is someone's birthday!",
+</span><span class="boring">    );
+</span><span class="boring">    println!("The longest string is {result}");
+</span><span class="boring">}
+</span><span class="boring">
+</span>use std::fmt::Display;
+
+fn longest_with_an_announcement&lt;'a, T&gt;(
+    x: &amp;'a str,
+    y: &amp;'a str,
+    ann: T,
+) -&gt; &amp;'a str
+where
+    T: Display,
+{
+    println!("Announcement! {ann}");
+    if x.len() &gt; y.len() { x } else { y }
+}</code></pre>
+<p>Это функция <code>longest</code>  из листинга 10-21, которая возвращает наибольший из двух срезов строки. Но теперь у неё есть дополнительный параметр с именем <code>ann</code> обобщённого типа <code>T</code>, который может быть представлен любым типом, реализующим типаж <code>Display</code>, как указано в предложении <code>where</code>. Этот дополнительный параметр будет напечатан с использованием <code>{}</code> , поэтому ограничение типажа <code>Display</code> необходимо. Поскольку время жизни является обобщённым типом, то объявления параметра времени жизни <code>'a</code> и параметра обобщённого типа <code>T</code> помещаются в один список внутри угловых скобок после имени функции.</p>
+<h2 id="итоги"><a class="header" href="#итоги">Итоги</a></h2>
+<p>В этой главе мы рассмотрели много всего! Теперь вы знакомы с параметрами обобщённого типа, типажами и ограничениями типажа, обобщёнными параметрами времени жизни, вы готовы писать код без повторений, который будет работать во множестве различных ситуаций. Параметры обобщённого типа позволяют использовать код для различных типов данных. Типажи и ограничения типажа помогают убедиться, что, хотя типы и обобщённые, они будут вести себя, как этого требует ваш код. Вы изучили, как использовать аннотации времени жизни чтобы убедиться, что этот универсальный код не будет генерировать никаких повисших ссылок. И весь этот анализ происходит в момент компиляции и не влияет на производительность программы во время работы!</p>
+<p>Верите или нет, но в рамках этой темы всё есть ещё чему поучиться: в Главе 17 обсуждаются типажи-объекты, которые являются ещё одним способом использования типажей. Существуют также более сложные сценарии с аннотациями времени жизни, которые вам понадобятся только в очень сложных случаях; для этого вам следует прочитать <a href="../reference/index.html">Rust Reference</a>. Далее вы узнаете, как писать тесты на Rust, чтобы убедиться, что ваш код работает так, как задумано.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch10-02-traits.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="ch11-00-testing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch10-02-traits.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="ch11-00-testing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris-4d46571e.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
