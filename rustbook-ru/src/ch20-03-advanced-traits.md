@@ -11,7 +11,7 @@
 Одним из примеров трейта с ассоциированным типом является типаж `Iterator` из стандартной библиотеки. Ассоциированный тип называется `Item` и символизирует тип значений, по которым итерируется тип, реализующий типаж `Iterator`. Определение трейта <code>Iterator</code> показано в листинге 20-12.
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-12/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-13/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 20-12: Определение трейта <code>Iterator</code>, который имеет ассоциированный тип <code>Item</code></span>
@@ -51,7 +51,7 @@ Rust не позволяет создавать собственные опер�
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-14/src/main.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-15/src/main.rs}}
 ```
 
 <span class="caption">Листинг 20-14: Реализация типажа <code>Add</code> для перегрузки оператора <code>+</code> для экземпляров <code>Point</code></span>
@@ -77,7 +77,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/lib.rs</span>
 
 ```rust,noplayground
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-15/src/lib.rs}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-16/src/lib.rs}}
 ```
 
 <span class="caption">Листинг 20-15: Реализация типажа <code>Add</code> для структуры  <code>Millimeters</code>, чтобы складывать <code>Millimeters</code> и <code>Meters</code></span>
@@ -102,7 +102,7 @@ trait Add<Rhs = Self> {
 <span class="filename">Файл: src/main.rs</span>
 
 ```rust
-{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-16/src/main.rs:here}}
+{{#rustdoc_include ../listings/ch20-advanced-features/listing-20-17/src/main.rs:here}}
 ```
 
 <span class="caption">Листинг 20-16: Два типажа определены с методом <code>fly</code> и реализованы у типа <code>Human</code>, а также метод <code>fly</code> реализован непосредственно у <code>Human</code></span>
